@@ -11,15 +11,18 @@ namespace ProjectColombo.Control
         [Header("Movement Settings")]
         [SerializeField] float moveSpeed = 5f;
         [SerializeField] float rotationSpeed = 720f; // Degrees per second
+        [SerializeField] float acceleration = 10f;
+        [SerializeField] float deceleration = 10f;
+        [SerializeField] float graceTime = 0.1f; // Duration of grace period in seconds
 
-        Health health;
-        Rigidbody playerRigidbody;
+        private Health health;
+        private Rigidbody playerRigidbody;
 
+        private InputSystem_Actions playerInputActions;
 
-        InputSystem_Actions playerInputActions;
-
-        Vector2 movementInput;
-        Vector2 lookInput;
+        private Vector2 movementInput;
+        private Vector3 currentVelocity = Vector3.zero;
+        private float timeSinceLastInput = 0f;
 
         void Awake()
         {
@@ -59,15 +62,49 @@ namespace ProjectColombo.Control
 
         private void Move()
         {
-            Vector3 movement = new Vector3(movementInput.x, 0, movementInput.y) * moveSpeed * Time.fixedDeltaTime;
-            playerRigidbody.MovePosition(playerRigidbody.position + movement);
+            // Update time since last input
+            if (movementInput.sqrMagnitude < 0.01f)
+            {
+                timeSinceLastInput += Time.fixedDeltaTime;
+            }
+            else
+            {
+                timeSinceLastInput = 0f; // Reset timer if there's input
+            }
+
+            // Calculate desired velocity based on input or maintain current velocity during grace period
+            Vector3 desiredVelocity;
+            if (movementInput.sqrMagnitude > 0.01f)
+            {
+                desiredVelocity = new Vector3(movementInput.x, 0, movementInput.y).normalized * moveSpeed;
+            }
+            else if (timeSinceLastInput < graceTime)
+            {
+                desiredVelocity = currentVelocity.normalized * moveSpeed;
+            }
+            else
+            {
+                desiredVelocity = Vector3.zero;
+            }
+
+            // Determine acceleration or deceleration
+            float speedDifference = desiredVelocity.magnitude - currentVelocity.magnitude;
+            float accelerationRate = (Mathf.Abs(speedDifference) > 0.01f) ? acceleration : deceleration;
+            float maxSpeedChange = accelerationRate * Time.fixedDeltaTime;
+
+            // Smoothly adjust current velocity towards desired velocity
+            currentVelocity = Vector3.MoveTowards(currentVelocity, desiredVelocity, maxSpeedChange);
+
+            // Move the player
+            playerRigidbody.MovePosition(playerRigidbody.position + currentVelocity * Time.fixedDeltaTime);
         }
 
         private void Rotate()
         {
-            if (movementInput.sqrMagnitude > 0.01f)
+            // Rotate only if moving
+            if (currentVelocity.sqrMagnitude > 0.01f)
             {
-                Quaternion targetRotation = Quaternion.LookRotation(new Vector3(movementInput.x, 0, movementInput.y));
+                Quaternion targetRotation = Quaternion.LookRotation(currentVelocity);
                 Quaternion newRotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
                 playerRigidbody.MoveRotation(newRotation);
             }
@@ -76,11 +113,18 @@ namespace ProjectColombo.Control
         private void OnMovePerformed(InputAction.CallbackContext context)
         {
             movementInput = context.ReadValue<Vector2>();
+
+            // Normalize input for consistent diagonal movement
+            if (movementInput.magnitude > 1f)
+            {
+                movementInput = movementInput.normalized;
+            }
         }
 
         private void OnMoveCanceled(InputAction.CallbackContext context)
         {
             movementInput = Vector2.zero;
+            timeSinceLastInput = 0f; // Start grace period
         }
 
         private void OnAttackPerformed(InputAction.CallbackContext context)
@@ -91,7 +135,9 @@ namespace ProjectColombo.Control
 
         void UpdateAnimator()
         {
-            GetComponent<Animator>().SetFloat("speed", movementInput.magnitude * moveSpeed);
+            // Use current velocity magnitude for animation speed
+            float speed = currentVelocity.magnitude;
+            GetComponent<Animator>().SetFloat("speed", speed);
         }
     }
 }
