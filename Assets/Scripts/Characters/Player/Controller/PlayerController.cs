@@ -15,23 +15,31 @@ namespace ProjectColombo.Control
         [SerializeField] float deceleration = 10f;
         [SerializeField] float graceTime = 0.1f; // Duration of grace period in seconds
 
-        private Health health;
-        private Rigidbody playerRigidbody;
+        Health health;
 
-        private InputSystem_Actions playerInputActions;
+        Rigidbody playerRigidbody;
+        Animator animator;
 
-        private Vector2 movementInput;
-        private Vector3 currentVelocity = Vector3.zero;
-        private float timeSinceLastInput = 0f;
+        InputSystem_Actions playerInputActions;
+
+
+        Vector2 movementInput;
+        Vector3 currentVelocity = Vector3.zero;
+
+        float timeSinceLastInput = 0f;
+
+        bool isAttacking = false;
 
         void Awake()
         {
             health = GetComponent<Health>();
             playerRigidbody = GetComponent<Rigidbody>();
+            animator = GetComponent<Animator>();
+
             playerInputActions = new InputSystem_Actions();
         }
 
-        private void OnEnable()
+        void OnEnable()
         {
             playerInputActions.Player.Enable();
             playerInputActions.Player.Move.performed += OnMovePerformed;
@@ -39,7 +47,7 @@ namespace ProjectColombo.Control
             playerInputActions.Player.Attack.performed += OnAttackPerformed;
         }
 
-        private void OnDisable()
+        void OnDisable()
         {
             playerInputActions.Player.Move.performed -= OnMovePerformed;
             playerInputActions.Player.Move.canceled -= OnMoveCanceled;
@@ -47,7 +55,7 @@ namespace ProjectColombo.Control
             playerInputActions.Player.Disable();
         }
 
-        private void FixedUpdate()
+        void FixedUpdate()
         {
             if (health.GetIsDead()) return;
 
@@ -58,9 +66,26 @@ namespace ProjectColombo.Control
         void Update()
         {
             UpdateAnimator();
+
+            // Check if we are in the attack animation state
+            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+            if (stateInfo.IsTag("Attack"))
+            {
+                isAttacking = true;
+            }
+            else
+            {
+                isAttacking = false;
+            }
+
+            if(Input.GetKey(KeyCode.P))
+            {
+                GetComponent<Health>().TakeDamage(health.GetCurrentHealth());
+            }
         }
 
-        private void Move()
+        void Move()
         {
             // Update time since last input
             if (movementInput.sqrMagnitude < 0.01f)
@@ -69,16 +94,17 @@ namespace ProjectColombo.Control
             }
             else
             {
-                timeSinceLastInput = 0f; // Reset timer if there's input
+                timeSinceLastInput = 0f;
             }
 
             // Calculate desired velocity based on input or maintain current velocity during grace period
             Vector3 desiredVelocity;
-            if (movementInput.sqrMagnitude > 0.01f)
+
+            if (movementInput.sqrMagnitude > 0.01f && !isAttacking)
             {
                 desiredVelocity = new Vector3(movementInput.x, 0, movementInput.y).normalized * moveSpeed;
             }
-            else if (timeSinceLastInput < graceTime)
+            else if (timeSinceLastInput < graceTime && !isAttacking)
             {
                 desiredVelocity = currentVelocity.normalized * moveSpeed;
             }
@@ -89,7 +115,18 @@ namespace ProjectColombo.Control
 
             // Determine acceleration or deceleration
             float speedDifference = desiredVelocity.magnitude - currentVelocity.magnitude;
-            float accelerationRate = (Mathf.Abs(speedDifference) > 0.01f) ? acceleration : deceleration;
+            float accelerationRate;
+
+            if (isAttacking)
+            {
+                // Increase deceleration when attacking to stop quickly
+                accelerationRate = deceleration * 2f;
+            }
+            else
+            {
+                accelerationRate = (Mathf.Abs(speedDifference) > 0.01f) ? acceleration : deceleration;
+            }
+
             float maxSpeedChange = accelerationRate * Time.fixedDeltaTime;
 
             // Smoothly adjust current velocity towards desired velocity
@@ -99,7 +136,7 @@ namespace ProjectColombo.Control
             playerRigidbody.MovePosition(playerRigidbody.position + currentVelocity * Time.fixedDeltaTime);
         }
 
-        private void Rotate()
+        void Rotate()
         {
             // Rotate only if moving
             if (currentVelocity.sqrMagnitude > 0.01f)
@@ -110,7 +147,7 @@ namespace ProjectColombo.Control
             }
         }
 
-        private void OnMovePerformed(InputAction.CallbackContext context)
+        void OnMovePerformed(InputAction.CallbackContext context)
         {
             movementInput = context.ReadValue<Vector2>();
 
@@ -119,25 +156,34 @@ namespace ProjectColombo.Control
             {
                 movementInput = movementInput.normalized;
             }
+
+            // If we are attacking, cancel the attack
+            if (isAttacking)
+            {
+                GetComponent<Fight>().CancelAction();
+            }
         }
 
-        private void OnMoveCanceled(InputAction.CallbackContext context)
+        void OnMoveCanceled(InputAction.CallbackContext context)
         {
             movementInput = Vector2.zero;
             timeSinceLastInput = 0f; // Start grace period
         }
 
-        private void OnAttackPerformed(InputAction.CallbackContext context)
+        void OnAttackPerformed(InputAction.CallbackContext context)
         {
-            // Implement attack logic here
-            GetComponent<Fight>().Attack();
+            if (!isAttacking)
+            {
+                GetComponent<Fight>().Attack();
+            }
         }
 
         void UpdateAnimator()
         {
             // Use current velocity magnitude for animation speed
             float speed = currentVelocity.magnitude;
-            GetComponent<Animator>().SetFloat("speed", speed);
+
+            animator.SetFloat("speed", speed);
         }
     }
 }

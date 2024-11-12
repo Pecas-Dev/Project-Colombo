@@ -33,6 +33,11 @@ namespace ProjectColombo.Core
         {
             return isDead;
         }
+
+        public float GetCurrentHealth()
+        {
+            return health;
+        }
     }
 }
 
