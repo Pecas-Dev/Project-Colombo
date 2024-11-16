@@ -21,6 +21,7 @@ public class EnemyAttributes : MonoBehaviour
     [HideInInspector] public bool isChasing; //public because maybe alert other enemies
 
     //patroling
+    public string pathToFollowName;
     List<GameObject> patrolPath;
     float currentDistanceToPatrolPoint;
     int currentPatrolPoint;
@@ -29,9 +30,17 @@ public class EnemyAttributes : MonoBehaviour
     {
         myAttributes = GetComponent<EntityAttributes>();
         player = GameObject.FindGameObjectWithTag("Player");
-        AddPatrolPath();
-        currentPatrolPoint = 0;
-        currentTarget = patrolPath[currentPatrolPoint];
+        if (pathToFollowName.Length != 0)
+        {
+            AddPatrolPath();
+            currentPatrolPoint = 0;
+            currentTarget = patrolPath[currentPatrolPoint];
+        }
+        else
+        {
+            currentTarget = this.gameObject;
+        }
+
         currentSpeed = myAttributes.walkSpeed;
         currentRotationSpeed = myAttributes.rotationSpeed;
         currentWeapon = GetComponentInChildren<WeaponAttributes>();
@@ -58,40 +67,49 @@ public class EnemyAttributes : MonoBehaviour
         {
             //when not chasing follow the patrolpath
             currentSpeed = myAttributes.walkSpeed;
-            currentDistanceToPatrolPoint = (currentTarget.transform.position - transform.position).magnitude;
 
-            if (currentDistanceToPatrolPoint < distanceToSwitchPatrolPoints)
+            if (pathToFollowName.Length != 0)
             {
-                currentPatrolPoint++;
+                currentDistanceToPatrolPoint = (currentTarget.transform.position - transform.position).magnitude;
 
-                if (currentPatrolPoint >= patrolPath.Count)
+                if (currentDistanceToPatrolPoint < distanceToSwitchPatrolPoints)
                 {
-                    currentPatrolPoint = 0;
+                    currentPatrolPoint = (currentPatrolPoint + 1) % patrolPath.Count;
                 }
-            }
 
-            currentTarget = patrolPath[currentPatrolPoint];
+                currentTarget = patrolPath[currentPatrolPoint];
+            }
+            else
+            {
+                currentTarget = this.gameObject;
+            }
         }
     }
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.blue;
-        for (int i = 0; i < patrolPath.Count; i++)
+        if (patrolPath != null && patrolPath.Count > 0)
         {
-            Vector3 current = patrolPath[i].transform.position;
-            Vector3 next = patrolPath[(i + 1) % patrolPath.Count].transform.position;
-            Gizmos.DrawLine(current, next);
+            Gizmos.color = Color.blue;
+            for (int i = 0; i < patrolPath.Count; i++)
+            {
+                Vector3 current = patrolPath[i].transform.position;
+                Vector3 next = patrolPath[(i + 1) % patrolPath.Count].transform.position;
+                Gizmos.DrawLine(current, next);
+            }
         }
 
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(currentTarget.transform.position, 0.5f);
+        if (currentTarget != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(currentTarget.transform.position, 0.5f);
+        }
     }
 
 
     private void AddPatrolPath()
     {
-        GameObject path = GameObject.Find("Path");
+        GameObject path = GameObject.Find(pathToFollowName);
         patrolPath = new List<GameObject>();
         patrolPath.Clear();
 
