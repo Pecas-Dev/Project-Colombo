@@ -25,5 +25,10 @@ namespace ProjectColombo.Combat
             animator.ResetTrigger("attack");
             animator.SetTrigger("stopAttack");
         }
+
+        void Hit()
+        {
+            Debug.Log("Hit");
+        }
     }
 }
