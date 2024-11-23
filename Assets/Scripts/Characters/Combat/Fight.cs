@@ -5,8 +5,8 @@ namespace ProjectColombo.Combat
 {
     public class Fight : MonoBehaviour, IAction
     {
-        private Animator animator;
-        private ActionSchedueler actionScheduler;
+        Animator animator;
+        ActionSchedueler actionScheduler;
 
         void Awake()
         {
