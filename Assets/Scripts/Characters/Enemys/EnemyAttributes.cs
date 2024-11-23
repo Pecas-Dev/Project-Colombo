@@ -49,9 +49,21 @@ public class EnemyAttributes : MonoBehaviour
     private void Update()
     {
         //check if player is close enough to chase
-        currentDistanceToPlayer = (player.transform.position - transform.position).magnitude;
+        if (player != null)
+        {        
+            currentDistanceToPlayer = (player.transform.position - transform.position).magnitude;
 
-        isChasing = currentDistanceToPlayer < distanceToNoticePlayer;
+            isChasing = currentDistanceToPlayer < distanceToNoticePlayer;
+        }
+        else
+        {
+            if (pathToFollowName.Length != 0)
+            {
+                currentTarget = patrolPath[currentPatrolPoint];
+            }
+
+            isChasing = false;
+        }
 
         if (isChasing)
         {

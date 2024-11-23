@@ -521,6 +521,7 @@ GameObject:
   - component: {fileID: 1932346125058361594}
   - component: {fileID: 6316062857150712844}
   - component: {fileID: 7911755346951532991}
+  - component: {fileID: 8240556490361439263}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -685,8 +686,9 @@ MonoBehaviour:
   health: 10
   walkSpeed: 3
   sprintSpeed: 6
-  jumpForce: 5
   rotationSpeed: 120
+  grounded: 0
+  jumpForce: 5
   myAnimator: {fileID: 0}
 --- !u!114 &6316062857150712844
 MonoBehaviour:
@@ -707,6 +709,7 @@ MonoBehaviour:
   currentSpeed: 0
   currentRotationSpeed: 0
   isChasing: 0
+  pathToFollowName: 
 --- !u!114 &7911755346951532991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -719,6 +722,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a592389c81f1e344da35bf40603dbe11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8240556490361439263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8811222196689150371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 751322c3edbdf694fb4f9b1f5335ed95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridManager: {fileID: 0}
 --- !u!1 &9098049089793029095
 GameObject:
   m_ObjectHideFlags: 0

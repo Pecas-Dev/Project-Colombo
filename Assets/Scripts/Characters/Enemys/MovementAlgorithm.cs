@@ -1,5 +1,5 @@
-using System.Xml.Serialization;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class MovementAlgorithm : MonoBehaviour
 {
@@ -8,36 +8,92 @@ public class MovementAlgorithm : MonoBehaviour
     GameObject currentTarget;
 
     Vector3 movingDirection;
+    Pathfinding pathfinding;
+    List<Node> path;
+    int pathIndex = 0;
 
     private void Start()
     {
         myEnemyAttributes = GetComponent<EnemyAttributes>();
         myRigidbody = GetComponent<Rigidbody>();
         currentTarget = myEnemyAttributes.currentTarget;
+
+        pathfinding = GetComponent<Pathfinding>();
     }
 
     private void Update()
     {
-        currentTarget = myEnemyAttributes.currentTarget;
+        if (myEnemyAttributes.currentTarget != null)
+        {
+            currentTarget = myEnemyAttributes.currentTarget;
+        }
+        else
+        {
+            currentTarget = this.gameObject;
+        }
 
 
-        //to do: implement moving direction calculations with algorithm
-        movingDirection = currentTarget.transform.position - transform.position;
-        movingDirection.y = 0;
 
+        // Check line of sight (LOS)
+        if (HasLineOfSight())
+        {
+            // Direct movement
+            movingDirection = currentTarget.transform.position - transform.position;
+            movingDirection.y = 0;
+            path = null; // Clear the path since we don't need it anymore
+        }
+        else
+        {
+            // Use A* to calculate path
+            if ((path == null || pathIndex >= path.Count) && currentTarget != this.gameObject)
+            {
+                path = pathfinding.FindPath(transform.position, currentTarget.transform.position);
+                pathIndex = 0;
+            }
+
+            // Follow the calculated path
+            if (path != null && pathIndex < path.Count)
+            {
+                movingDirection = path[pathIndex].worldPosition - transform.position;
+                movingDirection.y = 0;
+
+                if (movingDirection.magnitude < myEnemyAttributes.distanceToSwitchPatrolPoints) // Reached current path node
+                {
+                    pathIndex++;
+                }
+            }
+        }
     }
 
     private void FixedUpdate()
     {
-        if (Vector3.Angle(transform.forward, movingDirection) > 1f)
+        if (movingDirection.magnitude > 0.1f) // Prevent jitter when idle
         {
-            Quaternion targetRotation = Quaternion.LookRotation(movingDirection);
-            myRigidbody.MoveRotation(Quaternion.RotateTowards(transform.rotation, targetRotation, myEnemyAttributes.currentRotationSpeed * Time.fixedDeltaTime));
+            if (Vector3.Angle(transform.forward, movingDirection) > 1f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(movingDirection);
+                myRigidbody.MoveRotation(Quaternion.RotateTowards(transform.rotation, targetRotation, myEnemyAttributes.currentRotationSpeed * Time.fixedDeltaTime));
+            }
+
+            if (Vector3.Angle(transform.forward, movingDirection) < 90f && movingDirection.magnitude > myEnemyAttributes.distanceToSwitchPatrolPoints / 2)
+            {
+                myRigidbody.MovePosition(transform.position + transform.forward * myEnemyAttributes.currentSpeed * Time.fixedDeltaTime);
+            }
         }
-        
-        if (Vector3.Angle(transform.forward, movingDirection) < 90f && movingDirection.magnitude > myEnemyAttributes.distanceToSwitchPatrolPoints / 2)
+    }
+
+    private bool HasLineOfSight()
+    {
+        // Cast a ray to detect obstacles between the enemy and the target
+        Vector3 directionToTarget = currentTarget.transform.position - transform.position;
+        RaycastHit hit;
+
+        if (Physics.Raycast(transform.position, directionToTarget.normalized, out hit, directionToTarget.magnitude))
         {
-            myRigidbody.MovePosition(transform.position + transform.forward * myEnemyAttributes.currentSpeed * Time.fixedDeltaTime);
+            // Return false if the ray hits anything other than the target
+            return hit.collider.gameObject == currentTarget;
         }
+
+        return true; // No obstacles, clear line of sight
     }
 }
