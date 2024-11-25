@@ -63,7 +63,7 @@ namespace ProjectColombo.Control
 
             movementInput = gameInput.MovementInput;
 
-            if (gameInput.attackPressed && !isAttacking && !isRolling)
+            if (gameInput.AttackPressed && !isAttacking && !isRolling)
             {
                 GetComponent<Fight>().Attack();
                 gameInput.ResetAttackPressed();
@@ -74,9 +74,10 @@ namespace ProjectColombo.Control
                 GetComponent<Fight>().CancelAction();
             }
 
-            if (Input.GetKeyDown(KeyCode.Space) && timeSinceLastRoll >= rollCooldown && !isRolling)
+            if (gameInput.RollPressed && timeSinceLastRoll >= rollCooldown && !isRolling)
             {
                 Roll();
+                gameInput.ResetRollPressed();
             }
 
             PlayerAnimationChecks();
@@ -124,6 +125,9 @@ namespace ProjectColombo.Control
 
         void OnRollEnd()
         {
+            // Reset currentVelocity
+            currentVelocity = Vector3.zero;
+
             // Revert the player's layer to the original layer
             gameObject.layer = originalLayer;
         }
@@ -134,7 +138,7 @@ namespace ProjectColombo.Control
             timeSinceLastRoll = 0f;
 
             float rollDuration = 1f;
-            float rollDistance = 5f; // Adjust based on desired roll distance
+            float rollDistance = 5f; // Adjust it based on desired roll distance
             float rollSpeed = rollDistance / rollDuration;
 
             // Determine roll direction

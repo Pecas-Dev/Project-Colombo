@@ -6,12 +6,12 @@ namespace ProjectColombo.Control
     public class GameInput : MonoBehaviour
     {
         public Vector2 MovementInput { get; private set; } = Vector2.zero;
-
-        public bool attackPressed { get; private set; } = false;
+        
+        public bool AttackPressed { get; private set; } = false;
+        public bool RollPressed { get; private set; } = false;
 
 
         InputSystem_Actions playerInputActions;
-
 
         void Awake()
         {
@@ -24,6 +24,7 @@ namespace ProjectColombo.Control
             playerInputActions.Player.Move.performed += OnMovePerformed;
             playerInputActions.Player.Move.canceled += OnMoveCanceled;
             playerInputActions.Player.Attack.performed += OnAttackPerformed;
+            playerInputActions.Player.Roll.performed += OnRollPerformed;
         }
 
         void OnDisable()
@@ -31,6 +32,7 @@ namespace ProjectColombo.Control
             playerInputActions.Player.Move.performed -= OnMovePerformed;
             playerInputActions.Player.Move.canceled -= OnMoveCanceled;
             playerInputActions.Player.Attack.performed -= OnAttackPerformed;
+            playerInputActions.Player.Roll.performed -= OnRollPerformed;
             playerInputActions.Player.Disable();
         }
 
@@ -52,14 +54,22 @@ namespace ProjectColombo.Control
 
         void OnAttackPerformed(InputAction.CallbackContext context)
         {
-            attackPressed = true;
+            AttackPressed = true;
         }
 
-
-        // Method to reset AttackPressed after it is handled
         public void ResetAttackPressed()
         {
-            attackPressed = false;
+            AttackPressed = false;
+        }
+
+        void OnRollPerformed(InputAction.CallbackContext context)
+        {
+            RollPressed = true;
+        }
+
+        public void ResetRollPressed()
+        {
+            RollPressed = false;
         }
     }
 }
