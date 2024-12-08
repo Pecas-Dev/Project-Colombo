@@ -810,6 +810,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b84785cdebf3ee448922efb523a638fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 5
+  rotationSpeedPlayer: 720
+  acceleration: 10
+  deceleration: 10
+  graceTime: 0.1
   health: 10
   walkSpeed: 3
   sprintSpeed: 6
@@ -2278,6 +2283,7 @@ GameObject:
   - component: {fileID: 1455868689}
   - component: {fileID: 1455868688}
   - component: {fileID: 1455868687}
+  - component: {fileID: 1455868690}
   m_Layer: 0
   m_Name: Cylinder (2)
   m_TagString: Untagged
@@ -2376,6 +2382,21 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1455868685}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1455868690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1455868685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f742935d7e666b445948740fde7e399a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectedAction: 1
+  actionDuration: 5
+  currentEnemy: {fileID: 0}
 --- !u!1 &1527768957
 GameObject:
   m_ObjectHideFlags: 0

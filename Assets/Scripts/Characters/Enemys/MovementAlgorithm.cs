@@ -69,10 +69,13 @@ public class MovementAlgorithm : MonoBehaviour
     {
         if (movingDirection.magnitude > 0.1f) // Prevent jitter when idle
         {
-            if (Vector3.Angle(transform.forward, movingDirection) > 1f)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(movingDirection);
-                myRigidbody.MoveRotation(Quaternion.RotateTowards(transform.rotation, targetRotation, myEnemyAttributes.currentRotationSpeed * Time.fixedDeltaTime));
+            if (!myEnemyAttributes.onCheckpoint)
+            {            
+                if (Vector3.Angle(transform.forward, movingDirection) > 1f)
+                {
+                    Quaternion targetRotation = Quaternion.LookRotation(movingDirection);
+                    myRigidbody.MoveRotation(Quaternion.RotateTowards(transform.rotation, targetRotation, myEnemyAttributes.currentRotationSpeed * Time.fixedDeltaTime));
+                }
             }
 
             if (Vector3.Angle(transform.forward, movingDirection) < 90f && movingDirection.magnitude > myEnemyAttributes.distanceToSwitchPatrolPoints / 2)

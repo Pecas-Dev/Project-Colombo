@@ -21,6 +21,7 @@ public class EnemyAttributes : MonoBehaviour
     [HideInInspector] public bool isChasing; //public because maybe alert other enemies
 
     //patroling
+    public bool onCheckpoint;
     public string pathToFollowName;
     List<GameObject> patrolPath;
     float currentDistanceToPatrolPoint;
@@ -35,6 +36,7 @@ public class EnemyAttributes : MonoBehaviour
             AddPatrolPath();
             currentPatrolPoint = 0;
             currentTarget = patrolPath[currentPatrolPoint];
+            onCheckpoint = false;
         }
         else
         {
@@ -86,7 +88,24 @@ public class EnemyAttributes : MonoBehaviour
 
                 if (currentDistanceToPatrolPoint < distanceToSwitchPatrolPoints)
                 {
-                    currentPatrolPoint = (currentPatrolPoint + 1) % patrolPath.Count;
+                    if (!onCheckpoint)
+                    {
+                        onCheckpoint = true;
+                    }
+                    else
+                    {
+                        if (patrolPath[currentPatrolPoint].GetComponent<PathCheckpoints>() != null)
+                        {
+                            patrolPath[currentPatrolPoint].GetComponent<PathCheckpoints>().currentEnemy = this.gameObject;
+                            patrolPath[currentPatrolPoint].GetComponent<PathCheckpoints>().TriggerAction();
+                        }
+                        else
+                        {
+                            Debug.Log("no path checkpoint script");
+                            onCheckpoint = false;
+                            NextControllPoint();
+                        }
+                    }
                 }
 
                 currentTarget = patrolPath[currentPatrolPoint];
@@ -129,5 +148,10 @@ public class EnemyAttributes : MonoBehaviour
         {
             patrolPath.Add(child.gameObject);
         }
+    }
+
+    public void NextControllPoint()
+    {
+        currentPatrolPoint = (currentPatrolPoint + 1) % patrolPath.Count;
     }
 }
