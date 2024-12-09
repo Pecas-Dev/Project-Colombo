@@ -1,7 +1,13 @@
 using UnityEngine;
 
+
+
 public class EntityAttributes : MonoBehaviour
 {
+    //this will be the states for all entites
+    public enum EntityState {IDLE, WALK, SPRINT, SNEAK, PATROL, ALERTED, CHASE};
+
+
     [Header("Movement Settings")]
     [Tooltip("Controls the Movement Speed.")]
     public float moveSpeed = 5f;
@@ -21,6 +27,7 @@ public class EntityAttributes : MonoBehaviour
 
 
     [Header("Julien Variables (To Adapt)")]
+    public EntityState currentState;
     public int health;
     public float walkSpeed; // For enemies' patrol speed
     public float sprintSpeed; // For enemies' chase speed
@@ -32,6 +39,7 @@ public class EntityAttributes : MonoBehaviour
     void Start()
     {
         myAnimator = GetComponent<Animator>();
+        currentState = EntityState.IDLE;
     }
 
     void Update()

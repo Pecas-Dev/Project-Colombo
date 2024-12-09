@@ -7,6 +7,7 @@ public class WeaponAttributes : MonoBehaviour
     public float cooldown;
     float currentTimer;
     public float reach;
+    public Collider hitbox;
     [HideInInspector] public bool attack;
     [HideInInspector] public Animator myAnimator;
 
@@ -14,10 +15,13 @@ public class WeaponAttributes : MonoBehaviour
     {
         myAnimator = GetComponent<Animator>();
         currentTimer = 0;
+        hitbox.enabled = attack;
     }
 
     private void Update()
     {
+        hitbox.enabled = attack;
+
         if (attack)
         {
             if (currentTimer == 0)

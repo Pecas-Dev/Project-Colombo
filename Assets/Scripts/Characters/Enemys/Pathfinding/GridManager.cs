@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.Port;
 
 public class Node
 {
@@ -25,6 +26,8 @@ public class GridManager : MonoBehaviour
 {
     public int gridSizeX, gridSizeZ;   // Grid dimensions
     public float nodeSize;            // Size of each node
+    [Range(0f, 1f)] // Creates a slider in the Inspector
+    public float gizmosOpacity = 1f;
     public LayerMask obstacleLayer;   // Layer for obstacles
     private Node[,] grid;             // 2D array of nodes
 
@@ -100,8 +103,11 @@ public class GridManager : MonoBehaviour
             {
                 Node node = grid[x, z];
 
+                Color good = new Color(Color.white.r, Color.white.g, Color.white.b, gizmosOpacity);
+                Color bad = new Color(Color.red.r, Color.red.g, Color.red.b, gizmosOpacity);
+
                 // Draw the node's boundaries
-                Gizmos.color = node.walkable ? Color.white : Color.red;
+                Gizmos.color = node.walkable ? good : bad;
                 Gizmos.DrawCube(node.worldPosition, Vector3.one * (nodeSize * 0.9f));
             }
         }
