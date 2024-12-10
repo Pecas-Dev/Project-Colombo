@@ -11,6 +11,7 @@ public class MovementAlgorithm : MonoBehaviour
     Pathfinding pathfinding;
     List<Node> path;
     int pathIndex = 0;
+    Node lastWalkableNode = null;
 
     private void Start()
     {
@@ -54,13 +55,28 @@ public class MovementAlgorithm : MonoBehaviour
             // Follow the calculated path
             if (path != null && pathIndex < path.Count)
             {
-                movingDirection = path[pathIndex].worldPosition - transform.position;
-                movingDirection.y = 0;
+                Node currentNode = path[pathIndex];
 
-                if (movingDirection.magnitude < myEnemyAttributes.distanceToSwitchPatrolPoints) // Reached current path node
+                if (currentNode.walkable)
                 {
+                    lastWalkableNode = currentNode;
+                    movingDirection = path[pathIndex].worldPosition - transform.position;
+
+                    if (movingDirection.magnitude < myEnemyAttributes.distanceToSwitchPatrolPoints) // Reached current path node
+                    {
+                        pathIndex++;
+                    }
+                }
+                else
+                {
+                    GoToLastWalkable();
+
                     pathIndex++;
                 }
+            }
+            else
+            {
+                GoToLastWalkable();
             }
         }
     }
@@ -98,5 +114,13 @@ public class MovementAlgorithm : MonoBehaviour
         }
 
         return true; // No obstacles, clear line of sight
+    }
+
+    private void GoToLastWalkable()
+    {
+        if (lastWalkableNode != null)
+        {
+            movingDirection = lastWalkableNode.worldPosition - transform.position;
+        }
     }
 }

@@ -30,6 +30,8 @@ public class GridManager : MonoBehaviour
     public float gizmosOpacity = 1f;
     public LayerMask obstacleLayer;   // Layer for obstacles
     private Node[,] grid;             // 2D array of nodes
+    public float myMaxSlopeAngle = 45f;
+
 
     public void CreateGrid()
     {
@@ -41,11 +43,28 @@ public class GridManager : MonoBehaviour
             for (int z = 0; z < gridSizeZ; z++)
             {
                 Vector3 worldPoint = bottomLeft + Vector3.right * (x * nodeSize + nodeSize / 2) + Vector3.forward * (z * nodeSize + nodeSize / 2);
-                bool walkable = !Physics.CheckSphere(worldPoint, nodeSize / 2, obstacleLayer);
-                grid[x, z] = new Node(worldPoint, walkable, x, z);
+
+                // Cast a ray downward to find the terrain height
+                RaycastHit hit;
+                if (Physics.Raycast(worldPoint + Vector3.up * 50, Vector3.down, out hit, 100))
+                {
+                    worldPoint = hit.point; // Adjust node position to the hit point
+                    Vector3 boxSize = new Vector3(nodeSize / 2, nodeSize / 2, nodeSize / 2);
+                    // Determine walkability based on slope angle
+                    bool walkable = Vector3.Angle(hit.normal, Vector3.up) <= myMaxSlopeAngle &&
+                                    !Physics.CheckBox(worldPoint, boxSize, Quaternion.identity, obstacleLayer);
+
+                    grid[x, z] = new Node(worldPoint, walkable, x, z);
+                }
+                else
+                {
+                    // If no hit, mark the node as unwalkable
+                    grid[x, z] = new Node(worldPoint, false, x, z);
+                }
             }
         }
     }
+
 
     public Node GetNodeFromWorldPosition(Vector3 worldPosition)
     {
@@ -74,13 +93,20 @@ public class GridManager : MonoBehaviour
 
                 if (checkX >= 0 && checkX < gridSizeX && checkZ >= 0 && checkZ < gridSizeZ)
                 {
-                    neighbors.Add(grid[checkX, checkZ]);
+                    Node neighbor = grid[checkX, checkZ];
+
+                    // Exclude neighbors with large height differences
+                    if (Mathf.Abs(neighbor.worldPosition.y - node.worldPosition.y) <= nodeSize * 2)
+                    {
+                        neighbors.Add(neighbor);
+                    }
                 }
             }
         }
 
         return neighbors;
     }
+
     private void Update()
     {
         CreateGrid();
@@ -89,14 +115,8 @@ public class GridManager : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        // Ensure grid exists
-        if (grid == null)
-        {
-            Debug.Log("no grid");
-            return;
-        }
+        if (grid == null) return;
 
-        // Loop through all nodes
         for (int x = 0; x < gridSizeX; x++)
         {
             for (int z = 0; z < gridSizeZ; z++)
@@ -106,10 +126,14 @@ public class GridManager : MonoBehaviour
                 Color good = new Color(Color.white.r, Color.white.g, Color.white.b, gizmosOpacity);
                 Color bad = new Color(Color.red.r, Color.red.g, Color.red.b, gizmosOpacity);
 
-                // Draw the node's boundaries
                 Gizmos.color = node.walkable ? good : bad;
                 Gizmos.DrawCube(node.worldPosition, Vector3.one * (nodeSize * 0.9f));
+
+                // Visualize normals
+                Gizmos.color = new Color(Color.blue.r, Color.blue.g, Color.blue.b, gizmosOpacity);
+                Gizmos.DrawRay(node.worldPosition, Vector3.up * 0.5f);
             }
         }
     }
+
 }
