@@ -5,7 +5,7 @@ using UnityEngine;
 public class EntityAttributes : MonoBehaviour
 {
     //this will be the states for all entites
-    public enum EntityState {IDLE, WALK, SPRINT, SNEAK, PATROL, ALERTED, CHASE};
+    public enum EntityState {IDLE, WALK, SPRINT, SNEAK, ATTACK, PATROL, ALERTED, CHASE};
 
 
     [Header("Movement Settings")]

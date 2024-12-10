@@ -152,6 +152,11 @@ Transform:
   - {fileID: 1315976967}
   m_Father: {fileID: 1785605824}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &316536075 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6776689323991224022, guid: aebbf5e19360de24e8637d9c12b0e052, type: 3}
+  m_PrefabInstance: {fileID: 604459685}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &416761118
 GameObject:
   m_ObjectHideFlags: 0
@@ -273,6 +278,14 @@ PrefabInstance:
       value: Nose
       objectReference: {fileID: 0}
     - target: {fileID: 1932346125058361594, guid: 0ecf53e982f1d8a48956649bf105dc45, type: 3}
+      propertyPath: walkSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1932346125058361594, guid: 0ecf53e982f1d8a48956649bf105dc45, type: 3}
+      propertyPath: sprintSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1932346125058361594, guid: 0ecf53e982f1d8a48956649bf105dc45, type: 3}
       propertyPath: rotationSpeed
       value: 200
       objectReference: {fileID: 0}
@@ -382,7 +395,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8811222196689150371, guid: 0ecf53e982f1d8a48956649bf105dc45, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8811222196689150371, guid: 0ecf53e982f1d8a48956649bf105dc45, type: 3}
       propertyPath: m_TagString
@@ -586,7 +599,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6776689323991224022, guid: aebbf5e19360de24e8637d9c12b0e052, type: 3}
+      insertIndex: 5
+      addedObject: {fileID: 853390404}
   m_SourcePrefab: {fileID: 100100000, guid: aebbf5e19360de24e8637d9c12b0e052, type: 3}
 --- !u!1 &651889753
 GameObject:
@@ -1203,6 +1219,19 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1090405288437610688, guid: aebbf5e19360de24e8637d9c12b0e052, type: 3}
   m_PrefabInstance: {fileID: 604459685}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &853390404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 316536075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaec636d7fafb4c43913fc18b99b0123, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myInputs: {fileID: 813061446}
 --- !u!1 &934940588
 GameObject:
   m_ObjectHideFlags: 0
@@ -3474,6 +3503,14 @@ PrefabInstance:
     - target: {fileID: 153283705152157965, guid: 0ecf53e982f1d8a48956649bf105dc45, type: 3}
       propertyPath: m_Name
       value: Nose
+      objectReference: {fileID: 0}
+    - target: {fileID: 1932346125058361594, guid: 0ecf53e982f1d8a48956649bf105dc45, type: 3}
+      propertyPath: walkSpeed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1932346125058361594, guid: 0ecf53e982f1d8a48956649bf105dc45, type: 3}
+      propertyPath: sprintSpeed
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1932346125058361594, guid: 0ecf53e982f1d8a48956649bf105dc45, type: 3}
       propertyPath: rotationSpeed

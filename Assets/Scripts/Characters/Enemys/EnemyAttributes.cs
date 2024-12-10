@@ -269,6 +269,11 @@ public class EnemyAttributes : MonoBehaviour
     {
         timer += Time.deltaTime;
 
+        if (player.GetComponent<EntityAttributes>().currentState == EntityAttributes.EntityState.ATTACK)
+        {
+            SwitchChase();
+        }
+
         if (timer > alertedCheckTime)
         {
             if (enableFOVDetection && !enableSoundDetection)

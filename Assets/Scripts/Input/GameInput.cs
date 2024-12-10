@@ -10,6 +10,8 @@ namespace ProjectColombo.Control
         public bool AttackPressed { get; private set; } = false;
         public bool RollPressed { get; private set; } = false;
 
+        public bool CrouchPressed { get; private set; } = false;
+
 
         InputSystem_Actions playerInputActions;
 
@@ -25,6 +27,8 @@ namespace ProjectColombo.Control
             playerInputActions.Player.Move.canceled += OnMoveCanceled;
             playerInputActions.Player.Attack.performed += OnAttackPerformed;
             playerInputActions.Player.Roll.performed += OnRollPerformed;
+            playerInputActions.Player.Crouch.performed += OnCrouchPerformed;
+            playerInputActions.Player.Crouch.canceled += OnCrouchCanceled;
         }
 
         void OnDisable()
@@ -33,6 +37,8 @@ namespace ProjectColombo.Control
             playerInputActions.Player.Move.canceled -= OnMoveCanceled;
             playerInputActions.Player.Attack.performed -= OnAttackPerformed;
             playerInputActions.Player.Roll.performed -= OnRollPerformed;
+            playerInputActions.Player.Crouch.performed -= OnCrouchPerformed;
+            playerInputActions.Player.Crouch.canceled -= OnCrouchCanceled;
             playerInputActions.Player.Disable();
         }
 
@@ -70,6 +76,21 @@ namespace ProjectColombo.Control
         public void ResetRollPressed()
         {
             RollPressed = false;
+        }
+
+        void OnCrouchPerformed(InputAction.CallbackContext context)
+        {
+            CrouchPressed = true;
+        }
+
+        void OnCrouchCanceled(InputAction.CallbackContext context)
+        {
+            CrouchPressed = false;
+        }
+
+        public void ResetCrouchPressed()
+        {
+            CrouchPressed = false;
         }
     }
 }
