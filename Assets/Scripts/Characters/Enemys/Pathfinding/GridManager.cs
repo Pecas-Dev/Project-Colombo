@@ -31,6 +31,7 @@ public class GridManager : MonoBehaviour
     public LayerMask obstacleLayer;   // Layer for obstacles
     private Node[,] grid;             // 2D array of nodes
     public float myMaxSlopeAngle = 45f;
+    public float height = 50f;
 
 
     public void CreateGrid()
@@ -46,7 +47,7 @@ public class GridManager : MonoBehaviour
 
                 // Cast a ray downward to find the terrain height
                 RaycastHit hit;
-                if (Physics.Raycast(worldPoint + Vector3.up * 50, Vector3.down, out hit, 100))
+                if (Physics.Raycast(worldPoint + Vector3.up * height, Vector3.down, out hit, 100))
                 {
                     worldPoint = hit.point; // Adjust node position to the hit point
                     Vector3 boxSize = new Vector3(nodeSize / 2, nodeSize / 2, nodeSize / 2);

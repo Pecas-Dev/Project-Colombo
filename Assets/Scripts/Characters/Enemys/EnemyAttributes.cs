@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using TMPro;
 
+public enum PatrolMode { LINEAR, CIRCULAR, RANDOM};
+
 public class EnemyAttributes : MonoBehaviour
 {
     [Header("Player Detection")]
@@ -29,6 +31,8 @@ public class EnemyAttributes : MonoBehaviour
 
     //patroling
     [Header("Patroling")]
+    public PatrolMode patrolMode = PatrolMode.CIRCULAR;
+    int directionForLinearPatrol = 1;
     public bool onCheckpoint;
     public string pathToFollowName;
     List<GameObject> patrolPath;
@@ -160,7 +164,29 @@ public class EnemyAttributes : MonoBehaviour
 
     public void NextControllPoint()
     {
-        currentPatrolPoint = (currentPatrolPoint + 1) % patrolPath.Count;
+        switch (patrolMode)
+        {
+            case PatrolMode.LINEAR:
+                if (currentPatrolPoint <= 0)
+                {
+                    directionForLinearPatrol = 1;
+                }
+                else if (currentPatrolPoint >= patrolPath.Count - 1)
+                {
+                    directionForLinearPatrol = -1;
+                }
+
+                currentPatrolPoint += directionForLinearPatrol;
+                break;
+            case PatrolMode.CIRCULAR:
+                currentPatrolPoint = (currentPatrolPoint + 1) % patrolPath.Count;
+                break;
+            case PatrolMode.RANDOM:
+                currentPatrolPoint = Random.Range(0, patrolPath.Count);
+                break;
+        }
+
+        //currentPatrolPoint = (currentPatrolPoint + 1) % patrolPath.Count;
     }
 
     private void SwitchIdle()
