@@ -6,6 +6,7 @@ namespace ProjectColombo.Control
 {
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(EntityAttributes))]
+    [RequireComponent(typeof(PlayerAnimator))]
     public class PlayerController : MonoBehaviour
     {
         [Header("References")]
@@ -13,9 +14,9 @@ namespace ProjectColombo.Control
         [SerializeField] GameInput gameInput;
 
         EntityAttributes entityAttributes;
+        PlayerAnimator playerAnimator;
 
         Rigidbody playerRigidbody;
-        Animator playerAnimator;
         CapsuleCollider capsuleCollider;
 
         Vector2 movementInput;
@@ -28,200 +29,72 @@ namespace ProjectColombo.Control
         bool isAttacking = false;
         bool isRolling = false;
 
-        int originalLayer;
-
         void Awake()
         {
             playerRigidbody = GetComponent<Rigidbody>();
-            playerAnimator = GetComponent<Animator>();
             capsuleCollider = GetComponent<CapsuleCollider>();
-
-            if (entityAttributes == null)
-            {
-                entityAttributes = GetComponent<EntityAttributes>();
-            }
-
-            // Store the original layer
-            originalLayer = gameObject.layer;
+            entityAttributes = GetComponent<EntityAttributes>();
+            playerAnimator = GetComponent<PlayerAnimator>();
         }
 
         void FixedUpdate()
         {
-            Move();
-
             if (!isRolling)
             {
+                Move();
                 Rotate();
+            }
+            else
+            {
+                RollMove();
             }
         }
 
         void Update()
         {
-            UpdateAnimator();
-
+            movementInput = gameInput.MovementInput;
             timeSinceLastRoll += Time.deltaTime;
 
-            movementInput = gameInput.MovementInput;
-
+            // Combat-related input
             if (gameInput.AttackPressed && !isAttacking && !isRolling)
             {
                 GetComponent<Fight>().Attack();
                 gameInput.ResetAttackPressed();
             }
 
-            if (isAttacking && movementInput.sqrMagnitude > 0.01f)
-            {
-                GetComponent<Fight>().CancelAction();
-            }
-
+            // Roll input
             if (gameInput.RollPressed && timeSinceLastRoll >= rollCooldown && !isRolling)
             {
-                Roll();
+                StartRoll();
                 gameInput.ResetRollPressed();
             }
 
-            PlayerAnimationChecks();
-        }
-
-        void PlayerAnimationChecks()
-        {
-            AnimatorStateInfo stateInfo = playerAnimator.GetCurrentAnimatorStateInfo(0);
-
-            if (stateInfo.IsTag("Attack"))
-            {
-                isAttacking = true;
-            }
-            else
-            {
-                isAttacking = false;
-            }
-
-            bool wasRolling = isRolling;
-
-            if (stateInfo.IsTag("Roll"))
-            {
-                isRolling = true;
-            }
-            else
-            {
-                isRolling = false;
-            }
-
-            if (!wasRolling && isRolling)
-            {
-                OnRollStart();
-            }
-            else if (wasRolling && !isRolling)
-            {
-                OnRollEnd();
-            }
-        }
-
-        void OnRollStart()
-        {
-            // Change the player's layer to NoHit
-            gameObject.layer = LayerMask.NameToLayer("NoHit");
-        }
-
-        void OnRollEnd()
-        {
-            // Reset currentVelocity
-            currentVelocity = Vector3.zero;
-
-            // Revert the player's layer to the original layer
-            gameObject.layer = originalLayer;
-        }
-
-        void Roll()
-        {
-            playerAnimator.SetTrigger("roll");
-            timeSinceLastRoll = 0f;
-
-            float rollDuration = 1f;
-            float rollDistance = 5f; // Adjust it based on desired roll distance
-            float rollSpeed = rollDistance / rollDuration;
-
-            // Determine roll direction
-            Vector3 rollDirection;
-
-            if (movementInput.sqrMagnitude > 0.01f)
-            {
-                rollDirection = new Vector3(movementInput.x, 0, movementInput.y).normalized;
-            }
-            else if (currentVelocity.sqrMagnitude > 0.01f)
-            {
-                rollDirection = currentVelocity.normalized;
-            }
-            else
-            {
-                rollDirection = transform.forward;
-            }
-
-            currentVelocity = rollDirection * rollSpeed;
+            playerAnimator.UpdateAnimator(currentVelocity.magnitude, isRolling, movementInput.sqrMagnitude > 0.01f);
         }
 
         void Move()
         {
-            if (isRolling)
+            if (movementInput.sqrMagnitude < 0.01f)
             {
-                // Move the player based on currentVelocity
-                playerRigidbody.MovePosition(playerRigidbody.position + currentVelocity * Time.fixedDeltaTime);
+                timeSinceLastInput += Time.fixedDeltaTime;
             }
             else
             {
-                // Update time since last input
-                if (movementInput.sqrMagnitude < 0.01f)
-                {
-                    timeSinceLastInput += Time.fixedDeltaTime;
-                }
-                else
-                {
-                    timeSinceLastInput = 0f;
-                }
-
-                // Calculate desired velocity based on input or maintain current velocity during grace period
-                Vector3 desiredVelocity;
-
-                if (movementInput.sqrMagnitude > 0.01f && !isAttacking)
-                {
-                    desiredVelocity = new Vector3(movementInput.x, 0, movementInput.y).normalized * entityAttributes.moveSpeed;
-                }
-                else if (timeSinceLastInput < entityAttributes.graceTime && !isAttacking)
-                {
-                    desiredVelocity = currentVelocity.normalized * entityAttributes.moveSpeed;
-                }
-                else
-                {
-                    desiredVelocity = Vector3.zero;
-                }
-
-                // Determine acceleration or deceleration
-                float speedDifference = desiredVelocity.magnitude - currentVelocity.magnitude;
-                float accelerationRate;
-
-                if (isAttacking)
-                {
-                    // Increase deceleration when attacking to stop quickly
-                    accelerationRate = entityAttributes.deceleration * 2f;
-                }
-                else
-                {
-                    accelerationRate = (Mathf.Abs(speedDifference) > 0.01f) ? entityAttributes.acceleration : entityAttributes.deceleration;
-                }
-
-                float maxSpeedChange = accelerationRate * Time.fixedDeltaTime;
-
-                // Smoothly adjust currentVelocity towards desiredVelocity
-                currentVelocity = Vector3.MoveTowards(currentVelocity, desiredVelocity, maxSpeedChange);
-
-                // Move the player
-                playerRigidbody.MovePosition(playerRigidbody.position + currentVelocity * Time.fixedDeltaTime);
+                timeSinceLastInput = 0f;
             }
+
+            Vector3 desiredVelocity = movementInput.sqrMagnitude > 0.01f ? new Vector3(movementInput.x, 0, movementInput.y).normalized * entityAttributes.moveSpeed : (timeSinceLastInput < entityAttributes.graceTime ? currentVelocity.normalized * entityAttributes.moveSpeed : Vector3.zero);
+
+            float speedDifference = desiredVelocity.magnitude - currentVelocity.magnitude;
+            float accelerationRate = Mathf.Abs(speedDifference) > 0.01f ? entityAttributes.acceleration : entityAttributes.deceleration;
+            float maxSpeedChange = accelerationRate * Time.fixedDeltaTime;
+
+            currentVelocity = Vector3.MoveTowards(currentVelocity, desiredVelocity, maxSpeedChange);
+            playerRigidbody.MovePosition(playerRigidbody.position + currentVelocity * Time.fixedDeltaTime);
         }
 
         void Rotate()
         {
-            // Rotate only if moving
             if (currentVelocity.sqrMagnitude > 0.01f)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(currentVelocity);
@@ -230,12 +103,42 @@ namespace ProjectColombo.Control
             }
         }
 
-        void UpdateAnimator()
+        void RollMove()
         {
-            // Use current velocity magnitude for animation speed
-            float speed = currentVelocity.magnitude;
+            if (movementInput.sqrMagnitude > 0.01f)
+            {
+                Vector3 newDirection = new Vector3(movementInput.x, 0, movementInput.y).normalized;
+                currentVelocity = newDirection * currentVelocity.magnitude;
 
-            playerAnimator.SetFloat("speed", speed);
+                Quaternion targetRotation = Quaternion.LookRotation(currentVelocity);
+
+                float rotationSpeed = Mathf.Lerp(0.1f, entityAttributes.rotationSpeedPlayer, Time.fixedDeltaTime);
+
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed);
+            }
+
+            playerRigidbody.MovePosition(playerRigidbody.position + currentVelocity * Time.fixedDeltaTime);
+        }
+
+        void StartRoll()
+        {
+            isRolling = true;
+            playerAnimator.TriggerRoll();
+            timeSinceLastRoll = 0f;
+
+            float rollDuration = 1f;
+            float rollDistance = 5f;
+            float rollSpeed = rollDistance / rollDuration;
+
+            Vector3 rollDirection = movementInput.sqrMagnitude > 0.01f ? new Vector3(movementInput.x, 0, movementInput.y).normalized : currentVelocity.sqrMagnitude > 0.01f ? currentVelocity.normalized : transform.forward;
+
+            currentVelocity = rollDirection * rollSpeed;
+        }
+
+        public void EndRoll()
+        {
+            isRolling = false;
+            currentVelocity = Vector3.zero;
         }
     }
 }

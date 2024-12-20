@@ -26,8 +26,8 @@ public class EntityAttributes : MonoBehaviour
 
 
 
-    [Header("Julien Variables (To Adapt)")]
-    public EntityState currentState;
+    [Header("Julian Variables (To REFACTOR [currentState])")]
+    public EntityState currentState; // THIS SHOULD NOT BE FOR EVERY ENTITY ANYMORE, ONLY FOR THE ENEMIES
     public int health;
     public float walkSpeed; // For enemies' patrol speed
     public float sprintSpeed; // For enemies' chase speed
