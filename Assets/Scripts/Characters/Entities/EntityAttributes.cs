@@ -24,6 +24,12 @@ public class EntityAttributes : MonoBehaviour
     [Tooltip("Controls the Grace Period for maintaining velocity after input stops (Time in seconds).")]
     public float graceTime = 0.1f;
 
+    [Header("Roll Settings")]
+    [Tooltip("Delay after rolling before allowing another roll (Time in seconds).")]
+    public float rollDelay = 0.2f;
+
+
+
 
 
     [Header("Julian Variables (To REFACTOR [currentState])")]

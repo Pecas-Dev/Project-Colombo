@@ -19,16 +19,21 @@ namespace ProjectColombo.Control
         Rigidbody playerRigidbody;
         CapsuleCollider capsuleCollider;
 
+
         Vector2 movementInput;
         Vector3 currentVelocity = Vector3.zero;
-        Vector3 rollDirection = Vector3.zero; // Fixed roll direction
+        Vector3 rollDirection = Vector3.zero;
+
 
         float timeSinceLastInput = 0f;
         float rollCooldown = 1f;
         float timeSinceLastRoll = Mathf.Infinity;
+        float rollEndTime = 0f; 
+
 
         bool isAttacking = false;
         bool isRolling = false;
+        bool canQueueRoll = true; 
 
         void Awake()
         {
@@ -56,21 +61,24 @@ namespace ProjectColombo.Control
             movementInput = gameInput.MovementInput;
             timeSinceLastRoll += Time.deltaTime;
 
-            // Combat-related input
             if (gameInput.AttackPressed && !isAttacking && !isRolling)
             {
                 GetComponent<Fight>().Attack();
                 gameInput.ResetAttackPressed();
             }
 
-            // Roll input
-            if (gameInput.RollPressed && timeSinceLastRoll >= rollCooldown && !isRolling)
+            if (gameInput.RollPressed && CanRoll())
             {
                 StartRoll();
                 gameInput.ResetRollPressed();
             }
 
             playerAnimator.UpdateAnimator(currentVelocity.magnitude, isRolling, movementInput.sqrMagnitude > 0.01f);
+        }
+
+        bool CanRoll()
+        {
+            return timeSinceLastRoll >= rollCooldown && Time.time >= rollEndTime + entityAttributes.rollDelay && !isRolling && canQueueRoll;
         }
 
         void Move()
@@ -86,33 +94,35 @@ namespace ProjectColombo.Control
 
             Vector3 desiredVelocity = movementInput.sqrMagnitude > 0.01f ? new Vector3(movementInput.x, 0, movementInput.y).normalized * entityAttributes.moveSpeed : (timeSinceLastInput < entityAttributes.graceTime ? currentVelocity.normalized * entityAttributes.moveSpeed : Vector3.zero);
 
-            float speedDifference = desiredVelocity.magnitude - currentVelocity.magnitude;
-            float accelerationRate = Mathf.Abs(speedDifference) > 0.01f ? entityAttributes.acceleration : entityAttributes.deceleration;
-            float maxSpeedChange = accelerationRate * Time.fixedDeltaTime;
+            float accelerationRate = entityAttributes.acceleration * (movementInput.sqrMagnitude > 0.01f ? 1.5f : 1.0f);
+            float decelerationRate = entityAttributes.deceleration * 1.8f;
 
+            float maxSpeedChange = (movementInput.sqrMagnitude > 0.01f ? accelerationRate : decelerationRate) * Time.fixedDeltaTime;
             currentVelocity = Vector3.MoveTowards(currentVelocity, desiredVelocity, maxSpeedChange);
+
             playerRigidbody.MovePosition(playerRigidbody.position + currentVelocity * Time.fixedDeltaTime);
         }
 
         void Rotate()
         {
-            if (currentVelocity.sqrMagnitude > 0.01f)
+            if (movementInput.sqrMagnitude > 0.01f)
             {
-                Quaternion targetRotation = Quaternion.LookRotation(currentVelocity);
-                Quaternion newRotation = Quaternion.RotateTowards(transform.rotation, targetRotation, entityAttributes.rotationSpeedPlayer * Time.fixedDeltaTime);
-                playerRigidbody.MoveRotation(newRotation);
+                Vector3 targetDirection = new Vector3(movementInput.x, 0, movementInput.y).normalized;
+                Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, entityAttributes.rotationSpeedPlayer * Time.fixedDeltaTime * 2f);
             }
         }
 
         void RollMove()
         {
-            // Use the locked roll direction to move the player
             playerRigidbody.MovePosition(playerRigidbody.position + rollDirection * Time.fixedDeltaTime);
         }
 
         void StartRoll()
         {
             isRolling = true;
+            canQueueRoll = false;
             playerAnimator.TriggerRoll();
             timeSinceLastRoll = 0f;
 
@@ -120,7 +130,6 @@ namespace ProjectColombo.Control
             float rollDistance = 5f;
             float rollSpeed = rollDistance / rollDuration;
 
-            // Lock the roll direction at the start
             if (movementInput.sqrMagnitude > 0.01f)
             {
                 rollDirection = new Vector3(movementInput.x, 0, movementInput.y).normalized * rollSpeed;
@@ -133,13 +142,16 @@ namespace ProjectColombo.Control
             {
                 rollDirection = transform.forward * rollSpeed;
             }
+
+            rollEndTime = Time.time + rollDuration;
         }
 
         public void EndRoll()
         {
             isRolling = false;
             currentVelocity = Vector3.zero;
-            rollDirection = Vector3.zero; // Clear roll direction after roll ends
+            rollDirection = Vector3.zero;
+            canQueueRoll = true;
         }
     }
 }
