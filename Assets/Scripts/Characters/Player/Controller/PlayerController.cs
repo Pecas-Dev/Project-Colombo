@@ -21,6 +21,7 @@ namespace ProjectColombo.Control
 
         Vector2 movementInput;
         Vector3 currentVelocity = Vector3.zero;
+        Vector3 rollDirection = Vector3.zero; // Fixed roll direction
 
         float timeSinceLastInput = 0f;
         float rollCooldown = 1f;
@@ -105,19 +106,8 @@ namespace ProjectColombo.Control
 
         void RollMove()
         {
-            if (movementInput.sqrMagnitude > 0.01f)
-            {
-                Vector3 newDirection = new Vector3(movementInput.x, 0, movementInput.y).normalized;
-                currentVelocity = newDirection * currentVelocity.magnitude;
-
-                Quaternion targetRotation = Quaternion.LookRotation(currentVelocity);
-
-                float rotationSpeed = Mathf.Lerp(0.1f, entityAttributes.rotationSpeedPlayer, Time.fixedDeltaTime);
-
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed);
-            }
-
-            playerRigidbody.MovePosition(playerRigidbody.position + currentVelocity * Time.fixedDeltaTime);
+            // Use the locked roll direction to move the player
+            playerRigidbody.MovePosition(playerRigidbody.position + rollDirection * Time.fixedDeltaTime);
         }
 
         void StartRoll()
@@ -130,15 +120,26 @@ namespace ProjectColombo.Control
             float rollDistance = 5f;
             float rollSpeed = rollDistance / rollDuration;
 
-            Vector3 rollDirection = movementInput.sqrMagnitude > 0.01f ? new Vector3(movementInput.x, 0, movementInput.y).normalized : currentVelocity.sqrMagnitude > 0.01f ? currentVelocity.normalized : transform.forward;
-
-            currentVelocity = rollDirection * rollSpeed;
+            // Lock the roll direction at the start
+            if (movementInput.sqrMagnitude > 0.01f)
+            {
+                rollDirection = new Vector3(movementInput.x, 0, movementInput.y).normalized * rollSpeed;
+            }
+            else if (currentVelocity.sqrMagnitude > 0.01f)
+            {
+                rollDirection = currentVelocity.normalized * rollSpeed;
+            }
+            else
+            {
+                rollDirection = transform.forward * rollSpeed;
+            }
         }
 
         public void EndRoll()
         {
             isRolling = false;
             currentVelocity = Vector3.zero;
+            rollDirection = Vector3.zero; // Clear roll direction after roll ends
         }
     }
 }
