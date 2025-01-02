@@ -39,6 +39,11 @@ public class EnemyAttributes : MonoBehaviour
     float currentDistanceToPatrolPoint;
     int currentPatrolPoint;
 
+    //circling
+    [Header("CirclingPlayer")]
+    public bool enableCircling;
+    public float distanceCircling;
+
     //field of view detection
     [Header("Field of View Detection")]
     public bool enableFOVDetection;
@@ -94,6 +99,12 @@ public class EnemyAttributes : MonoBehaviour
                 break;
             case EntityAttributes.EntityState.CHASE:
                 UpdateChase();
+                break;
+            case EntityAttributes.EntityState.CIRCLE:
+                UpdateCircle();
+                break;
+            case EntityAttributes.EntityState.ATTACK:
+                UpdateAttack();
                 break;
             default:
                 UpdateIdle();
@@ -189,7 +200,7 @@ public class EnemyAttributes : MonoBehaviour
         //currentPatrolPoint = (currentPatrolPoint + 1) % patrolPath.Count;
     }
 
-    private void SwitchIdle()
+    public void SwitchIdle()
     {
         myAttributes.currentState = EntityAttributes.EntityState.IDLE;
         currentTarget = this.gameObject;
@@ -223,7 +234,7 @@ public class EnemyAttributes : MonoBehaviour
         }
     }
 
-    private void SwitchPatrol()
+    public void SwitchPatrol()
     {
         myAttributes.currentState = EntityAttributes.EntityState.PATROL;
         currentTarget = patrolPath[currentPatrolPoint];
@@ -283,7 +294,7 @@ public class EnemyAttributes : MonoBehaviour
         }
     }
 
-    private void SwitchAlerted()
+    public void SwitchAlerted()
     {
         myAttributes.currentState = EntityAttributes.EntityState.ALERTED;
         currentTarget = player;
@@ -320,7 +331,7 @@ public class EnemyAttributes : MonoBehaviour
         }
     }
 
-    private void SwitchChase()
+    public void SwitchChase()
     {
         myAttributes.currentState = EntityAttributes.EntityState.CHASE;
         currentTarget = player;
@@ -339,13 +350,62 @@ public class EnemyAttributes : MonoBehaviour
             SwitchAlerted();
         }
 
-        currentSpeed = myAttributes.sprintSpeed;
-        currentTarget = player;
+        if (currentDistanceToPlayer < currentWeapon.reach)
+        {
+            SwitchAttack();
+        }
+    }
 
-        if (currentDistanceToPlayer < currentWeapon.reach && !currentWeapon.attack)
+    public void SwitchCircle() //circle will be invoked from a group behaviour script to make keeping track of amount of attackers easier
+    {
+        myAttributes.currentState = EntityAttributes.EntityState.CIRCLE;
+        currentTarget = player;
+        currentSpeed = myAttributes.walkSpeed;
+    }
+
+    private void UpdateCircle()
+    {
+        if (player == null)
+        {
+            SwitchIdle();
+        }
+
+        if (currentDistanceToPlayer < distanceCircling)
+        {
+            //currentTarget = this.gameObject;
+            currentSpeed = -myAttributes.walkSpeed;
+        }
+        else
+        {
+            //currentTarget = player;
+            currentSpeed = myAttributes.walkSpeed;
+        }
+
+        //switching out of circling the player also from other script to make it easier
+    }
+
+    public void SwitchAttack()
+    {
+        myAttributes.currentState = EntityAttributes.EntityState.ATTACK;
+        currentTarget = player;
+        currentSpeed = myAttributes.walkSpeed;
+    }
+
+    private void UpdateAttack()
+    {
+        if (!currentWeapon.attack)
         {
             currentWeapon.attack = true;
         }
+
+        if (player == null)
+        {
+            SwitchIdle();
+        }
+        //else if (currentDistanceToPlayer > currentWeapon.reach)
+        //{
+        //    SwitchChase();
+        //}
     }
 
     private bool FieldOfViewCheck()

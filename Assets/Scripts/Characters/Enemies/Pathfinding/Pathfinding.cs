@@ -6,6 +6,14 @@ public class Pathfinding : MonoBehaviour
 {
     public GridManager gridManager;
 
+    private void Start()
+    {
+        if (gridManager == null)
+        {
+            gridManager = GameObject.Find("GridManager").GetComponent<GridManager>();
+        }
+    }
+
     public List<Node> FindPath(Vector3 startPos, Vector3 targetPos)
     {
         Node startNode = gridManager.GetNodeFromWorldPosition(startPos);

@@ -24,12 +24,13 @@ public class Node
 [ExecuteInEditMode]
 public class GridManager : MonoBehaviour
 {
-    public int gridSizeX, gridSizeZ;   // Grid dimensions
-    public float nodeSize;            // Size of each node
-    [Range(0f, 1f)] // Creates a slider in the Inspector
+    public int gridSizeX, gridSizeZ;    // Grid dimensions
+    public float nodeSize;              // Size of each node
+    [Range(0f, 1f)]                     // Creates a slider in the Inspector
     public float gizmosOpacity = 1f;
-    public LayerMask obstacleLayer;   // Layer for obstacles
-    private Node[,] grid;             // 2D array of nodes
+    public LayerMask obstacleLayer;     // Layer for obstacles
+    public LayerMask floorLayer;        // Layers to check
+    private Node[,] grid;               // 2D array of nodes
     public float myMaxSlopeAngle = 45f;
     public float height = 50f;
 
@@ -47,10 +48,11 @@ public class GridManager : MonoBehaviour
 
                 // Cast a ray downward to find the terrain height
                 RaycastHit hit;
-                if (Physics.Raycast(worldPoint + Vector3.up * height, Vector3.down, out hit, 100))
+                if (Physics.Raycast(worldPoint + Vector3.up * height, Vector3.down, out hit, 100, floorLayer))
                 {
                     worldPoint = hit.point; // Adjust node position to the hit point
                     Vector3 boxSize = new Vector3(nodeSize / 2, nodeSize / 2, nodeSize / 2);
+
                     // Determine walkability based on slope angle
                     bool walkable = Vector3.Angle(hit.normal, Vector3.up) <= myMaxSlopeAngle &&
                                     !Physics.CheckBox(worldPoint, boxSize, Quaternion.identity, obstacleLayer);

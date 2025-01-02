@@ -5,7 +5,7 @@ using UnityEngine;
 public class EntityAttributes : MonoBehaviour
 {
     //this will be the states for all entites
-    public enum EntityState {IDLE, WALK, SPRINT, SNEAK, ATTACK, PATROL, ALERTED, CHASE};
+    public enum EntityState {IDLE, WALK, SPRINT, SNEAK, ATTACK, PATROL, ALERTED, CHASE, CIRCLE};
 
 
     [Header("Movement Settings")]
@@ -52,7 +52,7 @@ public class EntityAttributes : MonoBehaviour
     {
         if (health <= 0) // Here can be stuff that is universal for all entities
         {
-            Destroy(this.gameObject);
+            //Destroy(this.gameObject);
         }
     }
 
