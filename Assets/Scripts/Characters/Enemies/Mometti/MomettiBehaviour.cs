@@ -16,6 +16,7 @@ public class MomettiBehaviour : MonoBehaviour
 
     private void Update()
     {
+        SortListWithDistanceToPlayer();
         amountCurrentlyAttacking = 0;
 
         foreach (GameObject mometti in myGroup)
@@ -53,12 +54,27 @@ public class MomettiBehaviour : MonoBehaviour
 
         if (amountCurrentlyAttacking < amountAttackersAtTheSameTime && amountCurrentlyAttacking < myGroup.Count && everyoneAlerted)
         {
+
             for (int i = 0; i < myGroup.Count; i++)
             {
                 if (myGroup[i].GetComponent<EntityAttributes>().currentState != EntityAttributes.EntityState.ATTACK)
                 {
                     myGroup[i].GetComponent<EnemyAttributes>().SwitchAttack();
                     break;
+                }
+            }
+        }
+    }
+
+    private void SortListWithDistanceToPlayer()
+    {
+        for (int i = 1; i < myGroup.Count; i++)
+        {
+            for (int j = 0; j < i; j++)
+            {
+                if (myGroup[i].GetComponent<EnemyAttributes>().currentDistanceToPlayer < myGroup[j].GetComponent<EnemyAttributes>().currentDistanceToPlayer)
+                {
+                    (myGroup[j], myGroup[i]) = (myGroup[i], myGroup[j]);
                 }
             }
         }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Xml.XPath;
 
 public class EnemySpawnPoint : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class EnemySpawnPoint : MonoBehaviour
     public int amountOfEnemies;
     //[HideInInspector]
     public List<GameObject> spawnGroup;
+    public string pathName;
 
     private void Start()
     {
@@ -17,10 +19,15 @@ public class EnemySpawnPoint : MonoBehaviour
             return;
         }
 
+        float spaceX = transform.position.x - amountOfEnemies / 2;
+
         for (int i = 0; i < amountOfEnemies; i++)
         {
-            GameObject newEnemy = Instantiate(enemyType, transform.position, transform.rotation);
+            Vector3 spawnPosition = new Vector3(spaceX + i, transform.position.y, transform.position.z);
+            GameObject newEnemy = Instantiate(enemyType, spawnPosition, transform.rotation);
             spawnGroup.Add(newEnemy);
+            newEnemy.GetComponent<EnemyAttributes>().pathToFollowName = pathName;
+            newEnemy.GetComponent<EnemyAttributes>().patrolMode = PatrolMode.RANDOM;
         }
     }
 

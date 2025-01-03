@@ -41,7 +41,7 @@ public class WeaponAttributes : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag is "Player" or "Enemy")
+        if (other.gameObject.tag is "Player" or "Enemy" && other.gameObject.tag != GetComponentInParent<EntityAttributes>().gameObject.tag)
         {
             Vector3 attackDirection = other.transform.position - transform.parent.position; //get direction from user to target
             attackDirection.y = .5f; //could be increased to make the hit entity jump a bit

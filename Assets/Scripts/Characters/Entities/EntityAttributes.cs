@@ -34,9 +34,10 @@ public class EntityAttributes : MonoBehaviour
 
     [Header("Julian Variables (To REFACTOR [currentState])")]
     public EntityState currentState; // THIS SHOULD NOT BE FOR EVERY ENTITY ANYMORE, ONLY FOR THE ENEMIES
-    public int health;
-    public float walkSpeed; // For enemies' patrol speed
-    public float sprintSpeed; // For enemies' chase speed
+    public int maxHealth;
+    [HideInInspector] public int health;
+    public float walkSpeed; 
+    public float sprintSpeed; 
     public float rotationSpeed;
     [HideInInspector] public bool grounded;
     public float jumpForce;
@@ -46,6 +47,7 @@ public class EntityAttributes : MonoBehaviour
     {
         myAnimator = GetComponent<Animator>();
         currentState = EntityState.IDLE;
+        health = maxHealth;
     }
 
     void Update()

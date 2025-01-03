@@ -26,7 +26,7 @@ public class EnemyAttributes : MonoBehaviour
     [Header("Alerted")]
     public float alertedCheckTime; //delay after noticed player once to check again
     float timer;
-    float currentDistanceToPlayer;
+    [HideInInspector] public float currentDistanceToPlayer;
     [HideInInspector] public bool isChasing; //public because maybe alert other enemies
 
     //patroling
@@ -57,10 +57,14 @@ public class EnemyAttributes : MonoBehaviour
     public bool enableSoundDetection;
     public float rangeSD;
 
+    //animation
+    Animator myAnimator;
+
     private void Start()
     {
         myAttributes = GetComponent<EntityAttributes>();
         onCheckpoint = false;
+        myAnimator = GetComponent<Animator>();
 
         player = GameObject.FindGameObjectWithTag("Player");
         if (player == null)
@@ -88,6 +92,8 @@ public class EnemyAttributes : MonoBehaviour
     private void Update()
     {
         currentDistanceToPlayer = (player.transform.position - transform.position).magnitude;
+        myAnimator.SetFloat("Speed", currentSpeed);
+        //Debug.Log((transform.forward * currentSpeed).magnitude);
 
         switch (myAttributes.currentState)
         {
@@ -328,6 +334,8 @@ public class EnemyAttributes : MonoBehaviour
             {
                 SwitchIdle();
             }
+
+            timer = 0;
         }
     }
 
@@ -393,8 +401,9 @@ public class EnemyAttributes : MonoBehaviour
 
     private void UpdateAttack()
     {
-        if (!currentWeapon.attack)
+        if (!currentWeapon.attack && currentDistanceToPlayer < currentWeapon.reach)
         {
+            myAnimator.SetTrigger("Attack");
             currentWeapon.attack = true;
         }
 
@@ -402,10 +411,10 @@ public class EnemyAttributes : MonoBehaviour
         {
             SwitchIdle();
         }
-        //else if (currentDistanceToPlayer > currentWeapon.reach)
-        //{
-        //    SwitchChase();
-        //}
+        else if (currentDistanceToPlayer > distanceToNoticePlayer)
+        {
+            SwitchChase();
+        }
     }
 
     private bool FieldOfViewCheck()
