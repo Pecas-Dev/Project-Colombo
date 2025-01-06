@@ -1,6 +1,7 @@
-using UnityEngine;
 using ProjectColombo.Combat;
-using ProjectColombo.Core;
+
+using UnityEngine;
+
 
 namespace ProjectColombo.Control
 {
@@ -153,5 +154,11 @@ namespace ProjectColombo.Control
             rollDirection = Vector3.zero;
             canQueueRoll = true;
         }
+
+        public Vector3 GetFacingDirection()
+        {
+            return transform.forward;
+        }
+
     }
 }

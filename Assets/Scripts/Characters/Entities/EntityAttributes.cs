@@ -1,7 +1,6 @@
 using UnityEngine;
 
 
-
 public class EntityAttributes : MonoBehaviour
 {
     //this will be the states for all entites

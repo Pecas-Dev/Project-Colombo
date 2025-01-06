@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 namespace ProjectColombo.Core
 {
     public class FollowCamera : MonoBehaviour
