@@ -95,7 +95,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameInput: {fileID: 0}
+  playerController: {fileID: 0}
   isTargetingActive: 0
+  currentTarget: {fileID: 0}
   targets: []
   targetDirection: {x: 0, y: 1}
   lineLength: 10
@@ -112,11 +114,11 @@ GameObject:
   - component: {fileID: 7964873986797489753}
   - component: {fileID: 7709587265030632471}
   - component: {fileID: 1185015071758430780}
+  - component: {fileID: 2049127193781453334}
   - component: {fileID: 6988365690995548053}
   - component: {fileID: 5479666140366280027}
   - component: {fileID: 7783411606347366640}
   - component: {fileID: 2122974844369718227}
-  - component: {fileID: 3794942055656454804}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -258,6 +260,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2049127193781453334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6776689323991224022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ee2a3129cbb24d498d36f42b50b2473, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <GameInput>k__BackingField: {fileID: 0}
 --- !u!114 &6988365690995548053
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -320,18 +335,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 25a94bf81609862488bc050b7f052ede, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &3794942055656454804
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6776689323991224022}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdbd70d33f89eac459bca7d1a1176592, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &127127829817156231

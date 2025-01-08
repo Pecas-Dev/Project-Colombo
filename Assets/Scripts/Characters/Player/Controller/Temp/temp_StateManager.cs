@@ -1,6 +1,7 @@
-using ProjectColombo.Control;
+using ProjectColombo.Input;
+
 using UnityEngine;
-using UnityEngine.InputSystem;
+
 
 public class temp_StateManager : MonoBehaviour
 {

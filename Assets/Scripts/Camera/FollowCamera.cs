@@ -1,19 +1,17 @@
 using UnityEngine;
 
 
-namespace ProjectColombo.Core
+public class FollowCamera : MonoBehaviour
 {
-    public class FollowCamera : MonoBehaviour
+    [SerializeField] Transform target;
+
+
+    void LateUpdate()
     {
-        [SerializeField] Transform target;
-
-
-        void LateUpdate()
+        if (target != null)
         {
-            if (target != null)
-            {
-                transform.position = target.position;
-            }        
+            transform.position = target.position;
         }
     }
 }
+

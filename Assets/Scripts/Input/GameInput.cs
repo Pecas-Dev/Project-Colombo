@@ -1,11 +1,15 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 
-namespace ProjectColombo.Control
+namespace ProjectColombo.Input
 {
     public class GameInput : MonoBehaviour
     {
+        public event Action TargetPressedEvent;
+
+
         public Vector2 MovementInput { get; private set; } = Vector2.zero;
         public Vector2 TargetPointInput { get; private set; } = Vector2.zero;
 
@@ -134,7 +138,10 @@ namespace ProjectColombo.Control
 
         void OnTargetPerformed(InputAction.CallbackContext context)
         {
+            if (!context.performed) return;
+
             TargetPressed = true;
+            TargetPressedEvent?.Invoke(); 
         }
 
         public void ResetTargetPressed()

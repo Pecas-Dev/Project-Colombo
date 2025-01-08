@@ -1,4 +1,5 @@
 using ProjectColombo.Combat;
+using ProjectColombo.Input;
 
 using UnityEngine;
 
@@ -26,7 +27,6 @@ namespace ProjectColombo.Control
         Vector3 rollDirection = Vector3.zero;
 
 
-        float timeSinceLastInput = 0f;
         float rollCooldown = 1f;
         float timeSinceLastRoll = Mathf.Infinity;
         float rollEndTime = 0f; 
@@ -46,15 +46,15 @@ namespace ProjectColombo.Control
 
         void FixedUpdate()
         {
-            if (!isRolling)
+            /*if (!isRolling)
             {
                 Move();
                 Rotate();
             }
             else
-            {
+            {*/
                 RollMove();
-            }
+            //}
         }
 
         void Update()
@@ -74,7 +74,7 @@ namespace ProjectColombo.Control
                 gameInput.ResetRollPressed();
             }
 
-            playerAnimator.UpdateAnimator(currentVelocity.magnitude, isRolling, movementInput.sqrMagnitude > 0.01f);
+            //playerAnimator.UpdateAnimator(currentVelocity.magnitude, isRolling, movementInput.sqrMagnitude > 0.01f);
         }
 
         bool CanRoll()
@@ -82,16 +82,16 @@ namespace ProjectColombo.Control
             return timeSinceLastRoll >= rollCooldown && Time.time >= rollEndTime + entityAttributes.rollDelay && !isRolling && canQueueRoll;
         }
 
-        void Move()
+        /*void Move()
         {
-            if (movementInput.sqrMagnitude < 0.01f)
-            {
-                timeSinceLastInput += Time.fixedDeltaTime;
-            }
-            else
-            {
-                timeSinceLastInput = 0f;
-            }
+            //if (movementInput.sqrMagnitude < 0.01f)
+            //{
+            //    timeSinceLastInput += Time.fixedDeltaTime;
+            //}
+            //else
+            //{
+            //    timeSinceLastInput = 0f;
+            //}
 
             Vector3 desiredVelocity = movementInput.sqrMagnitude > 0.01f ? new Vector3(movementInput.x, 0, movementInput.y).normalized * entityAttributes.moveSpeed : (timeSinceLastInput < entityAttributes.graceTime ? currentVelocity.normalized * entityAttributes.moveSpeed : Vector3.zero);
 
@@ -113,7 +113,7 @@ namespace ProjectColombo.Control
 
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, entityAttributes.rotationSpeedPlayer * Time.fixedDeltaTime * 2f);
             }
-        }
+        }*/
 
         void RollMove()
         {

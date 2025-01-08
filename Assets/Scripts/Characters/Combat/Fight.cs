@@ -1,24 +1,20 @@
-using ProjectColombo.Core;
-
 using UnityEngine;
 
 
 namespace ProjectColombo.Combat
 {
-    public class Fight : MonoBehaviour, IAction
+    public class Fight : MonoBehaviour
     {
         Animator animator;
-        ActionSchedueler actionScheduler;
+
 
         void Awake()
         {
             animator = GetComponent<Animator>();
-            actionScheduler = GetComponent<ActionSchedueler>();
         }
 
         public void Attack()
         {
-            actionScheduler.StartAction(this);
             animator.SetTrigger("attack");
         }
 
