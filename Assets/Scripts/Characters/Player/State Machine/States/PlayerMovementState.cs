@@ -1,12 +1,10 @@
 using UnityEngine;
 
-
 namespace ProjectColombo.StateMachine.Player
 {
     public class PlayerMovementState : PlayerBaseState
     {
-        private Vector2 movementInput;
-        private Vector3 currentVelocity = Vector3.zero;
+        Vector2 movementInput;
 
         public PlayerMovementState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
         {
@@ -19,9 +17,23 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Tick(float deltaTime)
         {
+            if (m_playerStateMachine.GameInput.RollPressed)
+            {
+                m_playerStateMachine.GameInput.ResetRollPressed();
+                m_playerStateMachine.SwitchState(new PlayerRollState(m_playerStateMachine));
+
+                return;
+            }
+
             HandleMovement(deltaTime);
             HandleRotation(deltaTime);
             UpdateAnimator();
+
+            if (movementInput.sqrMagnitude > 0.01f)
+            {
+                StopMovementAndRotation();
+                return;
+            }
         }
 
         public override void Exit()
@@ -29,49 +41,45 @@ namespace ProjectColombo.StateMachine.Player
             Debug.Log("Exited Movement State");
         }
 
-        private void HandleMovement(float deltaTime)
+        void HandleMovement(float deltaTime)
         {
             movementInput = m_playerStateMachine.GameInput.MovementInput;
 
-            Vector3 desiredVelocity = Vector3.zero;
-
             if (movementInput.sqrMagnitude > 0.01f)
             {
-                desiredVelocity = new Vector3(movementInput.x, 0, movementInput.y).normalized * m_playerStateMachine.EntityAttributes.moveSpeed;
+                Vector3 desiredVelocity = new Vector3(movementInput.x, 0, movementInput.y) * m_playerStateMachine.EntityAttributes.moveSpeed * movementInput.magnitude;
+
+                m_playerStateMachine.PlayerRigidbody.MovePosition(m_playerStateMachine.PlayerRigidbody.position + desiredVelocity * deltaTime);
             }
-
-            float accelerationRate = m_playerStateMachine.EntityAttributes.acceleration * (movementInput.sqrMagnitude > 0.01f ? 1.5f : 1.0f);
-            float decelerationRate = m_playerStateMachine.EntityAttributes.deceleration * 1.8f;
-
-            float maxSpeedChange = (movementInput.sqrMagnitude > 0.01f ? accelerationRate : decelerationRate) * deltaTime;
-            currentVelocity = Vector3.MoveTowards(currentVelocity, desiredVelocity, maxSpeedChange);
-
-            m_playerStateMachine.PlayerRigidbody.MovePosition(m_playerStateMachine.PlayerRigidbody.position + currentVelocity * deltaTime);
+            else
+            {
+                m_playerStateMachine.PlayerRigidbody.linearVelocity = Vector3.zero;
+            }
         }
 
-        private void HandleRotation(float deltaTime)
+        void HandleRotation(float deltaTime)
         {
             if (movementInput.sqrMagnitude > 0.01f)
             {
                 Vector3 targetDirection = new Vector3(movementInput.x, 0, movementInput.y).normalized;
                 Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
 
-                m_playerStateMachine.PlayerRigidbody.rotation = Quaternion.RotateTowards(m_playerStateMachine.PlayerRigidbody.rotation, targetRotation, m_playerStateMachine.EntityAttributes.rotationSpeedPlayer * deltaTime * 2f);
+                m_playerStateMachine.PlayerRigidbody.rotation = Quaternion.RotateTowards(m_playerStateMachine.PlayerRigidbody.rotation, targetRotation, m_playerStateMachine.EntityAttributes.rotationSpeedPlayer * deltaTime);
             }
         }
 
-        private void UpdateAnimator()
+        void StopMovementAndRotation()
         {
-            float speed = currentVelocity.magnitude;
-            bool hasMovementInput = movementInput.sqrMagnitude > 0.01f;
+            m_playerStateMachine.PlayerRigidbody.linearVelocity = Vector3.zero;
+            m_playerStateMachine.PlayerRigidbody.angularVelocity = Vector3.zero;
+        }
 
-            if (!hasMovementInput && speed < 0.01f)
-            {
-                speed = 0; 
-            }
+        void UpdateAnimator()
+        {
+            float speed = movementInput.magnitude * m_playerStateMachine.EntityAttributes.moveSpeed;
+            bool hasMovementInput = movementInput.sqrMagnitude > 0.01f;
 
             m_playerStateMachine.PlayerAnimator.UpdateAnimator(speed, false, hasMovementInput);
         }
     }
 }
-

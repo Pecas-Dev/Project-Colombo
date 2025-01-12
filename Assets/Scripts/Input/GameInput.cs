@@ -7,9 +7,6 @@ namespace ProjectColombo.Input
 {
     public class GameInput : MonoBehaviour
     {
-        public event Action TargetPressedEvent;
-
-
         public Vector2 MovementInput { get; private set; } = Vector2.zero;
         public Vector2 TargetPointInput { get; private set; } = Vector2.zero;
 
@@ -21,6 +18,9 @@ namespace ProjectColombo.Input
         //REMOVE THIS AND REFERENCES ASSOCIATED TO IT
         public bool CrouchPressed { get; private set; } = false;
         //-------------------------------------------------------------
+
+
+        bool inputsDisabled = false;
 
 
         InputSystem_Actions playerInputActions;
@@ -75,11 +75,48 @@ namespace ProjectColombo.Input
             //-------------------------------------------------------------
         }
 
+        public void DisableInputs()
+        {
+            inputsDisabled = true;
+            ResetAllInputs();
+        }
+
+        public void EnableInputs()
+        {
+            inputsDisabled = false;
+        }
+
+        public bool AreInputsDisabled()
+        {
+            return inputsDisabled;
+        }
+
+        public bool IsKeyboardInput()
+        {
+            return Keyboard.current != null && Keyboard.current.anyKey.isPressed;
+        }
+
+        public bool IsAnyInputActive()
+        {
+            return MovementInput.sqrMagnitude > 0.01f || AttackPressed || RollPressed || TargetPressed || (Keyboard.current != null && Keyboard.current.anyKey.isPressed);
+        }
+
+        void ResetAllInputs()
+        {
+            MovementInput = Vector2.zero;
+            TargetPointInput = Vector2.zero;
+            AttackPressed = false;
+            RollPressed = false;
+            TargetPressed = false;
+        }
+
 
         // ################### MOVEMENT ##########################
 
         void OnMovePerformed(InputAction.CallbackContext context)
         {
+            if (inputsDisabled) return;
+
             MovementInput = context.ReadValue<Vector2>();
 
             if (MovementInput.magnitude > 1f)
@@ -90,6 +127,8 @@ namespace ProjectColombo.Input
 
         void OnMoveCanceled(InputAction.CallbackContext context)
         {
+            if (inputsDisabled) return;
+
             MovementInput = Vector2.zero;
         }
 
@@ -102,6 +141,8 @@ namespace ProjectColombo.Input
         // ##################### ATTACK ###########################
         void OnAttackPerformed(InputAction.CallbackContext context)
         {
+            if (inputsDisabled) return;
+
             AttackPressed = true;
         }
 
@@ -120,6 +161,8 @@ namespace ProjectColombo.Input
 
         void OnRollPerformed(InputAction.CallbackContext context)
         {
+            if (inputsDisabled) return;
+
             RollPressed = true;
         }
 
@@ -138,10 +181,9 @@ namespace ProjectColombo.Input
 
         void OnTargetPerformed(InputAction.CallbackContext context)
         {
-            if (!context.performed) return;
+            if (inputsDisabled) return;
 
             TargetPressed = true;
-            TargetPressedEvent?.Invoke(); 
         }
 
         public void ResetTargetPressed()
@@ -159,11 +201,15 @@ namespace ProjectColombo.Input
 
         void OnTargetPointPerformed(InputAction.CallbackContext context)
         {
+            if (inputsDisabled) return;
+
             TargetPointInput = context.ReadValue<Vector2>();
         }
 
         void OnTargetPointCanceled(InputAction.CallbackContext context)
         {
+            if (inputsDisabled) return;
+
             TargetPointInput = Vector2.zero;
         }
 

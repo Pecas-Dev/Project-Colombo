@@ -31,9 +31,9 @@ namespace ProjectColombo.Control
             animator.SetTrigger("roll");
         }
 
-        public void OnRollAnimationEnd()
+        /*public void OnRollAnimationEnd()
         {
             playerController.EndRoll();
-        }
+        }*/
     }
 }

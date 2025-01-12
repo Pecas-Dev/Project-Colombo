@@ -27,14 +27,14 @@ namespace ProjectColombo.Control
         Vector3 rollDirection = Vector3.zero;
 
 
-        float rollCooldown = 1f;
-        float timeSinceLastRoll = Mathf.Infinity;
-        float rollEndTime = 0f; 
+        //float rollCooldown = 1f;
+        //float timeSinceLastRoll = Mathf.Infinity;
+        //float rollEndTime = 0f; 
 
 
         bool isAttacking = false;
-        bool isRolling = false;
-        bool canQueueRoll = true; 
+        //bool isRolling = false;
+        //bool canQueueRoll = true; 
 
         void Awake()
         {
@@ -53,34 +53,34 @@ namespace ProjectColombo.Control
             }
             else
             {*/
-                RollMove();
+                //RollMove();
             //}
         }
 
         void Update()
         {
-            movementInput = gameInput.MovementInput;
-            timeSinceLastRoll += Time.deltaTime;
+            //movementInput = gameInput.MovementInput;
+            //timeSinceLastRoll += Time.deltaTime;
 
-            if (gameInput.AttackPressed && !isAttacking && !isRolling)
+            if (gameInput.AttackPressed && !isAttacking) //&& !isRolling)
             {
                 GetComponent<Fight>().Attack();
                 gameInput.ResetAttackPressed();
             }
 
-            if (gameInput.RollPressed && CanRoll())
+            /*if (gameInput.RollPressed && CanRoll())
             {
                 StartRoll();
                 gameInput.ResetRollPressed();
-            }
+            }*/
 
             //playerAnimator.UpdateAnimator(currentVelocity.magnitude, isRolling, movementInput.sqrMagnitude > 0.01f);
         }
 
-        bool CanRoll()
+        /*bool CanRoll()
         {
             return timeSinceLastRoll >= rollCooldown && Time.time >= rollEndTime + entityAttributes.rollDelay && !isRolling && canQueueRoll;
-        }
+        }*/
 
         /*void Move()
         {
@@ -115,7 +115,7 @@ namespace ProjectColombo.Control
             }
         }*/
 
-        void RollMove()
+        /*void RollMove()
         {
             playerRigidbody.MovePosition(playerRigidbody.position + rollDirection * Time.fixedDeltaTime);
         }
@@ -153,7 +153,7 @@ namespace ProjectColombo.Control
             currentVelocity = Vector3.zero;
             rollDirection = Vector3.zero;
             canQueueRoll = true;
-        }
+        }*/
 
         public Vector3 GetFacingDirection()
         {

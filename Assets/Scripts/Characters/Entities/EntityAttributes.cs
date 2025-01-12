@@ -14,17 +14,18 @@ public class EntityAttributes : MonoBehaviour
     [Tooltip("Controls the Rotation Speed (Degrees per second).")]
     public float rotationSpeedPlayer = 720f;
 
-    [Tooltip("Controls the Acceleration.")]
+
+    [Header("Movement Settings - DEPRECATED")]
+    [Tooltip("Controls the Acceleration. - DEPRECATED")]
     public float acceleration = 10f;
 
-    [Tooltip("Controls the Deceleration.")]
+    [Tooltip("Controls the Deceleration. - DEPRECATED")]
     public float deceleration = 10f;
 
-    [Tooltip("Controls the Grace Period for maintaining velocity after input stops (Time in seconds).")]
+    [Tooltip("Controls the Grace Period for maintaining velocity after input stops (Time in seconds). - DEPRECATED")]
     public float graceTime = 0.1f;
 
-    [Header("Roll Settings")]
-    [Tooltip("Delay after rolling before allowing another roll (Time in seconds).")]
+    [Tooltip("Delay after rolling before allowing another roll (Time in seconds). - DEPRECATED")]
     public float rollDelay = 0.2f;
 
 
