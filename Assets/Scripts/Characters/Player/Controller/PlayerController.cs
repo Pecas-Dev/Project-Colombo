@@ -22,9 +22,9 @@ namespace ProjectColombo.Control
         CapsuleCollider capsuleCollider;
 
 
-        Vector2 movementInput;
-        Vector3 currentVelocity = Vector3.zero;
-        Vector3 rollDirection = Vector3.zero;
+        //Vector2 movementInput;
+        //Vector3 currentVelocity = Vector3.zero;
+        //Vector3 rollDirection = Vector3.zero;
 
 
         //float rollCooldown = 1f;
@@ -32,7 +32,7 @@ namespace ProjectColombo.Control
         //float rollEndTime = 0f; 
 
 
-        bool isAttacking = false;
+        //bool isAttacking = false;
         //bool isRolling = false;
         //bool canQueueRoll = true; 
 
@@ -62,11 +62,11 @@ namespace ProjectColombo.Control
             //movementInput = gameInput.MovementInput;
             //timeSinceLastRoll += Time.deltaTime;
 
-            if (gameInput.AttackPressed && !isAttacking) //&& !isRolling)
+            /*if (gameInput.AttackPressed && !isAttacking) //&& !isRolling)
             {
                 GetComponent<Fight>().Attack();
                 gameInput.ResetAttackPressed();
-            }
+            }*/
 
             /*if (gameInput.RollPressed && CanRoll())
             {
@@ -155,10 +155,10 @@ namespace ProjectColombo.Control
             canQueueRoll = true;
         }*/
 
-        public Vector3 GetFacingDirection()
+        /*public Vector3 GetFacingDirection()
         {
             return transform.forward;
-        }
+        }*/
 
     }
 }

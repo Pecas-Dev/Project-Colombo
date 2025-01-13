@@ -17,18 +17,16 @@ namespace ProjectColombo.Control
         public void UpdateAnimator(float speed, bool isRolling, bool hasMovementInput)
         {
             animator.SetFloat("speed", isRolling ? 0 : speed);
-
-            if (!hasMovementInput && !isRolling)
-            {
-                float decelerationRate = playerController.GetComponent<EntityAttributes>().deceleration * Time.deltaTime;
-                float currentSpeed = Mathf.Max(0, speed - decelerationRate);
-                animator.SetFloat("speed", currentSpeed);
-            }
         }
 
         public void TriggerRoll()
         {
             animator.SetTrigger("roll");
+        }
+
+        public void TriggerAttack()
+        {
+            animator.SetTrigger("attack");
         }
 
         /*public void OnRollAnimationEnd()

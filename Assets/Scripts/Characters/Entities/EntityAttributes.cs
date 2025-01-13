@@ -65,4 +65,9 @@ public class EntityAttributes : MonoBehaviour
             grounded = true;
         }
     }
+
+    public Vector3 GetFacingDirection()
+    {
+        return transform.forward;
+    }
 }

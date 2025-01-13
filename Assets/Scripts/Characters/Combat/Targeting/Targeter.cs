@@ -13,8 +13,8 @@ namespace ProjectColombo.Combat
         [Tooltip("Reference to the GameInput script.")]
         [SerializeField] GameInput gameInput;
 
-        [Tooltip("Reference to the PlayerController for initial facing direction.")]
-        [SerializeField] PlayerController playerController;
+        [Tooltip("Reference to the EntityAttributes for initial facing direction.")]
+        [SerializeField] EntityAttributes entityAttributes;
 
 
         [Header("Targeting State")]
@@ -47,12 +47,13 @@ namespace ProjectColombo.Combat
                 }
             }
 
-            if (playerController == null)
+            if (entityAttributes == null)
             {
-                playerController = GetComponentInParent<PlayerController>();
-                if (playerController == null)
+                entityAttributes = GetComponentInParent<EntityAttributes>();
+
+                if (entityAttributes == null)
                 {
-                    Debug.LogError("PlayerController reference not found. Please assign it in the inspector!");
+                    Debug.LogError("EntityAttributes reference not found. Please assign it in the inspector!");
                 }
             }
 
@@ -102,9 +103,9 @@ namespace ProjectColombo.Combat
 
         void SetInitialTargetDirection()
         {
-            if (playerController != null)
+            if (entityAttributes != null)
             {
-                Vector3 forward = playerController.GetFacingDirection();
+                Vector3 forward = entityAttributes.GetFacingDirection();
                 targetDirection = new Vector2(forward.x, forward.z).normalized;
             }
         }

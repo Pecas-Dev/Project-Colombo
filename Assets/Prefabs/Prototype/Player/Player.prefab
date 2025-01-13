@@ -95,7 +95,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameInput: {fileID: 0}
-  playerController: {fileID: 0}
+  entityAttributes: {fileID: 0}
   isTargetingActive: 0
   currentTarget: {fileID: 0}
   targets: []
@@ -115,10 +115,8 @@ GameObject:
   - component: {fileID: 7709587265030632471}
   - component: {fileID: 1185015071758430780}
   - component: {fileID: 2049127193781453334}
-  - component: {fileID: 6988365690995548053}
   - component: {fileID: 5479666140366280027}
   - component: {fileID: 7783411606347366640}
-  - component: {fileID: 2122974844369718227}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -219,7 +217,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6776689323991224022}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 5
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -235,9 +233,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 80
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!95 &1185015071758430780
 Animator:
   serializedVersion: 7
@@ -276,19 +274,6 @@ MonoBehaviour:
   <PlayerRigidbody>k__BackingField: {fileID: 0}
   <PlayerAnimator>k__BackingField: {fileID: 0}
   <EntityAttributes>k__BackingField: {fileID: 0}
---- !u!114 &6988365690995548053
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6776689323991224022}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77957d22b90e3f043abbe0ea496a7f83, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameInput: {fileID: 0}
 --- !u!114 &5479666140366280027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,18 +313,6 @@ MonoBehaviour:
   grounded: 0
   jumpForce: 0
   myAnimator: {fileID: 0}
---- !u!114 &2122974844369718227
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6776689323991224022}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25a94bf81609862488bc050b7f052ede, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &127127829817156231
 PrefabInstance:
   m_ObjectHideFlags: 0

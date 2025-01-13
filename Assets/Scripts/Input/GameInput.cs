@@ -107,7 +107,15 @@ namespace ProjectColombo.Input
             TargetPointInput = Vector2.zero;
             AttackPressed = false;
             RollPressed = false;
-            TargetPressed = false;
+            //TargetPressed = false;
+        }
+
+        public void DisableAllInputsExceptRoll()
+        {
+            MovementInput = Vector2.zero;
+            TargetPointInput = Vector2.zero;
+            AttackPressed = false;
+            //TargetPressed = false;
         }
 
 

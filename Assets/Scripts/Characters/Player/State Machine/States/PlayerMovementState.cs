@@ -17,6 +17,13 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Tick(float deltaTime)
         {
+            if (m_playerStateMachine.GameInput.AttackPressed)
+            {
+                m_playerStateMachine.GameInput.ResetAttackPressed();
+                m_playerStateMachine.SwitchState(new PlayerAttackState(m_playerStateMachine));
+                return;
+            }
+
             if (m_playerStateMachine.GameInput.RollPressed)
             {
                 m_playerStateMachine.GameInput.ResetRollPressed();
@@ -29,7 +36,7 @@ namespace ProjectColombo.StateMachine.Player
             HandleRotation(deltaTime);
             UpdateAnimator();
 
-            if (movementInput.sqrMagnitude > 0.01f)
+            if (movementInput.sqrMagnitude < 0.01f)
             {
                 StopMovementAndRotation();
                 return;

@@ -33,7 +33,7 @@ namespace ProjectColombo.StateMachine.Player
             m_playerStateMachine.GameInput.DisableInputs();
             m_playerStateMachine.PlayerAnimator.TriggerRoll();
 
-            rollDuration = 0.8f;
+            rollDuration = 0.78f;
             float rollDistance = 2.5f;
             rollSpeed = rollDistance / rollDuration;
 
