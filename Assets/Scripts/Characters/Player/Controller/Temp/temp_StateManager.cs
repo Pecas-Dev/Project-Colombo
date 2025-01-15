@@ -18,11 +18,7 @@ public class temp_StateManager : MonoBehaviour
 
     private void Update()
     {
-        if (myInputs.CrouchPressed)
-        {
-            myEntityAttributes.currentState = EntityAttributes.EntityState.SNEAK;
-        }
-        else if (myInputs.AttackPressed)
+        if (myInputs.AttackPressed)
         {
             myEntityAttributes.currentState = EntityAttributes.EntityState.ATTACK;
         }

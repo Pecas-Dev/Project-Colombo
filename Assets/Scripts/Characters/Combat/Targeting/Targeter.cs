@@ -1,4 +1,3 @@
-using ProjectColombo.Control;
 using ProjectColombo.Input;
 
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ namespace ProjectColombo.Combat
     {
         [Header("References")]
         [Tooltip("Reference to the GameInput script.")]
-        [SerializeField] GameInput gameInput;
+        [SerializeField] GameInputSO gameInputSO;
 
         [Tooltip("Reference to the EntityAttributes for initial facing direction.")]
         [SerializeField] EntityAttributes entityAttributes;
@@ -37,14 +36,9 @@ namespace ProjectColombo.Combat
 
         void Awake()
         {
-            if (gameInput == null)
+            if (gameInputSO == null)
             {
-                gameInput = FindFirstObjectByType<GameInput>();
-
-                if (gameInput == null)
-                {
-                    Debug.LogError("GameInput reference not found. Please assign it in the inspector!");
-                }
+                Debug.LogError("GameInput reference not found. Please assign it in the inspector!");
             }
 
             if (entityAttributes == null)
@@ -73,12 +67,12 @@ namespace ProjectColombo.Combat
 
         void HandleTargetingInput()
         {
-            if (gameInput == null)
+            if (gameInputSO == null)
             {
                 return;
             }
 
-            if (gameInput.TargetPressed)
+            if (gameInputSO.TargetPressed)
             {
                 if (isTargetingActive)
                 {
@@ -97,7 +91,7 @@ namespace ProjectColombo.Combat
                     Debug.LogWarning("No targets available to lock on. Targeting not activated.");
                 }
 
-                gameInput.ResetTargetPressed();
+                gameInputSO.ResetTargetPressed();
             }
         }
 
@@ -114,7 +108,7 @@ namespace ProjectColombo.Combat
         {
             if (isTargetingActive)
             {
-                Vector2 input = gameInput.TargetPointInput;
+                Vector2 input = gameInputSO.TargetPointInput;
 
                 if (input.magnitude > 0.1f)
                 {

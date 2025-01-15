@@ -94,8 +94,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a62d6a956313e04eb829d8718715a1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameInput: {fileID: 0}
-  entityAttributes: {fileID: 0}
+  gameInputSO: {fileID: 11400000, guid: 4cbc555f8dd252548884cda6a4b53710, type: 2}
+  entityAttributes: {fileID: 7783411606347366640}
   isTargetingActive: 0
   currentTarget: {fileID: 0}
   targets: []
@@ -252,7 +252,7 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
+  m_AnimatePhysics: 1
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -270,10 +270,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ee2a3129cbb24d498d36f42b50b2473, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <GameInput>k__BackingField: {fileID: 0}
   <PlayerRigidbody>k__BackingField: {fileID: 0}
   <PlayerAnimator>k__BackingField: {fileID: 0}
+  <GameInputSO>k__BackingField: {fileID: 11400000, guid: 4cbc555f8dd252548884cda6a4b53710, type: 2}
+  <PlayerAnimatorScript>k__BackingField: {fileID: 0}
   <EntityAttributes>k__BackingField: {fileID: 0}
+  <Attacks>k__BackingField:
+  - <AnimationName>k__BackingField: Attack1
+    <TransitionDuration>k__BackingField: 0.1
+    <ComboAttackTime>k__BackingField: 0.5
+    <ComboStateIndex>k__BackingField: 1
+  - <AnimationName>k__BackingField: Attack2
+    <TransitionDuration>k__BackingField: 0.1
+    <ComboAttackTime>k__BackingField: 0
+    <ComboStateIndex>k__BackingField: -1
+  currentState: 0
 --- !u!114 &5479666140366280027
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,11 +1,12 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 
+
 namespace ProjectColombo.Input
 {
-    public class GameInput : MonoBehaviour
+    [CreateAssetMenu(fileName = "GameInputSO", menuName = "Scriptable Objects/Input/GameInputSO")]
+    public class GameInputSO : ScriptableObject
     {
         public Vector2 MovementInput { get; private set; } = Vector2.zero;
         public Vector2 TargetPointInput { get; private set; } = Vector2.zero;
@@ -21,13 +22,15 @@ namespace ProjectColombo.Input
         InputSystem_Actions playerInputActions;
 
 
-        void Awake()
+        public void Initialize()
         {
-            playerInputActions = new InputSystem_Actions();
-        }
+            if(playerInputActions != null)
+            {
+                return;
+            }
 
-        void OnEnable()
-        {
+            playerInputActions = new InputSystem_Actions();
+
             playerInputActions.Player.Enable();
 
             playerInputActions.Player.Move.performed += OnMovePerformed;
@@ -43,7 +46,7 @@ namespace ProjectColombo.Input
             playerInputActions.Player.TargetPoint.canceled += OnTargetPointCanceled;
         }
 
-        void OnDisable()
+        public void Uninitialize()
         {
             playerInputActions.Player.Move.performed -= OnMovePerformed;
             playerInputActions.Player.Move.canceled -= OnMoveCanceled;

@@ -1,3 +1,4 @@
+using ProjectColombo.Combat;
 using ProjectColombo.Control;
 using ProjectColombo.Input;
 
@@ -8,29 +9,62 @@ namespace ProjectColombo.StateMachine.Player
 {
     public class PlayerStateMachine : StateMachine
     {
-        [field: SerializeField] public GameInput GameInput { get; private set; }
+        public enum PlayerState
+        {
+            Movement,
+            Roll,
+            Attack
+        }
+
+
+        [Header("Component References")]
         [field: SerializeField] public Rigidbody PlayerRigidbody { get; private set; }
-        [field: SerializeField] public PlayerAnimator PlayerAnimator { get; private set; }
+        [field: SerializeField] public Animator PlayerAnimator { get; private set; }
+
+
+        [Header("Script References")]
+        [field: SerializeField] public GameInputSO GameInputSO { get; private set; }
+        [field: SerializeField] public PlayerAnimator PlayerAnimatorScript { get; private set; }
         [field: SerializeField] public EntityAttributes EntityAttributes { get; private set; }
+        [field: SerializeField] public Attack[] Attacks { get; private set; }
+
+
+        [Header("Player State")]
+        [field: SerializeField, ReadOnlyInspector] private PlayerState currentState;
+
+
+        public PlayerState CurrentState => currentState;
 
 
         void Awake()
         {
-            PlayerRigidbody = GetComponent<Rigidbody>();
-            PlayerAnimator = GetComponent<PlayerAnimator>();
+            if (GameInputSO != null)
+            {
+                GameInputSO.Initialize();
+            }
+
+            PlayerAnimatorScript = GetComponent<PlayerAnimator>();
             EntityAttributes = GetComponent<EntityAttributes>();
+
+            PlayerRigidbody = GetComponent<Rigidbody>();
+            PlayerAnimator = GetComponent<Animator>();
         }
 
         void Start()
         {
             LogMissingReferenceErrors();
-              
+
             SwitchState(new PlayerMovementState(this));
+        }
+
+        void OnDisable()
+        {
+            GameInputSO.Uninitialize();
         }
 
         void LogMissingReferenceErrors()
         {
-            if (GameInput == null)
+            if (GameInputSO == null)
             {
                 Debug.LogError("GameInput reference is missing!");
             }
@@ -40,7 +74,7 @@ namespace ProjectColombo.StateMachine.Player
                 Debug.LogError("PlayerRigidbody reference is missing!");
             }
 
-            if (PlayerAnimator == null)
+            if (PlayerAnimatorScript == null)
             {
                 Debug.LogError("PlayerAnimator reference is missing!");
             }
@@ -49,6 +83,11 @@ namespace ProjectColombo.StateMachine.Player
             {
                 Debug.LogError("EntityAttributes reference is missing!");
             }
+        }
+
+        internal void SetCurrentState(PlayerState newState)
+        {
+            currentState = newState;
         }
     }
 }

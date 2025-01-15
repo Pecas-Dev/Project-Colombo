@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 namespace ProjectColombo.StateMachine.Player
 {
     public class PlayerMovementState : PlayerBaseState
@@ -12,21 +13,23 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Enter()
         {
+            m_playerStateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Movement);
+            m_playerStateMachine.PlayerAnimator.CrossFadeInFixedTime("Movement", 0.1f);
             Debug.Log("Entered Movement State");
         }
 
         public override void Tick(float deltaTime)
         {
-            if (m_playerStateMachine.GameInput.AttackPressed)
+            if (m_playerStateMachine.GameInputSO.AttackPressed)
             {
-                m_playerStateMachine.GameInput.ResetAttackPressed();
-                m_playerStateMachine.SwitchState(new PlayerAttackState(m_playerStateMachine));
+                m_playerStateMachine.GameInputSO.ResetAttackPressed();
+                m_playerStateMachine.SwitchState(new PlayerAttackState(m_playerStateMachine, 0));
                 return;
             }
 
-            if (m_playerStateMachine.GameInput.RollPressed)
+            if (m_playerStateMachine.GameInputSO.RollPressed)
             {
-                m_playerStateMachine.GameInput.ResetRollPressed();
+                m_playerStateMachine.GameInputSO.ResetRollPressed();
                 m_playerStateMachine.SwitchState(new PlayerRollState(m_playerStateMachine));
 
                 return;
@@ -50,7 +53,7 @@ namespace ProjectColombo.StateMachine.Player
 
         void HandleMovement(float deltaTime)
         {
-            movementInput = m_playerStateMachine.GameInput.MovementInput;
+            movementInput = m_playerStateMachine.GameInputSO.MovementInput;
 
             if (movementInput.sqrMagnitude > 0.01f)
             {
@@ -86,7 +89,7 @@ namespace ProjectColombo.StateMachine.Player
             float speed = movementInput.magnitude * m_playerStateMachine.EntityAttributes.moveSpeed;
             bool hasMovementInput = movementInput.sqrMagnitude > 0.01f;
 
-            m_playerStateMachine.PlayerAnimator.UpdateAnimator(speed, false, hasMovementInput);
+            m_playerStateMachine.PlayerAnimatorScript.UpdateAnimator(speed, false, hasMovementInput);
         }
     }
 }
