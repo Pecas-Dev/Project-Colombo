@@ -62,7 +62,13 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Tick(float deltaTime)
         {
-            m_playerStateMachine.PlayerRigidbody.MovePosition(m_playerStateMachine.PlayerRigidbody.position + rollDirection * rollSpeed * deltaTime);
+            //m_playerStateMachine.PlayerRigidbody.MovePosition(m_playerStateMachine.PlayerRigidbody.position + rollDirection * rollSpeed * deltaTime);
+            Vector3 velocity = m_playerStateMachine.PlayerRigidbody.linearVelocity;
+
+            velocity.x = rollDirection.x * rollSpeed;
+            velocity.z = rollDirection.z * rollSpeed;
+
+            m_playerStateMachine.PlayerRigidbody.linearVelocity = velocity;
 
             if (Time.time >= rollEndTime)
             {

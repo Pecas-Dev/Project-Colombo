@@ -53,18 +53,24 @@ namespace ProjectColombo.StateMachine.Player
 
         void HandleMovement(float deltaTime)
         {
+            Vector3 velocity = m_playerStateMachine.PlayerRigidbody.linearVelocity;
+
             movementInput = m_playerStateMachine.GameInputSO.MovementInput;
 
             if (movementInput.sqrMagnitude > 0.01f)
             {
-                Vector3 desiredVelocity = new Vector3(movementInput.x, 0, movementInput.y) * m_playerStateMachine.EntityAttributes.moveSpeed * movementInput.magnitude;
+                velocity.x = movementInput.x * m_playerStateMachine.EntityAttributes.moveSpeed;
+                velocity.z = movementInput.y * m_playerStateMachine.EntityAttributes.moveSpeed;
 
-                m_playerStateMachine.PlayerRigidbody.MovePosition(m_playerStateMachine.PlayerRigidbody.position + desiredVelocity * deltaTime);
+                m_playerStateMachine.PlayerRigidbody.linearVelocity = velocity;
             }
             else
             {
-                m_playerStateMachine.PlayerRigidbody.linearVelocity = Vector3.zero;
+                velocity.x = 0f;
+                velocity.z = 0f;
             }
+
+            m_playerStateMachine.PlayerRigidbody.linearVelocity = velocity;
         }
 
         void HandleRotation(float deltaTime)
@@ -80,7 +86,13 @@ namespace ProjectColombo.StateMachine.Player
 
         void StopMovementAndRotation()
         {
-            m_playerStateMachine.PlayerRigidbody.linearVelocity = Vector3.zero;
+            Vector3 velocity = m_playerStateMachine.PlayerRigidbody.linearVelocity;
+
+            velocity.x = 0f;
+            velocity.z = 0f;
+
+            m_playerStateMachine.PlayerRigidbody.linearVelocity = velocity;
+
             m_playerStateMachine.PlayerRigidbody.angularVelocity = Vector3.zero;
         }
 

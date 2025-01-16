@@ -345,10 +345,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2049127193781453334, guid: aebbf5e19360de24e8637d9c12b0e052, type: 3}
-      propertyPath: <Attacks>k__BackingField.Array.data[0].<ComboAttackTime>k__BackingField
-      value: 0.25
-      objectReference: {fileID: 0}
     - target: {fileID: 6776689323991224022, guid: aebbf5e19360de24e8637d9c12b0e052, type: 3}
       propertyPath: m_Name
       value: Player
@@ -2864,6 +2860,7 @@ GameObject:
   - component: {fileID: 1917555056}
   - component: {fileID: 1917555055}
   - component: {fileID: 1917555054}
+  - component: {fileID: 1917555058}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -2976,6 +2973,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1917555052}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1917555058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1917555052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1e8b525f5da9b649b3a1611a1f52e06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
 --- !u!1 &2075996971
 GameObject:
   m_ObjectHideFlags: 0
