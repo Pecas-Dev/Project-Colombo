@@ -4,11 +4,11 @@ namespace ProjectColombo.StateMachine.Mommotti
 {
     public abstract class MommottiBaseState : State
     {
-        protected MommottiStateMachine m_StateMachine;
+        protected MommottiStateMachine stateMachine;
 
         public MommottiBaseState(MommottiStateMachine stateMachine)
         {
-            m_StateMachine = stateMachine;
+            this.stateMachine = stateMachine;
         }
     }
 }

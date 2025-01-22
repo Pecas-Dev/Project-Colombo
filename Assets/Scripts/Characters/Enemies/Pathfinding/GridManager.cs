@@ -28,7 +28,7 @@ public class Node
 //[ExecuteInEditMode]
 public class GridManager : MonoBehaviour
 {
-    public bool m_RecalculateGrid;
+    public bool recalculateGrid;
     public int gridSizeX, gridSizeZ;    // Grid dimensions
     public float nodeSize;              // Size of each node
     public bool showGizmos;

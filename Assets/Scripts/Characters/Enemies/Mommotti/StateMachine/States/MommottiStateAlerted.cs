@@ -4,51 +4,50 @@ namespace ProjectColombo.StateMachine.Mommotti
 {
     public class MommottiStateAlerted : MommottiBaseState
     {
-        Vector3 m_alertedPosition;
-        float m_Timer;
+        Vector3 alertedPosition;
+        float timer;
         public MommottiStateAlerted(MommottiStateMachine stateMachine) : base(stateMachine)
         {
         }
 
         public override void Enter()
         {
-            m_Timer = 0;
-            m_alertedPosition = GetPlayerPosition();
-            m_StateMachine.SetCurrentState(MommottiStateMachine.MommottiState.ALERTED);
+            timer = 0;
+            alertedPosition = GetPlayerPosition();
+            stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.ALERTED);
             Debug.Log("Mommotti entered Alerted State");
         }
 
         public override void Tick(float deltaTime)
         {
-            if (m_StateMachine.m_MommottiAttributes.FieldOfViewCheck() || m_StateMachine.m_MommottiAttributes.SoundDetectionCheck())
+            if (stateMachine.myMommottiAttributes.FieldOfViewCheck() || stateMachine.myMommottiAttributes.SoundDetectionCheck())
             {
-                m_alertedPosition = GetPlayerPosition();
+                alertedPosition = GetPlayerPosition();
 
-                if (m_Timer > m_StateMachine.m_MommottiAttributes.m_AlertedBufferTime)
+                if (timer > stateMachine.myMommottiAttributes.alertedBufferTime)
                 {
-                    m_StateMachine.SwitchState(new MommottiStateChase(m_StateMachine));
+                    stateMachine.SwitchState(new MommottiStateChase(stateMachine));
                 }
             }
-            else if (m_Timer > m_StateMachine.m_MommottiAttributes.m_AlertedBufferTime)
+            else if (timer > stateMachine.myMommottiAttributes.alertedBufferTime)
             {
-                m_StateMachine.SwitchState(new MommottiStatePatrol(m_StateMachine));
+                stateMachine.SwitchState(new MommottiStatePatrol(stateMachine));
             }
 
-            Vector3 targetDirection = (m_alertedPosition - m_StateMachine.transform.position).normalized;
+            Vector3 targetDirection = (alertedPosition - stateMachine.transform.position).normalized;
 
-            if (Vector3.Angle(m_StateMachine.transform.forward, targetDirection) > 1f)
+            if (Vector3.Angle(stateMachine.transform.forward, targetDirection) > 1f)
             {
-                Quaternion startRotation = m_StateMachine.transform.rotation;
+                Quaternion startRotation = stateMachine.transform.rotation;
                 Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
-                m_StateMachine.m_Rigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, m_StateMachine.m_EntityAttributes.rotationSpeedPlayer * deltaTime));
+                stateMachine.myRigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, stateMachine.myEntityAttributes.rotationSpeedPlayer * deltaTime));
             }
 
-            m_Timer += deltaTime;
+            timer += deltaTime;
         }
 
         public override void Exit()
         {
-            Debug.Log("Mommotti exited Alerted State");
         }
 
         private Vector3 GetPlayerPosition()

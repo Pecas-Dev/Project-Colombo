@@ -4,6 +4,8 @@ using UnityEngine;
 public class EntityAttributes : MonoBehaviour
 {
      [Header("Movement Settings")]
+    public int maxHealth;
+    [HideInInspector] public int health;
     [Tooltip("Controls the Movement Speed.")]
     public float moveSpeed = 5f;
 
@@ -26,9 +28,7 @@ public class EntityAttributes : MonoBehaviour
 
 
 
-    [Header("Julian Variables (To REFACTOR [currentState])")]
-    public int maxHealth;
-    [HideInInspector] public int health;
+
 
 
     void Start()

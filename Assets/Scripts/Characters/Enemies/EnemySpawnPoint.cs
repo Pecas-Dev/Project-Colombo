@@ -6,13 +6,17 @@ public class EnemySpawnPoint : MonoBehaviour
 {
     [HideInInspector] public bool cleared = false;
     public GameObject enemyType;
-    public int amountOfEnemies;
+    public int minAmountEnemies;
+    public int maxAmountEnemies;
+
     //[HideInInspector]
     public List<GameObject> spawnGroup;
     public string pathName;
 
     private void Start()
     {
+        int amountOfEnemies = Random.Range(minAmountEnemies, maxAmountEnemies+1);
+
         if (enemyType == null || amountOfEnemies == 0)
         {
             cleared = true;

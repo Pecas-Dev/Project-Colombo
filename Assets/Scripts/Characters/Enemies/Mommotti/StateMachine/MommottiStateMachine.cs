@@ -11,23 +11,23 @@ namespace ProjectColombo.StateMachine.Mommotti
         public enum MommottiState { PATROL, ALERTED, CHASE, ATTACK };
 
         [Header("Component References")]
-        public Rigidbody m_Rigidbody;
-        public Animator m_Animator;
-        public EntityAttributes m_EntityAttributes;
-        public MommottiAttributes m_MommottiAttributes;
-        public Pathfinding m_PathfindingAlgorythm;
-        public WeaponAttributes m_WeaponAttributes;
+        public Rigidbody myRigidbody;
+        public Animator myAnimator;
+        public EntityAttributes myEntityAttributes;
+        public MommottiAttributes myMommottiAttributes;
+        public Pathfinding myPathfindingAlgorythm;
+        public WeaponAttributes myWeaponAttributes;
 
         public MommottiState m_CurrentState;
 
         private void Awake()
         {
-            m_Rigidbody = GetComponent<Rigidbody>();
-            m_Animator = GetComponent<Animator>();
-            m_EntityAttributes = GetComponent<EntityAttributes>();
-            m_MommottiAttributes = GetComponent<MommottiAttributes>();
-            m_PathfindingAlgorythm = GetComponent<Pathfinding>();
-            m_WeaponAttributes = GetComponentInChildren<WeaponAttributes>();
+            myRigidbody = GetComponent<Rigidbody>();
+            myAnimator = GetComponent<Animator>();
+            myEntityAttributes = GetComponent<EntityAttributes>();
+            myMommottiAttributes = GetComponent<MommottiAttributes>();
+            myPathfindingAlgorythm = GetComponent<Pathfinding>();
+            myWeaponAttributes = GetComponentInChildren<WeaponAttributes>();
         }
 
         void Start()
@@ -39,32 +39,32 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         void LogMissingReferenceErrors()
         {
-            if (m_Rigidbody == null)
+            if (myRigidbody == null)
             {
                 Debug.Log("Missing Rigidbody in Mommotti!");
             }
 
-            if (m_Animator == null)
+            if (myAnimator == null)
             {
                 Debug.Log("Missing Animator in Mommotti!");
             }
 
-            if (m_EntityAttributes == null)
+            if (myEntityAttributes == null)
             {
                 Debug.Log("Missing Entity Attributes in Mommotti!");
             }
 
-            if (m_MommottiAttributes == null)
+            if (myMommottiAttributes == null)
             {
                 Debug.Log("Missing Mommotti Attributes in Mommotti!");
             }            
             
-            if (m_PathfindingAlgorythm == null)
+            if (myPathfindingAlgorythm == null)
             {
                 Debug.Log("Missing Pathfinding Algorythm in Mommotti!");
             }            
             
-            if (m_WeaponAttributes == null)
+            if (myWeaponAttributes == null)
             {
                 Debug.Log("Missing Weapon in Mommotti!");
             }

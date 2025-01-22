@@ -11,7 +11,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Enter()
         {
-            m_StateMachine.SetCurrentState(MommottiStateMachine.MommottiState.PATROL);
+            stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.PATROL);
             Debug.Log("Mommotti entered xxxxxxxxxxxx State");
         }
 
@@ -22,7 +22,6 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Exit()
         {
-            Debug.Log("Mommotti exited xxxxxxxxxxxxxxxx State");
         }
     }
 }

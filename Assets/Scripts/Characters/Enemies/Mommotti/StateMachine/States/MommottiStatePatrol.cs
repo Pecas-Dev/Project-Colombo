@@ -6,12 +6,12 @@ namespace ProjectColombo.StateMachine.Mommotti
     public class MommottiStatePatrol : MommottiBaseState
     {
         //public Vector3 m_Target;
-        List<Node> m_CurrentPath;
-        int m_PathIndex = 0;
-        Node m_lastWalkableNode; //in for now if we need it
-        Vector3 m_MovingDirection;
-        float m_DetectionChecksRate = 0.5f;
-        float m_Timer;
+        List<Node> currentPath;
+        int pathIndex = 0;
+        Node lastWalkableNode; //in for now if we need it
+        Vector3 movingDirection;
+        float detectionChecksRate = 0.5f;
+        float timer;
 
         public MommottiStatePatrol(MommottiStateMachine stateMachine) : base(stateMachine)
         {
@@ -19,69 +19,67 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Enter()
         {
-            m_Timer = 0;
+            timer = 0;
             SetTarget(GameObject.Find("Player").transform.position);
-            m_PathIndex = 0;
-            m_StateMachine.SetCurrentState(MommottiStateMachine.MommottiState.PATROL);
+            pathIndex = 0;
+            stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.PATROL);
             Debug.Log("Mommotti entered Patrol State");
         }
 
         public override void Tick(float deltaTime)
         {
-            m_Timer += deltaTime;
+            timer += deltaTime;
 
-            if (m_Timer > m_DetectionChecksRate)
+            if (timer > detectionChecksRate)
             {           
-                if (m_StateMachine.m_MommottiAttributes.FieldOfViewCheck() || m_StateMachine.m_MommottiAttributes.SoundDetectionCheck())
+                if (stateMachine.myMommottiAttributes.FieldOfViewCheck() || stateMachine.myMommottiAttributes.SoundDetectionCheck())
                 {
-                    m_StateMachine.SwitchState(new MommottiStateAlerted(m_StateMachine));
+                    stateMachine.SwitchState(new MommottiStateAlerted(stateMachine));
                     return;
                 }
 
-                m_Timer = 0;
+                timer = 0;
             }
             
-            if (m_CurrentPath != null && m_PathIndex < m_CurrentPath.Count)
+            if (currentPath != null && pathIndex < currentPath.Count)
             {
                 //m_lastWalkableNode = m_CurrentPath[m_PathIndex];
-                m_MovingDirection = m_CurrentPath[m_PathIndex].worldPosition - m_StateMachine.transform.position;
+                movingDirection = currentPath[pathIndex].worldPosition - stateMachine.transform.position;
 
-                if (m_MovingDirection.magnitude < m_StateMachine.m_EntityAttributes.moveSpeed * deltaTime) // Reached current path node
+                if (movingDirection.magnitude < stateMachine.myEntityAttributes.moveSpeed * deltaTime) // Reached current path node
                 {
-                    Debug.Log("swith Node ID: " + m_PathIndex);
-                    m_PathIndex++;
+                    pathIndex++;
 
-                    if (m_PathIndex == m_CurrentPath.Count)
+                    if (pathIndex == currentPath.Count)
                     {
-                        m_CurrentPath = null;
-                        m_PathIndex = 0;
+                        currentPath = null;
+                        pathIndex = 0;
                     }
                 }
                 else
                 {
-                    if (Vector3.Angle(m_StateMachine.transform.forward, m_MovingDirection) > 1f)
+                    if (Vector3.Angle(stateMachine.transform.forward, movingDirection) > 1f)
                     {
-                        Quaternion startRotation = m_StateMachine.transform.rotation;
-                        Quaternion targetRotation = Quaternion.LookRotation(m_MovingDirection);
-                        m_StateMachine.m_Rigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, m_StateMachine.m_EntityAttributes.rotationSpeedPlayer * deltaTime));
+                        Quaternion startRotation = stateMachine.transform.rotation;
+                        Quaternion targetRotation = Quaternion.LookRotation(movingDirection);
+                        stateMachine.myRigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, stateMachine.myEntityAttributes.rotationSpeedPlayer * deltaTime));
                     }
 
-                    Vector3 movement = m_StateMachine.transform.forward * m_StateMachine.m_EntityAttributes.moveSpeed * deltaTime;
-                    m_StateMachine.m_Rigidbody.MovePosition(m_StateMachine.transform.position + movement);
+                    Vector3 movement = stateMachine.transform.forward * stateMachine.myEntityAttributes.moveSpeed * deltaTime;
+                    stateMachine.myRigidbody.MovePosition(stateMachine.transform.position + movement);
                 }
             }
         }
 
         public override void Exit()
         {
-            Debug.Log("Mommotti exited Patrol State");
         }
 
         public void SetTarget(Vector3 newTarget)
         {
             //m_Target = newTarget;
-            m_CurrentPath = m_StateMachine.m_PathfindingAlgorythm.FindPath(m_StateMachine.transform.position, newTarget);
-            m_PathIndex = 0;
+            currentPath = stateMachine.myPathfindingAlgorythm.FindPath(stateMachine.transform.position, newTarget);
+            pathIndex = 0;
         }
     }
 }
