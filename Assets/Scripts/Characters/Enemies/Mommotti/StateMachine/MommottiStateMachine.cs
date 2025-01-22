@@ -8,7 +8,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 {
     public class MommottiStateMachine : StateMachine
     {
-        public enum MommottiState { IDLE, PATROL, CHASE, CIRCLE, ATTACK };
+        public enum MommottiState { PATROL, ALERTED, CHASE, ATTACK };
 
         [Header("Component References")]
         public Rigidbody m_Rigidbody;
@@ -16,6 +16,7 @@ namespace ProjectColombo.StateMachine.Mommotti
         public EntityAttributes m_EntityAttributes;
         public MommottiAttributes m_MommottiAttributes;
         public Pathfinding m_PathfindingAlgorythm;
+        public WeaponAttributes m_WeaponAttributes;
 
         public MommottiState m_CurrentState;
 
@@ -26,13 +27,14 @@ namespace ProjectColombo.StateMachine.Mommotti
             m_EntityAttributes = GetComponent<EntityAttributes>();
             m_MommottiAttributes = GetComponent<MommottiAttributes>();
             m_PathfindingAlgorythm = GetComponent<Pathfinding>();
+            m_WeaponAttributes = GetComponentInChildren<WeaponAttributes>();
         }
 
         void Start()
         {
             LogMissingReferenceErrors();
 
-            //SwitchState(new PlayerMovementState(this));
+            SwitchState(new MommottiStatePatrol(this));
         }
 
         void LogMissingReferenceErrors()
@@ -55,6 +57,16 @@ namespace ProjectColombo.StateMachine.Mommotti
             if (m_MommottiAttributes == null)
             {
                 Debug.Log("Missing Mommotti Attributes in Mommotti!");
+            }            
+            
+            if (m_PathfindingAlgorythm == null)
+            {
+                Debug.Log("Missing Pathfinding Algorythm in Mommotti!");
+            }            
+            
+            if (m_WeaponAttributes == null)
+            {
+                Debug.Log("Missing Weapon in Mommotti!");
             }
 
         }
@@ -62,6 +74,34 @@ namespace ProjectColombo.StateMachine.Mommotti
         internal void SetCurrentState(MommottiState newState)
         {
             m_CurrentState = newState;
+        }
+
+        private void Reset()
+        {
+            if (!TryGetComponent<Rigidbody>(out _))
+            {
+                gameObject.AddComponent<Rigidbody>();
+            }
+
+            if (!TryGetComponent<Animator>(out _))
+            {
+                gameObject.AddComponent<Animator>();
+            }
+
+            if (!TryGetComponent<EntityAttributes>(out _))
+            {
+                gameObject.AddComponent<EntityAttributes>();
+            }
+
+            if (!TryGetComponent<MommottiAttributes>(out _))
+            {
+                gameObject.AddComponent<MommottiAttributes>();
+            }
+
+            if (!TryGetComponent<Pathfinding>(out _))
+            {
+                gameObject.AddComponent<Pathfinding>();
+            }
         }
     }
 }

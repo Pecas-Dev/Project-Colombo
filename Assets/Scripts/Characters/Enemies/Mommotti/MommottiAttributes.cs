@@ -4,8 +4,13 @@ namespace ProjectColombo.Enemies.Mommotti
 { 
     public class MommottiAttributes : MonoBehaviour
     {
-        public Transform m_PlayerPosition;
+        [HideInInspector]public Transform m_PlayerPosition;
         float m_CurrentDistanceToPlayer;
+
+        [Header("Adjustables")]
+        public float m_AlertedBufferTime;
+        public float m_CircleDistance;
+        public float m_CircleTolerance;
 
         [Header("Field of View Detection")]
         public float m_RangeFOVDetection;
@@ -52,18 +57,20 @@ namespace ProjectColombo.Enemies.Mommotti
 
         public bool FieldOfViewCheck()
         {
-            if (m_CurrentDistanceToPlayer < m_RangeFOVDetection)
+            if (m_CurrentDistanceToPlayer <= m_RangeFOVDetection)
             {
                 Vector3 directionToPlayer = (m_PlayerPosition.position - transform.position).normalized;
+
                 float anglePlayer = Vector3.Angle(transform.forward, directionToPlayer);
 
-                if (Mathf.Abs(anglePlayer) < m_AngleFOVDetection / 2)
+                if (anglePlayer <= m_AngleFOVDetection / 2)
                 {
-                    //check player is behind obstical
-                    if (Physics.Raycast(transform.position, directionToPlayer, out RaycastHit hit, m_RangeFOVDetection))
+                    RaycastHit hit;
+                    if (Physics.SphereCast(transform.position, 0.5f, directionToPlayer, out hit, m_RangeFOVDetection, 3)) // You can adjust the radius (0.5f) depending on your needs
                     {
-                        if (hit.transform == m_PlayerPosition)
+                        if (hit.collider.gameObject == m_PlayerPosition.gameObject)
                         {
+                            //Debug.DrawLine(transform.position, transform.position + directionToPlayer * m_RangeFOVDetection, Color.green);
                             return true;
                         }
                     }
@@ -72,6 +79,8 @@ namespace ProjectColombo.Enemies.Mommotti
 
             return false;
         }
+
+
 
         public bool SoundDetectionCheck()
         {

@@ -1,4 +1,8 @@
 using System.Collections.Generic;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 using UnityEngine;
 using static UnityEditor.Experimental.GraphView.Port;
 
@@ -21,11 +25,13 @@ public class Node
     }
 }
 
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
 public class GridManager : MonoBehaviour
 {
+    public bool m_RecalculateGrid;
     public int gridSizeX, gridSizeZ;    // Grid dimensions
     public float nodeSize;              // Size of each node
+    public bool showGizmos;
     [Range(0f, 1f)]                     // Creates a slider in the Inspector
     public float gizmosOpacity = 1f;
     public LayerMask obstacleLayer;     // Layer for obstacles
@@ -34,9 +40,16 @@ public class GridManager : MonoBehaviour
     public float myMaxSlopeAngle = 45f;
     public float height = 50f;
 
-
+    private void Awake()
+    {
+        if (grid == null)
+        {
+            CreateGrid();
+        }
+    }
     public void CreateGrid()
     {
+        Debug.Log("NEW GRID CREATED");
         grid = new Node[gridSizeX, gridSizeZ];
         Vector3 bottomLeft = transform.position - Vector3.right * gridSizeX / 2 * nodeSize - Vector3.forward * gridSizeZ / 2 * nodeSize;
 
@@ -110,15 +123,11 @@ public class GridManager : MonoBehaviour
         return neighbors;
     }
 
-    private void Update()
-    {
-        CreateGrid();
-    }
-
-
     private void OnDrawGizmos()
     {
-        if (grid == null) return;
+        if (grid == null || !Application.isPlaying) return;
+
+        if (!showGizmos) return;
 
         for (int x = 0; x < gridSizeX; x++)
         {
@@ -140,3 +149,20 @@ public class GridManager : MonoBehaviour
     }
 
 }
+
+#if UNITY_EDITOR
+[CustomEditor(typeof(GridManager))]
+public class GridManagerEditor : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        DrawDefaultInspector();
+
+        GridManager gridManager = (GridManager)target;
+        if (GUILayout.Button("Recalculate Grid"))
+        {
+            gridManager.CreateGrid();
+        }
+    }
+}
+#endif

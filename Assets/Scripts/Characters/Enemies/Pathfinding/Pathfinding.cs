@@ -16,6 +16,7 @@ public class Pathfinding : MonoBehaviour
 
     public List<Node> FindPath(Vector3 startPos, Vector3 targetPos)
     {
+        Debug.Log("NEW PATH CALCULATED");
         Node startNode = gridManager.GetNodeFromWorldPosition(startPos);
         Node targetNode = gridManager.GetNodeFromWorldPosition(targetPos);
 
@@ -81,6 +82,8 @@ public class Pathfinding : MonoBehaviour
 
     List<Node> RetracePath(Node startNode, Node endNode)
     {
+        Debug.Log("test retrace path");
+
         List<Node> path = new List<Node>();
         Node currentNode = endNode;
 

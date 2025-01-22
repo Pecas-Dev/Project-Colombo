@@ -11,8 +11,8 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Enter()
         {
-
-            Debug.Log("Mommotti entered Idle State");
+            m_StateMachine.SetCurrentState(MommottiStateMachine.MommottiState.PATROL);
+            Debug.Log("Mommotti entered xxxxxxxxxxxx State");
         }
 
         public override void Tick(float deltaTime)
@@ -22,7 +22,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Exit()
         {
-            Debug.Log("Mommotti entered Idle State");
+            Debug.Log("Mommotti exited xxxxxxxxxxxxxxxx State");
         }
     }
 }
