@@ -31,13 +31,13 @@ namespace ProjectColombo.StateMachine.Mommotti
             {
                 Quaternion startRotation = m_StateMachine.transform.rotation;
                 Quaternion targetRotation = Quaternion.LookRotation(m_TargetDirection.normalized);
-                m_StateMachine.m_Rigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, m_StateMachine.m_EntityAttributes.rotationSpeed * deltaTime));
+                m_StateMachine.m_Rigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, m_StateMachine.m_EntityAttributes.rotationSpeedPlayer * deltaTime));
             }
 
             //move to player if to far away
             if (m_TargetDirection.magnitude > m_StateMachine.m_WeaponAttributes.reach)
             {
-                float currentSpeed = m_StateMachine.m_EntityAttributes.walkSpeed;
+                float currentSpeed = m_StateMachine.m_EntityAttributes.moveSpeed;
                 Vector3 movingDirection = m_StateMachine.transform.forward;
 
                 m_StateMachine.m_Rigidbody.MovePosition((m_StateMachine.transform.position + (currentSpeed * deltaTime * movingDirection)));

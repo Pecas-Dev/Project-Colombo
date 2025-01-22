@@ -46,7 +46,7 @@ namespace ProjectColombo.StateMachine.Mommotti
                 //m_lastWalkableNode = m_CurrentPath[m_PathIndex];
                 m_MovingDirection = m_CurrentPath[m_PathIndex].worldPosition - m_StateMachine.transform.position;
 
-                if (m_MovingDirection.magnitude < m_StateMachine.m_EntityAttributes.walkSpeed * deltaTime) // Reached current path node
+                if (m_MovingDirection.magnitude < m_StateMachine.m_EntityAttributes.moveSpeed * deltaTime) // Reached current path node
                 {
                     Debug.Log("swith Node ID: " + m_PathIndex);
                     m_PathIndex++;
@@ -63,10 +63,10 @@ namespace ProjectColombo.StateMachine.Mommotti
                     {
                         Quaternion startRotation = m_StateMachine.transform.rotation;
                         Quaternion targetRotation = Quaternion.LookRotation(m_MovingDirection);
-                        m_StateMachine.m_Rigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, m_StateMachine.m_EntityAttributes.rotationSpeed * deltaTime));
+                        m_StateMachine.m_Rigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, m_StateMachine.m_EntityAttributes.rotationSpeedPlayer * deltaTime));
                     }
 
-                    Vector3 movement = m_StateMachine.transform.forward * m_StateMachine.m_EntityAttributes.walkSpeed * deltaTime;
+                    Vector3 movement = m_StateMachine.transform.forward * m_StateMachine.m_EntityAttributes.moveSpeed * deltaTime;
                     m_StateMachine.m_Rigidbody.MovePosition(m_StateMachine.transform.position + movement);
                 }
             }

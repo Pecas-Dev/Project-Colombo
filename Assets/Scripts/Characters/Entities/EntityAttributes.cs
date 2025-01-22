@@ -3,11 +3,7 @@ using UnityEngine;
 
 public class EntityAttributes : MonoBehaviour
 {
-    //this will be the states for all entites
-    public enum EntityState {IDLE, WALK, SPRINT, SNEAK, ATTACK, PATROL, ALERTED, CHASE, CIRCLE};
-
-
-    [Header("Movement Settings")]
+     [Header("Movement Settings")]
     [Tooltip("Controls the Movement Speed.")]
     public float moveSpeed = 5f;
 
@@ -30,23 +26,13 @@ public class EntityAttributes : MonoBehaviour
 
 
 
-
-
     [Header("Julian Variables (To REFACTOR [currentState])")]
-    public EntityState currentState; // THIS SHOULD NOT BE FOR EVERY ENTITY ANYMORE, ONLY FOR THE ENEMIES
     public int maxHealth;
     [HideInInspector] public int health;
-    public float walkSpeed; 
-    public float sprintSpeed; 
-    public float rotationSpeed;
-    [HideInInspector] public bool grounded;
-    public float jumpForce;
-    [HideInInspector] public Animator myAnimator;
+
 
     void Start()
     {
-        myAnimator = GetComponent<Animator>();
-        currentState = EntityState.IDLE;
         health = maxHealth;
     }
 
@@ -55,14 +41,6 @@ public class EntityAttributes : MonoBehaviour
         if (health <= 0) // Here can be stuff that is universal for all entities
         {
             //Destroy(this.gameObject);
-        }
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Ground"))
-        {
-            grounded = true;
         }
     }
 

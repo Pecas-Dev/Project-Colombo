@@ -40,7 +40,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             {
                 Quaternion startRotation = m_StateMachine.transform.rotation;
                 Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
-                m_StateMachine.m_Rigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, m_StateMachine.m_EntityAttributes.rotationSpeed * deltaTime));
+                m_StateMachine.m_Rigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, m_StateMachine.m_EntityAttributes.rotationSpeedPlayer * deltaTime));
             }
 
             m_Timer += deltaTime;

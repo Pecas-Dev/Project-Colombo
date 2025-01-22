@@ -18,7 +18,7 @@ public class PathCheckpoints : MonoBehaviour
     {
         currentTimer = 0;
         currentEnemy.GetComponent<EnemyAttributes>().onCheckpoint = false;
-        currentEnemy.GetComponent<EnemyAttributes>().NextControllPoint();
+        //currentEnemy.GetComponent<EnemyAttributes>().NextControllPoint();
     }
 
     public void None()
