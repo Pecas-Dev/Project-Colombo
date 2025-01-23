@@ -23,7 +23,7 @@ namespace ProjectColombo.Combat
         public delegate void OnDeath();
         public event OnDeath Died;
 
-        void Start()
+        void Awake()
         {
             currentHealth = maxHealth;
         }

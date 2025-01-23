@@ -1,3 +1,5 @@
+using ProjectColombo.Enemies.Mommotti;
+using ProjectColombo.Enemies.Pathfinding;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,6 +23,10 @@ namespace ProjectColombo.StateMachine.Mommotti
         //randomize circle speed and dircetion for variety
         int rotationDirection;
         float randomSpeedFactor;
+
+        //check if should switch to attacking
+        float attackCheckTimer = 0;
+        float intervallToCheckIfAttacking = 1f;
 
         public MommottiStateChase(MommottiStateMachine stateMachine) : base(stateMachine)
         {
@@ -59,6 +65,14 @@ namespace ProjectColombo.StateMachine.Mommotti
                 {
                     SetTarget(stateMachine.myMommottiAttributes.GetPlayerPosition());
                 }
+            }
+
+            attackCheckTimer += deltaTime;
+
+            if (attackCheckTimer >= intervallToCheckIfAttacking)
+            {
+                attackCheckTimer = 0;
+                CheckIfShouldAttack();
             }
 
             if (targetDirection.magnitude < stateMachine.myWeaponAttributes.reach)
@@ -121,6 +135,50 @@ namespace ProjectColombo.StateMachine.Mommotti
             }
 
             pathIndex = 0;
+        }
+
+        private void CheckIfShouldAttack()
+        {
+            Debug.Log("check for attacking switch");
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            float currentDistanceToPlayer = (stateMachine.myMommottiAttributes.playerPosition.position - stateMachine.transform.position).magnitude;
+            int currentAttackers = 0;
+
+            foreach (GameObject m in enemies)
+            {
+                MommottiAttributes otherAttributes = m.GetComponent<MommottiAttributes>();
+
+                //check other is mommotti
+                if (otherAttributes == null) continue;
+
+                //check if they are attacking currently
+                if (m.GetComponent<MommottiStateMachine>().currentState == MommottiStateMachine.MommottiState.ATTACK)
+                {
+                    currentAttackers++;
+                }
+            }
+
+            //check limit of attackers
+            if (currentAttackers >= stateMachine.myMommottiAttributes.attackersAtTheSameTime)
+            {
+                return;
+            }
+
+            foreach (GameObject m in enemies)
+            {
+                MommottiAttributes otherAttributes = m.GetComponent<MommottiAttributes>();
+
+                //check other is mommotti and attacking
+                if (otherAttributes == null) continue;
+                if (m.GetComponent<MommottiStateMachine>().currentState == MommottiStateMachine.MommottiState.ATTACK) continue;
+
+                //check if they are closer to player
+                if (currentDistanceToPlayer <= (otherAttributes.playerPosition.position - m.transform.position).magnitude)
+                {
+                    //switch to attacking
+                    stateMachine.SwitchState(new MommottiStateAttack(stateMachine));
+                }
+            }
         }
     }
 }

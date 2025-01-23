@@ -14,6 +14,7 @@ namespace ProjectColombo.Enemies.Mommotti
         public float circleDistance;
         public float circleTolerance;
         public float areaToAlertOthers;
+        public int attackersAtTheSameTime;
 
         [Header("Field of View Detection")]
         public float rangeFOVDetection;

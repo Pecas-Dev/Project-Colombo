@@ -1,67 +1,69 @@
-using ProjectColombo.Combat;
 using UnityEngine;
 
-public class WeaponAttributes : MonoBehaviour
+namespace ProjectColombo.Combat
 {
-    public int damage;
-    public float knockback;
-    public float cooldown;
-    float currentTimer;
-    public float reach;
-    public Collider hitbox;
-    [HideInInspector] public bool attack;
-    [HideInInspector] public Animator myAnimator;
-
-    private void Start()
+    public class WeaponAttributes : MonoBehaviour
     {
-        myAnimator = GetComponent<Animator>();
-        currentTimer = 0;
-        hitbox.enabled = attack;
-    }
+        public int damage;
+        public float knockback;
+        public float cooldown;
+        float currentTimer;
+        public float reach;
+        public Collider hitbox;
+        [HideInInspector] public bool attack;
+        [HideInInspector] public Animator myAnimator;
 
-    private void Update()
-    {
-        hitbox.enabled = attack;
-
-        if (attack)
+        private void Start()
         {
-            if (currentTimer == 0)
-            {
-                myAnimator.SetTrigger("Attack");
-            }
+            myAnimator = GetComponent<Animator>();
+            currentTimer = 0;
+            hitbox.enabled = attack;
+        }
 
-            currentTimer += Time.deltaTime;
+        private void Update()
+        {
+            hitbox.enabled = attack;
 
-            if (currentTimer >= cooldown)
+            if (attack)
             {
-                attack = false;
-                currentTimer = 0;
+                if (currentTimer == 0)
+                {
+                    myAnimator.SetTrigger("Attack");
+                }
+
+                currentTimer += Time.deltaTime;
+
+                if (currentTimer >= cooldown)
+                {
+                    attack = false;
+                    currentTimer = 0;
+                }
             }
         }
-    }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        // I left this outside the if statemnet below while we test that all behaviours are working, then we can specify which exact entities we want that are affected. 
-
-        //---------------------------------------------------------------------------------------------------------------------
-        HealthManager targetHealth = other.GetComponent<HealthManager>();
-
-        if (targetHealth != null)
+        private void OnTriggerEnter(Collider other)
         {
-            targetHealth.TakeDamage(damage);
+            // I left this outside the if statemnet below while we test that all behaviours are working, then we can specify which exact entities we want that are affected. 
 
-            Vector3 attackDirection = other.transform.position - transform.parent.position; //get direction from user to target
-            attackDirection.y = .5f; //could be increased to make the hit entity jump a bit
+            //---------------------------------------------------------------------------------------------------------------------
+            HealthManager targetHealth = other.GetComponent<HealthManager>();
 
-            other.GetComponent<Rigidbody>().AddForce(attackDirection.normalized * knockback, ForceMode.Impulse);
-        }
-        //---------------------------------------------------------------------------------------------------------------------
+            if (targetHealth != null)
+            {
+                targetHealth.TakeDamage(damage);
 
-        if (other.gameObject.tag is "Player" or "Enemy" && other.gameObject.tag != GetComponentInParent<EntityAttributes>().gameObject.tag)
-        {
-           
-            //other.GetComponent<EntityAttributes>().health -= damage;
+                Vector3 attackDirection = other.transform.position - transform.parent.position; //get direction from user to target
+                attackDirection.y = .5f; //could be increased to make the hit entity jump a bit
+
+                other.GetComponent<Rigidbody>().AddForce(attackDirection.normalized * knockback, ForceMode.Impulse);
+            }
+            //---------------------------------------------------------------------------------------------------------------------
+
+            if (other.gameObject.tag is "Player" or "Enemy" && other.gameObject.tag != GetComponentInParent<EntityAttributes>().gameObject.tag)
+            {
+
+                //other.GetComponent<EntityAttributes>().health -= damage;
+            }
         }
     }
 }

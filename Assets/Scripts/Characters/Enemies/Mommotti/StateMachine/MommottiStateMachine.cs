@@ -1,9 +1,8 @@
 using ProjectColombo.Enemies.Mommotti;
-using ProjectColombo.Input;
-using ProjectColombo.StateMachine.Player;
-using Unity.VisualScripting;
+using ProjectColombo.Enemies.Pathfinding;
+using ProjectColombo.Combat;
 using UnityEngine;
-using static ProjectColombo.StateMachine.Player.PlayerStateMachine;
+
 
 namespace ProjectColombo.StateMachine.Mommotti
 {
@@ -18,6 +17,7 @@ namespace ProjectColombo.StateMachine.Mommotti
         public MommottiAttributes myMommottiAttributes;
         public Pathfinding myPathfindingAlgorythm;
         public WeaponAttributes myWeaponAttributes;
+        public HealthManager myHealthManager;
 
         public MommottiState currentState;
 
@@ -32,6 +32,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             myMommottiAttributes = GetComponent<MommottiAttributes>();
             myPathfindingAlgorythm = GetComponent<Pathfinding>();
             myWeaponAttributes = GetComponentInChildren<WeaponAttributes>();
+            myHealthManager = GetComponent<HealthManager>();
         }
 
         void Start()
@@ -44,10 +45,10 @@ namespace ProjectColombo.StateMachine.Mommotti
         
         private void FixedUpdate() // regular update is used in the state machine
         {
-            //if (myEntityAttributes.health <= 0)
-            //{
-            //    SwitchState(new MommottiStateDeath(this));
-            //}
+            if (myHealthManager.CurrentHealth <= 0)
+            {
+                SwitchState(new MommottiStateDeath(this));
+            }
 
             //calculate speed for animator
             float currentSpeed = (positionLastFrame - transform.position).magnitude / Time.deltaTime;
@@ -80,8 +81,13 @@ namespace ProjectColombo.StateMachine.Mommotti
             if (myPathfindingAlgorythm == null)
             {
                 Debug.Log("Missing Pathfinding Algorythm in Mommotti!");
-            }            
-            
+            }
+
+            if (myHealthManager == null)
+            {
+                Debug.Log("Missing HealthManager in Mommotti!");
+            }
+
             if (myWeaponAttributes == null)
             {
                 Debug.Log("Missing Weapon in Mommotti!");
@@ -119,6 +125,11 @@ namespace ProjectColombo.StateMachine.Mommotti
             if (!TryGetComponent<Pathfinding>(out _))
             {
                 gameObject.AddComponent<Pathfinding>();
+            }
+
+            if (!TryGetComponent<HealthManager>(out _))
+            {
+                gameObject.AddComponent<HealthManager>();
             }
         }
     }

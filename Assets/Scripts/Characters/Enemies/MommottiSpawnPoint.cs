@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ProjectColombo.Enemies.Mommotti
 {
-    public class EnemySpawnPoint : MonoBehaviour
+    public class MommottiSpawnPoint : MonoBehaviour
     {
         public GameObject enemyType;
         public int minAmountEnemies;

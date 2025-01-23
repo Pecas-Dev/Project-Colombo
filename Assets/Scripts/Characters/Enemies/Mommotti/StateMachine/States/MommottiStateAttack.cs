@@ -1,3 +1,4 @@
+using ProjectColombo.Enemies.Mommotti;
 using ProjectColombo.StateMachine.Player;
 using UnityEngine;
 
@@ -6,6 +7,9 @@ namespace ProjectColombo.StateMachine.Mommotti
     public class MommottiStateAttack : MommottiBaseState
     {
         Vector3 targetDirection;
+        float attackCheckTimer = 0;
+        float intervallToCheckAttack = 1f;
+
         public MommottiStateAttack(MommottiStateMachine stateMachine) : base(stateMachine)
         {
         }
@@ -18,7 +22,15 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Tick(float deltaTime)
         {
-            targetDirection = GetPlayerPosition() - stateMachine.transform.position;
+            attackCheckTimer += deltaTime;
+
+            if (attackCheckTimer >= intervallToCheckAttack)
+            {
+                attackCheckTimer = 0;
+                CheckIfShouldStillAttack();
+            }
+
+            targetDirection = stateMachine.myMommottiAttributes.GetPlayerPosition() - stateMachine.transform.position;
 
             if (!stateMachine.myWeaponAttributes.attack && targetDirection.magnitude < stateMachine.myWeaponAttributes.reach)
             {
@@ -48,15 +60,27 @@ namespace ProjectColombo.StateMachine.Mommotti
         {
         }
 
-        private Vector3 GetPlayerPosition()
+        private void CheckIfShouldStillAttack()
         {
-            return GameObject.Find("Player").transform.position;
-        }
+            Debug.Log("check for attacking switch");
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            float currentDistanceToPlayer = (stateMachine.myMommottiAttributes.playerPosition.position - stateMachine.transform.position).magnitude;
 
-        public void Hit()
-        {
-            Debug.Log("Hit event triggered!");
-            // Add logic for handling the hit, e.g., dealing damage
+            foreach (GameObject m in enemies)
+            {
+                MommottiAttributes otherAttributes = m.GetComponent<MommottiAttributes>();
+
+                //check other is mommotti and attacking
+                if (otherAttributes == null) continue;
+                if (m.GetComponent<MommottiStateMachine>().currentState == MommottiStateMachine.MommottiState.ATTACK) continue;
+
+                //check if they are closer to player
+                if (currentDistanceToPlayer >= (otherAttributes.playerPosition.position - m.transform.position).magnitude)
+                {
+                    //switch to chasing
+                    stateMachine.SwitchState(new MommottiStateChase(stateMachine));
+                }
+            }
         }
     }
 }
