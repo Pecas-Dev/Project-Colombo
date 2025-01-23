@@ -44,10 +44,10 @@ namespace ProjectColombo.StateMachine.Mommotti
         
         private void FixedUpdate() // regular update is used in the state machine
         {
-            if (myEntityAttributes.health <= 0)
-            {
-                SwitchState(new MommottiStateDeath(this));
-            }
+            //if (myEntityAttributes.health <= 0)
+            //{
+            //    SwitchState(new MommottiStateDeath(this));
+            //}
 
             //calculate speed for animator
             float currentSpeed = (positionLastFrame - transform.position).magnitude / Time.deltaTime;
