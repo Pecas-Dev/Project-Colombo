@@ -1,6 +1,7 @@
 using ProjectColombo.Enemies.Mommotti;
 using ProjectColombo.Input;
 using ProjectColombo.StateMachine.Player;
+using Unity.VisualScripting;
 using UnityEngine;
 using static ProjectColombo.StateMachine.Player.PlayerStateMachine;
 
@@ -8,7 +9,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 {
     public class MommottiStateMachine : StateMachine
     {
-        public enum MommottiState { PATROL, ALERTED, CHASE, ATTACK };
+        public enum MommottiState { PATROL, ALERTED, CHASE, ATTACK, DEAD };
 
         [Header("Component References")]
         public Rigidbody myRigidbody;
@@ -18,7 +19,10 @@ namespace ProjectColombo.StateMachine.Mommotti
         public Pathfinding myPathfindingAlgorythm;
         public WeaponAttributes myWeaponAttributes;
 
-        public MommottiState m_CurrentState;
+        public MommottiState currentState;
+
+        //set speed for animator
+        Vector3 positionLastFrame;
 
         private void Awake()
         {
@@ -35,6 +39,20 @@ namespace ProjectColombo.StateMachine.Mommotti
             LogMissingReferenceErrors();
 
             SwitchState(new MommottiStatePatrol(this));
+            positionLastFrame = transform.position;
+        }
+        
+        private void FixedUpdate() // regular update is used in the state machine
+        {
+            if (myEntityAttributes.health <= 0)
+            {
+                SwitchState(new MommottiStateDeath(this));
+            }
+
+            //calculate speed for animator
+            float currentSpeed = (positionLastFrame - transform.position).magnitude / Time.deltaTime;
+            myAnimator.SetFloat("Speed", currentSpeed);
+            positionLastFrame = transform.position;
         }
 
         void LogMissingReferenceErrors()
@@ -73,7 +91,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         internal void SetCurrentState(MommottiState newState)
         {
-            m_CurrentState = newState;
+            currentState = newState;
         }
 
         private void Reset()

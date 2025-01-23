@@ -6,11 +6,14 @@ namespace ProjectColombo.Enemies.Mommotti
     {
         [HideInInspector]public Transform playerPosition;
         float currentDistanceToPlayer;
+        [HideInInspector] public Vector3 spawnPointLocation;
+        [HideInInspector] public float patrolAreaDistance;
 
         [Header("Adjustables")]
         public float alertedBufferTime;
         public float circleDistance;
         public float circleTolerance;
+        public float areaToAlertOthers;
 
         [Header("Field of View Detection")]
         public float rangeFOVDetection;
@@ -60,27 +63,32 @@ namespace ProjectColombo.Enemies.Mommotti
             if (currentDistanceToPlayer <= rangeFOVDetection)
             {
                 Vector3 directionToPlayer = (playerPosition.position - transform.position).normalized;
+                directionToPlayer.y = 0;
 
                 float anglePlayer = Vector3.Angle(transform.forward, directionToPlayer);
 
                 if (anglePlayer <= angleFOVDetection / 2)
                 {
                     RaycastHit hit;
-                    if (Physics.SphereCast(transform.position, 0.5f, directionToPlayer, out hit, rangeFOVDetection, 3)) // You can adjust the radius (0.5f) depending on your needs
+                    float capsuleRadius = 0.1f;  
+                    Vector3 top = transform.position + Vector3.up * capsuleRadius;
+                    Vector3 bottom = transform.position - Vector3.up * capsuleRadius;
+
+                    if (Physics.CapsuleCast(top, bottom, capsuleRadius, directionToPlayer, out hit, rangeFOVDetection))
                     {
-                        if (hit.collider.gameObject == playerPosition.gameObject)
+                        if (hit.collider.CompareTag("Player"))
                         {
-                            //Debug.DrawLine(transform.position, transform.position + directionToPlayer * m_RangeFOVDetection, Color.green);
+                            Debug.DrawRay(transform.position, directionToPlayer * hit.distance, Color.green);
                             return true;
                         }
                     }
                 }
+
+                Debug.DrawRay(transform.position, directionToPlayer * rangeFOVDetection, Color.red);
             }
 
             return false;
         }
-
-
 
         public bool SoundDetectionCheck()
         {
@@ -90,6 +98,11 @@ namespace ProjectColombo.Enemies.Mommotti
             }
 
             return false;
+        }
+
+        public Vector3 GetPlayerPosition()
+        {
+            return playerPosition.position;
         }
     }
 }

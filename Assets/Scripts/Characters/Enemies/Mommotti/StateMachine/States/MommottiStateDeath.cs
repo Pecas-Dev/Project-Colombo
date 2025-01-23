@@ -3,16 +3,16 @@ using UnityEngine;
 
 namespace ProjectColombo.StateMachine.Mommotti
 {
-    public class MommottiStateIdle : MommottiBaseState
+    public class MommottiStateDeath : MommottiBaseState
     {
-        public MommottiStateIdle(MommottiStateMachine stateMachine) : base(stateMachine)
+        public MommottiStateDeath(MommottiStateMachine stateMachine) : base(stateMachine)
         {
         }
 
         public override void Enter()
         {
-            stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.PATROL);
-            Debug.Log("Mommotti entered xxxxxxxxxxxx State");
+            stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.DEAD);
+            Debug.Log("Mommotti entered Death State");
         }
 
         public override void Tick(float deltaTime)

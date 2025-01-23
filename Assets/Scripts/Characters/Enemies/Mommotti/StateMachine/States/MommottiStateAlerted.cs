@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProjectColombo.StateMachine.Mommotti
@@ -13,7 +14,7 @@ namespace ProjectColombo.StateMachine.Mommotti
         public override void Enter()
         {
             timer = 0;
-            alertedPosition = GetPlayerPosition();
+            alertedPosition = stateMachine.myMommottiAttributes.GetPlayerPosition();
             stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.ALERTED);
             Debug.Log("Mommotti entered Alerted State");
         }
@@ -22,10 +23,24 @@ namespace ProjectColombo.StateMachine.Mommotti
         {
             if (stateMachine.myMommottiAttributes.FieldOfViewCheck() || stateMachine.myMommottiAttributes.SoundDetectionCheck())
             {
-                alertedPosition = GetPlayerPosition();
+                alertedPosition = stateMachine.myMommottiAttributes.GetPlayerPosition();
 
                 if (timer > stateMachine.myMommottiAttributes.alertedBufferTime)
                 {
+                    GameObject[] allMommotti = GameObject.FindGameObjectsWithTag("Enemy");
+
+                    foreach (GameObject m in allMommotti)
+                    {
+                        var mStateMachine = m.GetComponent<MommottiStateMachine>();
+                        if (mStateMachine == null) continue;
+                        if (m == stateMachine.gameObject) continue;
+                        
+                        if ((m.transform.position - stateMachine.transform.position).magnitude < stateMachine.myMommottiAttributes.areaToAlertOthers)
+                        {
+                            mStateMachine.SwitchState(new MommottiStateChase(mStateMachine));
+                        }
+                    }
+
                     stateMachine.SwitchState(new MommottiStateChase(stateMachine));
                 }
             }
@@ -48,11 +63,6 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Exit()
         {
-        }
-
-        private Vector3 GetPlayerPosition()
-        {
-            return GameObject.Find("Player").transform.position;
         }
     }
 }

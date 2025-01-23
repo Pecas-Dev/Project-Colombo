@@ -1,45 +1,41 @@
 using UnityEngine;
-using System.Collections.Generic;
-using System.Xml.XPath;
 
-public class EnemySpawnPoint : MonoBehaviour
+
+namespace ProjectColombo.Enemies.Mommotti
 {
-    [HideInInspector] public bool cleared = false;
-    public GameObject enemyType;
-    public int minAmountEnemies;
-    public int maxAmountEnemies;
-
-    //[HideInInspector]
-    public List<GameObject> spawnGroup;
-    public string pathName;
-
-    private void Start()
+    public class EnemySpawnPoint : MonoBehaviour
     {
-        int amountOfEnemies = Random.Range(minAmountEnemies, maxAmountEnemies+1);
+        public GameObject enemyType;
+        public int minAmountEnemies;
+        public int maxAmountEnemies;
 
-        if (enemyType == null || amountOfEnemies == 0)
+        public float patrolAreaDistance;
+
+        private void Start()
         {
-            cleared = true;
-            return;
+            int amountOfEnemies = Random.Range(minAmountEnemies, maxAmountEnemies + 1);
+
+            if (enemyType == null || amountOfEnemies == 0)
+            {
+                return;
+            }
+
+            float spaceX = transform.position.x - amountOfEnemies / 2;
+
+            for (int i = 0; i < amountOfEnemies; i++)
+            {
+                Vector3 spawnPosition = new Vector3(spaceX + i, transform.position.y, transform.position.z);
+                GameObject newEnemy = Instantiate(enemyType, spawnPosition, transform.rotation);
+                newEnemy.GetComponent<MommottiAttributes>().spawnPointLocation = transform.position;
+                newEnemy.GetComponent<MommottiAttributes>().patrolAreaDistance = patrolAreaDistance;
+            }
         }
 
-        float spaceX = transform.position.x - amountOfEnemies / 2;
-
-        for (int i = 0; i < amountOfEnemies; i++)
+        private void OnDrawGizmos()
         {
-            Vector3 spawnPosition = new Vector3(spaceX + i, transform.position.y, transform.position.z);
-            GameObject newEnemy = Instantiate(enemyType, spawnPosition, transform.rotation);
-            spawnGroup.Add(newEnemy);
-            newEnemy.GetComponent<EnemyAttributes>().pathToFollowName = pathName;
-            newEnemy.GetComponent<EnemyAttributes>().patrolMode = PatrolMode.RANDOM;
-        }
-    }
+            Gizmos.color = Color.blue;
 
-    private void Update()
-    {
-        if (spawnGroup.Count <= 0)
-        {
-            cleared = true;
+            Gizmos.DrawWireSphere(transform.position, patrolAreaDistance);
         }
     }
 }

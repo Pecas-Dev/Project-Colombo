@@ -1,17 +1,23 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace ProjectColombo.StateMachine.Mommotti
 {
     public class MommottiStatePatrol : MommottiBaseState
     {
-        //public Vector3 m_Target;
+        //pathfinding
         List<Node> currentPath;
         int pathIndex = 0;
         Node lastWalkableNode; //in for now if we need it
         Vector3 movingDirection;
-        float detectionChecksRate = 0.5f;
+
+        //player detection
+        float checkInterval = 0.5f;
         float timer;
+
+        //patrol points
+        bool onSpawnPoint;
 
         public MommottiStatePatrol(MommottiStateMachine stateMachine) : base(stateMachine)
         {
@@ -20,7 +26,17 @@ namespace ProjectColombo.StateMachine.Mommotti
         public override void Enter()
         {
             timer = 0;
-            SetTarget(GameObject.Find("Player").transform.position);
+            onSpawnPoint = true;
+
+            if (stateMachine.myMommottiAttributes.spawnPointLocation == null)
+            {
+                stateMachine.myMommottiAttributes.spawnPointLocation = stateMachine.transform.position;
+                stateMachine.myMommottiAttributes.patrolAreaDistance = 25f;
+            }
+
+
+            lastWalkableNode = stateMachine.myPathfindingAlgorythm.GetNode(stateMachine.transform.position);
+            SetTarget(GetNextPatrolPoint());
             pathIndex = 0;
             stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.PATROL);
             Debug.Log("Mommotti entered Patrol State");
@@ -30,7 +46,7 @@ namespace ProjectColombo.StateMachine.Mommotti
         {
             timer += deltaTime;
 
-            if (timer > detectionChecksRate)
+            if (timer > checkInterval)
             {           
                 if (stateMachine.myMommottiAttributes.FieldOfViewCheck() || stateMachine.myMommottiAttributes.SoundDetectionCheck())
                 {
@@ -38,12 +54,18 @@ namespace ProjectColombo.StateMachine.Mommotti
                     return;
                 }
 
+                Node currentNode = stateMachine.myPathfindingAlgorythm.GetNode(stateMachine.transform.position);
+                if (currentNode.walkable)
+                {
+                    lastWalkableNode = currentNode;
+                }
+
                 timer = 0;
             }
             
             if (currentPath != null && pathIndex < currentPath.Count)
             {
-                //m_lastWalkableNode = m_CurrentPath[m_PathIndex];
+                lastWalkableNode = currentPath[pathIndex];
                 movingDirection = currentPath[pathIndex].worldPosition - stateMachine.transform.position;
 
                 if (movingDirection.magnitude < stateMachine.myEntityAttributes.moveSpeed * deltaTime) // Reached current path node
@@ -54,6 +76,7 @@ namespace ProjectColombo.StateMachine.Mommotti
                     {
                         currentPath = null;
                         pathIndex = 0;
+                        SetTarget(GetNextPatrolPoint());
                     }
                 }
                 else
@@ -75,10 +98,44 @@ namespace ProjectColombo.StateMachine.Mommotti
         {
         }
 
+        private Vector3 GetNextPatrolPoint()
+        {
+            if (onSpawnPoint)
+            {
+                onSpawnPoint = false;
+                Vector3 nextPosition;
+                Node nextNode;
+
+                for (int i = 0; i < 10; i++)
+                {
+                    Vector2 center = new Vector2(stateMachine.myMommottiAttributes.spawnPointLocation.x, stateMachine.myMommottiAttributes.spawnPointLocation.z);
+                    Vector2 randomInCircle = Random.insideUnitCircle * stateMachine.myMommottiAttributes.patrolAreaDistance + center;
+                    nextPosition = new Vector3(randomInCircle.x, stateMachine.transform.position.y, randomInCircle.y);
+
+                    nextNode = stateMachine.myPathfindingAlgorythm.GetNode(nextPosition);
+
+                    if (nextNode != null && nextNode.walkable) return nextPosition;
+                } 
+
+                return stateMachine.myMommottiAttributes.spawnPointLocation;
+            }
+            else
+            {
+                onSpawnPoint = true;
+                return stateMachine.myMommottiAttributes.spawnPointLocation;
+            }
+        }
+
         public void SetTarget(Vector3 newTarget)
         {
-            //m_Target = newTarget;
             currentPath = stateMachine.myPathfindingAlgorythm.FindPath(stateMachine.transform.position, newTarget);
+
+            if (currentPath == null) //returns null if not walkable
+            {
+                currentPath = new List<Node>(); // Initialize the list
+                currentPath.Add(lastWalkableNode);
+            }
+
             pathIndex = 0;
         }
     }

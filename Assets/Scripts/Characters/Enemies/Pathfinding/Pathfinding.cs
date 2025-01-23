@@ -93,5 +93,10 @@ public class Pathfinding : MonoBehaviour
         path.Reverse();
         return path;
     }
+
+    public Node GetNode(Vector3 position)
+    {
+        return gridManager.GetNodeFromWorldPosition(position);
+    }
 }
 
