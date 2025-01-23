@@ -59,7 +59,7 @@ namespace ProjectColombo.Combat
             {
                 Debug.Log($"Left hand did a hit on: {col.name}!");
 
-                TestHealth target = col.GetComponent<TestHealth>();
+                HealthManager target = col.GetComponent<HealthManager>();
 
                 if (target != null)
                 {
@@ -115,7 +115,7 @@ namespace ProjectColombo.Combat
             {
                 Debug.Log($"Right hand did a hit on: {col.name}!");
 
-                TestHealth target = col.GetComponent<TestHealth>();
+                HealthManager target = col.GetComponent<HealthManager>();
 
                 if (target != null)
                 {

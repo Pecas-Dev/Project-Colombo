@@ -23,6 +23,9 @@ namespace ProjectColombo.StateMachine.Player
 
             Debug.Log("Entered Attack State");
 
+            // Not All Inputs Should be disabled since we need to enter Combo, and we also need to add so that we can still rotate the player whilst Attacking
+            // We also need to add a "Hold Animation at the End" if button is still pressed.
+
             //m_playerStateMachine.GameInputSO.DisableAllInputsExceptRoll();
 
             m_playerStateMachine.PlayerAnimator.CrossFadeInFixedTime(attack.AnimationName, attack.TransitionDuration);

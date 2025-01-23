@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 979858060377743278}
   - component: {fileID: 7572785823522241579}
   - component: {fileID: 5712849590998981383}
-  - component: {fileID: 612237888976631645}
+  - component: {fileID: 2447780344296738555}
   m_Layer: 0
   m_Name: Mometti
   m_TagString: Enemy
@@ -172,19 +172,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 6
   rotationSpeedPlayer: 500
-  acceleration: 17.5
-  deceleration: 15
-  graceTime: 0.1
-  rollDelay: 0.375
-  currentState: 0
   maxHealth: 5
   health: 5
-  walkSpeed: 2
-  sprintSpeed: 8
-  rotationSpeed: 280
-  grounded: 0
-  jumpForce: 5
-  myAnimator: {fileID: 0}
 --- !u!114 &7572785823522241579
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -214,7 +203,6 @@ MonoBehaviour:
   enableFOVDetection: 1
   rangeFOV: 15
   angleFOV: 100
-  noDetectionState: 0000000003000000
   enableSoundDetection: 1
   rangeSD: 8
 --- !u!114 &5712849590998981383
@@ -230,7 +218,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridManager: {fileID: 0}
---- !u!114 &612237888976631645
+--- !u!114 &2447780344296738555
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -239,9 +227,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 5567327943567107972}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a592389c81f1e344da35bf40603dbe11, type: 3}
+  m_Script: {fileID: 11500000, guid: de7e534c6d0c808458b38f233fad212b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHealth: 100
+  currentHealth: 0
 --- !u!1001 &7434375716547601814
 PrefabInstance:
   m_ObjectHideFlags: 0

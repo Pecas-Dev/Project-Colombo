@@ -252,6 +252,7 @@ GameObject:
   - component: {fileID: 3167643240280868384}
   - component: {fileID: 5479666140366280027}
   - component: {fileID: 7783411606347366640}
+  - component: {fileID: 4069275368503968586}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -460,19 +461,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   rotationSpeedPlayer: 900
-  acceleration: 17.5
-  deceleration: 15
-  graceTime: 0.1
-  rollDelay: 0.375
-  currentState: 0
   maxHealth: 0
   health: 100
-  walkSpeed: 0
-  sprintSpeed: 0
-  rotationSpeed: 0
-  grounded: 0
-  jumpForce: 0
-  myAnimator: {fileID: 0}
+--- !u!114 &4069275368503968586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6776689323991224022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de7e534c6d0c808458b38f233fad212b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
 --- !u!1001 &127127829817156231
 PrefabInstance:
   m_ObjectHideFlags: 0

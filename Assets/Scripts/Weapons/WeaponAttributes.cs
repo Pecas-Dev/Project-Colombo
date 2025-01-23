@@ -1,3 +1,4 @@
+using ProjectColombo.Combat;
 using UnityEngine;
 
 public class WeaponAttributes : MonoBehaviour
@@ -28,7 +29,7 @@ public class WeaponAttributes : MonoBehaviour
             {
                 myAnimator.SetTrigger("Attack");
             }
-            
+
             currentTimer += Time.deltaTime;
 
             if (currentTimer >= cooldown)
@@ -41,13 +42,26 @@ public class WeaponAttributes : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag is "Player" or "Enemy" && other.gameObject.tag != GetComponentInParent<EntityAttributes>().gameObject.tag)
+        // I left this outside the if statemnet below while we test that all behaviours are working, then we can specify which exact entities we want that are affected. 
+
+        //---------------------------------------------------------------------------------------------------------------------
+        HealthManager targetHealth = other.GetComponent<HealthManager>();
+
+        if (targetHealth != null)
         {
+            targetHealth.TakeDamage(damage);
+
             Vector3 attackDirection = other.transform.position - transform.parent.position; //get direction from user to target
             attackDirection.y = .5f; //could be increased to make the hit entity jump a bit
 
             other.GetComponent<Rigidbody>().AddForce(attackDirection.normalized * knockback, ForceMode.Impulse);
-            other.GetComponent<EntityAttributes>().health -= damage;
+        }
+        //---------------------------------------------------------------------------------------------------------------------
+
+        if (other.gameObject.tag is "Player" or "Enemy" && other.gameObject.tag != GetComponentInParent<EntityAttributes>().gameObject.tag)
+        {
+           
+            //other.GetComponent<EntityAttributes>().health -= damage;
         }
     }
 }

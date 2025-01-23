@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class EntityAttributes : MonoBehaviour
 {
-     [Header("Movement Settings")]
+    [Header("Movement Settings")]
     [Tooltip("Controls the Movement Speed.")]
     public float moveSpeed = 5f;
 
@@ -11,24 +11,10 @@ public class EntityAttributes : MonoBehaviour
     public float rotationSpeedPlayer = 720f;
 
 
-    [Header("Movement Settings - DEPRECATED")]
-    [Tooltip("Controls the Acceleration. - DEPRECATED")]
-    public float acceleration = 10f;
-
-    [Tooltip("Controls the Deceleration. - DEPRECATED")]
-    public float deceleration = 10f;
-
-    [Tooltip("Controls the Grace Period for maintaining velocity after input stops (Time in seconds). - DEPRECATED")]
-    public float graceTime = 0.1f;
-
-    [Tooltip("Delay after rolling before allowing another roll (Time in seconds). - DEPRECATED")]
-    public float rollDelay = 0.2f;
-
-
-
-    [Header("Julian Variables (To REFACTOR [currentState])")]
+    [Header("Health Variables")]
+    [Tooltip("Max Health of the Entity")]
     public int maxHealth;
-    [HideInInspector] public int health;
+    public int health;
 
 
     void Start()
