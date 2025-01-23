@@ -5,56 +5,55 @@ namespace ProjectColombo.StateMachine.Mommotti
 {
     public class MommottiStateChase : MommottiBaseState
     {
-        Vector3 m_TargetDirection;
+        Vector3 targetDirection;
         public MommottiStateChase(MommottiStateMachine stateMachine) : base(stateMachine)
         {
         }
 
         public override void Enter()
         {
-            m_TargetDirection = GetPlayerPosition() - m_StateMachine.transform.position;
-            m_StateMachine.SetCurrentState(MommottiStateMachine.MommottiState.CHASE);
+            targetDirection = GetPlayerPosition() - stateMachine.transform.position;
+            stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.CHASE);
             Debug.Log("Mommotti entered Chase State");
         }
 
         public override void Tick(float deltaTime)
         {
-            m_TargetDirection = GetPlayerPosition() - m_StateMachine.transform.position;
+            targetDirection = GetPlayerPosition() - stateMachine.transform.position;
 
-            if (m_TargetDirection.magnitude < m_StateMachine.m_WeaponAttributes.reach)
+            if (targetDirection.magnitude < stateMachine.myWeaponAttributes.reach)
             {
-                m_StateMachine.SwitchState(new MommottiStateAttack(m_StateMachine));
+                stateMachine.SwitchState(new MommottiStateAttack(stateMachine));
             }
 
             //rotate towards player
-            if (Vector3.Angle(m_StateMachine.transform.forward, m_TargetDirection.normalized) > 1f)
+            if (Vector3.Angle(stateMachine.transform.forward, targetDirection.normalized) > 1f)
             {
-                Quaternion startRotation = m_StateMachine.transform.rotation;
-                Quaternion targetRotation = Quaternion.LookRotation(m_TargetDirection.normalized);
-                m_StateMachine.m_Rigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, m_StateMachine.m_EntityAttributes.rotationSpeedPlayer * deltaTime));
+                Quaternion startRotation = stateMachine.transform.rotation;
+                Quaternion targetRotation = Quaternion.LookRotation(targetDirection.normalized);
+                stateMachine.myRigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, stateMachine.myEntityAttributes.rotationSpeedPlayer * deltaTime));
             }
 
             //adjust speed depending on distance -> fast when far away, slow when close
-            float speedFactor = 1 + m_TargetDirection.magnitude / m_StateMachine.m_MommottiAttributes.m_CircleDistance;
-            float currentSpeed = m_StateMachine.m_EntityAttributes.moveSpeed * speedFactor;
-            Vector3 movingDirection = m_StateMachine.transform.forward; //generally move forward
+            float speedFactor = 1 + targetDirection.magnitude / stateMachine.myMommottiAttributes.circleDistance;
+            float currentSpeed = stateMachine.myEntityAttributes.moveSpeed * speedFactor;
+            Vector3 movingDirection = stateMachine.transform.forward; //generally move forward
 
-            if (m_TargetDirection.magnitude < m_StateMachine.m_MommottiAttributes.m_CircleDistance) //if too close and not attacking go back
+            if (targetDirection.magnitude < stateMachine.myMommottiAttributes.circleDistance) //if too close and not attacking go back
             {
-                movingDirection = -m_StateMachine.transform.forward; 
+                movingDirection = -stateMachine.transform.forward; 
             }
-            else if (m_TargetDirection.magnitude < m_StateMachine.m_MommottiAttributes.m_CircleDistance + m_StateMachine.m_MommottiAttributes.m_CircleTolerance) //if in tolerance zone circle
+            else if (targetDirection.magnitude < stateMachine.myMommottiAttributes.circleDistance + stateMachine.myMommottiAttributes.circleTolerance) //if in tolerance zone circle
             {
                 currentSpeed += 0.5f;
-                movingDirection = m_StateMachine.transform.right;
+                movingDirection = stateMachine.transform.right;
             }
 
-            m_StateMachine.m_Rigidbody.MovePosition((m_StateMachine.transform.position + (currentSpeed * deltaTime * movingDirection)));
+            stateMachine.myRigidbody.MovePosition((stateMachine.transform.position + (currentSpeed * deltaTime * movingDirection)));
         }
 
         public override void Exit()
         {
-            Debug.Log("Mommotti exited Chase State");
         }
 
         private Vector3 GetPlayerPosition()

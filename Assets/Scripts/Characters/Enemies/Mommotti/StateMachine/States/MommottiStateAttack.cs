@@ -5,48 +5,47 @@ namespace ProjectColombo.StateMachine.Mommotti
 {
     public class MommottiStateAttack : MommottiBaseState
     {
-        Vector3 m_TargetDirection;
+        Vector3 targetDirection;
         public MommottiStateAttack(MommottiStateMachine stateMachine) : base(stateMachine)
         {
         }
 
         public override void Enter()
         {
-            m_StateMachine.SetCurrentState(MommottiStateMachine.MommottiState.ATTACK);
+            stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.ATTACK);
             Debug.Log("Mommotti entered Attack State");
         }
 
         public override void Tick(float deltaTime)
         {
-            m_TargetDirection = GetPlayerPosition() - m_StateMachine.transform.position;
+            targetDirection = GetPlayerPosition() - stateMachine.transform.position;
 
-            if (!m_StateMachine.m_WeaponAttributes.attack && m_TargetDirection.magnitude < m_StateMachine.m_WeaponAttributes.reach)
+            if (!stateMachine.myWeaponAttributes.attack && targetDirection.magnitude < stateMachine.myWeaponAttributes.reach)
             {
-                m_StateMachine.m_Animator.SetTrigger("Attack");
-                m_StateMachine.m_WeaponAttributes.attack = true;
+                stateMachine.myAnimator.SetTrigger("Attack");
+                stateMachine.myWeaponAttributes.attack = true;
             }
 
             //rotate towards player
-            if (Vector3.Angle(m_StateMachine.transform.forward, m_TargetDirection.normalized) > 1f)
+            if (Vector3.Angle(stateMachine.transform.forward, targetDirection.normalized) > 1f)
             {
-                Quaternion startRotation = m_StateMachine.transform.rotation;
-                Quaternion targetRotation = Quaternion.LookRotation(m_TargetDirection.normalized);
-                m_StateMachine.m_Rigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, m_StateMachine.m_EntityAttributes.rotationSpeedPlayer * deltaTime));
+                Quaternion startRotation = stateMachine.transform.rotation;
+                Quaternion targetRotation = Quaternion.LookRotation(targetDirection.normalized);
+                stateMachine.myRigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, stateMachine.myEntityAttributes.rotationSpeedPlayer * deltaTime));
             }
 
             //move to player if to far away
-            if (m_TargetDirection.magnitude > m_StateMachine.m_WeaponAttributes.reach)
+            if (targetDirection.magnitude > stateMachine.myWeaponAttributes.reach)
             {
-                float currentSpeed = m_StateMachine.m_EntityAttributes.moveSpeed;
-                Vector3 movingDirection = m_StateMachine.transform.forward;
+                float currentSpeed = stateMachine.myEntityAttributes.moveSpeed;
+                Vector3 movingDirection = stateMachine.transform.forward;
 
-                m_StateMachine.m_Rigidbody.MovePosition((m_StateMachine.transform.position + (currentSpeed * deltaTime * movingDirection)));
+                stateMachine.myRigidbody.MovePosition((stateMachine.transform.position + (currentSpeed * deltaTime * movingDirection)));
             }
         }
 
         public override void Exit()
         {
-            Debug.Log("Mommotti exited Attack State");
         }
 
         private Vector3 GetPlayerPosition()

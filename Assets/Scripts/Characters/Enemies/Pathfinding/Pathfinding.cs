@@ -82,8 +82,6 @@ public class Pathfinding : MonoBehaviour
 
     List<Node> RetracePath(Node startNode, Node endNode)
     {
-        Debug.Log("test retrace path");
-
         List<Node> path = new List<Node>();
         Node currentNode = endNode;
 

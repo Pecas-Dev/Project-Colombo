@@ -2948,6 +2948,10 @@ PrefabInstance:
       value: 111
       objectReference: {fileID: 0}
     - target: {fileID: 2332229374108333747, guid: a6fd0d0f886e9e149a9eafe46ddfb70c, type: 3}
+      propertyPath: showGizmos
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2332229374108333747, guid: a6fd0d0f886e9e149a9eafe46ddfb70c, type: 3}
       propertyPath: gizmosOpacity
       value: 0.608
       objectReference: {fileID: 0}
@@ -21477,9 +21481,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37969a7c47791514891597ead27afe12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  amountAttackersAtTheSameTime: 2
-  amountCurrentlyAttacking: 0
-  everyoneAlerted: 0
 --- !u!114 &1820586509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21494,7 +21495,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cleared: 0
   enemyType: {fileID: 5567327943567107972, guid: de60644a346ecdc48a78d2fd55eace06, type: 3}
-  amountOfEnemies: 5
+  minAmountEnemies: 0
+  maxAmountEnemies: 0
   spawnGroup: []
   pathName: MomettiPath1
 --- !u!4 &1820586510
@@ -25952,13 +25954,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8ebb1c01d5e89e4d84f74cc72e04321, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_PlayerPosition: {fileID: 0}
-  m_AlertedBufferTime: 3
-  m_CircleDistance: 5
-  m_CircleTolerance: 1
-  m_RangeFOVDetection: 10
-  m_AngleFOVDetection: 120
-  m_RangeSoundDetection: 6
+  playerPosition: {fileID: 0}
+  alertedBufferTime: 3
+  circleDistance: 3
+  circleTolerance: 1
+  rangeFOVDetection: 10
+  angleFOVDetection: 120
+  rangeSoundDetection: 5
 --- !u!114 &5512891197019351799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25971,21 +25973,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b84785cdebf3ee448922efb523a638fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  maxHealth: 10
+  health: 0
+  moveSpeed: 3
   rotationSpeedPlayer: 720
   acceleration: 10
   deceleration: 10
   graceTime: 0.1
   rollDelay: 0.2
-  currentState: 0
-  maxHealth: 10
-  health: 0
-  walkSpeed: 5
-  sprintSpeed: 0
-  rotationSpeed: 720
-  grounded: 0
-  jumpForce: 0
-  myAnimator: {fileID: 0}
 --- !u!95 &5512891197019351800
 Animator:
   serializedVersion: 7
@@ -26047,12 +26042,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7247aaa732bc662449309ad3e8bc3618, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Rigidbody: {fileID: 0}
-  m_Animator: {fileID: 0}
-  m_EntityAttributes: {fileID: 0}
-  m_MommottiAttributes: {fileID: 0}
-  m_PathfindingAlgorythm: {fileID: 0}
-  m_WeaponAttributes: {fileID: 0}
+  myRigidbody: {fileID: 0}
+  myAnimator: {fileID: 0}
+  myEntityAttributes: {fileID: 0}
+  myMommottiAttributes: {fileID: 0}
+  myPathfindingAlgorythm: {fileID: 0}
+  myWeaponAttributes: {fileID: 0}
   m_CurrentState: 0
 --- !u!1001 &6069206699970504501
 PrefabInstance:
