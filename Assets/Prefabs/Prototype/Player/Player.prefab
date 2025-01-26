@@ -353,7 +353,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6776689323991224022}
   serializedVersion: 4
-  m_Mass: 5
+  m_Mass: 1
   m_Drag: 0.5
   m_AngularDrag: 0.45
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -411,6 +411,7 @@ MonoBehaviour:
   <GameInputSO>k__BackingField: {fileID: 11400000, guid: 4cbc555f8dd252548884cda6a4b53710, type: 2}
   <PlayerAnimatorScript>k__BackingField: {fileID: 0}
   <EntityAttributes>k__BackingField: {fileID: 0}
+  <Targeter>k__BackingField: {fileID: 0}
   <Attacks>k__BackingField:
   - <AnimationName>k__BackingField: Attack1
     <TransitionDuration>k__BackingField: 0.1
@@ -461,8 +462,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   rotationSpeedPlayer: 900
-  maxHealth: 0
-  health: 100
 --- !u!114 &4069275368503968586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,6 +475,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
+  currentHealth: 0
 --- !u!1001 &127127829817156231
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -26,6 +26,7 @@ namespace ProjectColombo.StateMachine.Player
         [field: SerializeField] public GameInputSO GameInputSO { get; private set; }
         [field: SerializeField] public PlayerAnimator PlayerAnimatorScript { get; private set; }
         [field: SerializeField] public EntityAttributes EntityAttributes { get; private set; }
+        [field: SerializeField] public Targeter Targeter { get; private set; }
         [field: SerializeField] public Attack[] Attacks { get; private set; }
 
 
@@ -45,6 +46,7 @@ namespace ProjectColombo.StateMachine.Player
 
             PlayerAnimatorScript = GetComponent<PlayerAnimator>();
             EntityAttributes = GetComponent<EntityAttributes>();
+            Targeter = GetComponentInChildren<Targeter>();
 
             PlayerRigidbody = GetComponent<Rigidbody>();
             PlayerAnimator = GetComponent<Animator>();

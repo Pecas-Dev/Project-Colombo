@@ -11,6 +11,8 @@ namespace ProjectColombo.StateMachine.Player
 
         float previousFrameTime;
 
+        float _attackImpulseForce = 5.0f;
+
 
         public PlayerAttackState(PlayerStateMachine playerStateMachine, int attackIndex) : base(playerStateMachine)
         {
@@ -29,6 +31,15 @@ namespace ProjectColombo.StateMachine.Player
             //m_playerStateMachine.GameInputSO.DisableAllInputsExceptRoll();
 
             m_playerStateMachine.PlayerAnimator.CrossFadeInFixedTime(attack.AnimationName, attack.TransitionDuration);
+
+            var targeter = m_playerStateMachine.Targeter;
+
+            if (targeter != null && targeter.isTargetingActive && targeter.currentTarget != null)
+            {
+                FaceLockedTargetInstant();
+            }
+
+            ApplyAttackImpulse();
         }
 
         public override void Tick(float deltaTime)
@@ -45,7 +56,7 @@ namespace ProjectColombo.StateMachine.Player
 
             if (normalizedTime >= previousFrameTime && normalizedTime < 1.0f)
             {
-                if(m_playerStateMachine.GameInputSO.AttackPressed)
+                if (m_playerStateMachine.GameInputSO.AttackPressed)
                 {
                     ComboAttack(normalizedTime);
                 }
@@ -56,6 +67,8 @@ namespace ProjectColombo.StateMachine.Player
             }
 
             previousFrameTime = normalizedTime;
+
+            FaceLockedTarget(deltaTime);
         }
 
         public override void Exit()
@@ -99,6 +112,78 @@ namespace ProjectColombo.StateMachine.Player
             {
                 return 0.0f;
             }
+        }
+
+        void FaceLockedTarget(float deltaTime)
+        {
+            var targeter = m_playerStateMachine.Targeter;
+
+            if (targeter == null || !targeter.isTargetingActive || targeter.currentTarget == null)
+            {
+                return;
+            }
+
+            Vector3 toTarget = targeter.currentTarget.transform.position - m_playerStateMachine.PlayerRigidbody.position;
+
+            toTarget.y = 0f;
+
+            if (toTarget.sqrMagnitude < 0.0001f)
+            {
+                return;
+            }
+
+            toTarget.Normalize();
+
+            Quaternion targetRotation = Quaternion.LookRotation(toTarget);
+
+            m_playerStateMachine.PlayerRigidbody.rotation = Quaternion.RotateTowards(m_playerStateMachine.PlayerRigidbody.rotation, targetRotation, m_playerStateMachine.EntityAttributes.rotationSpeedPlayer * deltaTime);
+        }
+
+        void FaceLockedTargetInstant()
+        {
+            var targeter = m_playerStateMachine.Targeter;
+
+            if (targeter == null || !targeter.isTargetingActive || targeter.currentTarget == null)
+            {
+                return;
+            }
+
+            Vector3 toTarget = targeter.currentTarget.transform.position - m_playerStateMachine.PlayerRigidbody.position;
+
+            toTarget.y = 0f;
+
+            if (toTarget.sqrMagnitude < 0.0001f)
+            {
+                return;
+            }
+
+            toTarget.Normalize();
+
+            Quaternion targetRotation = Quaternion.LookRotation(toTarget);
+            m_playerStateMachine.PlayerRigidbody.rotation = targetRotation;
+        }
+
+
+        void ApplyAttackImpulse()
+        {
+            Vector3 impulseDirection;
+
+            var targeter = m_playerStateMachine.Targeter;
+
+            if (targeter != null && targeter.isTargetingActive && targeter.currentTarget != null)
+            {
+                impulseDirection = targeter.currentTarget.transform.position - m_playerStateMachine.PlayerRigidbody.position;
+                impulseDirection.y = 0f;
+                impulseDirection.Normalize();
+            }
+            else
+            {
+                impulseDirection = m_playerStateMachine.PlayerRigidbody.transform.forward;
+                impulseDirection.y = 0f;
+                impulseDirection.Normalize();
+            }
+
+            m_playerStateMachine.PlayerRigidbody.AddForce(impulseDirection * _attackImpulseForce, ForceMode.Impulse);
         }
     }
 }

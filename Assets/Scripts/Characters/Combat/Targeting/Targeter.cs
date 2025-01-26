@@ -2,6 +2,7 @@ using ProjectColombo.Input;
 
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Windows;
 
 
 namespace ProjectColombo.Combat
@@ -26,6 +27,16 @@ namespace ProjectColombo.Combat
         [Tooltip("Line direction controlled by the right stick.")]
         public Vector2 targetDirection = Vector2.up;
         public float lineLength = 2.0f;
+
+
+        bool isTargetLocked = false;
+
+
+        const float ANGLE_THRESHOLD = 10f;
+        const float MIN_INPUT_MAGNITUDE = 0.1f;
+
+
+        Vector2 lastDirection = Vector2.up;
 
 
         SphereCollider sphereCollider;
@@ -84,6 +95,7 @@ namespace ProjectColombo.Combat
                 {
                     isTargetingActive = true;
                     SetInitialTargetDirection();
+                    isTargetLocked = false;
                     Debug.Log("Targeting System Active");
                 }
                 else
@@ -101,24 +113,43 @@ namespace ProjectColombo.Combat
             {
                 Vector3 forward = entityAttributes.GetFacingDirection();
                 targetDirection = new Vector2(forward.x, forward.z).normalized;
+                lastDirection = targetDirection;
             }
         }
 
         void UpdateTargetDirection()
         {
-            if (isTargetingActive)
+            if (!isTargetingActive)
             {
-                Vector2 input = gameInputSO.TargetPointInput;
+                return;
+            }
 
-                if (input.magnitude > 0.1f)
+            Vector2 input = gameInputSO.TargetPointInput;
+
+            if (input.magnitude > MIN_INPUT_MAGNITUDE)
+            {
+                Vector2 newDir = input.normalized;
+
+                float angle = Vector2.Angle(lastDirection, newDir);
+
+                bool directionChanged = (Vector2.Distance(newDir, lastDirection) > 0.01f);
+
+                if (angle > ANGLE_THRESHOLD)
                 {
-                    targetDirection = input.normalized;
+                    isTargetLocked = false;
+                    targetDirection = newDir;
+                    lastDirection = newDir;
                 }
             }
         }
 
         void SelectTarget()
         {
+            if (currentTarget != null && isTargetLocked)
+            {
+                return; 
+            }
+
             Vector3 rayOrigin = transform.position;
             Vector3 rayDirection = new Vector3(targetDirection.x, 0, targetDirection.y).normalized;
 
@@ -132,7 +163,7 @@ namespace ProjectColombo.Combat
                     {
                         ClearCurrentTarget();
                         currentTarget = hitTarget;
-
+                        isTargetLocked = true;
                         SetTargetColor(currentTarget, Color.red);
                         Debug.Log($"Target Selected: {currentTarget.gameObject.name}");
                     }
