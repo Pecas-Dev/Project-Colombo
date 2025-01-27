@@ -54,6 +54,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             float currentSpeed = (positionLastFrame - transform.position).magnitude / Time.deltaTime;
             myAnimator.SetFloat("Speed", currentSpeed);
             positionLastFrame = transform.position;
+            myPathfindingAlgorythm.gridManager = myMommottiAttributes.myGridManager;
         }
 
         void LogMissingReferenceErrors()

@@ -1,3 +1,4 @@
+using ProjectColombo.Enemies.Pathfinding;
 using UnityEngine;
 
 namespace ProjectColombo.Enemies.Mommotti
@@ -7,6 +8,7 @@ namespace ProjectColombo.Enemies.Mommotti
         [HideInInspector]public Transform playerPosition;
         float currentDistanceToPlayer;
         [HideInInspector] public Vector3 spawnPointLocation;
+        [HideInInspector] public GridManager myGridManager;
         [HideInInspector] public float patrolAreaDistance;
 
         [Header("Adjustables")]

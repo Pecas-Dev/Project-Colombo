@@ -1,3 +1,4 @@
+using ProjectColombo.Enemies.Pathfinding;
 using UnityEngine;
 
 
@@ -10,6 +11,8 @@ namespace ProjectColombo.Enemies.Mommotti
         public int maxAmountEnemies;
 
         public float patrolAreaDistance;
+
+        [HideInInspector] public GridManager myGridManager;
 
         private void Start()
         {
@@ -28,6 +31,7 @@ namespace ProjectColombo.Enemies.Mommotti
                 GameObject newEnemy = Instantiate(enemyType, spawnPosition, transform.rotation);
                 newEnemy.GetComponent<MommottiAttributes>().spawnPointLocation = transform.position;
                 newEnemy.GetComponent<MommottiAttributes>().patrolAreaDistance = patrolAreaDistance;
+                newEnemy.GetComponent<MommottiAttributes>().myGridManager = myGridManager;
             }
         }
 

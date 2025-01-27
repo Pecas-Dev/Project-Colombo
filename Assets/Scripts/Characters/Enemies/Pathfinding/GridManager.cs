@@ -25,7 +25,7 @@ namespace ProjectColombo.Enemies.Pathfinding
         }
     }
 
-    //[ExecuteInEditMode]
+    [ExecuteInEditMode]
     public class GridManager : MonoBehaviour
     {
         public bool recalculateGrid;
@@ -40,12 +40,9 @@ namespace ProjectColombo.Enemies.Pathfinding
         public float myMaxSlopeAngle = 45f;
         public float height = 50f;
 
-        private void Awake()
+        private void Start()
         {
-            if (grid == null)
-            {
-                CreateGrid();
-            }
+            CreateGrid();
         }
         public void CreateGrid()
         {
