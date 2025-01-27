@@ -33,6 +33,7 @@ namespace ProjectColombo.Enemies.Mommotti
         private void Update()
         {
             currentDistanceToPlayer = (playerPosition.position - transform.position).magnitude;
+            spawnPointLocation = new Vector3(spawnPointLocation.x, transform.position.y, spawnPointLocation.z);
         }
 
         private void OnDrawGizmos()

@@ -116,8 +116,9 @@ namespace ProjectColombo.StateMachine.Mommotti
                     nextNode = stateMachine.myPathfindingAlgorythm.GetNode(nextPosition);
 
                     if (nextNode != null && nextNode.walkable) return nextPosition;
-                } 
+                }
 
+                onSpawnPoint = true;
                 return stateMachine.myMommottiAttributes.spawnPointLocation;
             }
             else
