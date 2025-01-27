@@ -1,6 +1,6 @@
 using ProjectColombo.Combat;
 using ProjectColombo.Control;
-using ProjectColombo.Input;
+using ProjectColombo.GameInputSystem;
 
 using UnityEngine;
 

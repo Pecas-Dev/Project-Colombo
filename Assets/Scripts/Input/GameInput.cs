@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 
-namespace ProjectColombo.Input
+namespace ProjectColombo.GameInputSystem
 {
     public class GameInput : MonoBehaviour
     {

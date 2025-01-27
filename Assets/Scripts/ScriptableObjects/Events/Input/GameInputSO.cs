@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 
 
-namespace ProjectColombo.Input
+namespace ProjectColombo.GameInputSystem
 {
     [CreateAssetMenu(fileName = "GameInputSO", menuName = "Scriptable Objects/Input/GameInputSO")]
     public class GameInputSO : ScriptableObject

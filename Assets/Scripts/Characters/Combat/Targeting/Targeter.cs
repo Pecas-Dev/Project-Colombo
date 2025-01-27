@@ -1,4 +1,4 @@
-using ProjectColombo.Input;
+using ProjectColombo.GameInputSystem;
 
 using System.Collections.Generic;
 using UnityEngine;

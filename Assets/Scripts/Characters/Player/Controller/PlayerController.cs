@@ -1,5 +1,5 @@
 using ProjectColombo.Combat;
-using ProjectColombo.Input;
+using ProjectColombo.GameInputSystem;
 
 using UnityEngine;
 
