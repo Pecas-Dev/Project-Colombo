@@ -18,7 +18,12 @@ public class MeshControlUI : MonoBehaviour
     void UpdateSubdivisions(float value)
     {
         int subdivisions = Mathf.RoundToInt(value);
-        meshGenerator.UpdateMesh(subdivisions);
+
+        if (subdivisions != meshGenerator.subdivisions)
+        {
+            meshGenerator.UpdateMesh(subdivisions);
+        }
+
         subdivisionText.text = "Subdivisions: " + subdivisions;
     }
 }

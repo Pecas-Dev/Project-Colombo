@@ -70,6 +70,7 @@ public class ProceduralMeshGenerator : MonoBehaviour
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
+        mesh.Optimize();
 
         mesh.RecalculateBounds();
         GetComponent<MeshFilter>().mesh = mesh;
