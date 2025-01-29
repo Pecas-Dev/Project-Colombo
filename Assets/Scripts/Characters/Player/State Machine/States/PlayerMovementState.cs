@@ -14,7 +14,7 @@ namespace ProjectColombo.StateMachine.Player
         public override void Enter()
         {
             m_playerStateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Movement);
-            m_playerStateMachine.PlayerAnimator.CrossFadeInFixedTime("Movement", 0.1f);
+            m_playerStateMachine.PlayerAnimatorScript.PlayMovementAnimation();
             Debug.Log("Entered Movement State");
         }
 
@@ -24,6 +24,7 @@ namespace ProjectColombo.StateMachine.Player
             {
                 m_playerStateMachine.GameInputSO.ResetAttackPressed();
                 m_playerStateMachine.SwitchState(new PlayerAttackState(m_playerStateMachine, 0));
+
                 return;
             }
 
@@ -31,6 +32,14 @@ namespace ProjectColombo.StateMachine.Player
             {
                 m_playerStateMachine.GameInputSO.ResetRollPressed();
                 m_playerStateMachine.SwitchState(new PlayerRollState(m_playerStateMachine));
+
+                return;
+            }
+
+            if(m_playerStateMachine.GameInputSO.ParryPressed)
+            {
+                m_playerStateMachine.GameInputSO.ResetParryPressed();
+                m_playerStateMachine.SwitchState(new PlayerParryState(m_playerStateMachine));
 
                 return;
             }

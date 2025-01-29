@@ -11,8 +11,6 @@ namespace ProjectColombo.StateMachine.Player
 
         float previousFrameTime;
 
-        float _attackImpulseForce = 5.0f;
-
 
         public PlayerAttackState(PlayerStateMachine playerStateMachine, int attackIndex) : base(playerStateMachine)
         {
@@ -30,7 +28,7 @@ namespace ProjectColombo.StateMachine.Player
 
             //m_playerStateMachine.GameInputSO.DisableAllInputsExceptRoll();
 
-            m_playerStateMachine.PlayerAnimator.CrossFadeInFixedTime(attack.AnimationName, attack.TransitionDuration);
+            m_playerStateMachine.PlayerAnimatorScript.PlayAttackAnimation(attack.AnimationName, attack.TransitionDuration); ;
 
             var targeter = m_playerStateMachine.Targeter;
 
@@ -48,6 +46,14 @@ namespace ProjectColombo.StateMachine.Player
             {
                 m_playerStateMachine.GameInputSO.ResetRollPressed();
                 m_playerStateMachine.SwitchState(new PlayerRollState(m_playerStateMachine));
+
+                return;
+            }
+
+            if(m_playerStateMachine.GameInputSO.ParryPressed)
+            {
+                m_playerStateMachine.GameInputSO.ResetParryPressed();
+                m_playerStateMachine.SwitchState(new PlayerParryState(m_playerStateMachine));
 
                 return;
             }
@@ -183,7 +189,7 @@ namespace ProjectColombo.StateMachine.Player
                 impulseDirection.Normalize();
             }
 
-            m_playerStateMachine.PlayerRigidbody.AddForce(impulseDirection * _attackImpulseForce, ForceMode.Impulse);
+            m_playerStateMachine.PlayerRigidbody.AddForce(impulseDirection * m_playerStateMachine.EntityAttributes.attackImpulseForce, ForceMode.Impulse);
         }
     }
 }

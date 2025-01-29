@@ -53,7 +53,7 @@ namespace ProjectColombo.Combat
                 targetHealth.TakeDamage(damage);
 
                 Vector3 attackDirection = other.transform.position - transform.parent.position; //get direction from user to target
-                attackDirection.y = .5f; //could be increased to make the hit entity jump a bit
+                attackDirection.y = 0.0f; //could be increased to make the hit entity jump a bit
 
                 other.GetComponent<Rigidbody>().AddForce(attackDirection.normalized * knockback, ForceMode.Impulse);
             }

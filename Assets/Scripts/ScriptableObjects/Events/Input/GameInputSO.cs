@@ -14,6 +14,7 @@ namespace ProjectColombo.GameInputSystem
         public bool AttackPressed { get; private set; } = false;
         public bool RollPressed { get; private set; } = false;
         public bool TargetPressed { get; private set; } = false;
+        public bool ParryPressed { get; private set; } = false;
 
 
         bool inputsDisabled = false;
@@ -24,7 +25,7 @@ namespace ProjectColombo.GameInputSystem
 
         public void Initialize()
         {
-            if(playerInputActions != null)
+            if (playerInputActions != null)
             {
                 return;
             }
@@ -40,6 +41,8 @@ namespace ProjectColombo.GameInputSystem
 
             playerInputActions.Player.Roll.performed += OnRollPerformed;
 
+            playerInputActions.Player.Parry.performed += OnParryPerformed;
+
             playerInputActions.Player.Target.performed += OnTargetPerformed;
 
             playerInputActions.Player.TargetPoint.performed += OnTargetPointPerformed;
@@ -54,6 +57,8 @@ namespace ProjectColombo.GameInputSystem
             playerInputActions.Player.Attack.performed -= OnAttackPerformed;
 
             playerInputActions.Player.Roll.performed -= OnRollPerformed;
+
+            playerInputActions.Player.Parry.performed += OnParryPerformed;
 
             playerInputActions.Player.Target.performed -= OnTargetPerformed;
 
@@ -86,7 +91,7 @@ namespace ProjectColombo.GameInputSystem
 
         public bool IsAnyInputActive()
         {
-            return MovementInput.sqrMagnitude > 0.01f || AttackPressed || RollPressed || TargetPressed || (Keyboard.current != null && Keyboard.current.anyKey.isPressed);
+            return MovementInput.sqrMagnitude > 0.01f || AttackPressed || RollPressed || TargetPressed || ParryPressed || (Keyboard.current != null && Keyboard.current.anyKey.isPressed);
         }
 
         void ResetAllInputs()
@@ -95,6 +100,7 @@ namespace ProjectColombo.GameInputSystem
             TargetPointInput = Vector2.zero;
             AttackPressed = false;
             RollPressed = false;
+            ParryPressed = false;
             //TargetPressed = false;
         }
 
@@ -103,6 +109,7 @@ namespace ProjectColombo.GameInputSystem
             MovementInput = Vector2.zero;
             TargetPointInput = Vector2.zero;
             AttackPressed = false;
+            ParryPressed = false;
             //TargetPressed = false;
         }
 
@@ -165,6 +172,25 @@ namespace ProjectColombo.GameInputSystem
         public void ResetRollPressed()
         {
             RollPressed = false;
+        }
+
+        // ########################################################
+
+
+        //---------------------------------------------------------
+
+        // ###################### PARRY ############################
+
+        void OnParryPerformed(InputAction.CallbackContext context)
+        {
+            if (inputsDisabled) return;
+
+            ParryPressed = true;
+        }
+
+        public void ResetParryPressed()
+        {
+            ParryPressed = false;
         }
 
         // ########################################################

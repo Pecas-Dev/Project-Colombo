@@ -13,7 +13,8 @@ namespace ProjectColombo.StateMachine.Player
         {
             Movement,
             Roll,
-            Attack
+            Attack,
+            Parry
         }
 
 
