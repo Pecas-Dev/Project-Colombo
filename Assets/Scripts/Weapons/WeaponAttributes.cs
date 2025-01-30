@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 namespace ProjectColombo.Combat
 {
@@ -43,27 +44,39 @@ namespace ProjectColombo.Combat
 
         private void OnTriggerEnter(Collider other)
         {
-            // I left this outside the if statemnet below while we test that all behaviours are working, then we can specify which exact entities we want that are affected. 
-
-            //---------------------------------------------------------------------------------------------------------------------
-            HealthManager targetHealth = other.GetComponent<HealthManager>();
-
-            if (targetHealth != null)
+            if ((transform.parent.tag == "Enemy" && other.tag == "Player") || (transform.parent.tag == "Player" && other.tag == "Enemy"))
             {
-                targetHealth.TakeDamage(damage);
+                Debug.Log(other.tag);
+                Debug.Log("my tag: " + transform.parent.tag);
 
-                Vector3 attackDirection = other.transform.position - transform.parent.position; //get direction from user to target
-                attackDirection.y = 0.0f; //could be increased to make the hit entity jump a bit
+                HealthManager targetHealth = other.GetComponent<HealthManager>();
 
-                other.GetComponent<Rigidbody>().AddForce(attackDirection.normalized * knockback, ForceMode.Impulse);
+                if (targetHealth != null)
+                {
+                    targetHealth.TakeDamage(damage);
+
+                    Vector3 attackDirection = (other.transform.position - transform.parent.position).normalized; //get direction from user to target
+                    attackDirection.y = 0.2f; //could be increased to make the hit entity jump a bit
+
+                    Rigidbody targetRigidbody = other.GetComponent<Rigidbody>();
+
+                    if (targetRigidbody != null)
+                    {
+                        Debug.Log("Before knockback: " + targetRigidbody.linearVelocity); // Log before applying force
+
+                        targetRigidbody.AddForce(attackDirection * knockback, ForceMode.Impulse);
+
+                        StartCoroutine(LogVelocityNextFrame(targetRigidbody)); // Log velocity after physics update
+                    }
+                }
             }
-            //---------------------------------------------------------------------------------------------------------------------
+        }
 
-            if (other.gameObject.tag is "Player" or "Enemy" && other.gameObject.tag != GetComponentInParent<EntityAttributes>().gameObject.tag)
-            {
-
-                //other.GetComponent<EntityAttributes>().health -= damage;
-            }
+        // Coroutine to check velocity in the next physics frame
+        private IEnumerator LogVelocityNextFrame(Rigidbody rb)
+        {
+            yield return new WaitForFixedUpdate(); // Wait until the next physics update
+            Debug.Log("After knockback: " + rb.linearVelocity);
         }
     }
 }
