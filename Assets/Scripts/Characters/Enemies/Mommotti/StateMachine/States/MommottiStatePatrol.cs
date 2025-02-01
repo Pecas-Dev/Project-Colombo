@@ -110,7 +110,7 @@ namespace ProjectColombo.StateMachine.Mommotti
                 for (int i = 0; i < 10; i++)
                 {
                     Vector2 center = new Vector2(stateMachine.myMommottiAttributes.spawnPointLocation.x, stateMachine.myMommottiAttributes.spawnPointLocation.z);
-                    Vector2 randomInCircle = Random.insideUnitCircle * stateMachine.myMommottiAttributes.patrolAreaDistance + center;
+                    Vector2 randomInCircle = center + (Random.insideUnitCircle.normalized * Random.Range(2f, stateMachine.myMommottiAttributes.patrolAreaDistance));
                     nextPosition = new Vector3(randomInCircle.x, stateMachine.transform.position.y, randomInCircle.y);
 
                     nextNode = stateMachine.myPathfindingAlgorythm.GetNode(nextPosition);

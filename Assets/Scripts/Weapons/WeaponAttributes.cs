@@ -11,33 +11,30 @@ namespace ProjectColombo.Combat
         public float cooldown;
         float currentTimer;
         public float reach;
-        public Collider hitbox;
-        [HideInInspector] public bool attack;
+        //public Collider hitbox;
+        [HideInInspector] public bool onCooldown;
+        [HideInInspector] public bool isAttacking;
         [HideInInspector] public Animator myAnimator;
 
         private void Start()
         {
             myAnimator = GetComponent<Animator>();
+            isAttacking = false;
             currentTimer = 0;
-            hitbox.enabled = attack;
+            //hitbox.enabled = cooldownDone;
         }
 
         private void Update()
         {
-            hitbox.enabled = attack;
+            //hitbox.enabled = cooldownDone;
 
-            if (attack)
+            if (onCooldown)
             {
-                if (currentTimer == 0)
-                {
-                    myAnimator.SetTrigger("Attack");
-                }
-
                 currentTimer += Time.deltaTime;
 
                 if (currentTimer >= cooldown)
                 {
-                    attack = false;
+                    onCooldown = false;
                     currentTimer = 0;
                 }
             }
@@ -60,8 +57,6 @@ namespace ProjectColombo.Combat
 
                     if (targetRigidbody != null)
                     {
-                        Debug.Log("Before knockback: " + targetRigidbody.linearVelocity); // Log before applying force
-
                         targetRigidbody.AddForce(attackDirection * knockback, ForceMode.Impulse);
                     }
                 }

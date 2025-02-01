@@ -24,6 +24,9 @@ namespace ProjectColombo.StateMachine.Mommotti
         //set speed for animator
         Vector3 positionLastFrame;
 
+        //check for attacking
+        [HideInInspector] public bool canAttack = false;
+
         private void Awake()
         {
             myRigidbody = GetComponent<Rigidbody>();
@@ -33,6 +36,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             myPathfindingAlgorythm = GetComponent<Pathfinding>();
             myWeaponAttributes = GetComponentInChildren<WeaponAttributes>();
             myHealthManager = GetComponent<HealthManager>();
+
         }
 
         void Start()
@@ -41,8 +45,9 @@ namespace ProjectColombo.StateMachine.Mommotti
 
             SwitchState(new MommottiStatePatrol(this));
             positionLastFrame = transform.position;
+            myPathfindingAlgorythm.gridManager = myMommottiAttributes.myGridManager;
         }
-        
+
         private void FixedUpdate() // regular update is used in the state machine
         {
             if (myHealthManager.CurrentHealth <= 0)
@@ -54,14 +59,15 @@ namespace ProjectColombo.StateMachine.Mommotti
             float currentSpeed = (positionLastFrame - transform.position).magnitude / Time.deltaTime;
             myAnimator.SetFloat("Speed", currentSpeed);
             positionLastFrame = transform.position;
-            myPathfindingAlgorythm.gridManager = myMommottiAttributes.myGridManager;
         }
 
         public void Impact(Vector3 direction, float knockbackStrength)
         {
             myRigidbody.AddForce(direction * knockbackStrength, ForceMode.Impulse);
             myAnimator.SetTrigger("Impact"); //stop attack animation on mommotti
-            myWeaponAttributes.GetComponent<Animator>().SetTrigger("Interrupt"); //stop attack animation on weapon
+            InterruptAttack();
+            canAttack = true;
+            SwitchState(new MommottiStateAttack(this)); //when attacked switch to attacking
         }
 
         void LogMissingReferenceErrors()
@@ -139,6 +145,17 @@ namespace ProjectColombo.StateMachine.Mommotti
             {
                 gameObject.AddComponent<HealthManager>();
             }
+        }
+
+        public void Hit()
+        {
+            myWeaponAttributes.GetComponent<Animator>().SetTrigger("Attack");
+        }
+
+        public void InterruptAttack()
+        {
+            myWeaponAttributes.isAttacking = false;
+            myWeaponAttributes.GetComponent<Animator>().SetTrigger("Interrupt");
         }
     }
 }

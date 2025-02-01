@@ -49,7 +49,7 @@ namespace ProjectColombo.Enemies.Pathfinding
         }
 
 
-        private void Awake()
+        private void Start()
         {
             CreateGrid();
         }

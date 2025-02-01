@@ -21,6 +21,8 @@ namespace ProjectColombo.StateMachine.Mommotti
         float timer;
 
         //randomize circle speed and dircetion for variety
+        float closestEnemyDistance;
+        Vector3 closestEnemyPosition;
         int rotationDirection;
         float randomSpeedFactor;
 
@@ -41,6 +43,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.CHASE);
             rotationDirection = Random.Range(0, 2) == 0 ? -1 : 1;
             randomSpeedFactor = Random.Range(0.3f, 0.7f);
+            CheckClosestEnemy();
             Debug.Log("Mommotti entered Chase State");
         }
 
@@ -65,6 +68,8 @@ namespace ProjectColombo.StateMachine.Mommotti
                 {
                     SetTarget(stateMachine.myMommottiAttributes.GetPlayerPosition());
                 }
+
+                CheckClosestEnemy();
             }
 
             attackCheckTimer += deltaTime;
@@ -72,7 +77,11 @@ namespace ProjectColombo.StateMachine.Mommotti
             if (attackCheckTimer >= intervallToCheckIfAttacking)
             {
                 attackCheckTimer = 0;
-                CheckIfShouldAttack();
+
+                if (targetDirection.magnitude < stateMachine.myMommottiAttributes.circleDistance + 5f)
+                { 
+                    CheckIfShouldAttack(); 
+                }
             }
 
             if (targetDirection.magnitude < stateMachine.myWeaponAttributes.reach)
@@ -104,17 +113,28 @@ namespace ProjectColombo.StateMachine.Mommotti
                 stateMachine.myRigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, stateMachine.myEntityAttributes.rotationSpeedPlayer * deltaTime));
             }
 
-            Vector3 relativeMovementDirection = stateMachine.transform.forward; //generally move forward
+            Vector3 relativeMovementDirection = stateMachine.transform.forward;
 
-            if (targetDirection.magnitude < stateMachine.myMommottiAttributes.circleDistance) //if too close and not attacking go back
+            //move away if too close
+            if (targetDirection.magnitude < stateMachine.myMommottiAttributes.circleDistance) 
             {
                 relativeMovementDirection = -stateMachine.transform.forward; 
             }
+            //if withing circle area circle
             else if (targetDirection.magnitude < stateMachine.myMommottiAttributes.circleDistance + stateMachine.myMommottiAttributes.circleTolerance) //if in tolerance zone circle
             {
-                relativeMovementDirection = rotationDirection * stateMachine.transform.right;
-
-                currentSpeed *= randomSpeedFactor;
+                //spread out if to close to other
+                if (closestEnemyDistance < stateMachine.myMommottiAttributes.circleDistance / 2)
+                {
+                    Vector3 spreadDirection = (stateMachine.transform.position - closestEnemyPosition).normalized;
+                    relativeMovementDirection = spreadDirection;
+                    currentSpeed = stateMachine.myEntityAttributes.moveSpeed * randomSpeedFactor;
+                }
+                //stand and wait
+                else
+                {
+                    currentSpeed = 0f;
+                }
             }
 
             stateMachine.myRigidbody.MovePosition((stateMachine.transform.position + (currentSpeed * deltaTime * relativeMovementDirection)));
@@ -137,9 +157,32 @@ namespace ProjectColombo.StateMachine.Mommotti
             pathIndex = 0;
         }
 
+        private void CheckClosestEnemy()
+        {
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            closestEnemyDistance = Mathf.Infinity;
+
+            foreach (GameObject m in enemies)
+            {
+                MommottiStateMachine otherStateMachine = m.GetComponent<MommottiStateMachine>();
+
+                //check other is mommotti
+                if (otherStateMachine == null) continue;
+                if (m == stateMachine.gameObject) continue;
+                if (otherStateMachine.currentState == MommottiStateMachine.MommottiState.ATTACK) continue;
+
+                float distance = (m.transform.position - stateMachine.transform.position).magnitude;
+                
+                if (distance < closestEnemyDistance)
+                {
+                    closestEnemyDistance = distance;
+                    closestEnemyPosition = m.transform.position;
+                }
+            }
+        }
+
         private void CheckIfShouldAttack()
         {
-            Debug.Log("check for attacking switch");
             GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
             float currentDistanceToPlayer = (stateMachine.myMommottiAttributes.playerPosition.position - stateMachine.transform.position).magnitude;
             int currentAttackers = 0;
