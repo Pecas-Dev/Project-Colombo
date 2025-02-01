@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using ProjectColombo.StateMachine.Mommotti;
 
 namespace ProjectColombo.Combat
 {
@@ -44,19 +45,16 @@ namespace ProjectColombo.Combat
 
         private void OnTriggerEnter(Collider other)
         {
-            if ((transform.parent.tag == "Enemy" && other.tag == "Player") || (transform.parent.tag == "Player" && other.tag == "Enemy"))
-            {
-                Debug.Log(other.tag);
-                Debug.Log("my tag: " + transform.parent.tag);
+            Vector3 attackDirection = (other.transform.position - transform.parent.position).normalized; //get direction from user to target
+            attackDirection.y = 0.2f; //could be increased to make the hit entity jump a bit
 
+            if ((transform.parent.tag == "Enemy" && other.tag == "Player"))
+            {
                 HealthManager targetHealth = other.GetComponent<HealthManager>();
 
                 if (targetHealth != null)
                 {
                     targetHealth.TakeDamage(damage);
-
-                    Vector3 attackDirection = (other.transform.position - transform.parent.position).normalized; //get direction from user to target
-                    attackDirection.y = 0.2f; //could be increased to make the hit entity jump a bit
 
                     Rigidbody targetRigidbody = other.GetComponent<Rigidbody>();
 
@@ -65,18 +63,20 @@ namespace ProjectColombo.Combat
                         Debug.Log("Before knockback: " + targetRigidbody.linearVelocity); // Log before applying force
 
                         targetRigidbody.AddForce(attackDirection * knockback, ForceMode.Impulse);
-
-                        StartCoroutine(LogVelocityNextFrame(targetRigidbody)); // Log velocity after physics update
                     }
                 }
             }
-        }
+            else if (transform.parent.tag == "Player" && other.tag == "Enemy")
+            {
+                MommottiStateMachine otherStateMachine = other.GetComponent<MommottiStateMachine>();
+                HealthManager otherHealth = other.GetComponent<HealthManager>();
 
-        // Coroutine to check velocity in the next physics frame
-        private IEnumerator LogVelocityNextFrame(Rigidbody rb)
-        {
-            yield return new WaitForFixedUpdate(); // Wait until the next physics update
-            Debug.Log("After knockback: " + rb.linearVelocity);
+                if (otherStateMachine != null && otherHealth != null && otherHealth.CurrentHealth > 0)
+                {
+                    otherStateMachine.Impact(attackDirection, knockback);
+                    otherHealth.TakeDamage(damage);
+                }
+            }
         }
     }
 }

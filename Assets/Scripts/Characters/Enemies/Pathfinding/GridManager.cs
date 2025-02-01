@@ -40,13 +40,22 @@ namespace ProjectColombo.Enemies.Pathfinding
         public float myMaxSlopeAngle = 45f;
         public float height = 50f;
 
-        private void Start()
+        private void OnValidate()
+        {
+            if (!Application.isPlaying)
+            {
+                CreateGrid();
+            }
+        }
+
+
+        private void Awake()
         {
             CreateGrid();
         }
         public void CreateGrid()
         {
-            Debug.Log("NEW GRID CREATED");
+            //Debug.Log("NEW GRID CREATED");
             grid = new Node[gridSizeX, gridSizeZ];
             Vector3 bottomLeft = transform.position - Vector3.right * gridSizeX / 2 * nodeSize - Vector3.forward * gridSizeZ / 2 * nodeSize;
 
@@ -122,7 +131,7 @@ namespace ProjectColombo.Enemies.Pathfinding
 
         private void OnDrawGizmos()
         {
-            if (grid == null || !Application.isPlaying) return;
+            if (grid == null) return;
 
             if (!showGizmos) return;
 

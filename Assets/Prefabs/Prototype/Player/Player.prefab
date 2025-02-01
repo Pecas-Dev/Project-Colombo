@@ -370,7 +370,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 1
 --- !u!95 &1185015071758430780
 Animator:
@@ -436,8 +436,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leftHandHitbox: {fileID: 6058393951966590351}
   rightHandHitbox: {fileID: 205422624109583700}
-  leftHandKnockbackForce: 10
-  rightHandKnockbackForce: 10
+  leftHandKnockbackForce: 3
+  leftHandDamage: 5
+  rightHandKnockbackForce: 3
+  rightHandDamage: 5
 --- !u!114 &5479666140366280027
 MonoBehaviour:
   m_ObjectHideFlags: 0

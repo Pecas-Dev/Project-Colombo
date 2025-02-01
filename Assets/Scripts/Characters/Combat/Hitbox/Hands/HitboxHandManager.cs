@@ -1,3 +1,4 @@
+using ProjectColombo.StateMachine.Mommotti;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,9 +13,11 @@ namespace ProjectColombo.Combat
         [Header("Knockback Settings")]
         [Tooltip("How strong the left hand knockback is when it hits a rigidbody.")]
         [SerializeField] float leftHandKnockbackForce = 2f;
+        [SerializeField] int leftHandDamage = 5;
 
         [Tooltip("How strong the right hand knockback is when it hits a rigidbody.")]
         [SerializeField] float rightHandKnockbackForce = 2f;
+        [SerializeField] int rightHandDamage = 5;
 
         bool leftHandActive = false;
         bool rightHandActive = false;
@@ -51,25 +54,33 @@ namespace ProjectColombo.Combat
 
             foreach (var col in leftHandOverlaps)
             {
-                Debug.Log($"Left hand did a hit on: {col.name}!");
+                HealthManager targetHealth = col.GetComponent<HealthManager>();
 
-                HealthManager target = col.GetComponent<HealthManager>();
+                //if (targetHealth != null)
+                //{
+                //    targetHealth.TakeDamage(5);
+                //}
 
-                if (target != null)
+                //Rigidbody targetRb = col.attachedRigidbody;
+
+                //if (targetRb != null)
+                //{
+                Vector3 attackDirection = col.transform.position - transform.position;
+
+                attackDirection.y = 0f;
+                attackDirection.Normalize();
+
+                //    targetRb.AddForce(direction * leftHandKnockbackForce, ForceMode.Impulse);
+                //}
+
+                MommottiStateMachine otherStateMachine = col.GetComponent<MommottiStateMachine>();
+
+                if (otherStateMachine != null && targetHealth != null && targetHealth.CurrentHealth > 0)
                 {
-                    target.TakeDamage(5);
-                }
+                    Debug.Log($"Left hand did a hit on: {col.name}!");
 
-                Rigidbody targetRb = col.attachedRigidbody;
-
-                if (targetRb != null)
-                {
-                    Vector3 direction = col.transform.position - leftHandHitbox.transform.position;
-
-                    direction.y = 0f;
-                    direction.Normalize();
-
-                    targetRb.AddForce(direction * leftHandKnockbackForce, ForceMode.Impulse);
+                    otherStateMachine.Impact(attackDirection, leftHandKnockbackForce);
+                    targetHealth.TakeDamage(leftHandDamage);
                 }
             }
         }
@@ -109,25 +120,33 @@ namespace ProjectColombo.Combat
 
             foreach (var col in rightHandOverlaps)
             {
-                Debug.Log($"Right hand did a hit on: {col.name}!");
+                HealthManager targetHealth = col.GetComponent<HealthManager>();
 
-                HealthManager target = col.GetComponent<HealthManager>();
+                //if (targetHealth != null)
+                //{
+                //    targetHealth.TakeDamage(10);
+                //}
 
-                if (target != null)
+                //Rigidbody targetRb = col.attachedRigidbody;
+
+                //if (targetRb != null)
+                //{
+                Vector3 attackDirection = col.transform.position - transform.position;
+
+                attackDirection.y = 0f;
+                attackDirection.Normalize();
+
+                //    targetRb.AddForce(direction * rightHandKnockbackForce, ForceMode.Impulse);
+                //}
+
+                MommottiStateMachine otherStateMachine = col.GetComponent<MommottiStateMachine>();
+
+                if (otherStateMachine != null && targetHealth != null && targetHealth.CurrentHealth > 0)
                 {
-                    target.TakeDamage(10);
-                }
+                    Debug.Log($"Right hand did a hit on: {col.name}!");
 
-                Rigidbody targetRb = col.attachedRigidbody;
-
-                if (targetRb != null)
-                {
-                    Vector3 direction = col.transform.position - rightHandHitbox.transform.position;
-
-                    direction.y = 0f;
-                    direction.Normalize();
-
-                    targetRb.AddForce(direction * rightHandKnockbackForce, ForceMode.Impulse);
+                    otherStateMachine.Impact(attackDirection, rightHandKnockbackForce);
+                    targetHealth.TakeDamage(rightHandDamage);
                 }
             }
         }

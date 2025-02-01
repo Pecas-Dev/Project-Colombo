@@ -57,6 +57,13 @@ namespace ProjectColombo.StateMachine.Mommotti
             myPathfindingAlgorythm.gridManager = myMommottiAttributes.myGridManager;
         }
 
+        public void Impact(Vector3 direction, float knockbackStrength)
+        {
+            myRigidbody.AddForce(direction * knockbackStrength, ForceMode.Impulse);
+            myAnimator.SetTrigger("Impact"); //stop attack animation on mommotti
+            myWeaponAttributes.GetComponent<Animator>().SetTrigger("Interrupt"); //stop attack animation on weapon
+        }
+
         void LogMissingReferenceErrors()
         {
             if (myRigidbody == null)

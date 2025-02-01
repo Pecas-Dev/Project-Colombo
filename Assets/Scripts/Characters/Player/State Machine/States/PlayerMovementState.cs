@@ -50,7 +50,7 @@ namespace ProjectColombo.StateMachine.Player
 
             if (movementInput.sqrMagnitude < 0.01f)
             {
-                StopMovementAndRotation();
+                //StopMovementAndRotation();
                 return;
             }
         }
@@ -75,11 +75,11 @@ namespace ProjectColombo.StateMachine.Player
             }
             else
             {
-                velocity.x = 0f;
-                velocity.z = 0f;
+                //velocity.x = 0f;
+                //velocity.z = 0f;
             }
 
-            m_playerStateMachine.PlayerRigidbody.linearVelocity = velocity;
+            //m_playerStateMachine.PlayerRigidbody.linearVelocity = velocity;
         }
 
         void HandleRotation(float deltaTime)
