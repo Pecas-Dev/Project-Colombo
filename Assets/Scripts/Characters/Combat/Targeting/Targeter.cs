@@ -1,8 +1,6 @@
 using ProjectColombo.GameInputSystem;
-
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Windows;
 
 
 namespace ProjectColombo.Combat
@@ -11,43 +9,31 @@ namespace ProjectColombo.Combat
     {
         [Header("References")]
         [Tooltip("Reference to the GameInput script.")]
-        [SerializeField] GameInputSO gameInputSO;
-
+        [SerializeField] GameInputSO gameInputScript;
         [Tooltip("Reference to the EntityAttributes for initial facing direction.")]
         [SerializeField] EntityAttributes entityAttributes;
-
 
         [Header("Targeting State")]
         public bool isTargetingActive = false;
         public Target currentTarget = null;
         public List<Target> targets = new List<Target>();
 
-
         [Header("--DEBUG--")]
-        [Tooltip("Line direction controlled by the right stick.")]
+        [Tooltip("Direction vector from the targeter input.")]
         public Vector2 targetDirection = Vector2.up;
+        [Tooltip("For debug visualization of the target direction.")]
         public float lineLength = 2.0f;
 
-
-        bool isTargetLocked = false;
-
-
-        const float ANGLE_THRESHOLD = 10f;
         const float MIN_INPUT_MAGNITUDE = 0.1f;
-
-
-        Vector2 lastDirection = Vector2.up;
+        const float DIRECTION_ANGLE_THRESHOLD = 45f;
 
 
         SphereCollider sphereCollider;
 
 
-        RaycastHit hitInfo;
-
-
         void Awake()
         {
-            if (gameInputSO == null)
+            if (gameInputScript == null)
             {
                 Debug.LogError("GameInput reference not found. Please assign it in the inspector!");
             }
@@ -55,7 +41,6 @@ namespace ProjectColombo.Combat
             if (entityAttributes == null)
             {
                 entityAttributes = GetComponentInParent<EntityAttributes>();
-
                 if (entityAttributes == null)
                 {
                     Debug.LogError("EntityAttributes reference not found. Please assign it in the inspector!");
@@ -68,22 +53,37 @@ namespace ProjectColombo.Combat
         void Update()
         {
             HandleTargetingInput();
-            UpdateTargetDirection();
+            CleanUpDeadTargets();
 
             if (isTargetingActive)
             {
-                SelectTarget();
+                if (currentTarget != null && !currentTarget.gameObject.activeInHierarchy)
+                {
+                    ClearCurrentTarget();
+                    if (targets.Count > 0)
+                    {
+                        SelectClosestTarget();
+                    }
+                }
+                else if (currentTarget == null)
+                {
+                    SelectClosestTarget();
+                }
+                else
+                {
+                    UpdateTargetByInput();
+                }
             }
         }
 
         void HandleTargetingInput()
         {
-            if (gameInputSO == null)
+            if (gameInputScript == null)
             {
                 return;
             }
 
-            if (gameInputSO.TargetPressed)
+            if (gameInputScript.TargetPressed)
             {
                 if (isTargetingActive)
                 {
@@ -94,134 +94,163 @@ namespace ProjectColombo.Combat
                 else if (targets.Count > 0)
                 {
                     isTargetingActive = true;
-                    SetInitialTargetDirection();
-                    isTargetLocked = false;
-                    Debug.Log("Targeting System Active");
+                    ClearCurrentTarget();
+                    SelectClosestTarget();
+                    Debug.Log("Targeting System On");
                 }
                 else
                 {
                     Debug.LogWarning("No targets available to lock on. Targeting not activated.");
                 }
 
-                gameInputSO.ResetTargetPressed();
+                gameInputScript.ResetTargetPressed();
             }
         }
 
-        void SetInitialTargetDirection()
+        void SelectClosestTarget()
         {
-            if (entityAttributes != null)
+            Target closestTarget = null;
+
+            float minimumDistance = Mathf.Infinity;
+
+            Vector3 originPosition = transform.position;
+
+            foreach (Target target in targets)
             {
-                Vector3 forward = entityAttributes.GetFacingDirection();
-                targetDirection = new Vector2(forward.x, forward.z).normalized;
-                lastDirection = targetDirection;
+                float currentDistance = Vector3.Distance(originPosition, target.transform.position);
+
+                if (currentDistance < minimumDistance)
+                {
+                    minimumDistance = currentDistance;
+                    closestTarget = target;
+                }
+            }
+
+            if (closestTarget != null)
+            {
+                SetCurrentTarget(closestTarget);
             }
         }
 
-        void UpdateTargetDirection()
+        void UpdateTargetByInput()
         {
-            if (!isTargetingActive)
+            Vector2 inputDirection = gameInputScript.TargetPointInput;
+
+            if (inputDirection.magnitude < MIN_INPUT_MAGNITUDE)
             {
                 return;
             }
 
-            Vector2 input = gameInputSO.TargetPointInput;
+            Vector2 normalizedInputDirection = inputDirection.normalized;
+            targetDirection = normalizedInputDirection;
 
-            if (input.magnitude > MIN_INPUT_MAGNITUDE)
+            Target candidateTarget = null;
+
+            float minimumCandidateDistance = Mathf.Infinity;
+
+            foreach (Target target in targets)
             {
-                Vector2 newDir = input.normalized;
-
-                float angle = Vector2.Angle(lastDirection, newDir);
-
-                bool directionChanged = (Vector2.Distance(newDir, lastDirection) > 0.01f);
-
-                if (angle > ANGLE_THRESHOLD)
+                if (target == currentTarget)
                 {
-                    isTargetLocked = false;
-                    targetDirection = newDir;
-                    lastDirection = newDir;
+                    continue;
                 }
-            }
-        }
 
-        void SelectTarget()
-        {
-            if (currentTarget != null && isTargetLocked)
-            {
-                return; 
-            }
+                Vector3 vectorDifference = target.transform.position - currentTarget.transform.position;
+                Vector2 vectorDifference2D = new Vector2(vectorDifference.x, vectorDifference.z);
 
-            Vector3 rayOrigin = transform.position;
-            Vector3 rayDirection = new Vector3(targetDirection.x, 0, targetDirection.y).normalized;
-
-            if (Physics.Raycast(rayOrigin, rayDirection, out hitInfo, sphereCollider.radius))
-            {
-                Target hitTarget = hitInfo.collider.GetComponent<Target>();
-
-                if (hitTarget != null && targets.Contains(hitTarget))
+                if (vectorDifference2D.sqrMagnitude < 0.01f)
                 {
-                    if (currentTarget != hitTarget)
+                    continue;
+                }
+
+                vectorDifference2D.Normalize();
+
+                float angleBetween = Vector2.Angle(normalizedInputDirection, vectorDifference2D);
+
+                if (angleBetween <= DIRECTION_ANGLE_THRESHOLD)
+                {
+                    float distanceBetween = Vector3.Distance(currentTarget.transform.position, target.transform.position);
+
+                    if (distanceBetween < minimumCandidateDistance)
                     {
-                        ClearCurrentTarget();
-                        currentTarget = hitTarget;
-                        isTargetLocked = true;
-                        SetTargetColor(currentTarget, Color.red);
-                        Debug.Log($"Target Selected: {currentTarget.gameObject.name}");
+                        minimumCandidateDistance = distanceBetween;
+                        candidateTarget = target;
                     }
                 }
             }
+
+            if (candidateTarget != null && candidateTarget != currentTarget)
+            {
+                SetCurrentTarget(candidateTarget);
+            }
         }
+
+        void SetCurrentTarget(Target newTarget)
+        {
+            if (currentTarget == newTarget)
+            {
+                return;
+            }
+
+            ClearCurrentTarget();
+            currentTarget = newTarget;
+            currentTarget.SetTargetIconActive(true);
+        }
+
         void ClearCurrentTarget()
         {
             if (currentTarget != null)
             {
-                SetTargetColor(currentTarget, Color.white);
+                currentTarget.SetTargetIconActive(false);
                 currentTarget = null;
             }
         }
 
-        void SetTargetColor(Target target, Color color)
+        void CleanUpDeadTargets()
         {
-            Renderer renderer = target.GetComponent<Renderer>();
-
-            if (renderer != null)
+            for (int index = targets.Count - 1; index >= 0; index--)
             {
-                renderer.material.SetColor("_BaseColor", color);
+                if (targets[index] == null || !targets[index].gameObject.activeInHierarchy)
+                {
+                    targets.RemoveAt(index);
+                }
             }
         }
 
-        void OnTriggerEnter(Collider other)
+        void OnTriggerEnter(Collider colliderOther)
         {
-            if (!other.TryGetComponent<Target>(out Target target))
+            if (!colliderOther.TryGetComponent<Target>(out Target targetComponent))
             {
                 return;
             }
 
-            if (!targets.Contains(target))
+            if (!targets.Contains(targetComponent))
             {
-                targets.Add(target);
+                targets.Add(targetComponent);
             }
         }
 
-        void OnTriggerExit(Collider other)
+        void OnTriggerExit(Collider colliderOther)
         {
-            if (!other.TryGetComponent<Target>(out Target target))
+            if (!colliderOther.TryGetComponent<Target>(out Target targetComponent))
             {
                 return;
             }
 
-            if (targets.Contains(target))
+            if (targets.Contains(targetComponent))
             {
-                targets.Remove(target);
+                targets.Remove(targetComponent);
             }
 
-
-            // Uncomment if needed in the future
-
-            /*if (targets.Count == 0 && isTargetingActive)
+            if (currentTarget == targetComponent)
             {
-                isTargetingActive = false;
-                Debug.Log("Targeting System Off - No targets in range.");
-            }*/
+                ClearCurrentTarget();
+
+                if (targets.Count > 0)
+                {
+                    SelectClosestTarget();
+                }
+            }
         }
 
         void OnDrawGizmos()
@@ -234,9 +263,10 @@ namespace ProjectColombo.Combat
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(transform.position, sphereCollider.radius);
 
+            Vector3 completeTargetDirection = new Vector3(targetDirection.x, 0, targetDirection.y);
+
             Gizmos.color = Color.red;
-            Vector3 direction = new Vector3(targetDirection.x, 0, targetDirection.y).normalized;
-            Gizmos.DrawLine(transform.position, transform.position + direction * lineLength);
+            Gizmos.DrawLine(transform.position, transform.position + completeTargetDirection * lineLength);
 
             if (currentTarget != null)
             {

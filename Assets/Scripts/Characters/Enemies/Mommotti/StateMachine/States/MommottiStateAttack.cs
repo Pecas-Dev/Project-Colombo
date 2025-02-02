@@ -19,7 +19,6 @@ namespace ProjectColombo.StateMachine.Mommotti
         {
             stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.ATTACK);
             stateMachine.canAttack = false;
-            Debug.Log("Mommotti entered Attack State");
         }
 
         public override void Tick(float deltaTime)

@@ -40,8 +40,6 @@ namespace ProjectColombo.Combat
 
             HealthChanged?.Invoke(currentHealth, maxHealth);
 
-            Debug.Log($"{gameObject.name} took {damageAmount} damage! Current Health: {currentHealth}");
-
             if (currentHealth <= 0)
             {
                 Die();
@@ -60,15 +58,11 @@ namespace ProjectColombo.Combat
 
             HealthChanged?.Invoke(currentHealth, maxHealth);
 
-            Debug.Log($"{gameObject.name} healed {healAmount}! Current Health: {currentHealth}");
         }
 
         void Die()
         {
-            Debug.Log($"{gameObject.name} has died!");
             Died?.Invoke();
-
-            // Handling what happens when Entity Dies
 
             gameObject.SetActive(false);
         }

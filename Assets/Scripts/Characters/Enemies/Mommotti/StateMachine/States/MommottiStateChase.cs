@@ -44,7 +44,6 @@ namespace ProjectColombo.StateMachine.Mommotti
             rotationDirection = Random.Range(0, 2) == 0 ? -1 : 1;
             randomSpeedFactor = Random.Range(0.3f, 0.7f);
             CheckClosestEnemy();
-            Debug.Log("Mommotti entered Chase State");
         }
 
         public override void Tick(float deltaTime)

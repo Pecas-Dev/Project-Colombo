@@ -67,7 +67,6 @@ namespace ProjectColombo.Control
         //  Animation Event at the end of the Parry
         public void OnParryFinished()
         {
-            Debug.Log("Parry Finished");
             isInParry = false;
         }
     }

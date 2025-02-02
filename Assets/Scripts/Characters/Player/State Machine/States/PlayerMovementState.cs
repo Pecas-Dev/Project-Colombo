@@ -15,7 +15,6 @@ namespace ProjectColombo.StateMachine.Player
         {
             m_playerStateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Movement);
             m_playerStateMachine.PlayerAnimatorScript.PlayMovementAnimation();
-            Debug.Log("Entered Movement State");
         }
 
         public override void Tick(float deltaTime)
@@ -36,7 +35,7 @@ namespace ProjectColombo.StateMachine.Player
                 return;
             }
 
-            if(m_playerStateMachine.GameInputSO.ParryPressed)
+            if (m_playerStateMachine.GameInputSO.ParryPressed)
             {
                 m_playerStateMachine.GameInputSO.ResetParryPressed();
                 m_playerStateMachine.SwitchState(new PlayerParryState(m_playerStateMachine));
@@ -50,14 +49,14 @@ namespace ProjectColombo.StateMachine.Player
 
             if (movementInput.sqrMagnitude < 0.01f)
             {
-                //StopMovementAndRotation();
                 return;
             }
+
+            ApplyAirPhysics(deltaTime);
         }
 
         public override void Exit()
         {
-            Debug.Log("Exited Movement State");
         }
 
         void HandleMovement(float deltaTime)
@@ -70,16 +69,9 @@ namespace ProjectColombo.StateMachine.Player
             {
                 velocity.x = movementInput.x * m_playerStateMachine.EntityAttributes.moveSpeed;
                 velocity.z = movementInput.y * m_playerStateMachine.EntityAttributes.moveSpeed;
-
-                m_playerStateMachine.PlayerRigidbody.linearVelocity = velocity;
-            }
-            else
-            {
-                //velocity.x = 0f;
-                //velocity.z = 0f;
             }
 
-            //m_playerStateMachine.PlayerRigidbody.linearVelocity = velocity;
+            m_playerStateMachine.PlayerRigidbody.linearVelocity = velocity;
         }
 
         void HandleRotation(float deltaTime)
@@ -91,18 +83,6 @@ namespace ProjectColombo.StateMachine.Player
 
                 m_playerStateMachine.PlayerRigidbody.rotation = Quaternion.RotateTowards(m_playerStateMachine.PlayerRigidbody.rotation, targetRotation, m_playerStateMachine.EntityAttributes.rotationSpeedPlayer * deltaTime);
             }
-        }
-
-        void StopMovementAndRotation()
-        {
-            Vector3 velocity = m_playerStateMachine.PlayerRigidbody.linearVelocity;
-
-            velocity.x = 0f;
-            velocity.z = 0f;
-
-            m_playerStateMachine.PlayerRigidbody.linearVelocity = velocity;
-
-            m_playerStateMachine.PlayerRigidbody.angularVelocity = Vector3.zero;
         }
 
         void UpdateAnimator()

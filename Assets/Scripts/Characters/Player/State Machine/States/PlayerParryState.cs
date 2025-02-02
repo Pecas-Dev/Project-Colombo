@@ -12,7 +12,6 @@ namespace ProjectColombo.StateMachine.Player
         public override void Enter()
         {
             m_playerStateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Parry);
-            Debug.Log("Entered Parry State");
 
             m_playerStateMachine.PlayerAnimatorScript.TriggerParry();
         }
@@ -23,11 +22,12 @@ namespace ProjectColombo.StateMachine.Player
             {
                 m_playerStateMachine.SwitchState(new PlayerMovementState(m_playerStateMachine));
             }
+
+            ApplyAirPhysics(deltaTime);
         }
 
         public override void Exit()
         {
-            Debug.Log("Exited Parry State");
         }
     }
 }

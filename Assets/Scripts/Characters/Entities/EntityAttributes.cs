@@ -15,11 +15,5 @@ namespace ProjectColombo
         [Header("Attack Settings")]
         [Tooltip("Controls the Attack Impulse Forward.")]
         public float attackImpulseForce = 2.5f;
-
-
-        public Vector3 GetFacingDirection()
-        {
-            return transform.forward;
-        }
     }
 }

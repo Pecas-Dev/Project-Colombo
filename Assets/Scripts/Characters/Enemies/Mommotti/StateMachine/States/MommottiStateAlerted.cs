@@ -17,7 +17,6 @@ namespace ProjectColombo.StateMachine.Mommotti
             timer = 0;
             alertedPosition = stateMachine.myMommottiAttributes.GetPlayerPosition();
             stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.ALERTED);
-            Debug.Log("Mommotti entered Alerted State");
         }
 
         public override void Tick(float deltaTime)

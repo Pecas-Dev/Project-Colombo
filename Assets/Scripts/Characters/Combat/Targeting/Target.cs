@@ -1,22 +1,24 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 
 namespace ProjectColombo.Combat
 {
     public class Target : MonoBehaviour
     {
+        [Header("References")]
+        [SerializeField] Image targetIcon;
+
         void Start()
         {
-            Renderer renderer = GetComponent<Renderer>();
+            targetIcon.enabled = false;
+        }
 
-            if (renderer == null)
+        public void SetTargetIconActive(bool isActive)
+        {
+            if (targetIcon != null)
             {
-                return;
-            }
-
-            if (renderer != null)
-            {
-                renderer.material.SetColor("_BaseColor", Color.white);
+                targetIcon.enabled = isActive;
             }
         }
     }

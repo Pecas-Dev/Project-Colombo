@@ -18,8 +18,8 @@ namespace ProjectColombo.StateMachine.Player
         public static bool CanQueueRoll = true;
 
 
-        public PlayerRollState(PlayerStateMachine playerStateMachine) : base(playerStateMachine) 
-        { 
+        public PlayerRollState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
+        {
         }
 
         public override void Enter()
@@ -31,8 +31,6 @@ namespace ProjectColombo.StateMachine.Player
                 m_playerStateMachine.SwitchState(new PlayerMovementState(m_playerStateMachine));
                 return;
             }
-
-            Debug.Log("Entered Roll State");
 
             m_playerStateMachine.GameInputSO.DisableInputs();
             m_playerStateMachine.PlayerAnimatorScript.TriggerRoll();
@@ -62,7 +60,6 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Tick(float deltaTime)
         {
-            //m_playerStateMachine.PlayerRigidbody.MovePosition(m_playerStateMachine.PlayerRigidbody.position + rollDirection * rollSpeed * deltaTime);
             Vector3 velocity = m_playerStateMachine.PlayerRigidbody.linearVelocity;
 
             velocity.x = rollDirection.x * rollSpeed;
@@ -74,11 +71,12 @@ namespace ProjectColombo.StateMachine.Player
             {
                 m_playerStateMachine.SwitchState(new PlayerMovementState(m_playerStateMachine));
             }
+
+            ApplyAirPhysics(deltaTime);
         }
 
         public override void Exit()
         {
-            Debug.Log("Exited Roll State");
             m_playerStateMachine.GameInputSO.EnableInputs();
             m_playerStateMachine.StartCoroutine(RollCooldown());
         }

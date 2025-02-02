@@ -21,14 +21,19 @@ namespace ProjectColombo.StateMachine.Player
         {
             m_playerStateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Attack);
 
-            Debug.Log("Entered Attack State");
-
             // Not All Inputs Should be disabled since we need to enter Combo, and we also need to add so that we can still rotate the player whilst Attacking
             // We also need to add a "Hold Animation at the End" if button is still pressed.
 
             //m_playerStateMachine.GameInputSO.DisableAllInputsExceptRoll();
 
-            m_playerStateMachine.PlayerAnimatorScript.PlayAttackAnimation(attack.AnimationName, attack.TransitionDuration); ;
+            m_playerStateMachine.PlayerAnimatorScript.PlayAttackAnimation(attack.AnimationName, attack.TransitionDuration);
+
+            Vector3 zeroVelocity = m_playerStateMachine.PlayerRigidbody.linearVelocity;
+
+            zeroVelocity.x = 0f;
+            zeroVelocity.z = 0f;
+
+            m_playerStateMachine.PlayerRigidbody.linearVelocity = zeroVelocity;
 
             var targeter = m_playerStateMachine.Targeter;
 
@@ -75,12 +80,12 @@ namespace ProjectColombo.StateMachine.Player
             previousFrameTime = normalizedTime;
 
             FaceLockedTarget(deltaTime);
+
+            ApplyAirPhysics(deltaTime);
         }
 
         public override void Exit()
         {
-            Debug.Log("Exited Attack State");
-
             m_playerStateMachine.GameInputSO.EnableInputs();
         }
 

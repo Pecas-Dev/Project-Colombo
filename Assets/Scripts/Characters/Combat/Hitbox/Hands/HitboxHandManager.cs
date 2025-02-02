@@ -40,15 +40,12 @@ namespace ProjectColombo.Combat
             leftHandHitbox.SetActive(true);
             leftHandActive = true;
             leftHandOverlaps.Clear();
-
-            Debug.Log("Left hand hitbox enabled.");
         }
 
         public void DealDamageLeftHand()
         {
             if (!leftHandActive)
             {
-                Debug.Log("Left hand hitbox is not active; ignoring damage call.");
                 return;
             }
 
@@ -56,29 +53,15 @@ namespace ProjectColombo.Combat
             {
                 HealthManager targetHealth = col.GetComponent<HealthManager>();
 
-                //if (targetHealth != null)
-                //{
-                //    targetHealth.TakeDamage(5);
-                //}
-
-                //Rigidbody targetRb = col.attachedRigidbody;
-
-                //if (targetRb != null)
-                //{
                 Vector3 attackDirection = col.transform.position - transform.position;
 
                 attackDirection.y = 0f;
                 attackDirection.Normalize();
 
-                //    targetRb.AddForce(direction * leftHandKnockbackForce, ForceMode.Impulse);
-                //}
-
                 MommottiStateMachine otherStateMachine = col.GetComponent<MommottiStateMachine>();
 
                 if (otherStateMachine != null && targetHealth != null && targetHealth.CurrentHealth > 0)
                 {
-                    Debug.Log($"Left hand did a hit on: {col.name}!");
-
                     otherStateMachine.Impact(attackDirection, leftHandKnockbackForce);
                     targetHealth.TakeDamage(leftHandDamage);
                 }
@@ -92,8 +75,6 @@ namespace ProjectColombo.Combat
             leftHandHitbox.SetActive(false);
             leftHandActive = false;
             leftHandOverlaps.Clear();
-
-            Debug.Log("Left hand hitbox disabled.");
         }
 
         // ==============================
@@ -106,15 +87,12 @@ namespace ProjectColombo.Combat
             rightHandHitbox.SetActive(true);
             rightHandActive = true;
             rightHandOverlaps.Clear();
-
-            Debug.Log("Right hand hitbox enabled.");
         }
 
         public void DealDamageRightHand()
         {
             if (!rightHandActive)
             {
-                Debug.Log("Right hand hitbox is not active; ignoring damage call.");
                 return;
             }
 
@@ -122,29 +100,16 @@ namespace ProjectColombo.Combat
             {
                 HealthManager targetHealth = col.GetComponent<HealthManager>();
 
-                //if (targetHealth != null)
-                //{
-                //    targetHealth.TakeDamage(10);
-                //}
-
-                //Rigidbody targetRb = col.attachedRigidbody;
-
-                //if (targetRb != null)
-                //{
                 Vector3 attackDirection = col.transform.position - transform.position;
 
                 attackDirection.y = 0f;
                 attackDirection.Normalize();
 
-                //    targetRb.AddForce(direction * rightHandKnockbackForce, ForceMode.Impulse);
-                //}
 
                 MommottiStateMachine otherStateMachine = col.GetComponent<MommottiStateMachine>();
 
                 if (otherStateMachine != null && targetHealth != null && targetHealth.CurrentHealth > 0)
                 {
-                    Debug.Log($"Right hand did a hit on: {col.name}!");
-
                     otherStateMachine.Impact(attackDirection, rightHandKnockbackForce);
                     targetHealth.TakeDamage(rightHandDamage);
                 }
@@ -159,7 +124,6 @@ namespace ProjectColombo.Combat
             rightHandActive = false;
             rightHandOverlaps.Clear();
 
-            Debug.Log("Right hand hitbox disabled.");
         }
 
 

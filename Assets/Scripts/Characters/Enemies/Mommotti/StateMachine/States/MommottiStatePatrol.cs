@@ -40,7 +40,6 @@ namespace ProjectColombo.StateMachine.Mommotti
             SetTarget(GetNextPatrolPoint());
             pathIndex = 0;
             stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.PATROL);
-            Debug.Log("Mommotti entered Patrol State");
         }
 
         public override void Tick(float deltaTime)

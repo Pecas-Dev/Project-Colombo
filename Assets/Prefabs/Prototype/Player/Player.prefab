@@ -52,7 +52,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.08
+  m_Radius: 0.11
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7833511529198532324
 MonoBehaviour:
@@ -161,7 +161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a62d6a956313e04eb829d8718715a1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameInputSO: {fileID: 11400000, guid: 4cbc555f8dd252548884cda6a4b53710, type: 2}
+  gameInputScript: {fileID: 11400000, guid: 4cbc555f8dd252548884cda6a4b53710, type: 2}
   entityAttributes: {fileID: 7783411606347366640}
   isTargetingActive: 0
   currentTarget: {fileID: 0}
@@ -220,7 +220,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.08
+  m_Radius: 0.11
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1173458695781680606
 MonoBehaviour:
@@ -329,7 +329,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6776689323991224022}
-  m_Material: {fileID: 13400000, guid: 50e9f1bd6054d644d85492b49084aec2, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -341,10 +341,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.26
-  m_Height: 2
+  m_Radius: 0.35
+  m_Height: 1.87
   m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!54 &7709587265030632471
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -354,7 +354,7 @@ Rigidbody:
   m_GameObject: {fileID: 6776689323991224022}
   serializedVersion: 4
   m_Mass: 1
-  m_Drag: 0.5
+  m_Drag: 0.1
   m_AngularDrag: 0.45
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
