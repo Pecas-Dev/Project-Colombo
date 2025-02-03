@@ -7,8 +7,9 @@ namespace ProjectColombo.StateMachine.Player
     public class PlayerRollState : PlayerBaseState
     {
         float rollSpeed;
-        float rollDuration;
-        float rollEndTime;
+
+        float rollDistance = 2.5f;  
+        float rollDuration = 0.8f;
         float rollCooldown = 0.125f;
 
 
@@ -32,12 +33,9 @@ namespace ProjectColombo.StateMachine.Player
                 return;
             }
 
-            m_playerStateMachine.GameInputSO.DisableInputs();
+            m_playerStateMachine.GameInputSO.DisableAllInputs();
             m_playerStateMachine.PlayerAnimatorScript.TriggerRoll();
 
-            rollDuration = 0.78f;
-
-            float rollDistance = 2.5f;
             rollSpeed = rollDistance / rollDuration;
 
             Vector2 movementInput = m_playerStateMachine.GameInputSO.MovementInput;
@@ -53,8 +51,6 @@ namespace ProjectColombo.StateMachine.Player
 
             ApplyRollImpulse();
 
-            rollEndTime = Time.time + rollDuration;
-
             CanQueueRoll = false;
         }
 
@@ -67,7 +63,7 @@ namespace ProjectColombo.StateMachine.Player
 
             m_playerStateMachine.PlayerRigidbody.linearVelocity = velocity;
 
-            if (Time.time >= rollEndTime)
+            if (!m_playerStateMachine.PlayerAnimatorScript.IsInRoll)
             {
                 m_playerStateMachine.SwitchState(new PlayerMovementState(m_playerStateMachine));
             }
@@ -77,7 +73,18 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Exit()
         {
-            m_playerStateMachine.GameInputSO.EnableInputs();
+            m_playerStateMachine.GameInputSO.EnableAllInputs();
+
+            if (m_playerStateMachine.GameInputSO.MovementInput.sqrMagnitude < 0.01f)
+            {
+                Vector3 zeroVelocity = m_playerStateMachine.PlayerRigidbody.linearVelocity;
+
+                zeroVelocity.x = 0;
+                zeroVelocity.z = 0;
+
+                m_playerStateMachine.PlayerRigidbody.linearVelocity = zeroVelocity;
+            }
+
             m_playerStateMachine.StartCoroutine(RollCooldown());
         }
 

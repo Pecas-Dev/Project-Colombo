@@ -1,4 +1,4 @@
-using UnityEngine;
+using ProjectColombo.GameInputSystem;
 
 
 namespace ProjectColombo.StateMachine.Player
@@ -13,6 +13,7 @@ namespace ProjectColombo.StateMachine.Player
         {
             m_playerStateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Parry);
 
+            m_playerStateMachine.GameInputSO.DisableAllInputsExcept(InputActionType.Roll);
             m_playerStateMachine.PlayerAnimatorScript.TriggerParry();
         }
 
@@ -28,6 +29,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Exit()
         {
+            m_playerStateMachine.GameInputSO.EnableAllInputs();
         }
     }
 }

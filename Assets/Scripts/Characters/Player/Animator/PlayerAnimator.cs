@@ -12,9 +12,11 @@ namespace ProjectColombo.Control
 
 
         bool isInParry = false;
+        bool isInRoll = false;
 
 
         public bool IsInParry => isInParry;
+        public bool IsInRoll => isInRoll;
 
 
         void Awake()
@@ -51,7 +53,14 @@ namespace ProjectColombo.Control
         // ---------------------------------------------------------
         public void TriggerRoll()
         {
+            isInRoll = true;
             animator.SetTrigger("roll");
+        }
+
+        //  Animation Event at the end of the Roll
+        public void OnRollFinished()
+        {
+            isInRoll = false;
         }
 
 

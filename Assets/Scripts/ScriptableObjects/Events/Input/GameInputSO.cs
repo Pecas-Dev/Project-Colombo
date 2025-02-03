@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,6 +6,20 @@ using UnityEngine.InputSystem;
 
 namespace ProjectColombo.GameInputSystem
 {
+    [Flags]
+    public enum InputActionType
+    {
+        None = 0,
+        Movement = 1 << 0,
+        Attack = 1 << 1,
+        Roll = 1 << 2,
+        Parry = 1 << 3,
+        Target = 1 << 4,
+        TargetPoint = 1 << 5,
+        All = ~0
+    }
+
+
     [CreateAssetMenu(fileName = "GameInputSO", menuName = "Scriptable Objects/Input/GameInputSO")]
     public class GameInputSO : ScriptableObject
     {
@@ -17,7 +32,7 @@ namespace ProjectColombo.GameInputSystem
         public bool ParryPressed { get; private set; } = false;
 
 
-        bool inputsDisabled = false;
+        InputActionType allowedInputs = InputActionType.All;
 
 
         InputSystem_Actions playerInputActions;
@@ -68,30 +83,42 @@ namespace ProjectColombo.GameInputSystem
             playerInputActions.Player.Disable();
         }
 
-        public void DisableInputs()
+        public void DisableAllInputs()
         {
-            inputsDisabled = true;
+            allowedInputs = InputActionType.None;
             ResetAllInputs();
         }
 
-        public void EnableInputs()
+        public void EnableAllInputs()
         {
-            inputsDisabled = false;
+            allowedInputs = InputActionType.All;
         }
 
-        public bool AreInputsDisabled()
+        public void DisableInput(InputActionType inputAction)
         {
-            return inputsDisabled;
+            allowedInputs &= ~inputAction;
         }
 
-        public bool IsKeyboardInput()
+        public void EnableInput(InputActionType inputAction)
         {
-            return Keyboard.current != null && Keyboard.current.anyKey.isPressed;
+            allowedInputs |= inputAction;
         }
 
-        public bool IsAnyInputActive()
+        public void DisableAllInputsExcept(params InputActionType[] exceptions)
         {
-            return MovementInput.sqrMagnitude > 0.01f || AttackPressed || RollPressed || TargetPressed || ParryPressed || (Keyboard.current != null && Keyboard.current.anyKey.isPressed);
+            allowedInputs = InputActionType.None;
+
+            foreach (var input in exceptions)
+            {
+                allowedInputs |= input;
+            }
+
+            ResetAllInputs();
+        }
+
+        public bool IsInputEnabled(InputActionType inputAction)
+        {
+            return (allowedInputs & inputAction) != 0;
         }
 
         void ResetAllInputs()
@@ -104,21 +131,23 @@ namespace ProjectColombo.GameInputSystem
             //TargetPressed = false;
         }
 
-        public void DisableAllInputsExceptRoll()
+        public bool IsKeyboardInput()
         {
-            MovementInput = Vector2.zero;
-            TargetPointInput = Vector2.zero;
-            AttackPressed = false;
-            ParryPressed = false;
-            //TargetPressed = false;
+            return Keyboard.current != null && Keyboard.current.anyKey.isPressed;
         }
+
+        public bool IsAnyInputActive()
+        {
+            return (MovementInput.sqrMagnitude > 0.01f || AttackPressed || RollPressed || TargetPressed || ParryPressed || IsKeyboardInput());
+        }
+
 
 
         // ################### MOVEMENT ##########################
 
         void OnMovePerformed(InputAction.CallbackContext context)
         {
-            if (inputsDisabled) return;
+            if (!IsInputEnabled(InputActionType.Movement)) return;
 
             MovementInput = context.ReadValue<Vector2>();
 
@@ -130,7 +159,7 @@ namespace ProjectColombo.GameInputSystem
 
         void OnMoveCanceled(InputAction.CallbackContext context)
         {
-            if (inputsDisabled) return;
+            if (!IsInputEnabled(InputActionType.Movement)) return;
 
             MovementInput = Vector2.zero;
         }
@@ -144,7 +173,7 @@ namespace ProjectColombo.GameInputSystem
         // ##################### ATTACK ###########################
         void OnAttackPerformed(InputAction.CallbackContext context)
         {
-            if (inputsDisabled) return;
+            if (!IsInputEnabled(InputActionType.Attack)) return;
 
             AttackPressed = true;
         }
@@ -164,7 +193,7 @@ namespace ProjectColombo.GameInputSystem
 
         void OnRollPerformed(InputAction.CallbackContext context)
         {
-            if (inputsDisabled) return;
+            if (!IsInputEnabled(InputActionType.Roll)) return;
 
             RollPressed = true;
         }
@@ -183,7 +212,7 @@ namespace ProjectColombo.GameInputSystem
 
         void OnParryPerformed(InputAction.CallbackContext context)
         {
-            if (inputsDisabled) return;
+            if (!IsInputEnabled(InputActionType.Parry)) return;
 
             ParryPressed = true;
         }
@@ -203,7 +232,7 @@ namespace ProjectColombo.GameInputSystem
 
         void OnTargetPerformed(InputAction.CallbackContext context)
         {
-            if (inputsDisabled) return;
+            if (!IsInputEnabled(InputActionType.Target)) return;
 
             TargetPressed = true;
         }
@@ -223,14 +252,14 @@ namespace ProjectColombo.GameInputSystem
 
         void OnTargetPointPerformed(InputAction.CallbackContext context)
         {
-            if (inputsDisabled) return;
+            if (!IsInputEnabled(InputActionType.TargetPoint)) return;
 
             TargetPointInput = context.ReadValue<Vector2>();
         }
 
         void OnTargetPointCanceled(InputAction.CallbackContext context)
         {
-            if (inputsDisabled) return;
+            if (!IsInputEnabled(InputActionType.TargetPoint)) return;
 
             TargetPointInput = Vector2.zero;
         }
