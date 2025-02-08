@@ -1,4 +1,5 @@
 using UnityEngine;
+using ProjectColombo.Enemies.DropSystem;
 
 
 namespace ProjectColombo.Combat
@@ -11,7 +12,7 @@ namespace ProjectColombo.Combat
 
 
         [Tooltip("Maximum health for this entity.")]
-        [SerializeField, ReadOnlyInspector] int currentHealth;
+        [ReadOnlyInspector] int currentHealth;
 
 
         public int CurrentHealth => currentHealth;
@@ -57,11 +58,22 @@ namespace ProjectColombo.Combat
             currentHealth = Mathf.Min(currentHealth, maxHealth); 
 
             HealthChanged?.Invoke(currentHealth, maxHealth);
+        }
 
+        public void AddHealthPercentage(int percentage)
+        {
+            Debug.Log("add health in health manager " + gameObject.name);
+            maxHealth += (int)(percentage/100f * maxHealth);
+            currentHealth += (int)(percentage/100f * currentHealth);
         }
 
         void Die()
         {
+            if (TryGetComponent<DropSystem>(out _))
+            {
+                GetComponent<DropSystem>().DropItem();
+            }
+
             Died?.Invoke();
 
             gameObject.SetActive(false);

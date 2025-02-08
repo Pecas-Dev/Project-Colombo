@@ -161,5 +161,11 @@ namespace ProjectColombo.Combat
                 rightHandOverlaps.Remove(other);
             }
         }
+
+        public void AddDamagePercentage(int percentage)
+        {
+            leftHandDamage += (int)(percentage/100 * leftHandDamage);
+            rightHandDamage += (int)(percentage/100 * rightHandDamage);
+        }
     }
 }
