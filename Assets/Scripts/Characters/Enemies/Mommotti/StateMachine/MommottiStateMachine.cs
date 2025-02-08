@@ -157,5 +157,10 @@ namespace ProjectColombo.StateMachine.Mommotti
             myWeaponAttributes.isAttacking = false;
             myWeaponAttributes.GetComponent<Animator>().SetTrigger("Interrupt");
         }
+
+        public void Telegraphing()
+        {
+            myWeaponAttributes.Telegraphing();
+        }
     }
 }

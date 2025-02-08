@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using ProjectColombo.StateMachine.Mommotti;
+using System.ComponentModel;
 
 namespace ProjectColombo.Combat
 {
@@ -11,23 +12,23 @@ namespace ProjectColombo.Combat
         public float cooldown;
         float currentTimer;
         public float reach;
-        //public Collider hitbox;
+        [SerializeField, ReadOnlyInspector] string ownerTag;
         [HideInInspector] public bool onCooldown;
         [HideInInspector] public bool isAttacking;
         [HideInInspector] public Animator myAnimator;
+        ParticleSystem myParticles;
 
         private void Start()
         {
             myAnimator = GetComponent<Animator>();
             isAttacking = false;
             currentTimer = 0;
-            //hitbox.enabled = cooldownDone;
+            ownerTag = GetComponentInParent<HealthManager>().tag;
+            myParticles = GetComponent<ParticleSystem>();
         }
 
         private void Update()
         {
-            //hitbox.enabled = cooldownDone;
-
             if (onCooldown)
             {
                 currentTimer += Time.deltaTime;
@@ -40,13 +41,24 @@ namespace ProjectColombo.Combat
             }
         }
 
+        public void Telegraphing()
+        {
+            if (myParticles != null)
+            {
+                myParticles.Stop();
+                myParticles.Clear();
+                myParticles.Play();
+            }
+        }
+
         private void OnTriggerEnter(Collider other)
         {
             Vector3 attackDirection = (other.transform.position - transform.parent.position).normalized; //get direction from user to target
             attackDirection.y = 0.2f; //could be increased to make the hit entity jump a bit
 
-            if ((transform.parent.tag == "Enemy" && other.tag == "Player"))
+            if ((ownerTag == "Enemy" && other.tag == "Player"))
             {
+                Debug.Log("hit player");
                 HealthManager targetHealth = other.GetComponent<HealthManager>();
 
                 if (targetHealth != null)
@@ -61,7 +73,7 @@ namespace ProjectColombo.Combat
                     }
                 }
             }
-            else if (transform.parent.tag == "Player" && other.tag == "Enemy")
+            else if (ownerTag == "Player" && other.tag == "Enemy")
             {
                 MommottiStateMachine otherStateMachine = other.GetComponent<MommottiStateMachine>();
                 HealthManager otherHealth = other.GetComponent<HealthManager>();

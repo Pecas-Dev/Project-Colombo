@@ -74,7 +74,6 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         private void CheckIfShouldStillAttack()
         {
-            Debug.Log("check for attacking switch");
             GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
             float currentDistanceToPlayer = (stateMachine.myMommottiAttributes.playerPosition.position - stateMachine.transform.position).magnitude;
 
