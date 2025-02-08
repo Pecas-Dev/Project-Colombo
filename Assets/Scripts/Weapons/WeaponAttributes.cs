@@ -7,7 +7,8 @@ namespace ProjectColombo.Combat
 {
     public class WeaponAttributes : MonoBehaviour
     {
-        public int damage;
+        public int minDamage;
+        public int maxDamage;
         public float knockback;
         public float cooldown;
         float currentTimer;
@@ -53,6 +54,7 @@ namespace ProjectColombo.Combat
 
         private void OnTriggerEnter(Collider other)
         {
+            int damage = Random.Range(minDamage, maxDamage);
             Vector3 attackDirection = (other.transform.position - transform.parent.position).normalized; //get direction from user to target
             attackDirection.y = 0.2f; //could be increased to make the hit entity jump a bit
 
