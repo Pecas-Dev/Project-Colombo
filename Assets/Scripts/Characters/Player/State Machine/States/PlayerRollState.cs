@@ -33,6 +33,12 @@ namespace ProjectColombo.StateMachine.Player
                 return;
             }
 
+            if (!m_playerStateMachine.StaminaSystem.TryConsumeStamina(m_playerStateMachine.StaminaSystem.StaminaConfig.RollStaminaCost))
+            {
+                m_playerStateMachine.SwitchState(new PlayerMovementState(m_playerStateMachine));
+                return;
+            }
+
             m_playerStateMachine.GameInputSO.DisableAllInputs();
             m_playerStateMachine.PlayerAnimatorScript.TriggerRoll();
 

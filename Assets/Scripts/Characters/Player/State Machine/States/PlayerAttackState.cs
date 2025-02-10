@@ -21,6 +21,14 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Enter()
         {
+            if (!m_playerStateMachine.StaminaSystem.TryConsumeStamina(m_playerStateMachine.StaminaSystem.StaminaConfig.ComboStaminaCost))
+            {
+                m_playerStateMachine.SwitchState(new PlayerMovementState(m_playerStateMachine));
+                return;
+            }
+
+            m_playerStateMachine.StaminaSystem.TryConsumeStamina(-m_playerStateMachine.StaminaSystem.StaminaConfig.ComboStaminaCost);
+
             m_playerStateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Attack);
 
             // We also need to add a "Hold Animation at the End" if button is still pressed.
@@ -56,7 +64,7 @@ namespace ProjectColombo.StateMachine.Player
                 return;
             }
 
-            if(m_playerStateMachine.GameInputSO.ParryPressed)
+            if (m_playerStateMachine.GameInputSO.ParryPressed)
             {
                 m_playerStateMachine.GameInputSO.ResetParryPressed();
                 m_playerStateMachine.SwitchState(new PlayerParryState(m_playerStateMachine));
@@ -75,6 +83,11 @@ namespace ProjectColombo.StateMachine.Player
             }
             else
             {
+                if (attack.ComboStateIndex == -1)
+                {
+                    m_playerStateMachine.StaminaSystem.TryConsumeStamina(m_playerStateMachine.StaminaSystem.StaminaConfig.ComboStaminaCost);
+                }
+
                 m_playerStateMachine.SwitchState(new PlayerMovementState(m_playerStateMachine));
             }
 

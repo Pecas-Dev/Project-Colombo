@@ -29,7 +29,7 @@ namespace ProjectColombo.Inventory
             //please change to weaponattribures....
             //ChangeWeapon(GetComponentInChildren<WeaponAttributes>().name); 
 
-            ChangeWeapon("FIST"); //don't know how to access the current equiped weapon in your code..
+            ChangeWeapon(GetComponentInChildren<WeaponAttributes>().name); 
         }
 
         public void ChangeWeapon(string newWeaponName)

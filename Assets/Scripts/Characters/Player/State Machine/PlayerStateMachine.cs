@@ -19,15 +19,16 @@ namespace ProjectColombo.StateMachine.Player
 
 
         [Header("Component References")]
-        [field: SerializeField] public Rigidbody PlayerRigidbody { get; private set; }
-        [field: SerializeField] public Animator PlayerAnimator { get; private set; }
+        [field: SerializeField, ReadOnlyInspector] public Rigidbody PlayerRigidbody { get; private set; }
+        [field: SerializeField, ReadOnlyInspector] public Animator PlayerAnimator { get; private set; }
 
 
         [Header("Script References")]
         [field: SerializeField] public GameInputSO GameInputSO { get; private set; }
-        [field: SerializeField] public PlayerAnimator PlayerAnimatorScript { get; private set; }
-        [field: SerializeField] public EntityAttributes EntityAttributes { get; private set; }
-        [field: SerializeField] public Targeter Targeter { get; private set; }
+        [field: SerializeField, ReadOnlyInspector] public Stamina StaminaSystem { get; private set; }
+        [field: SerializeField, ReadOnlyInspector] public PlayerAnimator PlayerAnimatorScript { get; private set; }
+        [field: SerializeField, ReadOnlyInspector] public EntityAttributes EntityAttributes { get; private set; }
+        [field: SerializeField, ReadOnlyInspector] public Targeter Targeter { get; private set; }
         [field: SerializeField] public Attack[] Attacks { get; private set; }
 
 
@@ -45,6 +46,7 @@ namespace ProjectColombo.StateMachine.Player
                 GameInputSO.Initialize();
             }
 
+            StaminaSystem = GetComponent<Stamina>();
             PlayerAnimatorScript = GetComponent<PlayerAnimator>();
             EntityAttributes = GetComponent<EntityAttributes>();
             Targeter = GetComponentInChildren<Targeter>();
@@ -85,6 +87,11 @@ namespace ProjectColombo.StateMachine.Player
             if (EntityAttributes == null)
             {
                 Debug.LogError("EntityAttributes reference is missing!");
+            }
+
+            if (StaminaSystem == null)
+            {
+                Debug.LogError("StaminaSystem reference is missing!");
             }
         }
 
