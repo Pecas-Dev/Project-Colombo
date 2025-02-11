@@ -33,7 +33,7 @@ namespace ProjectColombo.Combat
         {
             if (currentHealth <= 0)
             {
-                return; 
+                return;
             }
 
             currentHealth -= damageAmount;
@@ -62,7 +62,6 @@ namespace ProjectColombo.Combat
 
         public void AddHealthPercentage(int percentage)
         {
-            Debug.Log("add health in health manager " + gameObject.name);
             maxHealth += (int)(percentage/100f * maxHealth);
             currentHealth += (int)(percentage/100f * currentHealth);
         }

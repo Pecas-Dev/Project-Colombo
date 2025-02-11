@@ -87,5 +87,11 @@ namespace ProjectColombo.Combat
                 }
             }
         }
+
+        public void AddDamagePercentage(int percentage)
+        {
+            minDamage += (int)(percentage / 100 * minDamage);
+            maxDamage += (int)(percentage / 100 * maxDamage);
+        }
     }
 }

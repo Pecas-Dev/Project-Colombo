@@ -64,14 +64,12 @@ namespace ProjectColombo.Inventory.Collectable
 
         private void HealthCharm(GameObject player)
         {
-            Debug.Log("Add health in base collectable");
             player.GetComponent<HealthManager>().AddHealthPercentage(myData.valueModifierInPercent);
         }
 
         private void AttackCharm(GameObject player)
         {
-            //please change to weapon attributes....
-            player.GetComponent<HitboxHandManager>().AddDamagePercentage(myData.valueModifierInPercent);
+            player.GetComponentInChildren<WeaponAttributes>().AddDamagePercentage(myData.valueModifierInPercent);
         }
 
         private void Reset()

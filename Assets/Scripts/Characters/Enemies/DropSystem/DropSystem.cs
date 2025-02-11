@@ -1,5 +1,6 @@
 using ProjectColombo.Inventory.Collectable;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace ProjectColombo.Enemies.DropSystem
@@ -7,32 +8,44 @@ namespace ProjectColombo.Enemies.DropSystem
     public class DropSystem : MonoBehaviour
     {
         public List<GameObject> possibleDrops;
-        //public int chanceToDrop;
-        List<int> dropChancePerItem;
+        public List<int> dropChances;
+
 
         private void Start()
         {
-            dropChancePerItem = new();
-
-            foreach (GameObject drop in possibleDrops)
-            {
-                dropChancePerItem.Add(drop.GetComponent<BaseCollectable>().myData.dropChance);
-            }
         }
 
         public void DropItem()
         {
             int rand = Random.Range(0, 100);
 
-            for (int i = 0; i < dropChancePerItem.Count; i++)
+            if (dropChances.Count == 0)
             {
-                if (rand < dropChancePerItem[i])
+                Debug.Log("no drop chance values set");
+                return;
+            }
+
+            for (int i = 0; i < possibleDrops.Count; i++)
+            {
+                if (dropChances.Count < i)
                 {
-                    Instantiate(possibleDrops[i], new Vector3(transform.position.x, 1.5f, transform.position.z), transform.rotation);
+                    Debug.Log("no drop chance values set");
                     break;
                 }
 
-                rand -= dropChancePerItem[i];
+                if (rand <= dropChances[i])
+                {
+                    Instantiate(possibleDrops[i], new Vector3(transform.position.x, 1f, transform.position.z), transform.rotation);
+                    break;
+                }
+
+                rand -= dropChances[i];
+
+                if (rand <= 0)
+                {
+                    Debug.Log("intentional no drop");
+                    break;
+                }
             }
         }
     }

@@ -13,7 +13,7 @@ namespace ProjectColombo.Inventory.Collectable
         //apply to all
         public CollectibleType type;
         public Color itemColor;
-        public int dropChance;
+        //public int dropChance;
         public bool isPickable = true;
 
         //currency

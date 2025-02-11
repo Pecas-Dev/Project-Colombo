@@ -25,7 +25,7 @@ namespace ProjectColombo.Inventory.Collectable
             // Get the serialized properties for each field
             type = serializedObject.FindProperty("type");
             itemColor = serializedObject.FindProperty("itemColor");
-            dropChance = serializedObject.FindProperty("dropChance");
+            //dropChance = serializedObject.FindProperty("dropChance");
             isPickable = serializedObject.FindProperty("isPickable");
 
             // Currency fields
@@ -48,7 +48,7 @@ namespace ProjectColombo.Inventory.Collectable
             // Draw the common fields
             EditorGUILayout.PropertyField(type);
             EditorGUILayout.PropertyField(itemColor);
-            EditorGUILayout.PropertyField(dropChance);
+            //EditorGUILayout.PropertyField(dropChance);
             EditorGUILayout.PropertyField(isPickable);
 
             // Conditionally show fields based on CollectibleType
