@@ -86,6 +86,15 @@ namespace ProjectColombo.Combat
                     otherHealth.TakeDamage(damage);
                 }
             }
+            else if (ownerTag == "Player" && other.tag == "Destroyable")
+            {
+                HealthManager otherHealth = other.GetComponent<HealthManager>();
+
+                if (otherHealth != null)
+                {
+                    otherHealth.TakeDamage(damage);
+                }
+            }
         }
 
         public void AddDamagePercentage(int percentage)
