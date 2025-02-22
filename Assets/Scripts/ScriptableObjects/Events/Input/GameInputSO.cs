@@ -16,6 +16,7 @@ namespace ProjectColombo.GameInputSystem
         Parry = 1 << 3,
         Target = 1 << 4,
         TargetPoint = 1 << 5,
+        Interact = 1 << 6,
         All = ~0
     }
 
@@ -30,6 +31,8 @@ namespace ProjectColombo.GameInputSystem
         public bool RollPressed { get; private set; } = false;
         public bool TargetPressed { get; private set; } = false;
         public bool ParryPressed { get; private set; } = false;
+        public bool InteractPressed { get; private set; } = false;
+
 
 
         InputActionType allowedInputs = InputActionType.All;
@@ -62,6 +65,8 @@ namespace ProjectColombo.GameInputSystem
 
             playerInputActions.Player.TargetPoint.performed += OnTargetPointPerformed;
             playerInputActions.Player.TargetPoint.canceled += OnTargetPointCanceled;
+
+            playerInputActions.Player.Interact.performed += OnInteractPerformed;
         }
 
         public void Uninitialize()
@@ -128,7 +133,7 @@ namespace ProjectColombo.GameInputSystem
             AttackPressed = false;
             RollPressed = false;
             ParryPressed = false;
-            //TargetPressed = false;
+            TargetPressed = false;
         }
 
         public bool IsKeyboardInput()
@@ -268,5 +273,36 @@ namespace ProjectColombo.GameInputSystem
 
 
         //---------------------------------------------------------
+
+        public void EnableUIMode()
+        {
+            DisableInput(InputActionType.Movement); // Disable player movement
+            ResetAllInputs(); // Clear any active inputs
+            playerInputActions.Player.Disable(); // Disable player controls
+            playerInputActions.UI.Enable(); // Enable UI navigation
+        }
+
+        public void DisableUIMode()
+        {
+            playerInputActions.UI.Disable(); // Disable UI input
+            playerInputActions.Player.Enable(); // Re-enable player controls
+            EnableInput(InputActionType.Movement); // Allow movement again
+        }
+
+        void OnInteractPerformed(InputAction.CallbackContext context)
+        {
+            Debug.Log("try interact");
+            if (!IsInputEnabled(InputActionType.Interact)) return;
+
+            Debug.Log("success");
+            InteractPressed = true;
+        }
+
+        public void ResetInteractPressed()
+        {
+            Debug.Log("Reset interact");
+            InteractPressed = false;
+        }
+
     }
 }

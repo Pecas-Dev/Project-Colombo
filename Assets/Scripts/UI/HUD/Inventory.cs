@@ -2,6 +2,7 @@ using ProjectColombo.Inventory;
 using UnityEngine;
 using TMPro;
 using System.Text;
+using ProjectColombo.GameInputSystem;
 
 namespace ProjectColombo.UI.HUD
 {
@@ -12,6 +13,7 @@ namespace ProjectColombo.UI.HUD
         public TMP_Text currentWeaponText;
         public TMP_Text charmAmountText;
         public TMP_Text maskAmountText;
+        [SerializeField] private GameInputSO gameInput;
 
 
         private void Start()
@@ -42,9 +44,10 @@ namespace ProjectColombo.UI.HUD
 
             maskAmountText.text = maskAmount.ToString();
 
-            if (Input.GetKeyUp(KeyCode.I))  //map to input this just for testing
+            if (gameInput.InteractPressed)  //map to input this just for testing
             {
                 ToggleVisability();
+                gameInput.ResetInteractPressed();
             }
         }
 
