@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using ProjectColombo.StateMachine.Mommotti;
 using System.ComponentModel;
+using ProjectColombo.StateMachine.Player;
 
 namespace ProjectColombo.Combat
 {
@@ -9,6 +10,7 @@ namespace ProjectColombo.Combat
     {
         public int minDamage;
         public int maxDamage;
+        public int additionalDamageOnHeavyAttack;
         public float knockback;
         public float cooldown;
         float currentTimer;
@@ -16,6 +18,7 @@ namespace ProjectColombo.Combat
         [SerializeField, ReadOnlyInspector] string ownerTag;
         [HideInInspector] public bool onCooldown;
         [HideInInspector] public bool isAttacking;
+        [HideInInspector] public bool heavyAttack;
         [HideInInspector] public Animator myAnimator;
         ParticleSystem myParticles;
 
@@ -48,6 +51,10 @@ namespace ProjectColombo.Combat
             {
                 myParticles.Stop();
                 myParticles.Clear();
+
+                var mainModule = myParticles.main;
+                mainModule.startColor = heavyAttack ? Color.red : Color.green;
+
                 myParticles.Play();
             }
         }
@@ -60,19 +67,22 @@ namespace ProjectColombo.Combat
 
             if ((ownerTag == "Enemy" && other.tag == "Player"))
             {
-                Debug.Log("hit player");
-                HealthManager targetHealth = other.GetComponent<HealthManager>();
+                PlayerStateMachine otherStateMachine = other.GetComponent<PlayerStateMachine>();
+                HealthManager otherHealth = other.GetComponent<HealthManager>();
 
-                if (targetHealth != null)
+                if (otherStateMachine != null && otherHealth != null && otherHealth.CurrentHealth > 0)
                 {
-                    targetHealth.TakeDamage(damage);
-
-                    Rigidbody targetRigidbody = other.GetComponent<Rigidbody>();
-
-                    if (targetRigidbody != null)
+                    if (heavyAttack) //knockback only on heavy attacks
                     {
-                        targetRigidbody.AddForce(attackDirection * knockback, ForceMode.Impulse);
+                        otherStateMachine.Impact(attackDirection, knockback);
+                        otherHealth.TakeDamage(additionalDamageOnHeavyAttack);
                     }
+                    else
+                    {
+                        otherStateMachine.Impact(attackDirection, 0); //no knockback but flinch
+                    }
+
+                    otherHealth.TakeDamage(damage);
                 }
             }
             else if (ownerTag == "Player" && other.tag == "Enemy")

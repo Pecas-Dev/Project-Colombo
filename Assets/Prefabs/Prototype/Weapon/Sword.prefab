@@ -150,12 +150,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minDamage: 3
   maxDamage: 7
+  additionalDamageOnHeavyAttack: 5
   knockback: 3
   cooldown: 2
   reach: 1
   ownerTag: 
   onCooldown: 0
   isAttacking: 0
+  heavyAttack: 0
   myAnimator: {fileID: 0}
 --- !u!198 &1927995215800455417
 ParticleSystem:
@@ -293,7 +295,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 10
+      scalar: 20
       minScalar: 5
       maxCurve:
         serializedVersion: 2

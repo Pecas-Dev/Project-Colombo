@@ -1,7 +1,6 @@
 using ProjectColombo.Combat;
 using ProjectColombo.Control;
 using ProjectColombo.GameInputSystem;
-
 using UnityEngine;
 
 
@@ -61,6 +60,15 @@ namespace ProjectColombo.StateMachine.Player
 
             SwitchState(new PlayerMovementState(this));
         }
+
+        public void Impact(Vector3 direction, float knockbackStrength)
+        {
+            PlayerRigidbody.AddForce(direction * knockbackStrength, ForceMode.Impulse);
+            PlayerAnimator.SetTrigger("Impact"); //stop attack animation
+            GetComponent<WeaponHitboxManager>().DisableSwordHitbox(); //disable hitbox
+            SwitchState(new PlayerMovementState(this)); //when interrupt switch to attacking
+        }
+
 
         void OnDisable()
         {

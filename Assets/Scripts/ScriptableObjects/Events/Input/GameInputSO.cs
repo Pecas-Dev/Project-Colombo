@@ -291,16 +291,13 @@ namespace ProjectColombo.GameInputSystem
 
         void OnInteractPerformed(InputAction.CallbackContext context)
         {
-            Debug.Log("try interact");
             if (!IsInputEnabled(InputActionType.Interact)) return;
 
-            Debug.Log("success");
             InteractPressed = true;
         }
 
         public void ResetInteractPressed()
         {
-            Debug.Log("Reset interact");
             InteractPressed = false;
         }
 

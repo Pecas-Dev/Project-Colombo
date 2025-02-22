@@ -1,4 +1,3 @@
-using ProjectColombo.StateMachine.Player;
 using UnityEngine;
 
 namespace ProjectColombo.StateMachine.Mommotti
@@ -17,7 +16,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Tick(float deltaTime)
         {
-
+            //maybe play death animation
         }
 
         public override void Exit()

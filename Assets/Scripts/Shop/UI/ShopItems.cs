@@ -9,14 +9,10 @@ namespace ProjectColombo.Shop
         public ItemToSell item;
         public Image referenceImage;
         public TMP_Text itemPrice;
-        public TMP_Text name;
+        public TMP_Text nameText;
         public Button shopButton;
         bool isActive;
         Animator myAnimator;
-
-        private void Update()
-        {
-        }
 
         public void SetUp(ItemToSell itemStruct, Vector3 position)
         {
@@ -26,7 +22,7 @@ namespace ProjectColombo.Shop
 
             referenceImage.sprite = item.sprite;
             itemPrice.text = item.price.ToString();
-            name.text = item.name;
+            nameText.text = item.name;
 
             // Set up the button click listener
             shopButton.onClick.RemoveAllListeners();  // Remove any existing listeners

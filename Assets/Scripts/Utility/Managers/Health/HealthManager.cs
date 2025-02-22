@@ -75,7 +75,7 @@ namespace ProjectColombo.Combat
 
             Died?.Invoke();
 
-            gameObject.SetActive(false);
+            Destroy(this.gameObject);
         }
     }
 }

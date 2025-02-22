@@ -10,6 +10,8 @@ namespace ProjectColombo.StateMachine.Mommotti
         Vector3 targetDirection;
         float attackCheckTimer = 0;
         float intervallToCheckAttack = 1f;
+        bool doHeavyAttack = false;
+        bool decided = false;
 
         public MommottiStateAttack(MommottiStateMachine stateMachine) : base(stateMachine)
         {
@@ -31,14 +33,40 @@ namespace ProjectColombo.StateMachine.Mommotti
                 CheckIfShouldStillAttack();
             }
 
-            targetDirection = stateMachine.myMommottiAttributes.GetPlayerPosition() - stateMachine.transform.position;
+            
 
-            if (stateMachine.canAttack && !stateMachine.myWeaponAttributes.onCooldown && targetDirection.magnitude < stateMachine.myWeaponAttributes.reach)
+            targetDirection = stateMachine.myMommottiAttributes.GetPlayerPosition() - stateMachine.transform.position;
+            float distanceToPlayer = targetDirection.magnitude;
+
+            //decide if heavy or light attack once
+            if (stateMachine.canAttack && !decided)
             {
-                stateMachine.myAnimator.SetTrigger("Attack");
-                stateMachine.myWeaponAttributes.onCooldown = true;
-                stateMachine.myWeaponAttributes.isAttacking = true;
-                stateMachine.canAttack = false;
+                if (distanceToPlayer > 0.75 * stateMachine.myMommottiAttributes.circleDistance) //this could be adjusted to a heavy attack range
+                {
+                    // Player is further away, use heavy attack
+                    doHeavyAttack = true;
+                }
+                else
+                {
+                    // Player is close enough, use light attack
+                    doHeavyAttack = false;
+                }
+
+                decided = true;
+            }
+
+            if (stateMachine.canAttack && !stateMachine.myWeaponAttributes.onCooldown && distanceToPlayer < stateMachine.myWeaponAttributes.reach)
+            {
+                if (doHeavyAttack)
+                {
+                    HeavyAttack();
+                }
+                else
+                {
+                    LightAttack();
+                }
+
+                decided = false;
             }
 
             //rotate towards player
@@ -50,7 +78,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             }
 
             //move to player if to far away
-            if (stateMachine.canAttack && targetDirection.magnitude > stateMachine.myWeaponAttributes.reach)
+            if (stateMachine.canAttack && distanceToPlayer > stateMachine.myWeaponAttributes.reach)
             {
                 float currentSpeed = stateMachine.myEntityAttributes.moveSpeed;
                 Vector3 movingDirection = stateMachine.transform.forward;
@@ -59,7 +87,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             }
 
             //step back if cannot attack
-            if (!stateMachine.canAttack && targetDirection.magnitude < 0.75*stateMachine.myMommottiAttributes.circleDistance && !stateMachine.myWeaponAttributes.isAttacking)
+            if (!stateMachine.canAttack && distanceToPlayer < 0.75 * stateMachine.myMommottiAttributes.circleDistance && !stateMachine.myWeaponAttributes.isAttacking)
             {
                 float currentSpeed = stateMachine.myEntityAttributes.moveSpeed;
                 Vector3 movingDirection = -stateMachine.transform.forward;
@@ -72,6 +100,26 @@ namespace ProjectColombo.StateMachine.Mommotti
         {
         }
 
+        private void LightAttack()
+        {
+            Debug.Log("light attack");
+            stateMachine.myWeaponAttributes.heavyAttack = false; //no impact on light attack
+            stateMachine.myAnimator.SetTrigger("Attack");
+            stateMachine.myWeaponAttributes.onCooldown = true;
+            stateMachine.myWeaponAttributes.isAttacking = true;
+            stateMachine.canAttack = false;
+        }
+
+        private void HeavyAttack()
+        {
+            Debug.Log("heavy attack");
+            stateMachine.myWeaponAttributes.heavyAttack = true; //deal impact on hard attack
+            stateMachine.myAnimator.SetTrigger("Attack");
+            stateMachine.myWeaponAttributes.onCooldown = true;
+            stateMachine.myWeaponAttributes.isAttacking = true;
+            stateMachine.canAttack = false;
+        }
+
         private void CheckIfShouldStillAttack()
         {
             GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -81,6 +129,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             {
                 //switch to chasing
                 stateMachine.SwitchState(new MommottiStateChase(stateMachine));
+                return;
             }
 
 

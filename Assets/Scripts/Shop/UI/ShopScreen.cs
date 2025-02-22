@@ -37,7 +37,7 @@ namespace ProjectColombo.Shop
 
             foreach (ItemToSell i in itemsToSell)
             {
-                Vector3 position = new Vector3(positionX, 0, 0);
+                Vector3 position = new(positionX, 0, 0);
 
                 // Instantiate the button prefab
                 GameObject prefab = Instantiate(buttonPrefab, transform);
@@ -45,6 +45,8 @@ namespace ProjectColombo.Shop
                 // Add the ShopItems component
                 ShopItems shopItem = prefab.GetComponent<ShopItems>();
                 itemButtons.Add(shopItem);
+
+                Debug.Log(i.name + position);
 
                 // Set up the button (position, item info, etc.)
                 shopItem.SetUp(i, position);
@@ -73,7 +75,6 @@ namespace ProjectColombo.Shop
 
         public void BuyItem(ItemToSell item)
         {
-            //add flair
             playerInventory.currencyAmount -= item.price;
             Instantiate(item.item, playerInventory.transform.position, Quaternion.identity); //spawn bought item
             Debug.Log("instantiate " + item.item.name + " at " + playerInventory.transform.position);
