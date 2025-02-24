@@ -20,8 +20,8 @@ namespace ProjectColombo.StateMachine.Player
 
             if (!IsGrounded())
             {
-                velocity.y += Physics.gravity.y * deltaTime;
                 velocity = PreventWallStick(velocity, deltaTime);
+                velocity.y += Physics.gravity.y + deltaTime;
             }
 
             rigidbody.linearVelocity = velocity;

@@ -46,13 +46,13 @@ namespace ProjectColombo.StateMachine.Player
             HandleMovement(deltaTime);
             HandleRotation(deltaTime);
             UpdateAnimator();
-
-            if (movementInput.sqrMagnitude < 0.01f)
-            {
-                return;
-            }
-
             ApplyAirPhysics(deltaTime);
+
+            //if (movementInput.sqrMagnitude < 0.01f)
+            //{
+            //    return;
+            //}
+
         }
 
         public override void Exit()
@@ -61,17 +61,34 @@ namespace ProjectColombo.StateMachine.Player
 
         void HandleMovement(float deltaTime)
         {
-            Vector3 velocity = m_playerStateMachine.PlayerRigidbody.linearVelocity;
+            //Vector3 velocity = m_playerStateMachine.PlayerRigidbody.linearVelocity;
+
+            //movementInput = m_playerStateMachine.GameInputSO.MovementInput;
+
+            //velocity.y = 0;
+
+            //if (movementInput.sqrMagnitude > 0.01f)
+            //{
+            //    velocity.x = movementInput.x * m_playerStateMachine.EntityAttributes.moveSpeed;
+            //    velocity.z = movementInput.y * m_playerStateMachine.EntityAttributes.moveSpeed;
+            //}
+
+            //m_playerStateMachine.PlayerRigidbody.linearVelocity = velocity;
+
+            Rigidbody rb = m_playerStateMachine.PlayerRigidbody;
+            Vector3 currentPosition = rb.position; // Get the current position
 
             movementInput = m_playerStateMachine.GameInputSO.MovementInput;
 
             if (movementInput.sqrMagnitude > 0.01f)
             {
-                velocity.x = movementInput.x * m_playerStateMachine.EntityAttributes.moveSpeed;
-                velocity.z = movementInput.y * m_playerStateMachine.EntityAttributes.moveSpeed;
-            }
+                Vector3 moveDirection = new Vector3(movementInput.x, 0, movementInput.y).normalized;
+                float moveSpeed = m_playerStateMachine.EntityAttributes.moveSpeed;
 
-            m_playerStateMachine.PlayerRigidbody.linearVelocity = velocity;
+                Vector3 targetPosition = currentPosition + (moveDirection * moveSpeed * deltaTime);
+
+                rb.MovePosition(targetPosition);
+            }
         }
 
         void HandleRotation(float deltaTime)
