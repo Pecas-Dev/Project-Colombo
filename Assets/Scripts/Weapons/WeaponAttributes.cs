@@ -72,17 +72,20 @@ namespace ProjectColombo.Combat
 
                 if (otherStateMachine != null && otherHealth != null && otherHealth.CurrentHealth > 0)
                 {
-                    if (heavyAttack) //knockback only on heavy attacks
+                    if (!otherStateMachine.isInvunerable)
                     {
-                        otherStateMachine.Impact(attackDirection, knockback);
-                        otherHealth.TakeDamage(additionalDamageOnHeavyAttack);
-                    }
-                    else
-                    {
-                        otherStateMachine.Impact(attackDirection, 0); //no knockback but flinch
-                    }
+                        if (heavyAttack) //knockback only on heavy attacks
+                        {
+                            otherStateMachine.Impact(attackDirection, knockback);
+                            otherHealth.TakeDamage(additionalDamageOnHeavyAttack);
+                        }
+                        else
+                        {
+                            otherStateMachine.Impact(attackDirection, 0); //no knockback but flinch
+                        }
 
-                    otherHealth.TakeDamage(damage);
+                        otherHealth.TakeDamage(damage);
+                    }
                 }
             }
             else if (ownerTag == "Player" && other.tag == "Enemy")

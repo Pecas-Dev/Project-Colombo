@@ -37,6 +37,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public PlayerState CurrentState => currentState;
 
+        [HideInInspector]public bool isInvunerable = false;
 
         void Awake()
         {

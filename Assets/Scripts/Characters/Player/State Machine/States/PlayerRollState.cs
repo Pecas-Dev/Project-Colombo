@@ -26,6 +26,8 @@ namespace ProjectColombo.StateMachine.Player
         public override void Enter()
         {
             m_playerStateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Roll);
+            m_playerStateMachine.isInvunerable = true;
+            m_playerStateMachine.GetComponent<Collider>().isTrigger = true;
 
             if (!CanQueueRoll)
             {
@@ -80,6 +82,8 @@ namespace ProjectColombo.StateMachine.Player
         public override void Exit()
         {
             m_playerStateMachine.GameInputSO.EnableAllInputs();
+            m_playerStateMachine.isInvunerable = false;
+            m_playerStateMachine.GetComponent<Collider>().isTrigger = false;
 
             if (m_playerStateMachine.GameInputSO.MovementInput.sqrMagnitude < 0.01f)
             {
