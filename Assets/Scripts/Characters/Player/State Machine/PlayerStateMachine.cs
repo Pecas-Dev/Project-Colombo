@@ -58,7 +58,8 @@ namespace ProjectColombo.StateMachine.Player
         void Start()
         {
             LogMissingReferenceErrors();
-
+            GameInputSO.Initialize();
+            GameInputSO.EnableAllInputs();
             SwitchState(new PlayerMovementState(this));
         }
 

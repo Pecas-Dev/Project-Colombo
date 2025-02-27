@@ -6,6 +6,10 @@ namespace ProjectColombo.StateMachine.Player
 {
     public class PlayerRollState : PlayerBaseState
     {
+        int playerLayer = LayerMask.NameToLayer("Player");
+        int enemyLayer = LayerMask.NameToLayer("Enemies");
+        int weaponLayer = LayerMask.NameToLayer("Weapon");
+
         float rollSpeed;
 
         float rollDistance = 2.5f;  
@@ -26,8 +30,7 @@ namespace ProjectColombo.StateMachine.Player
         public override void Enter()
         {
             m_playerStateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Roll);
-            m_playerStateMachine.isInvunerable = true;
-            m_playerStateMachine.GetComponent<Collider>().isTrigger = true;
+            SetInvunerable();
 
             if (!CanQueueRoll)
             {
@@ -64,6 +67,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Tick(float deltaTime)
         {
+            m_playerStateMachine.PlayerRigidbody.angularVelocity = Vector3.zero;
             Vector3 velocity = m_playerStateMachine.PlayerRigidbody.linearVelocity;
 
             velocity.x = rollDirection.x * rollSpeed;
@@ -82,8 +86,7 @@ namespace ProjectColombo.StateMachine.Player
         public override void Exit()
         {
             m_playerStateMachine.GameInputSO.EnableAllInputs();
-            m_playerStateMachine.isInvunerable = false;
-            m_playerStateMachine.GetComponent<Collider>().isTrigger = false;
+            SetVunerable();
 
             if (m_playerStateMachine.GameInputSO.MovementInput.sqrMagnitude < 0.01f)
             {
@@ -109,6 +112,24 @@ namespace ProjectColombo.StateMachine.Player
         {
             yield return new WaitForSeconds(rollCooldown);
             CanQueueRoll = true;
+        }
+
+        public void SetInvunerable()
+        {
+            m_playerStateMachine.isInvunerable = true;
+
+            // Disable collision between the Player and enemy/weapon layers
+            Physics.IgnoreLayerCollision(playerLayer, enemyLayer, true);
+            Physics.IgnoreLayerCollision(playerLayer, weaponLayer, true);
+        }
+
+        public void SetVunerable()
+        {
+            m_playerStateMachine.isInvunerable = false;
+
+            // Disable collision between the Player and enemy/weapon layers
+            Physics.IgnoreLayerCollision(playerLayer, enemyLayer, false);
+            Physics.IgnoreLayerCollision(playerLayer, weaponLayer, false);
         }
     }
 }

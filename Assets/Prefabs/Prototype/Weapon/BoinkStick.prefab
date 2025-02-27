@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8298808806540643327}
   - component: {fileID: 7523168934033927177}
   - component: {fileID: 5925163366797183191}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: BoinkStick
   m_TagString: Weapon
   m_Icon: {fileID: 0}
@@ -148,10 +148,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minDamage: 1
   maxDamage: 3
+  additionalDamageOnHeavyAttack: 0
   knockback: 0
   cooldown: 1
   reach: 2
   ownerTag: 
   onCooldown: 0
   isAttacking: 0
+  heavyAttack: 0
   myAnimator: {fileID: 0}

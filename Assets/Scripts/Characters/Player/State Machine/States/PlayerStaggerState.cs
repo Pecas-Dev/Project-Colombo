@@ -17,7 +17,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Enter()
         {
-            m_playerStateMachine.PlayerAnimator.SetTrigger("Impact");
+            m_playerStateMachine.PlayerAnimator.SetBool("Impact", true);
             m_playerStateMachine.GameInputSO.DisableAllInputs();
         }
 
@@ -33,7 +33,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Exit()
         {
-            m_playerStateMachine.PlayerAnimator.ResetTrigger("Impact");
+            m_playerStateMachine.PlayerAnimator.SetBool("Impact", false);
             m_playerStateMachine.GameInputSO.EnableAllInputs();
         }
     }

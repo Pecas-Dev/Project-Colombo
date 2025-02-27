@@ -15,7 +15,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Enter()
         {
-            stateMachine.myAnimator.SetTrigger("Impact");
+            stateMachine.myAnimator.SetBool("Impact", true);
         }
 
         public override void Tick(float deltaTime)
@@ -30,7 +30,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Exit()
         {
-            stateMachine.myAnimator.ResetTrigger("Impact");
+            stateMachine.myAnimator.SetBool("Impact", false);
         }
     }
 }

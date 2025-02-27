@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 
 namespace ProjectColombo.StateMachine.Player
@@ -15,6 +16,9 @@ namespace ProjectColombo.StateMachine.Player
         {
             m_playerStateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Movement);
             m_playerStateMachine.PlayerAnimatorScript.PlayMovementAnimation();
+
+            // Freeze rotation to avoid any rotation from physics forces
+            //m_playerStateMachine.PlayerRigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         }
 
         public override void Tick(float deltaTime)
@@ -46,66 +50,61 @@ namespace ProjectColombo.StateMachine.Player
             HandleMovement(deltaTime);
             HandleRotation(deltaTime);
             UpdateAnimator();
-            ApplyAirPhysics(deltaTime);
-
-            //if (movementInput.sqrMagnitude < 0.01f)
-            //{
-            //    return;
-            //}
-
         }
 
         public override void Exit()
         {
         }
 
-        void HandleMovement(float deltaTime)
+        private void HandleMovement(float deltaTime)
         {
-            //Vector3 velocity = m_playerStateMachine.PlayerRigidbody.linearVelocity;
+            Vector2 moveInput = m_playerStateMachine.GameInputSO.MovementInput;
+            Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y).normalized;
 
-            //movementInput = m_playerStateMachine.GameInputSO.MovementInput;
-
-            //velocity.y = 0;
-
-            //if (movementInput.sqrMagnitude > 0.01f)
-            //{
-            //    velocity.x = movementInput.x * m_playerStateMachine.EntityAttributes.moveSpeed;
-            //    velocity.z = movementInput.y * m_playerStateMachine.EntityAttributes.moveSpeed;
-            //}
-
-            //m_playerStateMachine.PlayerRigidbody.linearVelocity = velocity;
-
-            Rigidbody rb = m_playerStateMachine.PlayerRigidbody;
-            Vector3 currentPosition = rb.position; // Get the current position
-
-            movementInput = m_playerStateMachine.GameInputSO.MovementInput;
-
-            if (movementInput.sqrMagnitude > 0.01f)
+            // Only apply movement if input exists
+            if (moveDirection.magnitude > 0.1f)
             {
-                Vector3 moveDirection = new Vector3(movementInput.x, 0, movementInput.y).normalized;
-                float moveSpeed = m_playerStateMachine.EntityAttributes.moveSpeed;
+                // Get the current Y velocity (gravity should handle this)
+                float currentYVelocity = m_playerStateMachine.PlayerRigidbody.linearVelocity.y;
 
-                Vector3 targetPosition = currentPosition + (moveDirection * moveSpeed * deltaTime);
+                // Apply force for movement (preserve Y velocity, handle gravity naturally)
+                Vector3 targetVelocity = moveDirection * m_playerStateMachine.EntityAttributes.moveSpeed;
+                targetVelocity.y = currentYVelocity; // Maintain the Y velocity (gravity)
 
-                rb.MovePosition(targetPosition);
+                m_playerStateMachine.PlayerRigidbody.linearVelocity = targetVelocity;
+            }
+            else
+            {
+                // No input - just apply the current Y velocity and stop horizontal movement
+                m_playerStateMachine.PlayerRigidbody.linearVelocity = new Vector3(0, m_playerStateMachine.PlayerRigidbody.linearVelocity.y, 0);
             }
         }
 
-        void HandleRotation(float deltaTime)
+        private void HandleRotation(float deltaTime)
         {
-            if (movementInput.sqrMagnitude > 0.01f)
+            Vector2 moveInput = m_playerStateMachine.GameInputSO.MovementInput;
+            if (moveInput.sqrMagnitude > 0.01f)
             {
-                Vector3 targetDirection = new Vector3(movementInput.x, 0, movementInput.y).normalized;
-                Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+                Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
+                Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
 
-                m_playerStateMachine.PlayerRigidbody.rotation = Quaternion.RotateTowards(m_playerStateMachine.PlayerRigidbody.rotation, targetRotation, m_playerStateMachine.EntityAttributes.rotationSpeedPlayer * deltaTime);
+                m_playerStateMachine.PlayerRigidbody.MoveRotation(Quaternion.Slerp(
+                    m_playerStateMachine.PlayerRigidbody.rotation,
+                    targetRotation,
+                    Time.fixedDeltaTime * m_playerStateMachine.EntityAttributes.rotationSpeedPlayer
+                ));
+            }
+            else
+            {
+                // If no movement input, zero out angular velocity
+                m_playerStateMachine.PlayerRigidbody.angularVelocity = Vector3.zero;
             }
         }
 
         void UpdateAnimator()
         {
-            float speed = movementInput.magnitude * m_playerStateMachine.EntityAttributes.moveSpeed;
-            bool hasMovementInput = movementInput.sqrMagnitude > 0.01f;
+            float speed = m_playerStateMachine.GameInputSO.MovementInput.magnitude * m_playerStateMachine.EntityAttributes.moveSpeed;
+            bool hasMovementInput = m_playerStateMachine.GameInputSO.MovementInput.sqrMagnitude > 0.01f;
 
             m_playerStateMachine.PlayerAnimatorScript.UpdateAnimator(speed, false, hasMovementInput);
         }

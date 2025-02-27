@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3105801309597226528}
   - component: {fileID: 8363559074058339038}
   - component: {fileID: 608432081162670009}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Fist
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -91,10 +91,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minDamage: 1
   maxDamage: 3
+  additionalDamageOnHeavyAttack: 0
   knockback: 20
   cooldown: 1
   reach: 1
   ownerTag: 
   onCooldown: 0
   isAttacking: 0
+  heavyAttack: 0
   myAnimator: {fileID: 0}

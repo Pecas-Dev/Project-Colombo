@@ -64,7 +64,7 @@ namespace ProjectColombo.Combat
         {
             int damage = Random.Range(minDamage, maxDamage);
             Vector3 attackDirection = (other.transform.position - transform.parent.position).normalized; //get direction from user to target
-            attackDirection.y = 0.2f; //could be increased to make the hit entity jump a bit
+            attackDirection.y = 0.0f; //could be increased to make the hit entity jump a bit
 
             if ((ownerTag == "Enemy" && other.tag == "Player"))
             {
