@@ -30,7 +30,8 @@ namespace ProjectColombo.StateMachine.Player
         public override void Enter()
         {
             m_playerStateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Roll);
-            SetInvunerable();
+            m_playerStateMachine.PlayerRigidbody.constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            SetIgnoreLayers();
 
             if (!CanQueueRoll)
             {
@@ -86,7 +87,9 @@ namespace ProjectColombo.StateMachine.Player
         public override void Exit()
         {
             m_playerStateMachine.GameInputSO.EnableAllInputs();
-            SetVunerable();
+            m_playerStateMachine.RollInvincibleFrameStop();
+            m_playerStateMachine.PlayerRigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            ResetIgnoreLayers();
 
             if (m_playerStateMachine.GameInputSO.MovementInput.sqrMagnitude < 0.01f)
             {
@@ -114,19 +117,15 @@ namespace ProjectColombo.StateMachine.Player
             CanQueueRoll = true;
         }
 
-        public void SetInvunerable()
+        public void SetIgnoreLayers()
         {
-            m_playerStateMachine.isInvunerable = true;
-
             // Disable collision between the Player and enemy/weapon layers
             Physics.IgnoreLayerCollision(playerLayer, enemyLayer, true);
             Physics.IgnoreLayerCollision(playerLayer, weaponLayer, true);
         }
 
-        public void SetVunerable()
+        public void ResetIgnoreLayers()
         {
-            m_playerStateMachine.isInvunerable = false;
-
             // Disable collision between the Player and enemy/weapon layers
             Physics.IgnoreLayerCollision(playerLayer, enemyLayer, false);
             Physics.IgnoreLayerCollision(playerLayer, weaponLayer, false);

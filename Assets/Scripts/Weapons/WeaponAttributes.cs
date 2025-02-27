@@ -62,31 +62,42 @@ namespace ProjectColombo.Combat
 
         private void OnTriggerEnter(Collider other)
         {
+            Debug.Log("triggered: " + other.tag);
             int damage = Random.Range(minDamage, maxDamage);
             Vector3 attackDirection = (other.transform.position - transform.parent.position).normalized; //get direction from user to target
             attackDirection.y = 0.0f; //could be increased to make the hit entity jump a bit
 
-            if ((ownerTag == "Enemy" && other.tag == "Player"))
+            if (ownerTag == "Enemy" && other.CompareTag("Player"))
             {
+                Debug.Log("tags correct");
+
                 PlayerStateMachine otherStateMachine = other.GetComponent<PlayerStateMachine>();
                 HealthManager otherHealth = other.GetComponent<HealthManager>();
 
                 if (otherStateMachine != null && otherHealth != null && otherHealth.CurrentHealth > 0)
                 {
-                    if (!otherStateMachine.isInvunerable)
+                    if (otherStateMachine.isParrying)
                     {
-                        if (heavyAttack) //knockback only on heavy attacks
-                        {
-                            otherStateMachine.Impact(attackDirection, knockback);
-                            otherHealth.TakeDamage(additionalDamageOnHeavyAttack);
-                        }
-                        else
-                        {
-                            otherStateMachine.Impact(attackDirection, 0); //no knockback but flinch
-                        }
-
-                        otherHealth.TakeDamage(damage);
+                        Debug.Log("parried");
+                        GetComponentInParent<MommottiStateMachine>().Impact(attackDirection, 0); // stagger enemy if parry successfull
+                        return;
                     }
+
+                    if (otherStateMachine.isInvunerable) return;
+
+                    if (heavyAttack) //knockback only on heavy attacks
+                    {
+                        otherStateMachine.Impact(attackDirection, knockback);
+                        otherHealth.TakeDamage(additionalDamageOnHeavyAttack);
+                    }
+                    else
+                    {
+                        otherStateMachine.Impact(attackDirection, 0); //no knockback but flinch
+                    }
+
+                    otherHealth.TakeDamage(damage);
+                    Debug.Log("hit");
+                    return;
                 }
             }
             else if (ownerTag == "Player" && other.tag == "Enemy")

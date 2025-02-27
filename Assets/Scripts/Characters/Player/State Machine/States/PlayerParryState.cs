@@ -30,6 +30,7 @@ namespace ProjectColombo.StateMachine.Player
         public override void Exit()
         {
             m_playerStateMachine.GameInputSO.EnableAllInputs();
+            m_playerStateMachine.ParryFrameStop();
         }
     }
 }

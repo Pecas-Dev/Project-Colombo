@@ -38,6 +38,7 @@ namespace ProjectColombo.StateMachine.Player
         public PlayerState CurrentState => currentState;
 
         [HideInInspector]public bool isInvunerable = false;
+        [HideInInspector]public bool isParrying = false;
 
         void Awake()
         {
@@ -107,6 +108,26 @@ namespace ProjectColombo.StateMachine.Player
         internal void SetCurrentState(PlayerState newState)
         {
             currentState = newState;
+        }
+
+        public void ParryFrameStart()
+        {
+            isParrying = true;
+        }
+
+        public void ParryFrameStop()
+        {
+            isParrying = false;
+        }
+
+        public void RollInvincibleFrameStart()
+        {
+            isInvunerable = true;
+        }
+
+        public void RollInvincibleFrameStop()
+        {
+            isInvunerable = false;
         }
     }
 }

@@ -16,6 +16,7 @@ namespace ProjectColombo.Enemies.Mommotti
 
         private void Start()
         {
+            myGridManager = GameObject.Find("GridManager").GetComponent<GridManager>();
             int amountOfEnemies = Random.Range(minAmountEnemies, maxAmountEnemies + 1);
 
             if (enemyType == null || amountOfEnemies == 0)
