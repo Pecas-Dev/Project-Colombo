@@ -65,9 +65,8 @@ namespace ProjectColombo.StateMachine.Player
         public void Impact(Vector3 direction, float knockbackStrength)
         {
             PlayerRigidbody.AddForce(direction * knockbackStrength, ForceMode.Impulse);
-            PlayerAnimator.SetTrigger("Impact"); //stop attack animation
             GetComponent<WeaponHitboxManager>().DisableSwordHitbox(); //disable hitbox
-            SwitchState(new PlayerMovementState(this)); //when interrupt switch to attacking
+            SwitchState(new PlayerStaggerState(this)); //when interrupt switch to attacking
         }
 
 

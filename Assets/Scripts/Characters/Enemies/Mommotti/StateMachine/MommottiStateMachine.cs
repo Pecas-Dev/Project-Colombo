@@ -64,10 +64,9 @@ namespace ProjectColombo.StateMachine.Mommotti
         public void Impact(Vector3 direction, float knockbackStrength)
         {
             myRigidbody.AddForce(direction * knockbackStrength, ForceMode.Impulse);
-            myAnimator.SetTrigger("Impact"); //stop attack animation on mommotti
             InterruptAttack();
             canAttack = true;
-            SwitchState(new MommottiStateAttack(this)); //when attacked switch to attacking
+            SwitchState(new MommottiStateStagger(this)); //when attacked switch to attacking
         }
 
         void LogMissingReferenceErrors()

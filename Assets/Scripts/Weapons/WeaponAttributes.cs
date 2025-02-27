@@ -39,6 +39,7 @@ namespace ProjectColombo.Combat
 
                 if (currentTimer >= cooldown)
                 {
+                    myAnimator.ResetTrigger("Interrupt");
                     onCooldown = false;
                     currentTimer = 0;
                 }

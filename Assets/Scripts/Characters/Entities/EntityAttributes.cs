@@ -15,5 +15,7 @@ namespace ProjectColombo
         [Header("Attack Settings")]
         [Tooltip("Controls the Attack Impulse Forward.")]
         public float attackImpulseForce = 2.5f;
+        [Tooltip("Stagger duration for now. We have to decide how to control it")]
+        public float stunnedTime = 1f;
     }
 }
