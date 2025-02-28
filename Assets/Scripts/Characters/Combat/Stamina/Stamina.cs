@@ -21,6 +21,10 @@ namespace ProjectColombo.Combat
         Coroutine regenerationCoroutine;
         Coroutine visualUpdateCoroutine;
 
+        //add bool for to only use stamina if not in combat (when there are enemies)
+
+
+
         public StaminaConfigSO StaminaConfig => staminaConfig;
 
         void Start()

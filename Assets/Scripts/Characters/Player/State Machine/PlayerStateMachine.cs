@@ -39,6 +39,7 @@ namespace ProjectColombo.StateMachine.Player
 
         [HideInInspector]public bool isInvunerable = false;
         [HideInInspector]public bool isParrying = false;
+        [HideInInspector]public bool tryParrying = false;
 
         void Awake()
         {
@@ -113,11 +114,17 @@ namespace ProjectColombo.StateMachine.Player
         public void ParryFrameStart()
         {
             isParrying = true;
+            tryParrying = true;
         }
 
         public void ParryFrameStop()
         {
             isParrying = false;
+        }
+
+        public void ParryPanaltyStop()
+        {
+            tryParrying = false;
         }
 
         public void RollInvincibleFrameStart()
