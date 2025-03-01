@@ -1,9 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using ProjectColombo.StateMachine.Mommotti;
-using System.ComponentModel;
 using ProjectColombo.StateMachine.Player;
-using UnityEngine.UIElements;
+using ProjectColombo.Camera;
 
 namespace ProjectColombo.Combat
 {
@@ -87,6 +86,7 @@ namespace ProjectColombo.Combat
                     {
                         otherStateMachine.Impact(attackDirection, knockback);
                         damage += additionalDamageOnHeavyAttack;
+                        ScreenShake();
                     }
                     else
                     {
@@ -109,8 +109,8 @@ namespace ProjectColombo.Combat
 
                 if (otherStateMachine != null && otherHealth != null && otherHealth.CurrentHealth > 0)
                 {
-                    //TODO: pause a quick second
-                    //if stagger add screenshake ?!?
+                    StopTime();
+                    ScreenShake();
 
                     otherStateMachine.Impact(attackDirection, knockback);
                     otherHealth.TakeDamage(damage);
@@ -132,5 +132,26 @@ namespace ProjectColombo.Combat
             minDamage += (int)(percentage / 100 * minDamage);
             maxDamage += (int)(percentage / 100 * maxDamage);
         }
+
+        private void ScreenShake()
+        {
+            FindFirstObjectByType<ScreenShakeManager>().Shake(0.5f);
+        }
+
+
+        public void StopTime()
+        {
+            StartCoroutine(DoHitStop());
+        }
+
+        IEnumerator DoHitStop()
+        {
+            float pauseDuration = 0.1f; // Adjust the duration of the freeze
+
+            Time.timeScale = 0.1f; // Slow down time instead of freezing completely
+            yield return new WaitForSecondsRealtime(pauseDuration);
+            Time.timeScale = 1f; // Resume normal time
+        }
     }
+
 }

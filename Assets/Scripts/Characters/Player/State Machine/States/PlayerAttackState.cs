@@ -27,8 +27,6 @@ namespace ProjectColombo.StateMachine.Player
                 return;
             }
 
-            m_playerStateMachine.StaminaSystem.TryConsumeStamina(-m_playerStateMachine.StaminaSystem.StaminaConfig.ComboStaminaCost);
-
             m_playerStateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Attack);
 
             // We also need to add a "Hold Animation at the End" if button is still pressed.
@@ -94,8 +92,7 @@ namespace ProjectColombo.StateMachine.Player
             previousFrameTime = normalizedTime;
 
             FaceLockedTarget(deltaTime);
-
-            ApplyAirPhysics(deltaTime);
+            ApplyAttackImpulse();
         }
 
         public override void Exit()
@@ -188,27 +185,54 @@ namespace ProjectColombo.StateMachine.Player
             m_playerStateMachine.PlayerRigidbody.rotation = targetRotation;
         }
 
-
         void ApplyAttackImpulse()
         {
-            Vector3 impulseDirection;
-
+            Vector3 targetPosition;
             var targeter = m_playerStateMachine.Targeter;
 
+            // These could come from weapon attributes
+            float activationDistance = 2f;  // player should be close already
+            float targetDistance = 1f;      // furthest away
+            float minDistance = .5f;        // closest
+
+            // Check if the player is targeting an enemy
             if (targeter != null && targeter.isTargetingActive && targeter.currentTarget != null)
             {
-                impulseDirection = targeter.currentTarget.transform.position - m_playerStateMachine.PlayerRigidbody.position;
-                impulseDirection.y = 0f;
-                impulseDirection.Normalize();
+                targetPosition = targeter.currentTarget.transform.position;
+                targetPosition.y = m_playerStateMachine.PlayerRigidbody.position.y;
             }
             else
             {
-                impulseDirection = m_playerStateMachine.PlayerRigidbody.transform.forward;
-                impulseDirection.y = 0f;
-                impulseDirection.Normalize();
+                return; // If no target, do nothing
             }
 
-            m_playerStateMachine.PlayerRigidbody.AddForce(impulseDirection * m_playerStateMachine.EntityAttributes.attackImpulseForce, ForceMode.Impulse);
+            // Calculate the direction to the target
+            Vector3 directionToTarget = targetPosition - m_playerStateMachine.PlayerRigidbody.position;
+            directionToTarget.y = 0f;
+
+            float distanceToTarget = directionToTarget.magnitude;
+
+            // If the player is too far from the target, do nothing
+            if (distanceToTarget > activationDistance) return;
+
+            // Move towards the target if the distance is greater than the desired target distance
+            if (distanceToTarget > targetDistance)
+            {
+                directionToTarget.Normalize();
+
+                float speed = m_playerStateMachine.EntityAttributes.attackImpulseForce;
+                m_playerStateMachine.PlayerRigidbody.MovePosition(m_playerStateMachine.PlayerRigidbody.position + directionToTarget * speed * Time.deltaTime);
+            }
+            // Move away from the target if the player is too close
+            else if (distanceToTarget < minDistance)
+            {
+                Vector3 directionAwayFromTarget = -directionToTarget;
+                directionAwayFromTarget.Normalize();
+
+                float retreatSpeed = m_playerStateMachine.EntityAttributes.attackImpulseForce;
+                m_playerStateMachine.PlayerRigidbody.MovePosition(m_playerStateMachine.PlayerRigidbody.position + directionAwayFromTarget * retreatSpeed * Time.deltaTime);
+            }
         }
+
     }
 }

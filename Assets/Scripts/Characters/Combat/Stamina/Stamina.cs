@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using TMPro;
+using System.Linq;
 
 
 namespace ProjectColombo.Combat
@@ -17,10 +18,12 @@ namespace ProjectColombo.Combat
 
         float currentStamina;
         float visualStamina;
-        bool isRegenerating;
         Coroutine regenerationCoroutine;
         Coroutine visualUpdateCoroutine;
 
+        public bool isInCombat = false;
+        float checkTime = 1f;
+        float checkCombatTimer = 0f;
         //add bool for to only use stamina if not in combat (when there are enemies)
 
 
@@ -35,6 +38,17 @@ namespace ProjectColombo.Combat
             UpdateStaminaText();
         }
 
+        private void Update()
+        {
+            checkCombatTimer += Time.deltaTime;
+
+            if (checkCombatTimer >= checkTime)
+            {
+                isInCombat = CheckForEnemies();
+                checkCombatTimer = 0;
+            }
+        }
+
         public bool HasEnoughStamina(float staminaCost)
         {
             return currentStamina >= staminaCost;
@@ -42,6 +56,7 @@ namespace ProjectColombo.Combat
 
         public bool TryConsumeStamina(float staminaCost)
         {
+
             if (staminaCost < 0)
             {
                 currentStamina = Mathf.Min(currentStamina - staminaCost, staminaConfig.MaxStaminaPoints);
@@ -49,6 +64,8 @@ namespace ProjectColombo.Combat
                 UpdateStaminaText();
                 return true;
             }
+
+            if (!isInCombat) return true; //ignore stamina if out of combat
 
             if (currentStamina >= staminaCost)
             {
@@ -78,16 +95,20 @@ namespace ProjectColombo.Combat
             {
                 yield return new WaitForSeconds(staminaConfig.StaminaRegenerationDelay);
 
+                // After delay, start regenerating with a faster rate
+                float fastRegenerationRate = staminaConfig.StaminaRegenerationRate * 0.2f; // e.g., 50% faster
+
+                // Regenerate until stamina reaches max
                 while (currentStamina < staminaConfig.MaxStaminaPoints)
                 {
-                    currentStamina = Mathf.Min(currentStamina + 1, staminaConfig.MaxStaminaPoints);
-                    UpdateStaminaVisual();
-                    UpdateStaminaText();
-
-                    yield return new WaitForSeconds(staminaConfig.StaminaRegenerationRate);
+                    TryConsumeStamina(-1);
+                    yield return new WaitForSeconds(fastRegenerationRate);
                 }
             }
         }
+
+
+
 
         void UpdateStaminaText()
         {
@@ -109,21 +130,34 @@ namespace ProjectColombo.Combat
 
         IEnumerator SmoothUpdateStaminaVisual()
         {
-            float startValue = visualStamina;
-            float endValue = currentStamina;
+            float startValue = staminaBar.fillAmount * staminaConfig.MaxStaminaPoints; // Use the current fill as start value
+            float endValue = currentStamina; // Target stamina
             float elapsedTime = 0f;
 
             while (elapsedTime < staminaConfig.StaminaPointVisualFillDuration)
             {
                 elapsedTime += Time.deltaTime;
                 float normalizedTime = elapsedTime / staminaConfig.StaminaPointVisualFillDuration;
+
+                // Interpolate from current visual stamina to new stamina value
                 visualStamina = Mathf.Lerp(startValue, endValue, normalizedTime);
                 staminaBar.fillAmount = visualStamina / staminaConfig.MaxStaminaPoints;
-                yield return null;
+
+                yield return null; // Wait for next frame
             }
 
+            // Ensure final value is set properly
             visualStamina = endValue;
             staminaBar.fillAmount = visualStamina / staminaConfig.MaxStaminaPoints;
         }
+
+
+        private bool CheckForEnemies()
+        {
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+            return enemies.Count() > 0;
+        }
+
     }
 }

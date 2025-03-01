@@ -26,7 +26,9 @@ namespace ProjectColombo.Combat
 
         const float MIN_INPUT_MAGNITUDE = 0.1f;
         const float DIRECTION_ANGLE_THRESHOLD = 45f;
+        const float TARGET_SWITCH_COOLDOWN = 0.3f;  // Time in seconds to prevent jarring target switching
 
+        private float targetSwitchTimer = 0f;
 
         SphereCollider sphereCollider;
 
@@ -73,6 +75,11 @@ namespace ProjectColombo.Combat
                 {
                     UpdateTargetByInput();
                 }
+            }
+
+            if (targetSwitchTimer > 0)
+            {
+                targetSwitchTimer -= Time.deltaTime;
             }
         }
 
@@ -134,6 +141,12 @@ namespace ProjectColombo.Combat
 
         void UpdateTargetByInput()
         {
+            // Prevent input if the cooldown timer is active
+            if (targetSwitchTimer > 0)
+            {
+                return;
+            }
+
             Vector2 inputDirection = gameInputScript.TargetPointInput;
 
             if (inputDirection.magnitude < MIN_INPUT_MAGNITUDE)
@@ -182,6 +195,7 @@ namespace ProjectColombo.Combat
             if (candidateTarget != null && candidateTarget != currentTarget)
             {
                 SetCurrentTarget(candidateTarget);
+                targetSwitchTimer = TARGET_SWITCH_COOLDOWN;
             }
         }
 

@@ -17,8 +17,7 @@ namespace ProjectColombo.StateMachine.Player
             m_playerStateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Movement);
             m_playerStateMachine.PlayerAnimatorScript.PlayMovementAnimation();
 
-            // Freeze rotation to avoid any rotation from physics forces
-            //m_playerStateMachine.PlayerRigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            
         }
 
         public override void Tick(float deltaTime)
