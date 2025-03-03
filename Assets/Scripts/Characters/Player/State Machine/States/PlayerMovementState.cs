@@ -54,17 +54,19 @@ namespace ProjectColombo.StateMachine.Player
         private void HandleMovement(float deltaTime)
         {
             Vector2 moveInput = m_playerStateMachine.GameInputSO.MovementInput;
-
             Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
 
-            if (moveDirection.magnitude > 0.1f)
+            float inputMagnitude = moveDirection.magnitude;
+
+            if (inputMagnitude > 0.01f) 
             {
-                moveDirection = TransformDirectionToIsometric(moveDirection.normalized);
+                Vector3 isometricDirection = TransformDirectionToIsometric(moveDirection / inputMagnitude);
 
                 float currentYVelocity = m_playerStateMachine.PlayerRigidbody.linearVelocity.y;
 
-                Vector3 targetVelocity = moveDirection * m_playerStateMachine.EntityAttributes.moveSpeed;
-                targetVelocity.y = currentYVelocity; 
+                Vector3 targetVelocity = isometricDirection * inputMagnitude * m_playerStateMachine.EntityAttributes.moveSpeed;
+
+                targetVelocity.y = currentYVelocity;
 
                 m_playerStateMachine.PlayerRigidbody.linearVelocity = targetVelocity;
             }
@@ -99,10 +101,10 @@ namespace ProjectColombo.StateMachine.Player
 
         void UpdateAnimator()
         {
-            float speed = m_playerStateMachine.GameInputSO.MovementInput.magnitude * m_playerStateMachine.EntityAttributes.moveSpeed;
-            bool hasMovementInput = m_playerStateMachine.GameInputSO.MovementInput.sqrMagnitude > 0.01f;
+            float animationSpeed = m_playerStateMachine.GameInputSO.MovementInput.magnitude;
+            bool hasMovementInput = animationSpeed > 0.01f;
 
-            m_playerStateMachine.PlayerAnimatorScript.UpdateAnimator(speed, false, hasMovementInput);
+            m_playerStateMachine.PlayerAnimatorScript.UpdateAnimator(animationSpeed, false, hasMovementInput);
         }
 
         private Vector3 TransformDirectionToIsometric(Vector3 direction)
