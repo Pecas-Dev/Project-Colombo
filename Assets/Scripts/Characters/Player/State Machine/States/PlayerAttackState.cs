@@ -9,14 +9,15 @@ namespace ProjectColombo.StateMachine.Player
     public class PlayerAttackState : PlayerBaseState
     {
         Attack attack;
-
-
         float previousFrameTime;
-
+        Matrix4x4 isometricMatrix;
 
         public PlayerAttackState(PlayerStateMachine playerStateMachine, int attackIndex) : base(playerStateMachine)
         {
             attack = playerStateMachine.Attacks[attackIndex];
+
+
+            isometricMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, m_playerStateMachine.Angle, 0));
         }
 
         public override void Enter()
@@ -234,5 +235,9 @@ namespace ProjectColombo.StateMachine.Player
             }
         }
 
+        private Vector3 TransformDirectionToIsometric(Vector3 direction)
+        {
+            return isometricMatrix.MultiplyVector(direction).normalized;
+        }
     }
 }

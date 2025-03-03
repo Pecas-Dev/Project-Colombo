@@ -1961,14 +1961,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ee2a3129cbb24d498d36f42b50b2473, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <PlayerRigidbody>k__BackingField: {fileID: 0}
-  <PlayerAnimator>k__BackingField: {fileID: 0}
-  <GameInputSO>k__BackingField: {fileID: 11400000, guid: 4cbc555f8dd252548884cda6a4b53710, type: 2}
-  <StaminaSystem>k__BackingField: {fileID: 0}
-  <PlayerAnimatorScript>k__BackingField: {fileID: 0}
-  <EntityAttributes>k__BackingField: {fileID: 0}
-  <Targeter>k__BackingField: {fileID: 0}
-  <Attacks>k__BackingField:
+  playerRigidbody: {fileID: 0}
+  playerAnimator: {fileID: 0}
+  staminaSystem: {fileID: 0}
+  playerAnimatorScript: {fileID: 0}
+  entityAttributes: {fileID: 0}
+  targeter: {fileID: 0}
+  attacks:
   - <AnimationName>k__BackingField: Attack1
     <TransitionDuration>k__BackingField: 0.1
     <ComboAttackTime>k__BackingField: 0.25
@@ -1978,7 +1977,11 @@ MonoBehaviour:
     <ComboAttackTime>k__BackingField: 0
     <ComboStateIndex>k__BackingField: -1
   currentState: 0
+  gameInputSO: {fileID: 11400000, guid: 4cbc555f8dd252548884cda6a4b53710, type: 2}
+  angle: 45
   isInvunerable: 0
+  isParrying: 0
+  tryParrying: 0
 --- !u!114 &7491679260943247387
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2007,7 +2010,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
-  rotationSpeedPlayer: 900
+  rotationSpeedPlayer: 1000
   attackImpulseForce: 5
   stunnedTime: 0.5
 --- !u!114 &4069275368503968586
@@ -4123,6 +4126,7 @@ MonoBehaviour:
   minDamage: 3
   maxDamage: 7
   additionalDamageOnHeavyAttack: 0
+  additionalDamageMissedParry: 0
   knockback: 3
   cooldown: 0
   reach: 1

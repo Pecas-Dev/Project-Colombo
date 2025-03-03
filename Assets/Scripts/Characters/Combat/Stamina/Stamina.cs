@@ -21,7 +21,7 @@ namespace ProjectColombo.Combat
         Coroutine regenerationCoroutine;
         Coroutine visualUpdateCoroutine;
 
-        public bool isInCombat = false;
+        //public bool isInCombat = false;
         float checkTime = 1f;
         float checkCombatTimer = 0f;
         //add bool for to only use stamina if not in combat (when there are enemies)
@@ -44,7 +44,7 @@ namespace ProjectColombo.Combat
 
             if (checkCombatTimer >= checkTime)
             {
-                isInCombat = CheckForEnemies();
+                //isInCombat = CheckForEnemies();
                 checkCombatTimer = 0;
             }
         }
@@ -65,7 +65,7 @@ namespace ProjectColombo.Combat
                 return true;
             }
 
-            if (!isInCombat) return true; //ignore stamina if out of combat
+            //if (!isInCombat) return true; //ignore stamina if out of combat
 
             if (currentStamina >= staminaCost)
             {

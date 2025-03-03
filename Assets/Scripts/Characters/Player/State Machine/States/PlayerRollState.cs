@@ -12,19 +12,24 @@ namespace ProjectColombo.StateMachine.Player
 
         float rollSpeed;
 
-        float rollDistance = 2.5f;  
-        float rollDuration = 0.8f;
+        float rollDistance = 1.8f;   
+        float rollDuration = 0.6f;   
         float rollCooldown = 0.125f;
 
-
         Vector3 rollDirection;
+        Matrix4x4 isometricMatrix;
 
+        private float groundCheckDistance = 0.1f;
+        private LayerMask groundMask;
 
         public static bool CanQueueRoll = true;
 
 
         public PlayerRollState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
         {
+            isometricMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, m_playerStateMachine.Angle, 0));
+
+            groundMask = LayerMask.GetMask("Ground", "Default");
         }
 
         public override void Enter()
@@ -54,7 +59,9 @@ namespace ProjectColombo.StateMachine.Player
 
             if (movementInput.sqrMagnitude > 0.01f)
             {
-                rollDirection = new Vector3(movementInput.x, 0, movementInput.y).normalized * rollSpeed;
+                Vector3 inputDirection = new Vector3(movementInput.x, 0, movementInput.y).normalized;
+
+                rollDirection = TransformDirectionToIsometric(inputDirection) * rollSpeed;
             }
             else
             {
@@ -68,11 +75,15 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Tick(float deltaTime)
         {
+            KeepPlayerGrounded();
+
             m_playerStateMachine.PlayerRigidbody.angularVelocity = Vector3.zero;
             Vector3 velocity = m_playerStateMachine.PlayerRigidbody.linearVelocity;
 
             velocity.x = rollDirection.x * rollSpeed;
             velocity.z = rollDirection.z * rollSpeed;
+
+            velocity.y = Mathf.Min(velocity.y, 0);
 
             m_playerStateMachine.PlayerRigidbody.linearVelocity = velocity;
 
@@ -80,8 +91,6 @@ namespace ProjectColombo.StateMachine.Player
             {
                 m_playerStateMachine.SwitchState(new PlayerMovementState(m_playerStateMachine));
             }
-
-            ApplyAirPhysics(deltaTime);
         }
 
         public override void Exit()
@@ -106,9 +115,27 @@ namespace ProjectColombo.StateMachine.Player
 
         void ApplyRollImpulse()
         {
-            float impulseStrength = 0.05f;
+            float impulseStrength = 0.03f;
 
             m_playerStateMachine.PlayerRigidbody.AddForce(rollDirection * impulseStrength, ForceMode.Impulse);
+        }
+
+        void KeepPlayerGrounded()
+        {
+            RaycastHit hit;
+
+            Vector3 rayStart = m_playerStateMachine.PlayerRigidbody.position + Vector3.up * 0.1f;
+
+            if (Physics.Raycast(rayStart, Vector3.down, out hit, groundCheckDistance + 0.1f, groundMask))
+            {
+                float downwardForce = 20f; 
+                m_playerStateMachine.PlayerRigidbody.AddForce(Vector3.down * downwardForce, ForceMode.Force);
+            }
+        }
+
+        private Vector3 TransformDirectionToIsometric(Vector3 direction)
+        {
+            return isometricMatrix.MultiplyVector(direction).normalized;
         }
 
         IEnumerator RollCooldown()

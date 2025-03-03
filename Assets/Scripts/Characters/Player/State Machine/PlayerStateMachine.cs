@@ -18,28 +18,45 @@ namespace ProjectColombo.StateMachine.Player
 
 
         [Header("Component References")]
-        [field: SerializeField, ReadOnlyInspector] public Rigidbody PlayerRigidbody { get; private set; }
-        [field: SerializeField, ReadOnlyInspector] public Animator PlayerAnimator { get; private set; }
+        [SerializeField, ReadOnlyInspector] Rigidbody playerRigidbody;
+        public Rigidbody PlayerRigidbody => playerRigidbody;
+        [SerializeField, ReadOnlyInspector] Animator playerAnimator;
+        public Animator PlayerAnimator => playerAnimator;
 
 
         [Header("Script References")]
-        [field: SerializeField] public GameInputSO GameInputSO { get; private set; }
-        [field: SerializeField, ReadOnlyInspector] public Stamina StaminaSystem { get; private set; }
-        [field: SerializeField, ReadOnlyInspector] public PlayerAnimator PlayerAnimatorScript { get; private set; }
-        [field: SerializeField, ReadOnlyInspector] public EntityAttributes EntityAttributes { get; private set; }
-        [field: SerializeField, ReadOnlyInspector] public Targeter Targeter { get; private set; }
-        [field: SerializeField] public Attack[] Attacks { get; private set; }
+        [SerializeField, ReadOnlyInspector] Stamina staminaSystem;
+        public Stamina StaminaSystem => staminaSystem;
+
+        [SerializeField, ReadOnlyInspector] PlayerAnimator playerAnimatorScript;
+        public PlayerAnimator PlayerAnimatorScript => playerAnimatorScript;
+
+        [SerializeField, ReadOnlyInspector] EntityAttributes entityAttributes;
+        public EntityAttributes EntityAttributes => entityAttributes;
+
+        [SerializeField, ReadOnlyInspector] Targeter targeter;
+        public Targeter Targeter => targeter;
+
+        [SerializeField] Attack[] attacks;
+        public Attack[] Attacks => attacks;
 
 
         [Header("Player State")]
-        [field: SerializeField, ReadOnlyInspector] private PlayerState currentState;
-
-
+        [SerializeField, ReadOnlyInspector] private PlayerState currentState;
         public PlayerState CurrentState => currentState;
 
-        [HideInInspector]public bool isInvunerable = false;
-        [HideInInspector]public bool isParrying = false;
-        [HideInInspector]public bool tryParrying = false;
+
+        [Header("Input Reference")]
+        [SerializeField] GameInputSO gameInputSO;
+        public GameInputSO GameInputSO => gameInputSO;
+
+        [Header("Isometric Settings")]
+        [SerializeField, Range(0.0f, 90.0f)] float angle = 45.0f;
+        public float Angle => angle;
+
+        [HideInInspector] public bool isInvunerable = false;
+        [HideInInspector] public bool isParrying = false;
+        [HideInInspector] public bool tryParrying = false;
 
         void Awake()
         {
@@ -48,13 +65,13 @@ namespace ProjectColombo.StateMachine.Player
                 GameInputSO.Initialize();
             }
 
-            StaminaSystem = GetComponent<Stamina>();
-            PlayerAnimatorScript = GetComponent<PlayerAnimator>();
-            EntityAttributes = GetComponent<EntityAttributes>();
-            Targeter = GetComponentInChildren<Targeter>();
+            staminaSystem = GetComponent<Stamina>();
+            playerAnimatorScript = GetComponent<PlayerAnimator>();
+            entityAttributes = GetComponent<EntityAttributes>();
+            targeter = GetComponentInChildren<Targeter>();
 
-            PlayerRigidbody = GetComponent<Rigidbody>();
-            PlayerAnimator = GetComponent<Animator>();
+            playerRigidbody = GetComponent<Rigidbody>();
+            playerAnimator = GetComponent<Animator>();
         }
 
         void Start()
