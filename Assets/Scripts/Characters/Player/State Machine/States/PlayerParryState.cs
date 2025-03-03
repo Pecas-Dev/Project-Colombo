@@ -19,12 +19,12 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Tick(float deltaTime)
         {
-            if(!m_playerStateMachine.PlayerAnimatorScript.IsInParry)
+            if (!m_playerStateMachine.PlayerAnimatorScript.IsInParry)
             {
                 m_playerStateMachine.SwitchState(new PlayerMovementState(m_playerStateMachine));
             }
 
-            ApplyAirPhysics(deltaTime);
+            HandleAirPhysicsIfNeeded(deltaTime);
         }
 
         public override void Exit()

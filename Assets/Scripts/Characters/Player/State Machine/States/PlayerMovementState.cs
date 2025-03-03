@@ -44,6 +44,9 @@ namespace ProjectColombo.StateMachine.Player
 
             HandleMovement(deltaTime);
             HandleRotation(deltaTime);
+
+            HandleAirPhysicsIfNeeded(deltaTime);
+
             UpdateAnimator();
         }
 
@@ -58,7 +61,7 @@ namespace ProjectColombo.StateMachine.Player
 
             float inputMagnitude = moveDirection.magnitude;
 
-            if (inputMagnitude > 0.01f) 
+            if (inputMagnitude > 0.01f)
             {
                 Vector3 isometricDirection = TransformDirectionToIsometric(moveDirection / inputMagnitude);
 
@@ -90,7 +93,7 @@ namespace ProjectColombo.StateMachine.Player
                 {
                     Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
 
-                    m_playerStateMachine.PlayerRigidbody.MoveRotation(Quaternion.Slerp( m_playerStateMachine.PlayerRigidbody.rotation,targetRotation,Time.fixedDeltaTime * m_playerStateMachine.EntityAttributes.rotationSpeedPlayer ));
+                    m_playerStateMachine.PlayerRigidbody.MoveRotation(Quaternion.Slerp(m_playerStateMachine.PlayerRigidbody.rotation, targetRotation, Time.fixedDeltaTime * m_playerStateMachine.EntityAttributes.rotationSpeedPlayer));
                 }
             }
             else

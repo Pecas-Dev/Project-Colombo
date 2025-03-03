@@ -12,7 +12,7 @@ namespace ProjectColombo.StateMachine.Player
 
 
         public PlayerStaggerState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
-        { 
+        {
         }
 
         public override void Enter()
@@ -24,6 +24,8 @@ namespace ProjectColombo.StateMachine.Player
         public override void Tick(float deltaTime)
         {
             timer += deltaTime;
+
+            HandleAirPhysicsIfNeeded(deltaTime);
 
             if (timer >= m_playerStateMachine.EntityAttributes.stunnedTime)
             {

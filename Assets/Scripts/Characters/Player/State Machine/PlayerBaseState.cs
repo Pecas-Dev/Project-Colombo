@@ -12,41 +12,45 @@ namespace ProjectColombo.StateMachine.Player
             this.m_playerStateMachine = playerStateMachine;
         }
 
-        protected void ApplyAirPhysics(float deltaTime)
-        {
-            Rigidbody rigidbody = m_playerStateMachine.PlayerRigidbody;
-
-            Vector3 velocity = rigidbody.linearVelocity;
-
-            if (!IsGrounded())
-            {
-                velocity = PreventWallStick(velocity, deltaTime);
-                velocity.y += Physics.gravity.y + deltaTime;
-            }
-
-            rigidbody.linearVelocity = velocity;
-        }
-
         protected bool IsGrounded()
         {
+            //float rayLength = 0.2f;
+            //Vector3 rayOrigin = m_playerStateMachine.PlayerRigidbody.position + Vector3.up * 0.1f;
+
+            //return Physics.Raycast(rayOrigin, Vector3.down, rayLength);
+
             float rayLength = 0.2f;
+
             Vector3 rayOrigin = m_playerStateMachine.PlayerRigidbody.position + Vector3.up * 0.1f;
 
-            return Physics.Raycast(rayOrigin, Vector3.down, rayLength);
+            bool centerGrounded = Physics.Raycast(rayOrigin, Vector3.down, rayLength);
+
+            Vector3 forward = m_playerStateMachine.PlayerRigidbody.transform.forward * 0.3f;
+            Vector3 right = m_playerStateMachine.PlayerRigidbody.transform.right * 0.3f;
+
+            bool forwardGrounded = Physics.Raycast(rayOrigin + forward, Vector3.down, rayLength);
+            bool backGrounded = Physics.Raycast(rayOrigin - forward, Vector3.down, rayLength);
+            bool rightGrounded = Physics.Raycast(rayOrigin + right, Vector3.down, rayLength);
+            bool leftGrounded = Physics.Raycast(rayOrigin - right, Vector3.down, rayLength);
+
+            return centerGrounded || forwardGrounded || backGrounded || rightGrounded || leftGrounded;
         }
 
         protected Vector3 PreventWallStick(Vector3 velocity, float deltaTime)
         {
+            if (m_playerStateMachine.isInRoll)
+            {
+                return velocity;
+            }
+
             Vector3 horizontalVel = new Vector3(velocity.x, 0f, velocity.z);
 
             float speed = horizontalVel.magnitude;
 
             if (speed < 0.001f)
             {
-                return velocity; 
+                return velocity;
             }
-
-            float castDistance = speed * deltaTime + 0.2f; 
 
             CapsuleCollider capsule = m_playerStateMachine.PlayerRigidbody.GetComponent<CapsuleCollider>();
 
@@ -61,19 +65,55 @@ namespace ProjectColombo.StateMachine.Player
             Vector3 castOrigin = m_playerStateMachine.PlayerRigidbody.position + Vector3.up * midHeight;
             Vector3 dir = horizontalVel.normalized;
 
+            float castDistance = speed * deltaTime + 0.2f;
+
             if (Physics.SphereCast(castOrigin, radius, dir, out RaycastHit hit, castDistance))
             {
                 float upDot = Vector3.Dot(hit.normal, Vector3.up);
 
-                bool isWallLike = upDot < 0.6f; 
+                bool isWallLike = upDot < 0.7f;
 
                 if (isWallLike)
                 {
-                    velocity = Vector3.ProjectOnPlane(velocity, hit.normal);
+                    Vector3 projectedVelocity = Vector3.ProjectOnPlane(velocity, hit.normal);
+
+                    float gravityFactor = 0.95f; //0.9 - 1.0 
+                    if (velocity.y < 0)
+                    {
+                        projectedVelocity.y = Mathf.Min(projectedVelocity.y, velocity.y * gravityFactor);
+                    }
+
+                    return projectedVelocity;
                 }
             }
 
             return velocity;
+        }
+
+        protected void ApplyAirPhysics(float deltaTime)
+        {
+            Rigidbody rigidbody = m_playerStateMachine.PlayerRigidbody;
+
+            Vector3 velocity = rigidbody.linearVelocity;
+
+            if (!IsGrounded())
+            {
+                velocity = PreventWallStick(velocity, deltaTime);
+
+                velocity.y += Physics.gravity.y * deltaTime;
+
+                velocity.y = Mathf.Max(velocity.y, -20f);
+            }
+
+            rigidbody.linearVelocity = velocity;
+        }
+
+        protected void HandleAirPhysicsIfNeeded(float deltaTime)
+        {
+            if (!IsGrounded())
+            {
+                ApplyAirPhysics(deltaTime);
+            }
         }
     }
 }

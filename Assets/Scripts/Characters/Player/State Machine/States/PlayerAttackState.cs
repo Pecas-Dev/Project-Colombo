@@ -92,6 +92,8 @@ namespace ProjectColombo.StateMachine.Player
 
             previousFrameTime = normalizedTime;
 
+            HandleAirPhysicsIfNeeded(deltaTime);
+
             FaceLockedTarget(deltaTime);
             ApplyAttackImpulse();
         }
@@ -224,6 +226,7 @@ namespace ProjectColombo.StateMachine.Player
                 float speed = m_playerStateMachine.EntityAttributes.attackImpulseForce;
                 m_playerStateMachine.PlayerRigidbody.MovePosition(m_playerStateMachine.PlayerRigidbody.position + directionToTarget * speed * Time.deltaTime);
             }
+
             // Move away from the target if the player is too close
             else if (distanceToTarget < minDistance)
             {

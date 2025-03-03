@@ -12,8 +12,8 @@ namespace ProjectColombo.StateMachine.Player
 
         float rollSpeed;
 
-        float rollDistance = 1.8f;   
-        float rollDuration = 0.6f;   
+        float rollDistance = 1.8f;
+        float rollDuration = 0.6f;
         float rollCooldown = 0.125f;
 
         Vector3 rollDirection;
@@ -87,6 +87,8 @@ namespace ProjectColombo.StateMachine.Player
 
             m_playerStateMachine.PlayerRigidbody.linearVelocity = velocity;
 
+            HandleAirPhysicsIfNeeded(deltaTime);
+
             if (!m_playerStateMachine.PlayerAnimatorScript.IsInRoll)
             {
                 m_playerStateMachine.SwitchState(new PlayerMovementState(m_playerStateMachine));
@@ -128,7 +130,7 @@ namespace ProjectColombo.StateMachine.Player
 
             if (Physics.Raycast(rayStart, Vector3.down, out hit, groundCheckDistance + 0.1f, groundMask))
             {
-                float downwardForce = 20f; 
+                float downwardForce = 20f;
                 m_playerStateMachine.PlayerRigidbody.AddForce(Vector3.down * downwardForce, ForceMode.Force);
             }
         }
