@@ -25,7 +25,7 @@ namespace ProjectColombo.StateMachine.Player
         {
             timer += deltaTime;
 
-            HandleAirPhysicsIfNeeded(deltaTime);
+            //HandleAirPhysicsIfNeeded(deltaTime);
 
             if (timer >= m_playerStateMachine.EntityAttributes.stunnedTime)
             {

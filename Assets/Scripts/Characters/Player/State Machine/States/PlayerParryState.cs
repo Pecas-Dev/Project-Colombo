@@ -24,7 +24,7 @@ namespace ProjectColombo.StateMachine.Player
                 m_playerStateMachine.SwitchState(new PlayerMovementState(m_playerStateMachine));
             }
 
-            HandleAirPhysicsIfNeeded(deltaTime);
+            //HandleAirPhysicsIfNeeded(deltaTime);
         }
 
         public override void Exit()

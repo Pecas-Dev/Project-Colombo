@@ -92,7 +92,7 @@ namespace ProjectColombo.StateMachine.Player
 
             previousFrameTime = normalizedTime;
 
-            HandleAirPhysicsIfNeeded(deltaTime);
+            //HandleAirPhysicsIfNeeded(deltaTime);
 
             FaceLockedTarget(deltaTime);
             ApplyAttackImpulse();

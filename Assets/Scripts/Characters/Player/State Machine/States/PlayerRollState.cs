@@ -87,7 +87,7 @@ namespace ProjectColombo.StateMachine.Player
 
             m_playerStateMachine.PlayerRigidbody.linearVelocity = velocity;
 
-            HandleAirPhysicsIfNeeded(deltaTime);
+            //HandleAirPhysicsIfNeeded(deltaTime);
 
             if (!m_playerStateMachine.PlayerAnimatorScript.IsInRoll)
             {

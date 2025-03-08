@@ -45,7 +45,7 @@ namespace ProjectColombo.StateMachine.Player
             HandleMovement(deltaTime);
             HandleRotation(deltaTime);
 
-            HandleAirPhysicsIfNeeded(deltaTime);
+            //HandleAirPhysicsIfNeeded(deltaTime);
 
             UpdateAnimator();
         }
