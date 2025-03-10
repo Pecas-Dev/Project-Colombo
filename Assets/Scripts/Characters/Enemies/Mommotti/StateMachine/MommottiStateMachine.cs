@@ -59,6 +59,11 @@ namespace ProjectColombo.StateMachine.Mommotti
             float currentSpeed = (positionLastFrame - transform.position).magnitude / Time.deltaTime;
             myAnimator.SetFloat("Speed", currentSpeed);
             positionLastFrame = transform.position;
+
+            if (myMommottiAttributes.playerPosition.gameObject.GetComponent<HealthManager>().CurrentHealth <= 0 && currentState != MommottiState.PATROL)
+            {
+                SwitchState(new MommottiStatePatrol(this));
+            }
         }
 
         public void Impact(Vector3 direction, float knockbackStrength)
