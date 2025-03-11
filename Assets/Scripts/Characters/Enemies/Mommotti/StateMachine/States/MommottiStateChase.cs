@@ -53,6 +53,7 @@ namespace ProjectColombo.StateMachine.Mommotti
         {
             timer += deltaTime;
             targetDirection = stateMachine.myMommottiAttributes.GetPlayerPosition() - stateMachine.transform.position;
+            targetDirection.y = 0;
 
             if (timer > checkIntervall)
             {

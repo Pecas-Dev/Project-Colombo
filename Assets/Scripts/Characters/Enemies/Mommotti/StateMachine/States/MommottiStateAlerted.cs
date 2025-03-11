@@ -53,6 +53,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             }
 
             Vector3 targetDirection = (alertedPosition - stateMachine.transform.position).normalized;
+            targetDirection.y = 0;
 
             if (Vector3.Angle(stateMachine.transform.forward, targetDirection) > 1f)
             {

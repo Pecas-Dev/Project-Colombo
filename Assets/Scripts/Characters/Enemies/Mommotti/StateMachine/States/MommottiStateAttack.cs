@@ -39,6 +39,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             
 
             targetDirection = stateMachine.myMommottiAttributes.GetPlayerPosition() - stateMachine.transform.position;
+            targetDirection.y = 0;
             float distanceToPlayer = targetDirection.magnitude;
 
             //decide if heavy or light attack once
