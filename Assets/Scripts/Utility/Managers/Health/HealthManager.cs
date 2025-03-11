@@ -12,7 +12,7 @@ namespace ProjectColombo.Combat
 
 
         [Tooltip("Maximum health for this entity.")]
-        [ReadOnlyInspector] int currentHealth;
+        [ReadOnlyInspector] public int currentHealth;
 
 
         public int CurrentHealth => currentHealth;

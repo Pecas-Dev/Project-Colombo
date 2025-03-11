@@ -134,7 +134,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &191206690
 Transform:
   m_ObjectHideFlags: 0
@@ -777,6 +777,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 191206690}
     m_Modifications:
+    - target: {fileID: 1088016313397945895, guid: 331fe63cb78d3ff489b392d016aa05af, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1789458355428264256, guid: 331fe63cb78d3ff489b392d016aa05af, type: 3}
       propertyPath: drpoChances.Array.size
       value: 5
@@ -843,6 +847,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1947262525215253854, guid: 331fe63cb78d3ff489b392d016aa05af, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2110654321898776485, guid: 331fe63cb78d3ff489b392d016aa05af, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2110654321898776485, guid: 331fe63cb78d3ff489b392d016aa05af, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5774820696114806963, guid: 331fe63cb78d3ff489b392d016aa05af, type: 3}
@@ -2348,6 +2360,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
+  currentHealth: 0
 --- !u!23 &1359381967563240656
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2760,7 +2773,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5308251282563371145, guid: 2b9f137291ffdac4892aa2a5283675e3, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7495928878653134185, guid: 2b9f137291ffdac4892aa2a5283675e3, type: 3}
       propertyPath: m_Layer
