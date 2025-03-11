@@ -12,10 +12,15 @@ namespace ProjectColombo.Combat
         public int maxDamage;
         public int additionalDamageOnHeavyAttack;
         public int additionalDamageMissedParry;
+
         public float knockback;
         public float cooldown;
         float currentTimer;
+
         public float reach;
+        public float distanceToActivateForwardImpulse = 3f;     // player should be close already
+        public float maxDistanceAfterImpulse = 1f;              // furthest away
+        public float minDistanceAfterImpulse = .5f;             // closest
         [SerializeField, ReadOnlyInspector] string ownerTag;
         [HideInInspector] public bool onCooldown;
         [HideInInspector] public bool isAttacking;
@@ -64,6 +69,8 @@ namespace ProjectColombo.Combat
         private void OnTriggerEnter(Collider other)
         {
             int damage = Random.Range(minDamage, maxDamage);
+            bool shouldStagger = false;
+            float knockbackStrength = 0;
             Vector3 attackDirection = (other.transform.position - transform.parent.position).normalized; //get direction from user to target
             attackDirection.y = 0.0f; //could be increased to make the hit entity jump a bit
 
@@ -84,13 +91,15 @@ namespace ProjectColombo.Combat
 
                     if (heavyAttack) //knockback only on heavy attacks and additional damage
                     {
-                        otherStateMachine.Impact(attackDirection, knockback);
+                        shouldStagger = true;
+                        knockbackStrength = knockback;
                         damage += additionalDamageOnHeavyAttack;
                         ScreenShake();
                     }
                     else
                     {
-                        otherStateMachine.Impact(attackDirection, 0); //no knockback but flinch
+                        shouldStagger = true;
+                        knockbackStrength = 0;
                     }
 
                     if (otherStateMachine.tryParrying) //penalty for parrying to early
@@ -98,7 +107,13 @@ namespace ProjectColombo.Combat
                         damage += additionalDamageMissedParry;
                     }
 
+
                     otherHealth.TakeDamage(damage);
+
+                    if (shouldStagger)
+                    {
+                        otherStateMachine.Impact(attackDirection, knockbackStrength);
+                    }
                     return;
                 }
             }
@@ -107,13 +122,14 @@ namespace ProjectColombo.Combat
                 MommottiStateMachine otherStateMachine = other.GetComponent<MommottiStateMachine>();
                 HealthManager otherHealth = other.GetComponent<HealthManager>();
 
+
                 if (otherStateMachine != null && otherHealth != null && otherHealth.CurrentHealth > 0)
                 {
                     StopTime();
                     ScreenShake();
 
-                    otherStateMachine.Impact(attackDirection, knockback);
                     otherHealth.TakeDamage(damage);
+                    otherStateMachine.Impact(attackDirection, knockback);
                 }
             }
             else if (ownerTag == "Player" && other.tag == "Destroyable")

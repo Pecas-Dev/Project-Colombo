@@ -15,6 +15,9 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Enter()
         {
+            Color skinColor = new(.3f, .3f, .3f);
+            stateMachine.myColorfullSkin.material.color = skinColor;
+
             stateMachine.myAnimator.SetBool("Impact", true);
         }
 

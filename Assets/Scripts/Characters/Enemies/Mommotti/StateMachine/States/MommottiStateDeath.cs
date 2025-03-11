@@ -10,6 +10,9 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Enter()
         {
+            Color skinColor = new(0, 0, 0);
+            stateMachine.myColorfullSkin.material.color = skinColor;
+
             stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.DEAD);
             Debug.Log("Mommotti entered Death State");
         }

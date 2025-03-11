@@ -1,7 +1,9 @@
 using ProjectColombo.GameInputSystem;
 using ProjectColombo.Combat;
 
+using System.Collections.Generic;
 using UnityEngine;
+using NUnit.Framework;
 
 
 namespace ProjectColombo.StateMachine.Player
@@ -47,7 +49,7 @@ namespace ProjectColombo.StateMachine.Player
 
             if (targeter != null && targeter.isTargetingActive && targeter.currentTarget != null)
             {
-                FaceLockedTargetInstant();
+                //FaceLockedTargetInstant();
             }
 
             ApplyAttackImpulse();
@@ -188,15 +190,41 @@ namespace ProjectColombo.StateMachine.Player
             m_playerStateMachine.PlayerRigidbody.rotation = targetRotation;
         }
 
+        Vector3 LookForClosestEnemy()
+        {
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+            if (enemies.Length == 0)
+            {
+                return Vector3.forward;
+            }
+
+            Vector3 myPosition = m_playerStateMachine.transform.position;
+            Vector3 closestPosition = myPosition;
+            float closestDistance = Mathf.Infinity;
+
+            foreach (GameObject e in enemies)
+            {
+                if ((e.transform.position - myPosition).magnitude < closestDistance)
+                {
+                    closestPosition = e.transform.position;
+                    closestDistance = (e.transform.position - myPosition).magnitude;
+                }
+            }
+
+            return closestPosition;
+        }
+
         void ApplyAttackImpulse()
         {
             Vector3 targetPosition;
             var targeter = m_playerStateMachine.Targeter;
 
             // These could come from weapon attributes
-            float activationDistance = 2f;  // player should be close already
-            float targetDistance = 1f;      // furthest away
-            float minDistance = .5f;        // closest
+            WeaponAttributes playerWeapon = m_playerStateMachine.GetComponentInChildren<WeaponAttributes>();
+            float activationDistance = playerWeapon.distanceToActivateForwardImpulse;   // player should be close already
+            float maxDistance = playerWeapon.maxDistanceAfterImpulse;                   // furthest away
+            float minDistance = playerWeapon.minDistanceAfterImpulse;                   // closest
 
             // Check if the player is targeting an enemy
             if (targeter != null && targeter.isTargetingActive && targeter.currentTarget != null)
@@ -206,8 +234,14 @@ namespace ProjectColombo.StateMachine.Player
             }
             else
             {
-                return; // If no target, do nothing
+               targetPosition = LookForClosestEnemy();
+               targetPosition.y = m_playerStateMachine.PlayerRigidbody.position.y;
+               //return; // If no target, do nothing
             }
+
+            //turn to target
+            Quaternion targetRotation = Quaternion.LookRotation(targetPosition - m_playerStateMachine.transform.position);
+            m_playerStateMachine.PlayerRigidbody.rotation = targetRotation;
 
             // Calculate the direction to the target
             Vector3 directionToTarget = targetPosition - m_playerStateMachine.PlayerRigidbody.position;
@@ -219,7 +253,7 @@ namespace ProjectColombo.StateMachine.Player
             if (distanceToTarget > activationDistance) return;
 
             // Move towards the target if the distance is greater than the desired target distance
-            if (distanceToTarget > targetDistance)
+            if (distanceToTarget > maxDistance)
             {
                 directionToTarget.Normalize();
 

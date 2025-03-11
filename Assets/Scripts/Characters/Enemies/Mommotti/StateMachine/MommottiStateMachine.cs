@@ -18,6 +18,7 @@ namespace ProjectColombo.StateMachine.Mommotti
         public Pathfinding myPathfindingAlgorythm;
         public WeaponAttributes myWeaponAttributes;
         public HealthManager myHealthManager;
+        public SkinnedMeshRenderer myColorfullSkin;
 
         public MommottiState currentState;
 
@@ -68,6 +69,11 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public void Impact(Vector3 direction, float knockbackStrength)
         {
+            if (myHealthManager.CurrentHealth <= 0)
+            {
+                knockbackStrength *= 1.5f;
+            }
+
             myRigidbody.AddForce(direction * knockbackStrength, ForceMode.Impulse);
             InterruptAttack();
             canAttack = true;

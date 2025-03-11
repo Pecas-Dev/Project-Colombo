@@ -14,6 +14,9 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Enter()
         {
+            Color skinColor = new(1, 1, 0);
+            stateMachine.myColorfullSkin.material.color = skinColor;
+
             timer = 0;
             alertedPosition = stateMachine.myMommottiAttributes.GetPlayerPosition();
             stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.ALERTED);

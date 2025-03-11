@@ -36,6 +36,9 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Enter()
         {
+            Color skinColor = new(1, .5f, 0);
+            stateMachine.myColorfullSkin.material.color = skinColor;
+
             isPlayerVisable = true; //enters from alert State so player is visible
             lastWalkableNode = stateMachine.myPathfindingAlgorythm.GetNode(stateMachine.transform.position);
             targetDirection = stateMachine.myMommottiAttributes.GetPlayerPosition() - stateMachine.transform.position;
