@@ -1,6 +1,7 @@
 using ProjectColombo.Combat;
 using ProjectColombo.Control;
 using ProjectColombo.GameInputSystem;
+using ProjectColombo.Shop;
 using UnityEngine;
 
 
@@ -13,7 +14,9 @@ namespace ProjectColombo.StateMachine.Player
             Movement,
             Roll,
             Attack,
-            Parry
+            Parry,
+            Dead,
+            Shop
         }
 
 
@@ -58,6 +61,7 @@ namespace ProjectColombo.StateMachine.Player
         [HideInInspector] public bool isParrying = false;
         [HideInInspector] public bool tryParrying = false;
         [HideInInspector] public bool isInRoll = false;
+        [HideInInspector] public ShopKeeper closeShop = null;
 
         void Awake()
         {
@@ -73,6 +77,7 @@ namespace ProjectColombo.StateMachine.Player
 
             playerRigidbody = GetComponent<Rigidbody>();
             playerAnimator = GetComponent<Animator>();
+            closeShop = null;
         }
 
         void Start()
@@ -132,6 +137,22 @@ namespace ProjectColombo.StateMachine.Player
         internal void SetCurrentState(PlayerState newState)
         {
             currentState = newState;
+        }
+
+        public void EnterShopState(ShopKeeper shop)
+        {
+            if (currentState == PlayerState.Movement)
+            {
+                SwitchState(new PlayerShopState(this, shop));
+            }
+        }
+
+        public void ExitShopState()
+        {
+            if (currentState == PlayerState.Shop)
+            {
+                SwitchState(new PlayerMovementState(this));
+            }
         }
 
         public void ParryFrameStart()

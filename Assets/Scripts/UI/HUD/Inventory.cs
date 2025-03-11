@@ -14,11 +14,13 @@ namespace ProjectColombo.UI.HUD
         public TMP_Text charmAmountText;
         public TMP_Text maskAmountText;
         [SerializeField] private GameInputSO gameInput;
+        [HideInInspector] public bool visible;
 
 
         private void Start()
         {
             inventory = GetComponentInParent<PlayerInventory>();
+            visible = true;
         }
 
         private void Update()
@@ -53,6 +55,8 @@ namespace ProjectColombo.UI.HUD
 
         public void ToggleVisability()
         {
+            visible = !visible;
+
             foreach (Transform child in transform)
             {
                 child.gameObject.SetActive(!child.gameObject.activeInHierarchy);

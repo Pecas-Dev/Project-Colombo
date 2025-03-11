@@ -26,9 +26,6 @@ namespace ProjectColombo.Inventory
                 masks[mask] = 0;
             }
 
-            //please change to weaponattribures....
-            //ChangeWeapon(GetComponentInChildren<WeaponAttributes>().name); 
-
             ChangeWeapon(GetComponentInChildren<WeaponAttributes>().name); 
         }
 

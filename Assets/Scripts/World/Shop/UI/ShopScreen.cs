@@ -46,8 +46,6 @@ namespace ProjectColombo.Shop
                 ShopItems shopItem = prefab.GetComponent<ShopItems>();
                 itemButtons.Add(shopItem);
 
-                Debug.Log(i.name + position);
-
                 // Set up the button (position, item info, etc.)
                 shopItem.SetUp(i, position);
 
@@ -77,7 +75,7 @@ namespace ProjectColombo.Shop
         {
             playerInventory.currencyAmount -= item.price;
             Instantiate(item.item, playerInventory.transform.position, Quaternion.identity); //spawn bought item
-            Debug.Log("instantiate " + item.item.name + " at " + playerInventory.transform.position);
+            //Debug.Log("instantiate " + item.item.name + " at " + playerInventory.transform.position);
             currentPlayerCurrency.text = playerInventory.currencyAmount.ToString(); //update text
 
             foreach (ShopItems b in itemButtons)

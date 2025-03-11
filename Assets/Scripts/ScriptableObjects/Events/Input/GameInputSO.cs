@@ -134,6 +134,7 @@ namespace ProjectColombo.GameInputSystem
             RollPressed = false;
             ParryPressed = false;
             TargetPressed = false;
+            InteractPressed = false;
         }
 
         public bool IsKeyboardInput()
@@ -143,7 +144,7 @@ namespace ProjectColombo.GameInputSystem
 
         public bool IsAnyInputActive()
         {
-            return (MovementInput.sqrMagnitude > 0.01f || AttackPressed || RollPressed || TargetPressed || ParryPressed || IsKeyboardInput());
+            return (MovementInput.sqrMagnitude > 0.01f || AttackPressed || RollPressed || TargetPressed || ParryPressed || InteractPressed || IsKeyboardInput());
         }
 
 
