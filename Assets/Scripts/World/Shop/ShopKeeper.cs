@@ -25,7 +25,6 @@ namespace ProjectColombo.Shop
             if (playerInRange && gameInput.InteractPressed)
             {
                 OpenShop();
-                gameInput.ResetInteractPressed(); // Reset interaction to prevent multiple triggers
             }
         }
 

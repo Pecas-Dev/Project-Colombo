@@ -49,6 +49,13 @@ namespace ProjectColombo.UI.HUD
             if (gameInput.InteractPressed)  //map to input this just for testing
             {
                 ToggleVisability();
+            }
+        }
+
+        private void LateUpdate()
+        {
+            if (gameInput.InteractPressed)
+            {
                 gameInput.ResetInteractPressed();
             }
         }
