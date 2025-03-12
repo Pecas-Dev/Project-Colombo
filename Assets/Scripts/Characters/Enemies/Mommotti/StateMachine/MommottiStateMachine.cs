@@ -57,7 +57,9 @@ namespace ProjectColombo.StateMachine.Mommotti
             }
 
             //calculate speed for animator
-            float currentSpeed = (positionLastFrame - transform.position).magnitude / Time.deltaTime;
+            Vector3 movementLastFrame = positionLastFrame - transform.position;
+            movementLastFrame.y = 0; //ignore height difference
+            float currentSpeed = movementLastFrame.magnitude / Time.deltaTime;
             myAnimator.SetFloat("Speed", currentSpeed);
             positionLastFrame = transform.position;
 

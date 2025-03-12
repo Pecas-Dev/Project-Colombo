@@ -74,29 +74,25 @@ namespace ProjectColombo.StateMachine.Mommotti
             }
 
             //rotate towards player
-            if (Vector3.Angle(stateMachine.transform.forward, targetDirection.normalized) > 1f)
-            {
-                Quaternion startRotation = stateMachine.transform.rotation;
-                Quaternion targetRotation = Quaternion.LookRotation(targetDirection.normalized);
-                stateMachine.myRigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, stateMachine.myEntityAttributes.rotationSpeedPlayer * deltaTime));
-            }
+            RotateTowardsTarget(stateMachine.myMommottiAttributes.GetPlayerPosition(), deltaTime, stateMachine.myEntityAttributes.rotationSpeedPlayer);
+
 
             //move to player if to far away
             if (stateMachine.canAttack && distanceToPlayer > stateMachine.myWeaponAttributes.reach)
             {
                 float currentSpeed = stateMachine.myEntityAttributes.moveSpeed;
-                Vector3 movingDirection = stateMachine.transform.forward;
+                Vector3 targetPosition = stateMachine.transform.position + stateMachine.transform.forward;
 
-                stateMachine.myRigidbody.MovePosition((stateMachine.transform.position + (currentSpeed * deltaTime * movingDirection)));
+                MoveToTarget(targetPosition, deltaTime, currentSpeed);
             }
 
             //step back if cannot attack
             if (!stateMachine.canAttack && distanceToPlayer < 0.75 * stateMachine.myMommottiAttributes.circleDistance && !stateMachine.myWeaponAttributes.isAttacking)
             {
                 float currentSpeed = stateMachine.myEntityAttributes.moveSpeed;
-                Vector3 movingDirection = -stateMachine.transform.forward;
+                Vector3 targetPosition = stateMachine.transform.position - stateMachine.transform.forward; ;
 
-                stateMachine.myRigidbody.MovePosition((stateMachine.transform.position + (currentSpeed * deltaTime * movingDirection)));
+                MoveToTarget(targetPosition, deltaTime, currentSpeed);
             }
         }
 

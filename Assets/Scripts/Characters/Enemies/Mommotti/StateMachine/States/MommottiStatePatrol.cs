@@ -20,6 +20,10 @@ namespace ProjectColombo.StateMachine.Mommotti
         //patrol points
         bool onSpawnPoint;
 
+        //speeds
+        float patrolSpeed = 2.5f;
+        float rotationSpeed = 5f;
+
         public MommottiStatePatrol(MommottiStateMachine stateMachine) : base(stateMachine)
         {
         }
@@ -43,6 +47,9 @@ namespace ProjectColombo.StateMachine.Mommotti
             SetTarget(GetNextPatrolPoint());
             pathIndex = 0;
             stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.PATROL);
+
+            patrolSpeed = stateMachine.myEntityAttributes.moveSpeed;
+            rotationSpeed = stateMachine.myEntityAttributes.rotationSpeedPlayer;
         }
 
         public override void Tick(float deltaTime)
@@ -84,15 +91,8 @@ namespace ProjectColombo.StateMachine.Mommotti
                 }
                 else
                 {
-                    if (Vector3.Angle(stateMachine.transform.forward, movingDirection) > 1f)
-                    {
-                        Quaternion startRotation = stateMachine.transform.rotation;
-                        Quaternion targetRotation = Quaternion.LookRotation(movingDirection);
-                        stateMachine.myRigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, stateMachine.myEntityAttributes.rotationSpeedPlayer * deltaTime));
-                    }
-
-                    Vector3 movement = stateMachine.transform.forward * stateMachine.myEntityAttributes.moveSpeed * deltaTime;
-                    stateMachine.myRigidbody.MovePosition(stateMachine.transform.position + movement);
+                    RotateTowardsTarget(currentPath[pathIndex].worldPosition, deltaTime, rotationSpeed);
+                    MoveToTarget(currentPath[pathIndex].worldPosition, deltaTime, patrolSpeed);
                 }
             }
         }

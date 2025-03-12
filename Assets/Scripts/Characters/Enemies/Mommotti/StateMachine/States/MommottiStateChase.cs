@@ -30,6 +30,12 @@ namespace ProjectColombo.StateMachine.Mommotti
         float attackCheckTimer = 0;
         float intervallToCheckIfAttacking = 1f;
 
+        //if player can be lost again
+        Vector3 lastKnownPlayerPosition;
+        float goToPatrolTimer = 0f;
+        float goToPatrolDely = 2f;
+        float increaseFOVRadius = 4f;
+
         public MommottiStateChase(MommottiStateMachine stateMachine) : base(stateMachine)
         {
         }
@@ -38,8 +44,10 @@ namespace ProjectColombo.StateMachine.Mommotti
         {
             Color skinColor = new(1, .5f, 0);
             stateMachine.myColorfullSkin.material.color = skinColor;
+            stateMachine.myMommottiAttributes.rangeFOVDetection += increaseFOVRadius;
 
             isPlayerVisable = true; //enters from alert State so player is visible
+            lastKnownPlayerPosition = stateMachine.myMommottiAttributes.GetPlayerPosition();
             lastWalkableNode = stateMachine.myPathfindingAlgorythm.GetNode(stateMachine.transform.position);
             targetDirection = stateMachine.myMommottiAttributes.GetPlayerPosition() - stateMachine.transform.position;
             movingDirection = targetDirection;
@@ -52,7 +60,7 @@ namespace ProjectColombo.StateMachine.Mommotti
         public override void Tick(float deltaTime)
         {
             timer += deltaTime;
-            targetDirection = stateMachine.myMommottiAttributes.GetPlayerPosition() - stateMachine.transform.position;
+            targetDirection = lastKnownPlayerPosition - stateMachine.transform.position;
             targetDirection.y = 0;
 
             if (timer > checkIntervall)
@@ -67,12 +75,29 @@ namespace ProjectColombo.StateMachine.Mommotti
 
                 isPlayerVisable = stateMachine.myMommottiAttributes.FieldOfViewCheck();
 
-                if (!isPlayerVisable)
+                //if (!isPlayerVisable)
+                //{
+                //    SetTarget(stateMachine.myMommottiAttributes.GetPlayerPosition());
+                //}
+
+                if (isPlayerVisable)
                 {
-                    SetTarget(stateMachine.myMommottiAttributes.GetPlayerPosition());
+                    lastKnownPlayerPosition = stateMachine.myMommottiAttributes.GetPlayerPosition();
+                    goToPatrolTimer = 0;
                 }
 
                 CheckClosestEnemy();
+            }
+
+            //go back to patrol if player is gone
+            if (!isPlayerVisable)
+            {
+                goToPatrolTimer += deltaTime;
+
+                if (goToPatrolTimer >= goToPatrolDely)
+                {
+                    stateMachine.SwitchState(new MommottiStatePatrol(stateMachine));
+                }
             }
 
             attackCheckTimer += deltaTime;
@@ -81,7 +106,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             {
                 attackCheckTimer = 0;
 
-                if (targetDirection.magnitude < stateMachine.myMommottiAttributes.circleDistance + 5f)
+                if (targetDirection.magnitude < stateMachine.myMommottiAttributes.circleDistance + 1f)
                 { 
                     CheckIfShouldAttack(); 
                 }
@@ -109,12 +134,8 @@ namespace ProjectColombo.StateMachine.Mommotti
             }
 
             //rotate towards player
-            if (Vector3.Angle(stateMachine.transform.forward, movingDirection.normalized) > 1f)
-            {
-                Quaternion startRotation = stateMachine.transform.rotation;
-                Quaternion targetRotation = Quaternion.LookRotation(movingDirection.normalized);
-                stateMachine.myRigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, stateMachine.myEntityAttributes.rotationSpeedPlayer * deltaTime));
-            }
+            RotateTowardsTarget(stateMachine.myMommottiAttributes.GetPlayerPosition(), deltaTime, stateMachine.myEntityAttributes.rotationSpeedPlayer);
+
 
             Vector3 relativeMovementDirection = stateMachine.transform.forward;
 
@@ -140,11 +161,13 @@ namespace ProjectColombo.StateMachine.Mommotti
                 }
             }
 
-            stateMachine.myRigidbody.MovePosition((stateMachine.transform.position + (currentSpeed * deltaTime * relativeMovementDirection)));
+            Vector3 targetPosition = stateMachine.transform.position + relativeMovementDirection;
+            MoveToTarget(targetPosition, deltaTime, currentSpeed);
         }
 
         public override void Exit()
         {
+            stateMachine.myMommottiAttributes.rangeFOVDetection -= increaseFOVRadius;
         }
 
         public void SetTarget(Vector3 newTarget)
@@ -187,8 +210,13 @@ namespace ProjectColombo.StateMachine.Mommotti
         private void CheckIfShouldAttack()
         {
             GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-            float currentDistanceToPlayer = (stateMachine.myMommottiAttributes.playerPosition.position - stateMachine.transform.position).magnitude;
+            float currentDistanceToPlayer = (stateMachine.myMommottiAttributes.GetPlayerPosition() - stateMachine.transform.position).magnitude;
             int currentAttackers = 0;
+
+            if (currentDistanceToPlayer >= stateMachine.myMommottiAttributes.circleDistance + 1f)
+            {
+                return;
+            }
 
             foreach (GameObject m in enemies)
             {

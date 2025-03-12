@@ -52,15 +52,10 @@ namespace ProjectColombo.StateMachine.Mommotti
                 stateMachine.SwitchState(new MommottiStatePatrol(stateMachine));
             }
 
+            RotateTowardsTarget(alertedPosition, deltaTime, stateMachine.myEntityAttributes.rotationSpeedPlayer);
+
             Vector3 targetDirection = (alertedPosition - stateMachine.transform.position).normalized;
             targetDirection.y = 0;
-
-            if (Vector3.Angle(stateMachine.transform.forward, targetDirection) > 1f)
-            {
-                Quaternion startRotation = stateMachine.transform.rotation;
-                Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
-                stateMachine.myRigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, stateMachine.myEntityAttributes.rotationSpeedPlayer * deltaTime));
-            }
 
             timer += deltaTime;
         }
