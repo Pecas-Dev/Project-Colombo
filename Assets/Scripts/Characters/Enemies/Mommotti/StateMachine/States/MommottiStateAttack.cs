@@ -87,7 +87,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             }
 
             //step back if cannot attack
-            if (!stateMachine.canAttack && distanceToPlayer < 0.75 * stateMachine.myMommottiAttributes.circleDistance && !stateMachine.myWeaponAttributes.isAttacking)
+            if (!stateMachine.canAttack && distanceToPlayer < 0.25 * stateMachine.myMommottiAttributes.circleDistance && !stateMachine.myWeaponAttributes.isAttacking)
             {
                 float currentSpeed = stateMachine.myEntityAttributes.moveSpeed;
                 Vector3 targetPosition = stateMachine.transform.position - stateMachine.transform.forward; ;

@@ -18,7 +18,9 @@ namespace ProjectColombo.StateMachine.Player
         public override void Enter()
         {
             m_playerStateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Dead);
-            Debug.Log("Mommotti entered Death State");
+            Debug.Log("Player entered Death State");
+
+            m_playerStateMachine.GameInputSO.DisableAllInputs();
         }
 
         public override void Tick(float deltaTime)

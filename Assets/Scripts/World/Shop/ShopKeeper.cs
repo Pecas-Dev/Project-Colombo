@@ -55,7 +55,7 @@ namespace ProjectColombo.Shop
             shopScreen.SetActive(true);
             shopIndicator.SetActive(false);
             gameInput.EnableUIMode();
-            GameObject.Find("Player").GetComponent<PlayerStateMachine>().EnterShopState(this);
+            GameObject.Find("Player").GetComponent<PlayerStateMachine>().EnterShopState(this.gameObject);
             EventSystem.current.SetSelectedGameObject(firstSelect);
         }
 

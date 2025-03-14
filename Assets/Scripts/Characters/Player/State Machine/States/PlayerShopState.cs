@@ -10,16 +10,17 @@ namespace ProjectColombo.StateMachine.Player
 {
     public class PlayerShopState : PlayerBaseState
     {
-        ShopKeeper shopKeeper;
+        Vector3 shopKeeper;
 
-        public PlayerShopState(PlayerStateMachine playerStateMachine, ShopKeeper shop) : base(playerStateMachine)
+        public PlayerShopState(PlayerStateMachine playerStateMachine, GameObject shop) : base(playerStateMachine)
         {
-            shopKeeper = shop;
+            shopKeeper = shop.transform.position;
         }
 
         public override void Enter()
         {
             m_playerStateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Shop);
+            Debug.Log("player entered shop state");
 
             Currency playerInventory = m_playerStateMachine.GetComponentInChildren<Currency>();
 
@@ -31,16 +32,19 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Tick(float deltaTime)
         {
-            Vector3 targetDirection = shopKeeper.transform.position - m_playerStateMachine.transform.position;
+            Vector3 targetDirection = shopKeeper - m_playerStateMachine.transform.position;
+            targetDirection.y = 0; 
 
-            //rotate towards shopkeeper
-            if (Vector3.Angle(m_playerStateMachine.transform.forward, targetDirection.normalized) > 1f)
+            if (Vector3.Dot(m_playerStateMachine.transform.forward, targetDirection.normalized) < 0.95f)
             {
                 Quaternion startRotation = m_playerStateMachine.transform.rotation;
                 Quaternion targetRotation = Quaternion.LookRotation(targetDirection.normalized);
-                m_playerStateMachine.PlayerRigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, m_playerStateMachine.EntityAttributes.rotationSpeedPlayer * deltaTime));
+
+                m_playerStateMachine.PlayerRigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, m_playerStateMachine.EntityAttributes.rotationSpeedPlayer));
             }
         }
+
+
 
         public override void Exit()
         {

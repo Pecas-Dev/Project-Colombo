@@ -51,7 +51,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         private void FixedUpdate() // regular update is used in the state machine
         {
-            if (myHealthManager.CurrentHealth <= 0)
+            if (myHealthManager.CurrentHealth <= 0 && currentState != MommottiState.DEAD)
             {
                 SwitchState(new MommottiStateDeath(this));
             }

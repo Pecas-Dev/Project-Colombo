@@ -106,6 +106,14 @@ namespace ProjectColombo.StateMachine.Player
             GameInputSO.Uninitialize();
         }
 
+        private void FixedUpdate()
+        {
+            if (GetComponent<HealthManager>().CurrentHealth <= 0 && currentState != PlayerState.Dead)
+            {
+                SwitchState(new PlayerDeathState(this));
+            }
+        }
+
         void LogMissingReferenceErrors()
         {
             if (GameInputSO == null)
@@ -139,7 +147,7 @@ namespace ProjectColombo.StateMachine.Player
             currentState = newState;
         }
 
-        public void EnterShopState(ShopKeeper shop)
+        public void EnterShopState(GameObject shop)
         {
             if (currentState == PlayerState.Movement)
             {

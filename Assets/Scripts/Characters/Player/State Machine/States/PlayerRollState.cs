@@ -149,14 +149,14 @@ namespace ProjectColombo.StateMachine.Player
         public void SetIgnoreLayers()
         {
             // Disable collision between the Player and enemy/weapon layers
-            Physics.IgnoreLayerCollision(playerLayer, enemyLayer, true);
+            //Physics.IgnoreLayerCollision(playerLayer, enemyLayer, true);
             Physics.IgnoreLayerCollision(playerLayer, weaponLayer, true);
         }
 
         public void ResetIgnoreLayers()
         {
             // Disable collision between the Player and enemy/weapon layers
-            Physics.IgnoreLayerCollision(playerLayer, enemyLayer, false);
+            //Physics.IgnoreLayerCollision(playerLayer, enemyLayer, false);
             Physics.IgnoreLayerCollision(playerLayer, weaponLayer, false);
         }
     }

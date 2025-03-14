@@ -71,11 +71,14 @@ namespace ProjectColombo.Combat
             if (TryGetComponent<DropSystem>(out _))
             {
                 GetComponent<DropSystem>().DropItem();
+            }
+
+            if (gameObject.CompareTag("Destroyable"))
+            {
                 Destroy(this.gameObject);
             }
 
             Died?.Invoke();
-            this.gameObject.SetActive(false);
         }
     }
 }
