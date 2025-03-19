@@ -68,6 +68,8 @@ namespace ProjectColombo.Combat
 
         private void OnTriggerEnter(Collider other)
         {
+            Debug.Log("weapon hit from: " + ownerTag + "to: " + other.tag);
+
             int damage = Random.Range(minDamage, maxDamage);
             bool shouldStagger = false;
             float knockbackStrength = 0;
@@ -85,6 +87,7 @@ namespace ProjectColombo.Combat
 
                     if (otherStateMachine.isParrying) //if player parrying successfully
                     {
+                        StopTime(); //hitstop if successfull parry
                         GetComponentInParent<MommottiStateMachine>().Impact(attackDirection, 0); // stagger enemy if parry successfull
                         return;
                     }

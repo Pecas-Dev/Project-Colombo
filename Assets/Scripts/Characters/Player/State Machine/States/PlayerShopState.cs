@@ -19,10 +19,10 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Enter()
         {
-            m_playerStateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Shop);
+            stateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Shop);
             Debug.Log("player entered shop state");
 
-            Currency playerInventory = m_playerStateMachine.GetComponentInChildren<Currency>();
+            Currency playerInventory = stateMachine.GetComponentInChildren<Currency>();
 
             if (playerInventory.visible)
             {
@@ -32,15 +32,15 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Tick(float deltaTime)
         {
-            Vector3 targetDirection = shopKeeper - m_playerStateMachine.transform.position;
+            Vector3 targetDirection = shopKeeper - stateMachine.transform.position;
             targetDirection.y = 0; 
 
-            if (Vector3.Dot(m_playerStateMachine.transform.forward, targetDirection.normalized) < 0.95f)
+            if (Vector3.Dot(stateMachine.transform.forward, targetDirection.normalized) < 0.95f)
             {
-                Quaternion startRotation = m_playerStateMachine.transform.rotation;
+                Quaternion startRotation = stateMachine.transform.rotation;
                 Quaternion targetRotation = Quaternion.LookRotation(targetDirection.normalized);
 
-                m_playerStateMachine.PlayerRigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, m_playerStateMachine.EntityAttributes.rotationSpeedPlayer));
+                stateMachine.myRigidbody.MoveRotation(Quaternion.RotateTowards(startRotation, targetRotation, stateMachine.myEntityAttributes.rotationSpeedPlayer));
             }
         }
 
@@ -48,7 +48,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Exit()
         {
-            Currency playerInventory = m_playerStateMachine.GetComponentInChildren<Currency>();
+            Currency playerInventory = stateMachine.GetComponentInChildren<Currency>();
 
             if (!playerInventory.visible)
             {

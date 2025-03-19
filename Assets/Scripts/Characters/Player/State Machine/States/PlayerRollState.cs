@@ -27,35 +27,35 @@ namespace ProjectColombo.StateMachine.Player
 
         public PlayerRollState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
         {
-            isometricMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, m_playerStateMachine.Angle, 0));
+            isometricMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, stateMachine.Angle, 0));
 
             groundMask = LayerMask.GetMask("Ground", "Default");
         }
 
         public override void Enter()
         {
-            m_playerStateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Roll);
-            m_playerStateMachine.PlayerRigidbody.constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            stateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Roll);
+            stateMachine.myRigidbody.constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             SetIgnoreLayers();
 
             if (!CanQueueRoll)
             {
-                m_playerStateMachine.SwitchState(new PlayerMovementState(m_playerStateMachine));
+                stateMachine.SwitchState(new PlayerMovementState(stateMachine));
                 return;
             }
 
-            if (!m_playerStateMachine.StaminaSystem.TryConsumeStamina(m_playerStateMachine.StaminaSystem.StaminaConfig.RollStaminaCost))
+            if (!stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.StaminaConfig.RollStaminaCost))
             {
-                m_playerStateMachine.SwitchState(new PlayerMovementState(m_playerStateMachine));
+                stateMachine.SwitchState(new PlayerMovementState(stateMachine));
                 return;
             }
 
-            m_playerStateMachine.GameInputSO.DisableAllInputs();
-            m_playerStateMachine.PlayerAnimatorScript.TriggerRoll();
+            stateMachine.gameInputSO.DisableAllInputs();
+            stateMachine.myPlayerAnimator.TriggerRoll();
 
             rollSpeed = rollDistance / rollDuration;
 
-            Vector2 movementInput = m_playerStateMachine.GameInputSO.MovementInput;
+            Vector2 movementInput = stateMachine.gameInputSO.MovementInput;
 
             if (movementInput.sqrMagnitude > 0.01f)
             {
@@ -65,7 +65,7 @@ namespace ProjectColombo.StateMachine.Player
             }
             else
             {
-                rollDirection = m_playerStateMachine.PlayerRigidbody.transform.forward * rollSpeed;
+                rollDirection = stateMachine.myRigidbody.transform.forward * rollSpeed;
             }
 
             ApplyRollImpulse();
@@ -77,61 +77,60 @@ namespace ProjectColombo.StateMachine.Player
         {
             KeepPlayerGrounded();
 
-            m_playerStateMachine.PlayerRigidbody.angularVelocity = Vector3.zero;
-            Vector3 velocity = m_playerStateMachine.PlayerRigidbody.linearVelocity;
+            stateMachine.myRigidbody.angularVelocity = Vector3.zero;
+            Vector3 velocity = stateMachine.myRigidbody.linearVelocity;
 
             velocity.x = rollDirection.x * rollSpeed;
             velocity.z = rollDirection.z * rollSpeed;
 
             velocity.y = Mathf.Min(velocity.y, 0);
 
-            m_playerStateMachine.PlayerRigidbody.linearVelocity = velocity;
+            stateMachine.myRigidbody.linearVelocity = velocity;
 
-            //HandleAirPhysicsIfNeeded(deltaTime);
 
-            if (!m_playerStateMachine.PlayerAnimatorScript.IsInRoll)
+            if (!stateMachine.myPlayerAnimator.IsInRoll)
             {
-                m_playerStateMachine.SwitchState(new PlayerMovementState(m_playerStateMachine));
+                stateMachine.SwitchState(new PlayerMovementState(stateMachine));
             }
         }
 
         public override void Exit()
         {
-            m_playerStateMachine.GameInputSO.EnableAllInputs();
-            m_playerStateMachine.RollInvincibleFrameStop();
-            m_playerStateMachine.PlayerRigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            stateMachine.gameInputSO.EnableAllInputs();
+            stateMachine.RollInvincibleFrameStop();
+            stateMachine.myRigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             ResetIgnoreLayers();
 
-            if (m_playerStateMachine.GameInputSO.MovementInput.sqrMagnitude < 0.01f)
+            if (stateMachine.gameInputSO.MovementInput.sqrMagnitude < 0.01f)
             {
-                Vector3 zeroVelocity = m_playerStateMachine.PlayerRigidbody.linearVelocity;
+                Vector3 zeroVelocity = stateMachine.myRigidbody.linearVelocity;
 
                 zeroVelocity.x = 0;
                 zeroVelocity.z = 0;
 
-                m_playerStateMachine.PlayerRigidbody.linearVelocity = zeroVelocity;
+                stateMachine.myRigidbody.linearVelocity = zeroVelocity;
             }
 
-            m_playerStateMachine.StartCoroutine(RollCooldown());
+            stateMachine.StartCoroutine(RollCooldown());
         }
 
         void ApplyRollImpulse()
         {
             float impulseStrength = 0.03f;
 
-            m_playerStateMachine.PlayerRigidbody.AddForce(rollDirection * impulseStrength, ForceMode.Impulse);
+            stateMachine.myRigidbody.AddForce(rollDirection * impulseStrength, ForceMode.Impulse);
         }
 
         void KeepPlayerGrounded()
         {
             RaycastHit hit;
 
-            Vector3 rayStart = m_playerStateMachine.PlayerRigidbody.position + Vector3.up * 0.1f;
+            Vector3 rayStart = stateMachine.myRigidbody.position + Vector3.up * 0.1f;
 
             if (Physics.Raycast(rayStart, Vector3.down, out hit, groundCheckDistance + 0.1f, groundMask))
             {
                 float downwardForce = 20f;
-                m_playerStateMachine.PlayerRigidbody.AddForce(Vector3.down * downwardForce, ForceMode.Force);
+                stateMachine.myRigidbody.AddForce(Vector3.down * downwardForce, ForceMode.Force);
             }
         }
 

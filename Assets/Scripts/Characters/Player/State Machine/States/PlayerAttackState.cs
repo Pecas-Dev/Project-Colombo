@@ -11,90 +11,69 @@ namespace ProjectColombo.StateMachine.Player
     public class PlayerAttackState : PlayerBaseState
     {
         Attack attack;
-        float previousFrameTime;
         Matrix4x4 isometricMatrix;
 
         public PlayerAttackState(PlayerStateMachine playerStateMachine, int attackIndex) : base(playerStateMachine)
         {
-            attack = playerStateMachine.Attacks[attackIndex];
+            attack = playerStateMachine.attacks[attackIndex];
 
 
-            isometricMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, m_playerStateMachine.Angle, 0));
+            isometricMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, stateMachine.Angle, 0));
         }
 
         public override void Enter()
         {
-            if (!m_playerStateMachine.StaminaSystem.TryConsumeStamina(m_playerStateMachine.StaminaSystem.StaminaConfig.ComboStaminaCost))
+            if (!stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.StaminaConfig.ComboStaminaCost))
             {
-                m_playerStateMachine.SwitchState(new PlayerMovementState(m_playerStateMachine));
+                stateMachine.SwitchState(new PlayerMovementState(stateMachine));
                 return;
             }
 
-            m_playerStateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Attack);
+            stateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Attack);
 
             // We also need to add a "Hold Animation at the End" if button is still pressed.
 
-            m_playerStateMachine.GameInputSO.DisableAllInputsExcept(InputActionType.Roll, InputActionType.Parry, InputActionType.Attack);
+            stateMachine.gameInputSO.DisableAllInputsExcept(InputActionType.Roll, InputActionType.Parry, InputActionType.Attack);
 
-            m_playerStateMachine.PlayerAnimatorScript.PlayAttackAnimation(attack.AnimationName, attack.TransitionDuration);
+            stateMachine.myPlayerAnimator.PlayAttackAnimation(attack.AnimationName, attack.TransitionDuration);
 
-            Vector3 zeroVelocity = m_playerStateMachine.PlayerRigidbody.linearVelocity;
+            Vector3 zeroVelocity = stateMachine.myRigidbody.linearVelocity;
 
             zeroVelocity.x = 0f;
             zeroVelocity.z = 0f;
 
-            m_playerStateMachine.PlayerRigidbody.linearVelocity = zeroVelocity;
+            stateMachine.myRigidbody.linearVelocity = zeroVelocity;
 
-            var targeter = m_playerStateMachine.Targeter;
-
-            if (targeter != null && targeter.isTargetingActive && targeter.currentTarget != null)
-            {
-                //FaceLockedTargetInstant();
-            }
+            var targeter = stateMachine.myTargeter;
 
             ApplyAttackImpulse();
         }
 
         public override void Tick(float deltaTime)
         {
-            if (m_playerStateMachine.GameInputSO.RollPressed)
+            if (stateMachine.gameInputSO.RollPressed)
             {
-                m_playerStateMachine.GameInputSO.ResetRollPressed();
-                m_playerStateMachine.SwitchState(new PlayerRollState(m_playerStateMachine));
+                stateMachine.gameInputSO.ResetRollPressed();
+                stateMachine.SwitchState(new PlayerRollState(stateMachine));
 
                 return;
             }
 
-            if (m_playerStateMachine.GameInputSO.ParryPressed)
+            if (stateMachine.gameInputSO.ParryPressed)
             {
-                m_playerStateMachine.GameInputSO.ResetParryPressed();
-                m_playerStateMachine.SwitchState(new PlayerParryState(m_playerStateMachine));
+                stateMachine.gameInputSO.ResetParryPressed();
+                stateMachine.SwitchState(new PlayerParryState(stateMachine));
 
                 return;
             }
 
-            float normalizedTime = GetNormalizedTime();
-
-            if (normalizedTime >= previousFrameTime && normalizedTime < 1.0f)
+            if (stateMachine.myPlayerAnimator.FinishedAttack())
             {
-                if (m_playerStateMachine.GameInputSO.AttackPressed)
-                {
-                    ComboAttack(normalizedTime);
-                }
-            }
-            else
-            {
-                if (attack.ComboStateIndex == -1)
-                {
-                    m_playerStateMachine.StaminaSystem.TryConsumeStamina(m_playerStateMachine.StaminaSystem.StaminaConfig.ComboStaminaCost);
-                }
-
-                m_playerStateMachine.SwitchState(new PlayerMovementState(m_playerStateMachine));
+                stateMachine.SwitchState(new PlayerMovementState(stateMachine));
             }
 
-            previousFrameTime = normalizedTime;
-
-            //HandleAirPhysicsIfNeeded(deltaTime);
+            //TODO: new combo logic
+ 
 
             FaceLockedTarget(deltaTime);
             ApplyAttackImpulse();
@@ -102,55 +81,36 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Exit()
         {
-            m_playerStateMachine.GameInputSO.EnableAllInputs();
+            stateMachine.gameInputSO.EnableAllInputs();
         }
 
         void ComboAttack(float normalizedTime)
         {
             if (attack.ComboStateIndex == -1)
             {
-                m_playerStateMachine.GameInputSO.ResetAttackPressed();
+                stateMachine.gameInputSO.ResetAttackPressed();
                 return;
             }
             if (normalizedTime < attack.ComboAttackTime)
             {
-                m_playerStateMachine.GameInputSO.ResetAttackPressed();
+                stateMachine.gameInputSO.ResetAttackPressed();
                 return;
             }
 
-            m_playerStateMachine.GameInputSO.ResetAttackPressed();
-            m_playerStateMachine.SwitchState(new PlayerAttackState(m_playerStateMachine, attack.ComboStateIndex));
-        }
-
-        private float GetNormalizedTime()
-        {
-            AnimatorStateInfo currentInfo = m_playerStateMachine.PlayerAnimator.GetCurrentAnimatorStateInfo(0);
-            AnimatorStateInfo nextInfo = m_playerStateMachine.PlayerAnimator.GetNextAnimatorStateInfo(0);
-
-            if (m_playerStateMachine.PlayerAnimator.IsInTransition(0) && nextInfo.IsTag("Attack"))
-            {
-                return nextInfo.normalizedTime;
-            }
-            else if (!m_playerStateMachine.PlayerAnimator.IsInTransition(0) && currentInfo.IsTag("Attack"))
-            {
-                return currentInfo.normalizedTime;
-            }
-            else
-            {
-                return 0.0f;
-            }
+            stateMachine.gameInputSO.ResetAttackPressed();
+            stateMachine.SwitchState(new PlayerAttackState(stateMachine, attack.ComboStateIndex));
         }
 
         void FaceLockedTarget(float deltaTime)
         {
-            var targeter = m_playerStateMachine.Targeter;
+            var targeter = stateMachine.myTargeter;
 
             if (targeter == null || !targeter.isTargetingActive || targeter.currentTarget == null)
             {
                 return;
             }
 
-            Vector3 toTarget = targeter.currentTarget.transform.position - m_playerStateMachine.PlayerRigidbody.position;
+            Vector3 toTarget = targeter.currentTarget.transform.position - stateMachine.myRigidbody.position;
 
             toTarget.y = 0f;
 
@@ -163,19 +123,19 @@ namespace ProjectColombo.StateMachine.Player
 
             Quaternion targetRotation = Quaternion.LookRotation(toTarget);
 
-            m_playerStateMachine.PlayerRigidbody.rotation = Quaternion.RotateTowards(m_playerStateMachine.PlayerRigidbody.rotation, targetRotation, m_playerStateMachine.EntityAttributes.rotationSpeedPlayer * deltaTime);
+            stateMachine.myRigidbody.rotation = Quaternion.RotateTowards(stateMachine.myRigidbody.rotation, targetRotation, stateMachine.myEntityAttributes.rotationSpeedPlayer * deltaTime);
         }
 
         void FaceLockedTargetInstant()
         {
-            var targeter = m_playerStateMachine.Targeter;
+            var targeter = stateMachine.myTargeter;
 
             if (targeter == null || !targeter.isTargetingActive || targeter.currentTarget == null)
             {
                 return;
             }
 
-            Vector3 toTarget = targeter.currentTarget.transform.position - m_playerStateMachine.PlayerRigidbody.position;
+            Vector3 toTarget = targeter.currentTarget.transform.position - stateMachine.myRigidbody.position;
 
             toTarget.y = 0f;
 
@@ -187,7 +147,7 @@ namespace ProjectColombo.StateMachine.Player
             toTarget.Normalize();
 
             Quaternion targetRotation = Quaternion.LookRotation(toTarget);
-            m_playerStateMachine.PlayerRigidbody.rotation = targetRotation;
+            stateMachine.myRigidbody.rotation = targetRotation;
         }
 
         Vector3 LookForClosestEnemy()
@@ -199,7 +159,7 @@ namespace ProjectColombo.StateMachine.Player
                 return Vector3.forward;
             }
 
-            Vector3 myPosition = m_playerStateMachine.transform.position;
+            Vector3 myPosition = stateMachine.transform.position;
             Vector3 closestPosition = myPosition;
             float closestDistance = Mathf.Infinity;
 
@@ -218,10 +178,10 @@ namespace ProjectColombo.StateMachine.Player
         void ApplyAttackImpulse()
         {
             Vector3 targetPosition;
-            var targeter = m_playerStateMachine.Targeter;
+            var targeter = stateMachine.myTargeter;
 
             // These could come from weapon attributes
-            WeaponAttributes playerWeapon = m_playerStateMachine.GetComponentInChildren<WeaponAttributes>();
+            WeaponAttributes playerWeapon = stateMachine.GetComponentInChildren<WeaponAttributes>();
             float activationDistance = playerWeapon.distanceToActivateForwardImpulse;   // player should be close already
             float maxDistance = playerWeapon.maxDistanceAfterImpulse;                   // furthest away
             float minDistance = playerWeapon.minDistanceAfterImpulse;                   // closest
@@ -230,21 +190,21 @@ namespace ProjectColombo.StateMachine.Player
             if (targeter != null && targeter.isTargetingActive && targeter.currentTarget != null)
             {
                 targetPosition = targeter.currentTarget.transform.position;
-                targetPosition.y = m_playerStateMachine.PlayerRigidbody.position.y;
+                targetPosition.y = stateMachine.myRigidbody.position.y;
             }
             else
             {
                targetPosition = LookForClosestEnemy();
-               targetPosition.y = m_playerStateMachine.PlayerRigidbody.position.y;
+               targetPosition.y = stateMachine.myRigidbody.position.y;
                //return; // If no target, do nothing
             }
 
             //turn to target
-            Quaternion targetRotation = Quaternion.LookRotation(targetPosition - m_playerStateMachine.transform.position);
-            m_playerStateMachine.PlayerRigidbody.rotation = targetRotation;
+            Quaternion targetRotation = Quaternion.LookRotation(targetPosition - stateMachine.transform.position);
+            stateMachine.myRigidbody.rotation = targetRotation;
 
             // Calculate the direction to the target
-            Vector3 directionToTarget = targetPosition - m_playerStateMachine.PlayerRigidbody.position;
+            Vector3 directionToTarget = targetPosition - stateMachine.myRigidbody.position;
             directionToTarget.y = 0f;
 
             float distanceToTarget = directionToTarget.magnitude;
@@ -257,8 +217,8 @@ namespace ProjectColombo.StateMachine.Player
             {
                 directionToTarget.Normalize();
 
-                float speed = m_playerStateMachine.EntityAttributes.attackImpulseForce;
-                m_playerStateMachine.PlayerRigidbody.MovePosition(m_playerStateMachine.PlayerRigidbody.position + directionToTarget * speed * Time.deltaTime);
+                float speed = stateMachine.myEntityAttributes.attackImpulseForce;
+                stateMachine.myRigidbody.MovePosition(stateMachine.myRigidbody.position + directionToTarget * speed * Time.deltaTime);
             }
 
             // Move away from the target if the player is too close
@@ -267,8 +227,8 @@ namespace ProjectColombo.StateMachine.Player
                 Vector3 directionAwayFromTarget = -directionToTarget;
                 directionAwayFromTarget.Normalize();
 
-                float retreatSpeed = m_playerStateMachine.EntityAttributes.attackImpulseForce;
-                m_playerStateMachine.PlayerRigidbody.MovePosition(m_playerStateMachine.PlayerRigidbody.position + directionAwayFromTarget * retreatSpeed * Time.deltaTime);
+                float retreatSpeed = stateMachine.myEntityAttributes.attackImpulseForce;
+                stateMachine.myRigidbody.MovePosition(stateMachine.myRigidbody.position + directionAwayFromTarget * retreatSpeed * Time.deltaTime);
             }
         }
 

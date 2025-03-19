@@ -12,6 +12,8 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Enter()
         {
+            stateMachine.myAnimator.SetTrigger("Death");
+
             // Create a new material instance using the URP shader
             Material materialInstance = new Material(Shader.Find("Universal Render Pipeline/Lit"));
 

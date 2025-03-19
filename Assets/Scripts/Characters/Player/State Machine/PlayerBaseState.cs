@@ -5,11 +5,11 @@ namespace ProjectColombo.StateMachine.Player
 {
     public abstract class PlayerBaseState : State
     {
-        protected PlayerStateMachine m_playerStateMachine;
+        protected PlayerStateMachine stateMachine;
 
         public PlayerBaseState(PlayerStateMachine playerStateMachine)
         {
-            this.m_playerStateMachine = playerStateMachine;
+            this.stateMachine = playerStateMachine;
         }
 
         protected bool IsGrounded()
@@ -21,12 +21,12 @@ namespace ProjectColombo.StateMachine.Player
 
             float rayLength = 0.2f;
 
-            Vector3 rayOrigin = m_playerStateMachine.PlayerRigidbody.position + Vector3.up * 0.1f;
+            Vector3 rayOrigin = stateMachine.myRigidbody.position + Vector3.up * 0.1f;
 
             bool centerGrounded = Physics.Raycast(rayOrigin, Vector3.down, rayLength);
 
-            Vector3 forward = m_playerStateMachine.PlayerRigidbody.transform.forward * 0.3f;
-            Vector3 right = m_playerStateMachine.PlayerRigidbody.transform.right * 0.3f;
+            Vector3 forward = stateMachine.myRigidbody.transform.forward * 0.3f;
+            Vector3 right = stateMachine.myRigidbody.transform.right * 0.3f;
 
             bool forwardGrounded = Physics.Raycast(rayOrigin + forward, Vector3.down, rayLength);
             bool backGrounded = Physics.Raycast(rayOrigin - forward, Vector3.down, rayLength);
@@ -38,7 +38,7 @@ namespace ProjectColombo.StateMachine.Player
 
         protected Vector3 PreventWallStick(Vector3 velocity, float deltaTime)
         {
-            if (m_playerStateMachine.isInRoll)
+            if (stateMachine.isInRoll)
             {
                 return velocity;
             }
@@ -52,7 +52,7 @@ namespace ProjectColombo.StateMachine.Player
                 return velocity;
             }
 
-            CapsuleCollider capsule = m_playerStateMachine.PlayerRigidbody.GetComponent<CapsuleCollider>();
+            CapsuleCollider capsule = stateMachine.myRigidbody.GetComponent<CapsuleCollider>();
 
             if (capsule == null)
             {
@@ -62,7 +62,7 @@ namespace ProjectColombo.StateMachine.Player
             float radius = capsule.radius * 0.95f;
             float midHeight = (capsule.height * 0.5f) - capsule.radius;
 
-            Vector3 castOrigin = m_playerStateMachine.PlayerRigidbody.position + Vector3.up * midHeight;
+            Vector3 castOrigin = stateMachine.myRigidbody.position + Vector3.up * midHeight;
             Vector3 dir = horizontalVel.normalized;
 
             float castDistance = speed * deltaTime + 0.2f;
@@ -92,7 +92,7 @@ namespace ProjectColombo.StateMachine.Player
 
         protected void ApplyAirPhysics(float deltaTime)
         {
-            Rigidbody rigidbody = m_playerStateMachine.PlayerRigidbody;
+            Rigidbody rigidbody = stateMachine.myRigidbody;
 
             Vector3 velocity = rigidbody.linearVelocity;
 

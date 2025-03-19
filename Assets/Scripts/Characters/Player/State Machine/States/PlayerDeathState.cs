@@ -17,10 +17,11 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Enter()
         {
-            m_playerStateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Dead);
+            stateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Dead);
+            stateMachine.myPlayerAnimator.TriggerDeath();
             Debug.Log("Player entered Death State");
 
-            m_playerStateMachine.GameInputSO.DisableAllInputs();
+            stateMachine.gameInputSO.DisableAllInputs();
         }
 
         public override void Tick(float deltaTime)

@@ -13,10 +13,12 @@ namespace ProjectColombo.Control
 
         bool isInParry = false;
         bool isInRoll = false;
+        bool isInStagger = false;
 
 
         public bool IsInParry => isInParry;
         public bool IsInRoll => isInRoll;
+        public bool IsInStagger => isInStagger;
 
 
         void Awake()
@@ -42,9 +44,17 @@ namespace ProjectColombo.Control
         // ---------------------------------------------------------
         // Attack
         // ---------------------------------------------------------
+        string currentAnimation;
         public void PlayAttackAnimation(string animationName, float transitionDuration)
         {
+            currentAnimation = animationName;
             animator.CrossFadeInFixedTime(animationName, transitionDuration);
+        }
+
+        public bool FinishedAttack()
+        {
+            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+            return stateInfo.IsName(currentAnimation) && stateInfo.normalizedTime >= 1.0f;
         }
 
 
@@ -78,5 +88,34 @@ namespace ProjectColombo.Control
         {
             isInParry = false;
         }
+
+        // ---------------------------------------------------------
+        // Stagger
+        // ---------------------------------------------------------
+        public void TriggerStagger()
+        {
+            isInStagger = true;
+            animator.SetTrigger("Impact");
+        }
+
+        public void ResetStagger()
+        {
+            isInStagger = false;
+        }
+
+        //  Animation Event at the end of the Roll
+        public void OnStaggerFinished()
+        {
+            isInStagger = false;
+        }
+
+        // ---------------------------------------------------------
+        // Death
+        // ---------------------------------------------------------
+        public void TriggerDeath()
+        {
+            animator.SetTrigger("death");
+        }
+
     }
 }

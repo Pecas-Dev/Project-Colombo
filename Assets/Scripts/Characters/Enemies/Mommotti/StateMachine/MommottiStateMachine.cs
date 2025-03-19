@@ -159,14 +159,16 @@ namespace ProjectColombo.StateMachine.Mommotti
             }
         }
 
-        public void Hit()
+        public void StartAttack()
         {
             myWeaponAttributes.GetComponent<Animator>().SetTrigger("Attack");
+            myWeaponAttributes.GetComponent<Animator>().ResetTrigger("Interrupt");
         }
 
         public void InterruptAttack()
         {
             myWeaponAttributes.isAttacking = false;
+            myWeaponAttributes.GetComponent<Animator>().ResetTrigger("Attack");
             myWeaponAttributes.GetComponent<Animator>().SetTrigger("Interrupt");
         }
 

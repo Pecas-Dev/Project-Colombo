@@ -11,17 +11,17 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Enter()
         {
-            m_playerStateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Parry);
+            stateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Parry);
 
-            m_playerStateMachine.GameInputSO.DisableAllInputsExcept(InputActionType.Roll);
-            m_playerStateMachine.PlayerAnimatorScript.TriggerParry();
+            stateMachine.gameInputSO.DisableAllInputsExcept(InputActionType.Roll);
+            stateMachine.myPlayerAnimator.TriggerParry();
         }
 
         public override void Tick(float deltaTime)
         {
-            if (!m_playerStateMachine.PlayerAnimatorScript.IsInParry)
+            if (!stateMachine.myPlayerAnimator.IsInParry)
             {
-                m_playerStateMachine.SwitchState(new PlayerMovementState(m_playerStateMachine));
+                stateMachine.SwitchState(new PlayerMovementState(stateMachine));
             }
 
             //HandleAirPhysicsIfNeeded(deltaTime);
@@ -29,8 +29,8 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Exit()
         {
-            m_playerStateMachine.GameInputSO.EnableAllInputs();
-            m_playerStateMachine.ParryFrameStop();
+            stateMachine.gameInputSO.EnableAllInputs();
+            stateMachine.ParryFrameStop();
         }
     }
 }

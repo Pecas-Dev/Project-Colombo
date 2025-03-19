@@ -17,26 +17,29 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Enter()
         {
-            m_playerStateMachine.PlayerAnimator.SetBool("Impact", true);
-            m_playerStateMachine.GameInputSO.DisableAllInputs();
+            stateMachine.myPlayerAnimator.TriggerStagger();
+            stateMachine.gameInputSO.DisableAllInputs();
         }
 
         public override void Tick(float deltaTime)
         {
             timer += deltaTime;
 
-            //HandleAirPhysicsIfNeeded(deltaTime);
-
-            if (timer >= m_playerStateMachine.EntityAttributes.stunnedTime)
+            if (timer >= stateMachine.myEntityAttributes.stunnedTime)
             {
-                m_playerStateMachine.SwitchState(new PlayerMovementState(m_playerStateMachine));
+                stateMachine.myPlayerAnimator.ResetStagger();
+                stateMachine.SwitchState(new PlayerMovementState(stateMachine));
+            }
+
+            if (!stateMachine.myPlayerAnimator.IsInStagger)
+            {
+                stateMachine.SwitchState(new PlayerMovementState(stateMachine));
             }
         }
 
         public override void Exit()
         {
-            m_playerStateMachine.PlayerAnimator.SetBool("Impact", false);
-            m_playerStateMachine.GameInputSO.EnableAllInputs();
+            stateMachine.gameInputSO.EnableAllInputs();
         }
     }
 }
