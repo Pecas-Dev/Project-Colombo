@@ -3491,6 +3491,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3498472641587018820}
+  - component: {fileID: 888781086744981668}
   m_Layer: 0
   m_Name: Chamber_3x3_Looting
   m_TagString: Untagged
@@ -3519,6 +3520,26 @@ Transform:
   - {fileID: 3436012196071580175}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &888781086744981668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8094205729823845123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e69c656d6431b15489cf2f6035fc1405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chamberSize: {x: 3, y: 3}
+  isShop: 0
+  isLooting: 0
+  entrances:
+  - {fileID: 807231557022125745}
+  exits:
+  - {fileID: 463182626539958329}
+  spawnPoints: []
 --- !u!1 &8416461393335429805
 GameObject:
   m_ObjectHideFlags: 0
@@ -4008,6 +4029,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1a53da7a861a5554d885d917c3ba8a22, type: 3}
+--- !u!1 &463182626539958329 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 113967914248189571, guid: 1a53da7a861a5554d885d917c3ba8a22, type: 3}
+  m_PrefabInstance: {fileID: 574608160128878266}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4173339399139255185 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4473135466103940395, guid: 1a53da7a861a5554d885d917c3ba8a22, type: 3}
@@ -4132,6 +4158,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1a53da7a861a5554d885d917c3ba8a22, type: 3}
+--- !u!1 &807231557022125745 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 113967914248189571, guid: 1a53da7a861a5554d885d917c3ba8a22, type: 3}
+  m_PrefabInstance: {fileID: 767645913631176754}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3797938448708902169 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4473135466103940395, guid: 1a53da7a861a5554d885d917c3ba8a22, type: 3}

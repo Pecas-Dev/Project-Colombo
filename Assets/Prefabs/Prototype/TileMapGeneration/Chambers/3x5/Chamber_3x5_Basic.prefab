@@ -4887,6 +4887,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1515619638814356708}
+  - component: {fileID: 5715622660960547989}
   m_Layer: 0
   m_Name: Chamber_3x5_Basic
   m_TagString: Untagged
@@ -4915,6 +4916,26 @@ Transform:
   - {fileID: 2362207190645118839}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5715622660960547989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8321160947197811443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e69c656d6431b15489cf2f6035fc1405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chamberSize: {x: 3, y: 5}
+  isShop: 0
+  isLooting: 0
+  entrances:
+  - {fileID: 5623601029443382806}
+  exits:
+  - {fileID: 5144007494385963424}
+  spawnPoints: []
 --- !u!1 &8510380140530666813
 GameObject:
   m_ObjectHideFlags: 0
@@ -5436,6 +5457,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1a53da7a861a5554d885d917c3ba8a22, type: 3}
+--- !u!1 &5144007494385963424 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 113967914248189571, guid: 1a53da7a861a5554d885d917c3ba8a22, type: 3}
+  m_PrefabInstance: {fileID: 5113778798698735395}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8711104864556352008 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4473135466103940395, guid: 1a53da7a861a5554d885d917c3ba8a22, type: 3}
@@ -5498,6 +5524,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1a53da7a861a5554d885d917c3ba8a22, type: 3}
+--- !u!1 &5623601029443382806 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 113967914248189571, guid: 1a53da7a861a5554d885d917c3ba8a22, type: 3}
+  m_PrefabInstance: {fileID: 5737566552869329045}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8181962315342806462 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4473135466103940395, guid: 1a53da7a861a5554d885d917c3ba8a22, type: 3}
