@@ -20,23 +20,30 @@ namespace ProjectColombo.LevelManagement
         {
             position = pos;
             direction = dir;
+            Debug.Log(pos + ", " + dir);
         }
 
         public Vector2 GetRealPos()
         {
+            Vector2 pos = new();
             switch (direction)
             {
                 case Directions.EAST:
-                    return new(position.x + 1, position.y);
+                    pos = new(position.x + 1, position.y);
+                    break;
                 case Directions.SOUTH:
-                    return new(position.x, position.y -1);
+                    pos = new(position.x, position.y - 1);
+                    break;
                 case Directions.WEST:
-                    return new(position.x - 1, position.y);
+                    pos = new(position.x - 1, position.y);
+                    break;
                 case Directions.NORTH:
-                    return new(position.x, position.y +1);
+                    pos = new(position.x, position.y + 1);
+                    break;
             }
 
-            return position;
+            Debug.Log("Real Position: " + position + pos);
+            return pos;
         }
     }
 
@@ -155,24 +162,26 @@ namespace ProjectColombo.LevelManagement
         TileWorldPathAlgorythm algorythm;
         List<List<Vector2>> paths = new();
 
+        List<GameObject> createdChambers = new();
+
         private void Start()
         {
             algorythm = GetComponent<TileWorldPathAlgorythm>();
             world.CreateTilemap(worldWidth, worldHeight);
 
-            Vector2 startChamberTilePos = new(2, 5);
-            MakeChamber(startChamber, startChamberTilePos);
+            Vector2 startChamberTilePos = new(0, 0);
+            createdChambers.Add(MakeChamber(startChamber, startChamberTilePos));
 
-            Vector2 endChamberTilePos = new(10, 12);
-            MakeChamber(endChamber, endChamberTilePos);
+            Vector2 endChamberTilePos = new(5, 12);
+            createdChambers.Add(MakeChamber(endChamber, endChamberTilePos));
 
-            Vector2 otherChamberTilePos = new(8, 3);
-            MakeChamber(chamberVariants[3], otherChamberTilePos);
+            Vector2 otherChamberTilePos = new(12, 5);
+            createdChambers.Add(MakeChamber(chamberVariants[3], otherChamberTilePos));
 
-            
-            paths.Add(CreatePath(startChamber, startChamberTilePos, endChamber, endChamberTilePos));
-            paths.Add(CreatePath(startChamber, startChamberTilePos, chamberVariants[0], otherChamberTilePos));
-            paths.Add(CreatePath(chamberVariants[0], otherChamberTilePos, endChamber, endChamberTilePos));
+
+            paths.Add(CreatePath(createdChambers[0], startChamberTilePos, createdChambers[1], endChamberTilePos));
+            paths.Add(CreatePath(createdChambers[0], startChamberTilePos, createdChambers[2], otherChamberTilePos));
+            paths.Add(CreatePath(createdChambers[2], otherChamberTilePos, createdChambers[1], endChamberTilePos));
 
             MakeCorridors();
         }
@@ -222,16 +231,19 @@ namespace ProjectColombo.LevelManagement
             }
         }
 
-        void MakeChamber(GameObject chamber, Vector2 position)
+        GameObject MakeChamber(GameObject chamber, Vector2 position)
         {
-            TileWorldChamber startChamberScript = chamber.GetComponent<TileWorldChamber>();
-            startChamberScript.Initialize();
+            GameObject result = Instantiate(chamber, transform.position, transform.rotation);
+            TileWorldChamber myChamber = result.GetComponent<TileWorldChamber>();
+            myChamber.Initialize();
 
-            if (startChamberScript.CheckAndBlockOnTilemap(position, world))
+            if (myChamber.CheckAndBlockOnTilemap(position, world))
             {
                 Vector3 startPos = new Vector3(position.x * TILESIZE, 0, position.y * TILESIZE);
-                Instantiate(chamber, startPos, transform.rotation);
+                result.transform.position = startPos;
             }
+
+            return result;
         }
 
         void MakeCorridors()

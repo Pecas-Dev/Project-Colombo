@@ -39,12 +39,14 @@ namespace ProjectColombo.LevelManagement
             {
                 Vector2 localPos = entrance.transform.position - transform.position; //get relative Position
                 localPos = localPos / TILESIZE; //get to tile coord size
+                
+                localPos.x = localPos.x < 0 ? Mathf.Ceil(localPos.x) : Mathf.Floor(localPos.x); //round to int
+                localPos.y = localPos.y < 0 ? Mathf.Ceil(localPos.y) : Mathf.Floor(localPos.y); //round to int
 
-                localPos.x = Mathf.Floor(localPos.x); //round to int
-                localPos.y = Mathf.Floor(localPos.y);
 
                 entrancesLocal.Add(localPos);
-                entranceDir.Add((Directions)((entrance.transform.rotation.y+180)%360));
+                entranceDir.Add((Directions)((entrance.transform.eulerAngles.y+180) % 360));
+                entrance.SetActive(false);
             }
 
             foreach (GameObject exit in exits)
@@ -52,11 +54,12 @@ namespace ProjectColombo.LevelManagement
                 Vector2 localPos = exit.transform.position - transform.position; //get relative Position
                 localPos = localPos / TILESIZE; //get to tile coord size
 
-                localPos.x = Mathf.Floor(localPos.x); //round to int
-                localPos.y = Mathf.Floor(localPos.y);
+                localPos.x = localPos.x < 0 ? Mathf.Ceil(localPos.x) : Mathf.Floor(localPos.x); //round to int
+                localPos.y = localPos.y < 0 ? Mathf.Ceil(localPos.y) : Mathf.Floor(localPos.y); //round to int
 
                 exitsLocal.Add(localPos);
-                exitDir.Add((Directions)exit.transform.rotation.y);
+                exitDir.Add((Directions)exit.transform.eulerAngles.y);
+                exit.SetActive(false);
             }
         }
 
@@ -117,7 +120,6 @@ namespace ProjectColombo.LevelManagement
 
         public bool CheckAndBlockOnTilemap(Vector2 position, Tilemap map)
         {
-            bool spaceAvailable = true;
 
             //check entrance
             if (entrancesLocal.Count != 0)
@@ -163,38 +165,34 @@ namespace ProjectColombo.LevelManagement
                 {
                     if(!map.map[topLeftX + x, topLeftY + y].walkable)
                     {
-                        spaceAvailable = false;
-                        return spaceAvailable;
+                        return false;
                     }
                 }
             }
 
-            //block the space for the chamber
-            if (spaceAvailable)
+
+            //mark entrance and exit
+            if (entrancesLocal.Count != 0)
             {
-                if (entrancesLocal.Count != 0)
-                {
-                    Vector2 entranceTile = new PosDir(position + entrancesLocal[0], entranceDir[0]).GetRealPos();
-                    map.map[(int)entranceTile.x, (int)entranceTile.y].openings.Add(entranceDir[0]); //might be my wonkiest code yet
-                }
+                Vector2 entranceTile = new PosDir(LocalToWorldCoord(entrancesLocal[0], position), entranceDir[0]).GetRealPos();
+                map.map[(int)entranceTile.x, (int)entranceTile.y].openings.Add(entranceDir[0]);
+            }
 
-                if (exitsLocal.Count != 0)
-                {
-                    Vector2 exitTile = new PosDir(position + exitsLocal[0], exitDir[0]).GetRealPos();
-                    map.map[(int)exitTile.x, (int)exitTile.y].openings.Add((Directions)(((int)exitDir[0] + 180) & 360));
-                }
+            if (exitsLocal.Count != 0)
+            {
+                Vector2 exitTile = new PosDir(LocalToWorldCoord(exitsLocal[0], position), exitDir[0]).GetRealPos();
+                map.map[(int)exitTile.x, (int)exitTile.y].openings.Add((Directions)(((int)exitDir[0] + 180) % 360));
+            }
 
-                for (int x = 0; x < chamberSize.x; x++)
+            for (int x = 0; x < chamberSize.x; x++)
+            {
+                for (int y = 0; y < chamberSize.y; y++)
                 {
-                    for (int y = 0; y < chamberSize.y; y++)
-                    {
-                        map.map[topLeftX + x, topLeftY + y].walkable = false;
-                    }
+                    map.map[topLeftX + x, topLeftY + y].walkable = false;
                 }
             }
 
-            //return if successfull or not
-            return spaceAvailable;
+            return true;
         }
     }
 }
