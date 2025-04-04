@@ -10,7 +10,35 @@ using UnityEngine.UIElements;
 
 namespace ProjectColombo.LevelManagement
 {
-    public enum DIRECTIONS { NORTH, WEST, SOUTH, EAST};
+    public enum Directions { EAST = 0, SOUTH = 90, WEST = 180, NORTH = 270};
+    public struct PosDir
+    {
+        public Vector2 position;
+        public Directions direction;
+
+        public PosDir(Vector2 pos, Directions dir)
+        {
+            position = pos;
+            direction = dir;
+        }
+
+        public Vector2 GetRealPos()
+        {
+            switch (direction)
+            {
+                case Directions.EAST:
+                    return new(position.x + 1, position.y);
+                case Directions.SOUTH:
+                    return new(position.x, position.y -1);
+                case Directions.WEST:
+                    return new(position.x - 1, position.y);
+                case Directions.NORTH:
+                    return new(position.x, position.y +1);
+            }
+
+            return position;
+        }
+    }
 
     public struct Tile
     {
@@ -20,7 +48,7 @@ namespace ProjectColombo.LevelManagement
         public int yPos;
         public int index;
 
-        public List<DIRECTIONS> openings;
+        public List<Directions> openings;
 
 	    public void CreateTile(Vector2 myPosition)
         {
@@ -34,14 +62,14 @@ namespace ProjectColombo.LevelManagement
             openings = new();
             position = myPosition;
 
-            if (n) openings.Add(DIRECTIONS.NORTH);
-            if (w) openings.Add(DIRECTIONS.WEST);
-            if (s) openings.Add(DIRECTIONS.SOUTH);
-            if (e) openings.Add(DIRECTIONS.EAST);
+            if (n) openings.Add(Directions.NORTH);
+            if (w) openings.Add(Directions.WEST);
+            if (s) openings.Add(Directions.SOUTH);
+            if (e) openings.Add(Directions.EAST);
             walkable = true;
         }
 
-        public void SetEntrace(DIRECTIONS dir)
+        public void SetEntrace(Directions dir)
         {
             if (!openings.Contains(dir))
             {
@@ -132,14 +160,14 @@ namespace ProjectColombo.LevelManagement
             algorythm = GetComponent<TileWorldPathAlgorythm>();
             world.CreateTilemap(worldWidth, worldHeight);
 
-            Vector2 startChamberTilePos = new(0, 0);
+            Vector2 startChamberTilePos = new(2, 5);
             MakeChamber(startChamber, startChamberTilePos);
 
-            Vector2 endChamberTilePos = new(4, 5);
+            Vector2 endChamberTilePos = new(10, 12);
             MakeChamber(endChamber, endChamberTilePos);
 
             Vector2 otherChamberTilePos = new(8, 3);
-            MakeChamber(chamberVariants[0], otherChamberTilePos);
+            MakeChamber(chamberVariants[3], otherChamberTilePos);
 
             
             paths.Add(CreatePath(startChamber, startChamberTilePos, endChamber, endChamberTilePos));
@@ -152,10 +180,10 @@ namespace ProjectColombo.LevelManagement
 
         List<Vector2> CreatePath(GameObject start, Vector2 startPos, GameObject end, Vector2 endPos)
         {
-            Vector2 startExit = start.GetComponent<TileWorldChamber>().GetExitCoord(startPos);
-            Vector2 endEntrance = end.GetComponent<TileWorldChamber>().GetEntranceCoord(endPos);
+            PosDir startExit = start.GetComponent<TileWorldChamber>().GetExitCoord(startPos);
+            PosDir endEntrance = end.GetComponent<TileWorldChamber>().GetEntranceCoord(endPos);
 
-            List<Vector2> result = algorythm.GetPath(startExit, endEntrance, world);
+            List<Vector2> result = algorythm.GetPath(startExit.GetRealPos(), endEntrance.GetRealPos(), world);
 
             MarkConnections(result);
 
@@ -173,23 +201,23 @@ namespace ProjectColombo.LevelManagement
 
                 if (currentX < parentX)
                 {
-                    world.GetTileAt(parentX, parentY).SetEntrace(DIRECTIONS.WEST);
-                    world.GetTileAt(currentX, currentY).SetEntrace(DIRECTIONS.EAST);
+                    world.GetTileAt(parentX, parentY).SetEntrace(Directions.WEST);
+                    world.GetTileAt(currentX, currentY).SetEntrace(Directions.EAST);
                 }
                 else if (currentX > parentX)
                 {
-                    world.GetTileAt(parentX, parentY).SetEntrace(DIRECTIONS.EAST);
-                    world.GetTileAt(currentX, currentY).SetEntrace(DIRECTIONS.WEST);
+                    world.GetTileAt(parentX, parentY).SetEntrace(Directions.EAST);
+                    world.GetTileAt(currentX, currentY).SetEntrace(Directions.WEST);
                 }
                 else if (currentY < parentY)
                 {
-                    world.GetTileAt(parentX, parentY).SetEntrace(DIRECTIONS.NORTH);
-                    world.GetTileAt(currentX, currentY).SetEntrace(DIRECTIONS.SOUTH);
+                    world.GetTileAt(parentX, parentY).SetEntrace(Directions.NORTH);
+                    world.GetTileAt(currentX, currentY).SetEntrace(Directions.SOUTH);
                 }
                 else if (currentY > parentY)
                 {
-                    world.GetTileAt(parentX, parentY).SetEntrace(DIRECTIONS.SOUTH);
-                    world.GetTileAt(currentX, currentY).SetEntrace(DIRECTIONS.NORTH);
+                    world.GetTileAt(parentX, parentY).SetEntrace(Directions.SOUTH);
+                    world.GetTileAt(currentX, currentY).SetEntrace(Directions.NORTH);
                 }
             }
         }
@@ -224,22 +252,22 @@ namespace ProjectColombo.LevelManagement
 
                     if (openings == 2)
                     {
-                        if (world.GetTileAt(x,y).openings.Contains(DIRECTIONS.NORTH) && world.GetTileAt(x, y).openings.Contains(DIRECTIONS.SOUTH) 
-                            || world.GetTileAt(x, y).openings.Contains(DIRECTIONS.EAST) && world.GetTileAt(x, y).openings.Contains(DIRECTIONS.WEST))
+                        if (world.GetTileAt(x,y).openings.Contains(Directions.NORTH) && world.GetTileAt(x, y).openings.Contains(Directions.SOUTH) 
+                            || world.GetTileAt(x, y).openings.Contains(Directions.EAST) && world.GetTileAt(x, y).openings.Contains(Directions.WEST))
                         {
-                            Instantiate(ICorridors[0], pos, transform.rotation);
+                            ICorridors[0].GetComponent<TileWorldCorridor>().PlaceICorridor(world.GetTileAt(x,y));
                             continue;
                         }
 
-                        Instantiate(LCorridors[0], pos, transform.rotation);
+                        LCorridors[0].GetComponent<TileWorldCorridor>().PlaceLCorridor(world.GetTileAt(x, y));
                     }
                     else if (openings == 3)
                     {
-                        Instantiate(TCorridors[0], pos, transform.rotation);
+                        TCorridors[0].GetComponent<TileWorldCorridor>().PlaceTCorridor(world.GetTileAt(x, y));
                     }
-                    else if (openings == 1)
+                    else if (openings == 4)
                     {
-                        Instantiate(XCorridors[0], pos, transform.rotation);
+                        XCorridors[0].GetComponent<TileWorldCorridor>().PlaceXCorridor(world.GetTileAt(x, y));
                     }
                     else
                     {

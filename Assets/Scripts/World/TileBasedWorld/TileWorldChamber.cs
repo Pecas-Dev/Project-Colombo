@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using DG.DemiLib;
 
 namespace ProjectColombo.LevelManagement
 {
@@ -16,12 +17,23 @@ namespace ProjectColombo.LevelManagement
 
 
         List<Vector2> entrancesLocal; //for local position in tile coords
+        List<Directions> entranceDir; //for directions
         List<Vector2> exitsLocal; //for local position in tile coords
+        List<Directions> exitDir; //for directions
+
 
         public void Initialize()
         {
             entrancesLocal = new();
+            entranceDir = new();
             exitsLocal = new();
+            exitDir = new();
+
+            foreach (GameObject spawner in spawnPoints)
+            {
+                spawner.SetActive(false);
+            }
+
 
             foreach (GameObject entrance in entrances)
             {
@@ -32,6 +44,7 @@ namespace ProjectColombo.LevelManagement
                 localPos.y = Mathf.Floor(localPos.y);
 
                 entrancesLocal.Add(localPos);
+                entranceDir.Add((Directions)((entrance.transform.rotation.y+180)%360));
             }
 
             foreach (GameObject exit in exits)
@@ -43,13 +56,12 @@ namespace ProjectColombo.LevelManagement
                 localPos.y = Mathf.Floor(localPos.y);
 
                 exitsLocal.Add(localPos);
+                exitDir.Add((Directions)exit.transform.rotation.y);
             }
         }
 
         public void ActivateChamber()
         {
-            if (spawnPoints == null) return;
-
             foreach (GameObject spawner in spawnPoints)
             {
                 spawner.SetActive(true);
@@ -62,42 +74,42 @@ namespace ProjectColombo.LevelManagement
         }
 
         //get all entrance tile coords in reference to world position
-        public Vector2 GetEntranceCoord(Vector2 position)
+        public PosDir GetEntranceCoord(Vector2 position)
         {
-            Vector2 result = new();
-
-            result = LocalToWorldCoord(entrancesLocal[0], position);
+            Vector2 pos = LocalToWorldCoord(entrancesLocal[0], position);
+            PosDir result = new(pos, entranceDir[0]);
 
             return result;
         }
-        //public List<Vector2> GetEntranceCoord(Vector2 position)
+        //public List<PosDir> GetEntranceCoord(Vector2 position)
         //{
-        //    List<Vector2> result = new();
+        //    List<PosDir> result = new();
 
-        //    foreach (Vector2 local in entrancesLocal)
+        //    for (int i = 0; i < entrancesLocal.Count; i++)
         //    {
-        //        result.Add(LocalToWorldCoord(local, position));
+        //        Vector2 pos = LocalToWorldCoord(entrancesLocal[i], position);
+        //        result.Add(new(pos, entranceDir[i]));
         //    }
 
         //    return result;
         //}
 
         //get all exit tile coords in reference to world position
-        public Vector2 GetExitCoord(Vector2 position)
+        public PosDir GetExitCoord(Vector2 position)
         {
-            Vector2 result = new();
-
-            result = LocalToWorldCoord(exitsLocal[0], position);
+            Vector2 pos = LocalToWorldCoord(exitsLocal[0], position);
+            PosDir result = new(pos, exitDir[0]);
 
             return result;
         }
-        //public List<Vector2> GetExitCoord(Vector2 position)
+        //public List<PosDir> GetExitCoord(Vector2 position)
         //{
-        //    List<Vector2> result = new();
+        //    List<PosDir> result = new();
 
-        //    foreach (Vector2 local in exitsLocal)
+        //    for (int i = 0; i < exitsLocal.Count; i++)
         //    {
-        //        result.Add(LocalToWorldCoord(local, position));
+        //        Vector2 pos = LocalToWorldCoord(exitsLocal[i], position);
+        //        result.Add(new(pos, exitDir[i]));
         //    }
 
         //    return result;
@@ -106,6 +118,33 @@ namespace ProjectColombo.LevelManagement
         public bool CheckAndBlockOnTilemap(Vector2 position, Tilemap map)
         {
             bool spaceAvailable = true;
+
+            //check entrance
+            if (entrancesLocal.Count != 0)
+            {
+                Vector2 entranceTile = new PosDir(position + entrancesLocal[0], entranceDir[0]).GetRealPos();
+
+                if (entranceTile.x < 0 || entranceTile.y < 0 || entranceTile.x > map.width || entranceTile.y > map.height)
+                {
+                    return false;
+                }
+
+                if (!map.map[(int)entranceTile.x, (int)entranceTile.y].walkable) return false;
+            }
+
+            //check exit
+            if (exitsLocal.Count != 0)
+            {
+                Vector2 exitTile = new PosDir(position + exitsLocal[0], exitDir[0]).GetRealPos();
+
+                if (exitTile.x < 0 || exitTile.y < 0 || exitTile.x > map.width || exitTile.y > map.height)
+                {
+                    return false;
+                }
+
+                if (!map.map[(int)exitTile.x, (int)exitTile.y].walkable) return false;
+            }
+
 
             //position will be the middle of chamber? might be entrance but middle for now
             int topLeftX = Mathf.CeilToInt(position.x - chamberSize.x / 2);
@@ -133,11 +172,23 @@ namespace ProjectColombo.LevelManagement
             //block the space for the chamber
             if (spaceAvailable)
             {
+                if (entrancesLocal.Count != 0)
+                {
+                    Vector2 entranceTile = new PosDir(position + entrancesLocal[0], entranceDir[0]).GetRealPos();
+                    map.map[(int)entranceTile.x, (int)entranceTile.y].openings.Add(entranceDir[0]); //might be my wonkiest code yet
+                }
+
+                if (exitsLocal.Count != 0)
+                {
+                    Vector2 exitTile = new PosDir(position + exitsLocal[0], exitDir[0]).GetRealPos();
+                    map.map[(int)exitTile.x, (int)exitTile.y].openings.Add((Directions)(((int)exitDir[0] + 180) & 360));
+                }
+
                 for (int x = 0; x < chamberSize.x; x++)
                 {
                     for (int y = 0; y < chamberSize.y; y++)
                     {
-                        map.map[topLeftX + x, topLeftY + y].walkable = true;
+                        map.map[topLeftX + x, topLeftY + y].walkable = false;
                     }
                 }
             }
