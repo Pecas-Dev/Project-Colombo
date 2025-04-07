@@ -38,35 +38,36 @@ namespace ProjectColombo.LevelManagement
 
             foreach (GameObject entrance in entrances)
             {
-                Vector3 localPosVec3 = entrance.transform.position - transform.position; //get relative Position
+                Vector3 localPosVec3 = entrance.transform.position; //get relative Position
 
                 Vector2 localPos = new( localPosVec3.x, localPosVec3.z ); //translate to x,y
                 localPos = localPos / TILESIZE; //get to tile coord size
-                
+
                 localPos.x = Mathf.RoundToInt(localPos.x); //round to int
                 localPos.y = Mathf.RoundToInt(localPos.y); //round to int
-                Debug.Log("Entrance: " + entrance.transform.position + "Gloal: " + chamberTilePosition + localPos);
+
+                //Debug.Log("Entrance: " + entrance.transform.position + "Gloal: " + chamberTilePosition + localPos);
 
                 entrancesLocal.Add(localPos);
                 entranceDir.Add((Directions)((entrance.transform.eulerAngles.y+180) % 360));
-                Debug.Log(entranceDir[0] + ": " + GetEntranceCoord().GetRealPos());
+                //Debug.Log(entranceDir[0] + ": " + GetEntranceCoord().GetRealPos());
                 entrance.SetActive(false);
             }
 
             foreach (GameObject exit in exits)
             {
-                Vector3 localPosVec3 = exit.transform.position - transform.position; //get relative Position
+                Vector3 localPosVec3 = exit.transform.position; //get relative Position
 
                 Vector2 localPos = new(localPosVec3.x, localPosVec3.z); //translate to x,y
                 localPos = localPos / TILESIZE; //get to tile coord size
 
                 localPos.x = Mathf.RoundToInt(localPos.x); //round to int
                 localPos.y = Mathf.RoundToInt(localPos.y); //round to int
-                Debug.Log("Exit: " + exit.transform.position + "Global: " + chamberTilePosition + localPos);
+                //Debug.Log("Exit: " + exit.transform.position + "Global: " + chamberTilePosition + localPos);
 
                 exitsLocal.Add(localPos);
                 exitDir.Add((Directions)exit.transform.eulerAngles.y);
-                Debug.Log(exitDir[0] + ": " + GetExitCoord().GetRealPos());
+                //Debug.Log(exitDir[0] + ": " + GetExitCoord().GetRealPos());
                 exit.SetActive(false);
             }
         }

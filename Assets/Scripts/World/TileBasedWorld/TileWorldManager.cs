@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UIElements;
+using Unity.Collections.LowLevel.Unsafe;
 
 namespace ProjectColombo.LevelManagement
 {
@@ -158,6 +159,11 @@ namespace ProjectColombo.LevelManagement
         public GameObject startChamber;
         public GameObject endChamber;
 
+        public int chamberAmountFirstLayer = 2;
+        List<GameObject> firstLayerChambers = new();
+        public int chamberAmountSecondLayer = 3;
+        List<GameObject> secondLayerChambers = new();
+
         Tilemap world;
         TileWorldPathAlgorythm algorythm;
         List<List<Vector2>> paths = new();
@@ -169,27 +175,84 @@ namespace ProjectColombo.LevelManagement
             algorythm = GetComponent<TileWorldPathAlgorythm>();
             world.CreateTilemap(worldWidth, worldHeight);
 
-            //Vector2 startChamberTilePos = new(0, 0);
-            //createdChambers.Add(MakeChamber(startChamber, startChamberTilePos));
+            Vector2 startChamberTilePos = new(0, Mathf.RoundToInt(worldHeight / 2));
+            TryToMakeChamber(startChamber, startChamberTilePos, createdChambers);
 
-            //Vector2 endChamberTilePos = new(5, 12);
-            //createdChambers.Add(MakeChamber(endChamber, endChamberTilePos));
-
-            Vector2 one = new(12, 5);
-            createdChambers.Add(MakeChamber(chamberVariants[0], one));
-
-            Vector2 two = new(7, 5);
-            createdChambers.Add(MakeChamber(chamberVariants[1], two));
-
-            Vector2 three = new(3, 5);
-            createdChambers.Add(MakeChamber(chamberVariants[1], three));
+            Vector2 endChamberTilePos = new(worldWidth - 1, Mathf.RoundToInt(worldHeight/2));
+            TryToMakeChamber(endChamber, endChamberTilePos, createdChambers);
 
 
-            //paths.Add(CreatePath(createdChambers[0], createdChambers[1]));
-            //paths.Add(CreatePath(createdChambers[0], createdChambers[2]));
-            //paths.Add(CreatePath(createdChambers[2], createdChambers[1]));
+            //create first layer chambers
+            for (int i = 0; i < chamberAmountFirstLayer; i++)
+            {
+                Vector2 position = new(5, i * 5 + 3);
+                int index = Random.Range(0, chamberVariants.Count);
+                TryToMakeChamber(chamberVariants[index], position, firstLayerChambers);
+            }
+
+            //create second layer chambers
+            for (int i = 0; i < chamberAmountSecondLayer; i++)
+            {
+                Vector2 position = new(10, i * 5 + 3);
+                int index = Random.Range(0, chamberVariants.Count);
+                TryToMakeChamber(chamberVariants[index], position, secondLayerChambers);
+            }
+
+            //connect first layer to entrance
+            foreach (GameObject c in firstLayerChambers)
+            {
+                paths.Add(CreatePath(createdChambers[0], c));
+            }
+
+            //connect each second layer to first layer
+            foreach (GameObject c in secondLayerChambers)
+            {
+                int index = Random.Range(0, firstLayerChambers.Count);
+
+                paths.Add(CreatePath(firstLayerChambers[index], c));
+            }
+
+            foreach (GameObject c in secondLayerChambers)
+            {
+                paths.Add(CreatePath(c, createdChambers[1]));
+            }
 
             MakeCorridors();
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                // Destroy all previously generated chambers
+                foreach (GameObject chamber in createdChambers)
+                {
+                    Destroy(chamber);
+                }
+                createdChambers.Clear(); // Clear the chamber list
+
+                foreach (GameObject chamber in firstLayerChambers)
+                {
+                    Destroy(chamber);
+                }
+                firstLayerChambers.Clear(); // Clear the chamber list
+
+                foreach (GameObject chamber in secondLayerChambers)
+                {
+                    Destroy(chamber);
+                }
+                secondLayerChambers.Clear(); // Clear the chamber list
+
+                // Destroy all GameObjects with TileWorldCorridor attached to them
+                TileWorldCorridor[] allCorridors = FindObjectsByType<TileWorldCorridor>(FindObjectsSortMode.None);
+                foreach (TileWorldCorridor corridor in allCorridors)
+                {
+                    Destroy(corridor.gameObject); // Destroy the GameObject that holds the TileWorldCorridor script
+                }
+
+                // Restart the world generation process
+                Start();
+            }
         }
 
 
@@ -237,7 +300,7 @@ namespace ProjectColombo.LevelManagement
             }
         }
 
-        GameObject MakeChamber(GameObject chamber, Vector2 position)
+        void TryToMakeChamber(GameObject chamber, Vector2 position, List<GameObject> list)
         {
             GameObject result = Instantiate(chamber, transform.position, transform.rotation);
             TileWorldChamber myChamber = result.GetComponent<TileWorldChamber>();
@@ -252,9 +315,12 @@ namespace ProjectColombo.LevelManagement
             {
                 Vector3 startPos = new Vector3(position.x * TILESIZE, 0, position.y * TILESIZE);
                 result.transform.position = result.transform.position + startPos;
+                list.Add(result);
             }
-
-            return result;
+            else
+            {
+                Destroy(result);
+            }
         }
 
         void MakeCorridors()
