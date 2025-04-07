@@ -93,7 +93,7 @@ namespace ProjectColombo.LevelManagement
                     }
 
                     pathPositions.Add(new((int)start.x, (int)start.y));
-                    pathPositions.Add(new((int)end.x, (int)end.y));
+                    //pathPositions.Add(new((int)end.x, (int)end.y));
                     pathPositions.Reverse(); // Reverse to get the correct order
 
                     return pathPositions;

@@ -28,13 +28,13 @@ namespace ProjectColombo.LevelManagement
             Vector3 position = new Vector3(tile.position.x - TILESIZE / 2, 0, tile.position.y - TILESIZE / 2);
 
             if (tile.openings.Contains(Directions.WEST) && tile.openings.Contains(Directions.NORTH))
-                rotation *= Quaternion.Euler(0, 90, 0);
-            else if (tile.openings.Contains(Directions.NORTH) && tile.openings.Contains(Directions.EAST))
-                rotation *= Quaternion.Euler(0, 180, 0);
-            else if (tile.openings.Contains(Directions.EAST) && tile.openings.Contains(Directions.SOUTH))
-                rotation *= Quaternion.Euler(0, 270, 0);
-            else if (tile.openings.Contains(Directions.SOUTH) && tile.openings.Contains(Directions.WEST))
                 rotation *= Quaternion.Euler(0, 0, 0);
+            else if (tile.openings.Contains(Directions.NORTH) && tile.openings.Contains(Directions.EAST))
+                rotation *= Quaternion.Euler(0, 90, 0);
+            else if (tile.openings.Contains(Directions.EAST) && tile.openings.Contains(Directions.SOUTH))
+                rotation *= Quaternion.Euler(0, 180, 0);
+            else if (tile.openings.Contains(Directions.SOUTH) && tile.openings.Contains(Directions.WEST))
+                rotation *= Quaternion.Euler(0, 270, 0);
 
             Instantiate(this.gameObject, position, rotation);
         }

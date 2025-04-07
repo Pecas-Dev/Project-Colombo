@@ -15,15 +15,16 @@ namespace ProjectColombo.LevelManagement
         public List<GameObject> exits;
         public List<GameObject> spawnPoints;
 
-
+        [HideInInspector] public Vector2 chamberTilePosition = new();
         List<Vector2> entrancesLocal; //for local position in tile coords
         List<Directions> entranceDir; //for directions
         List<Vector2> exitsLocal; //for local position in tile coords
         List<Directions> exitDir; //for directions
 
-
-        public void Initialize()
+        public void Initialize(Vector2 pos)
         {
+            chamberTilePosition = pos;
+
             entrancesLocal = new();
             entranceDir = new();
             exitsLocal = new();
@@ -37,28 +38,35 @@ namespace ProjectColombo.LevelManagement
 
             foreach (GameObject entrance in entrances)
             {
-                Vector2 localPos = entrance.transform.position - transform.position; //get relative Position
+                Vector3 localPosVec3 = entrance.transform.position - transform.position; //get relative Position
+
+                Vector2 localPos = new( localPosVec3.x, localPosVec3.z ); //translate to x,y
                 localPos = localPos / TILESIZE; //get to tile coord size
                 
-                localPos.x = localPos.x < 0 ? Mathf.Ceil(localPos.x) : Mathf.Floor(localPos.x); //round to int
-                localPos.y = localPos.y < 0 ? Mathf.Ceil(localPos.y) : Mathf.Floor(localPos.y); //round to int
-
+                localPos.x = Mathf.RoundToInt(localPos.x); //round to int
+                localPos.y = Mathf.RoundToInt(localPos.y); //round to int
+                Debug.Log("Entrance: " + entrance.transform.position + "Gloal: " + chamberTilePosition + localPos);
 
                 entrancesLocal.Add(localPos);
                 entranceDir.Add((Directions)((entrance.transform.eulerAngles.y+180) % 360));
+                Debug.Log(entranceDir[0] + ": " + GetEntranceCoord().GetRealPos());
                 entrance.SetActive(false);
             }
 
             foreach (GameObject exit in exits)
             {
-                Vector2 localPos = exit.transform.position - transform.position; //get relative Position
+                Vector3 localPosVec3 = exit.transform.position - transform.position; //get relative Position
+
+                Vector2 localPos = new(localPosVec3.x, localPosVec3.z); //translate to x,y
                 localPos = localPos / TILESIZE; //get to tile coord size
 
-                localPos.x = localPos.x < 0 ? Mathf.Ceil(localPos.x) : Mathf.Floor(localPos.x); //round to int
-                localPos.y = localPos.y < 0 ? Mathf.Ceil(localPos.y) : Mathf.Floor(localPos.y); //round to int
+                localPos.x = Mathf.RoundToInt(localPos.x); //round to int
+                localPos.y = Mathf.RoundToInt(localPos.y); //round to int
+                Debug.Log("Exit: " + exit.transform.position + "Global: " + chamberTilePosition + localPos);
 
                 exitsLocal.Add(localPos);
                 exitDir.Add((Directions)exit.transform.eulerAngles.y);
+                Debug.Log(exitDir[0] + ": " + GetExitCoord().GetRealPos());
                 exit.SetActive(false);
             }
         }
@@ -71,26 +79,32 @@ namespace ProjectColombo.LevelManagement
             }
         }
 
-        Vector2 LocalToWorldCoord(Vector2 local, Vector2 reference)
+        Vector2 LocalToWorldCoord(Vector2 local)
         {
-            return reference - local;
+            return chamberTilePosition + local;
         }
 
         //get all entrance tile coords in reference to world position
-        public PosDir GetEntranceCoord(Vector2 position)
+        public PosDir GetEntranceCoord()
         {
-            Vector2 pos = LocalToWorldCoord(entrancesLocal[0], position);
+            if (entrancesLocal.Count == 0)
+            {
+                return new(new(0, 0), Directions.NORTH);
+            }
+
+            Vector2 pos = LocalToWorldCoord(entrancesLocal[0]);
+
             PosDir result = new(pos, entranceDir[0]);
 
             return result;
         }
-        //public List<PosDir> GetEntranceCoord(Vector2 position)
+        //public List<PosDir> GetEntranceCoord()
         //{
         //    List<PosDir> result = new();
 
         //    for (int i = 0; i < entrancesLocal.Count; i++)
         //    {
-        //        Vector2 pos = LocalToWorldCoord(entrancesLocal[i], position);
+        //        Vector2 pos = LocalToWorldCoord(entrancesLocal[i], chamberTilePosition);
         //        result.Add(new(pos, entranceDir[i]));
         //    }
 
@@ -98,20 +112,25 @@ namespace ProjectColombo.LevelManagement
         //}
 
         //get all exit tile coords in reference to world position
-        public PosDir GetExitCoord(Vector2 position)
+        public PosDir GetExitCoord()
         {
-            Vector2 pos = LocalToWorldCoord(exitsLocal[0], position);
+            if (exitsLocal.Count == 0)
+            {
+                return new(new(0, 0), Directions.NORTH);
+            }
+
+            Vector2 pos = LocalToWorldCoord(exitsLocal[0]);
             PosDir result = new(pos, exitDir[0]);
 
             return result;
         }
-        //public List<PosDir> GetExitCoord(Vector2 position)
+        //public List<PosDir> GetExitCoord()
         //{
         //    List<PosDir> result = new();
 
         //    for (int i = 0; i < exitsLocal.Count; i++)
         //    {
-        //        Vector2 pos = LocalToWorldCoord(exitsLocal[i], position);
+        //        Vector2 pos = LocalToWorldCoord(exitsLocal[i], chamberTilePosition);
         //        result.Add(new(pos, exitDir[i]));
         //    }
 
@@ -174,13 +193,13 @@ namespace ProjectColombo.LevelManagement
             //mark entrance and exit
             if (entrancesLocal.Count != 0)
             {
-                Vector2 entranceTile = new PosDir(LocalToWorldCoord(entrancesLocal[0], position), entranceDir[0]).GetRealPos();
-                map.map[(int)entranceTile.x, (int)entranceTile.y].openings.Add(entranceDir[0]);
+                Vector2 entranceTile = new PosDir(LocalToWorldCoord(entrancesLocal[0]), entranceDir[0]).GetRealPos();
+                map.map[(int)entranceTile.x, (int)entranceTile.y].openings.Add((Directions)(((int)entranceDir[0] + 180) % 360));
             }
 
             if (exitsLocal.Count != 0)
             {
-                Vector2 exitTile = new PosDir(LocalToWorldCoord(exitsLocal[0], position), exitDir[0]).GetRealPos();
+                Vector2 exitTile = new PosDir(LocalToWorldCoord(exitsLocal[0]), exitDir[0]).GetRealPos();
                 map.map[(int)exitTile.x, (int)exitTile.y].openings.Add((Directions)(((int)exitDir[0] + 180) % 360));
             }
 

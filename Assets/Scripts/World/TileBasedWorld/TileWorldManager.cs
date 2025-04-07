@@ -20,7 +20,7 @@ namespace ProjectColombo.LevelManagement
         {
             position = pos;
             direction = dir;
-            Debug.Log(pos + ", " + dir);
+            //Debug.Log(pos + ", " + dir);
         }
 
         public Vector2 GetRealPos()
@@ -42,7 +42,7 @@ namespace ProjectColombo.LevelManagement
                     break;
             }
 
-            Debug.Log("Real Position: " + position + pos);
+            //Debug.Log("Real Position: " + position + pos);
             return pos;
         }
     }
@@ -169,28 +169,34 @@ namespace ProjectColombo.LevelManagement
             algorythm = GetComponent<TileWorldPathAlgorythm>();
             world.CreateTilemap(worldWidth, worldHeight);
 
-            Vector2 startChamberTilePos = new(0, 0);
-            createdChambers.Add(MakeChamber(startChamber, startChamberTilePos));
+            //Vector2 startChamberTilePos = new(0, 0);
+            //createdChambers.Add(MakeChamber(startChamber, startChamberTilePos));
 
-            Vector2 endChamberTilePos = new(5, 12);
-            createdChambers.Add(MakeChamber(endChamber, endChamberTilePos));
+            //Vector2 endChamberTilePos = new(5, 12);
+            //createdChambers.Add(MakeChamber(endChamber, endChamberTilePos));
 
-            Vector2 otherChamberTilePos = new(12, 5);
-            createdChambers.Add(MakeChamber(chamberVariants[3], otherChamberTilePos));
+            Vector2 one = new(12, 5);
+            createdChambers.Add(MakeChamber(chamberVariants[0], one));
+
+            Vector2 two = new(7, 5);
+            createdChambers.Add(MakeChamber(chamberVariants[1], two));
+
+            Vector2 three = new(3, 5);
+            createdChambers.Add(MakeChamber(chamberVariants[1], three));
 
 
-            paths.Add(CreatePath(createdChambers[0], startChamberTilePos, createdChambers[1], endChamberTilePos));
-            paths.Add(CreatePath(createdChambers[0], startChamberTilePos, createdChambers[2], otherChamberTilePos));
-            paths.Add(CreatePath(createdChambers[2], otherChamberTilePos, createdChambers[1], endChamberTilePos));
+            //paths.Add(CreatePath(createdChambers[0], createdChambers[1]));
+            //paths.Add(CreatePath(createdChambers[0], createdChambers[2]));
+            //paths.Add(CreatePath(createdChambers[2], createdChambers[1]));
 
             MakeCorridors();
         }
 
 
-        List<Vector2> CreatePath(GameObject start, Vector2 startPos, GameObject end, Vector2 endPos)
+        List<Vector2> CreatePath(GameObject start, GameObject end)
         {
-            PosDir startExit = start.GetComponent<TileWorldChamber>().GetExitCoord(startPos);
-            PosDir endEntrance = end.GetComponent<TileWorldChamber>().GetEntranceCoord(endPos);
+            PosDir startExit = start.GetComponent<TileWorldChamber>().GetExitCoord();
+            PosDir endEntrance = end.GetComponent<TileWorldChamber>().GetEntranceCoord();
 
             List<Vector2> result = algorythm.GetPath(startExit.GetRealPos(), endEntrance.GetRealPos(), world);
 
@@ -220,13 +226,13 @@ namespace ProjectColombo.LevelManagement
                 }
                 else if (currentY < parentY)
                 {
-                    world.GetTileAt(parentX, parentY).SetEntrace(Directions.NORTH);
-                    world.GetTileAt(currentX, currentY).SetEntrace(Directions.SOUTH);
+                    world.GetTileAt(parentX, parentY).SetEntrace(Directions.SOUTH);
+                    world.GetTileAt(currentX, currentY).SetEntrace(Directions.NORTH);
                 }
                 else if (currentY > parentY)
                 {
-                    world.GetTileAt(parentX, parentY).SetEntrace(Directions.SOUTH);
-                    world.GetTileAt(currentX, currentY).SetEntrace(Directions.NORTH);
+                    world.GetTileAt(parentX, parentY).SetEntrace(Directions.NORTH);
+                    world.GetTileAt(currentX, currentY).SetEntrace(Directions.SOUTH);
                 }
             }
         }
@@ -235,12 +241,17 @@ namespace ProjectColombo.LevelManagement
         {
             GameObject result = Instantiate(chamber, transform.position, transform.rotation);
             TileWorldChamber myChamber = result.GetComponent<TileWorldChamber>();
-            myChamber.Initialize();
+
+            //align even chamberes
+            if (myChamber.chamberSize.x % 2 == 0) result.transform.position = new(result.transform.position.x - TILESIZE / 2, result.transform.position.y, result.transform.position.z);
+            if (myChamber.chamberSize.y % 2 == 0) result.transform.position = new(result.transform.position.x, result.transform.position.y, result.transform.position.z - TILESIZE / 2);
+
+            myChamber.Initialize(position);
 
             if (myChamber.CheckAndBlockOnTilemap(position, world))
             {
                 Vector3 startPos = new Vector3(position.x * TILESIZE, 0, position.y * TILESIZE);
-                result.transform.position = startPos;
+                result.transform.position = result.transform.position + startPos;
             }
 
             return result;
@@ -281,12 +292,82 @@ namespace ProjectColombo.LevelManagement
                     {
                         XCorridors[0].GetComponent<TileWorldCorridor>().PlaceXCorridor(world.GetTileAt(x, y));
                     }
+                    else if (openings == 1)
+                    {
+                        Debug.Log("only one opening: " + x + ", " + y);
+                    }
                     else
                     {
-                        Debug.Log("too many openings");
+                        Debug.Log("too many openings: " + x + ", " + y);
                     }
                 }
             }
         }
+
+        private void OnDrawGizmos()
+        {
+            if (world.map == null) return;
+
+            float gizmoHeight = 0.2f;
+            float halfTile = TILESIZE / 2f;
+            float openingLength = TILESIZE * 0.3f;
+
+            for (int y = 0; y < worldHeight; y++)
+            {
+                for (int x = 0; x < worldWidth; x++)
+                {
+                    Tile tile = world.map[x, y];
+                    Vector3 center = new Vector3(tile.position.x - TILESIZE / 2, gizmoHeight, tile.position.y - TILESIZE / 2);
+
+                    // Draw tile base
+                    Gizmos.color = tile.walkable ? Color.green : Color.red;
+                    Gizmos.DrawWireCube(center, new Vector3(TILESIZE * 0.9f, 0.1f, TILESIZE * 0.9f));
+
+                    if (!tile.walkable) continue;
+
+                    // Draw openings
+                    Gizmos.color = Color.blue;
+
+                    foreach (Directions dir in tile.openings)
+                    {
+                        Vector3 direction = dir switch
+                        {
+                            Directions.NORTH => Vector3.forward,
+                            Directions.SOUTH => Vector3.back,
+                            Directions.EAST => Vector3.right,
+                            Directions.WEST => Vector3.left,
+                            _ => Vector3.zero
+                        };
+
+                        Gizmos.DrawLine(center, center + direction * openingLength);
+                    }
+                }
+            }
+
+            // Draw chamber entrances and exits (yellow cubes)
+            foreach (var chamber in createdChambers)
+            {
+                TileWorldChamber c = chamber.GetComponent<TileWorldChamber>();
+                if (c == null) continue;
+
+                Vector2 basePos = new Vector2(
+                    Mathf.RoundToInt(chamber.transform.position.x / TILESIZE),
+                    Mathf.RoundToInt(chamber.transform.position.z / TILESIZE)
+                );
+
+                // Entrance
+                PosDir entrance = c.GetEntranceCoord();
+                Vector3 entranceRealPos = new Vector3(entrance.GetRealPos().x * TILESIZE, gizmoHeight, entrance.GetRealPos().y * TILESIZE);
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawCube(entranceRealPos, Vector3.one * 2);
+
+                // Exit
+                PosDir exit = c.GetExitCoord();
+                Vector3 exitRealPos = new Vector3(exit.GetRealPos().x * TILESIZE, gizmoHeight, exit.GetRealPos().y * TILESIZE);
+                Gizmos.DrawCube(exitRealPos, Vector3.one * 2);
+            }
+        }
+
+
     }
 }
