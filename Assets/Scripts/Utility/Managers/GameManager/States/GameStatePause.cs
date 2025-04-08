@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-namespace ProjectColombo.StateMachine.GameManager
+namespace ProjectColombo.StateMachine.GameManage
 {
     public class GameStatePause : GameState
     {

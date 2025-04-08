@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
-namespace ProjectColombo.StateMachine.GameManager
+namespace ProjectColombo.StateMachine.GameManage
 {
     public class GameStateMainMenu : GameState
     {

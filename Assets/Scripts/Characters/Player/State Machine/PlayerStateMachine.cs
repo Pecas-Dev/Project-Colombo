@@ -1,10 +1,9 @@
 using ProjectColombo.Combat;
 using ProjectColombo.Control;
-using ProjectColombo.Enemies.Mommotti;
-using ProjectColombo.Enemies.Pathfinding;
-using ProjectColombo.Enemies.UI;
+using ProjectColombo.GameManagement;
 using ProjectColombo.GameInputSystem;
 using ProjectColombo.Shop;
+using ProjectColombo.Inventory;
 using UnityEngine;
 
 
@@ -24,6 +23,7 @@ namespace ProjectColombo.StateMachine.Player
 
 
         [Header("Component References")]
+        public Transform weaponHand;
         public Rigidbody myRigidbody;
         //public Animator myAnimator;
         public Stamina myStamina;
@@ -59,8 +59,11 @@ namespace ProjectColombo.StateMachine.Player
                 gameInputSO.Initialize();
             }
 
+            //get current selected weapon
+            Instantiate(GameManager.Instance.GetMyWeapon(), weaponHand);
+            GetComponent<PlayerInventory>().ChangeWeapon(GetComponentInChildren<WeaponAttributes>().name);
+
             myRigidbody = GetComponent<Rigidbody>();
-            //myAnimator = GetComponent<Animator>();
             myStamina = GetComponent<Stamina>();
             myPlayerAnimator = GetComponent<PlayerAnimator>();
             myEntityAttributes = GetComponent<EntityAttributes>();

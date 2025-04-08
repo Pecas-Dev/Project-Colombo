@@ -1,4 +1,4 @@
-namespace ProjectColombo.StateMachine.GameManager
+namespace ProjectColombo.StateMachine.GameManage
 {
     public abstract class GameState : State
     {

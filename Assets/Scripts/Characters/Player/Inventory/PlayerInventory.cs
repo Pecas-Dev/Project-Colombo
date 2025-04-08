@@ -25,8 +25,6 @@ namespace ProjectColombo.Inventory
             {
                 masks[mask] = 0;
             }
-
-            ChangeWeapon(GetComponentInChildren<WeaponAttributes>().name); 
         }
 
         public void ChangeWeapon(string newWeaponName)
