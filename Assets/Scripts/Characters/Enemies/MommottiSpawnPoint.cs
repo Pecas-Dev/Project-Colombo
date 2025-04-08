@@ -1,4 +1,5 @@
 using ProjectColombo.Enemies.Pathfinding;
+using ProjectColombo.LevelManagement;
 using UnityEngine;
 
 
@@ -16,7 +17,9 @@ namespace ProjectColombo.Enemies.Mommotti
 
         private void Start()
         {
-            myGridManager = GameObject.Find("GridManager").GetComponent<GridManager>();
+            TileWorldChamber myChamber = GetComponentInParent<TileWorldChamber>();
+            myGridManager = myChamber.GetComponentInChildren<GridManager>();
+
             int amountOfEnemies = Random.Range(minAmountEnemies, maxAmountEnemies + 1);
 
             if (enemyType == null || amountOfEnemies == 0)

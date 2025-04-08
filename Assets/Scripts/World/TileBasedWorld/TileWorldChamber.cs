@@ -16,6 +16,9 @@ namespace ProjectColombo.LevelManagement
         public List<GameObject> spawnPoints;
 
         [HideInInspector] public Vector2 chamberTilePosition = new();
+        [HideInInspector] public bool entrancesConnected = false;
+        [HideInInspector] public bool exitsConnected = false;
+
         List<Vector2> entrancesLocal; //for local position in tile coords
         List<Directions> entranceDir; //for directions
         List<Vector2> exitsLocal; //for local position in tile coords

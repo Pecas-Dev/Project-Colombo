@@ -395,6 +395,7 @@ MonoBehaviour:
   - {fileID: 6985555366323243424}
   exits: []
   spawnPoints: []
+  chamberTilePosition: {x: 0, y: 0}
 --- !u!1 &4331025685337678584
 GameObject:
   m_ObjectHideFlags: 0
@@ -696,7 +697,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &6627132895059962330
+--- !u!1 &6543552658580439042
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -704,8 +705,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2188786284635564760}
-  - component: {fileID: 7052894034815801374}
+  - component: {fileID: 3110334844426088938}
+  - component: {fileID: 7968489334327349012}
   m_Layer: 6
   m_Name: Blockade (3)
   m_TagString: Untagged
@@ -713,28 +714,28 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2188786284635564760
+--- !u!4 &3110334844426088938
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6627132895059962330}
+  m_GameObject: {fileID: 6543552658580439042}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.5, y: 5, z: 0}
-  m_LocalScale: {x: 6, y: 10, z: 20}
+  m_LocalPosition: {x: 0, y: 5, z: 6.5}
+  m_LocalScale: {x: 20, y: 10, z: 6}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5445728076908530656}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &7052894034815801374
+--- !u!65 &7968489334327349012
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6627132895059962330}
+  m_GameObject: {fileID: 6543552658580439042}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -887,8 +888,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7940980028004491118}
+  - {fileID: 3110334844426088938}
   - {fileID: 3665769578091322424}
-  - {fileID: 2188786284635564760}
   m_Father: {fileID: 5292636464854790426}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8142794542846840953

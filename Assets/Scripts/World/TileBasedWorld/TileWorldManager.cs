@@ -212,6 +212,17 @@ namespace ProjectColombo.LevelManagement
                 paths.Add(CreatePath(firstLayerChambers[index], c));
             }
 
+            //connect all open exits from first layer
+            foreach (GameObject c in firstLayerChambers)
+            {
+                if (c.GetComponent<TileWorldChamber>().exitsConnected)
+                {
+                    int index = Random.Range(0, firstLayerChambers.Count);
+
+                    paths.Add(CreatePath(c, secondLayerChambers[index]));
+                }
+            }
+
             foreach (GameObject c in secondLayerChambers)
             {
                 paths.Add(CreatePath(c, createdChambers[1]));
@@ -222,37 +233,37 @@ namespace ProjectColombo.LevelManagement
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                // Destroy all previously generated chambers
-                foreach (GameObject chamber in createdChambers)
-                {
-                    Destroy(chamber);
-                }
-                createdChambers.Clear(); // Clear the chamber list
+            //if (Input.GetKeyDown(KeyCode.R))
+            //{
+            //    // Destroy all previously generated chambers
+            //    foreach (GameObject chamber in createdChambers)
+            //    {
+            //        Destroy(chamber);
+            //    }
+            //    createdChambers.Clear(); // Clear the chamber list
 
-                foreach (GameObject chamber in firstLayerChambers)
-                {
-                    Destroy(chamber);
-                }
-                firstLayerChambers.Clear(); // Clear the chamber list
+            //    foreach (GameObject chamber in firstLayerChambers)
+            //    {
+            //        Destroy(chamber);
+            //    }
+            //    firstLayerChambers.Clear(); // Clear the chamber list
 
-                foreach (GameObject chamber in secondLayerChambers)
-                {
-                    Destroy(chamber);
-                }
-                secondLayerChambers.Clear(); // Clear the chamber list
+            //    foreach (GameObject chamber in secondLayerChambers)
+            //    {
+            //        Destroy(chamber);
+            //    }
+            //    secondLayerChambers.Clear(); // Clear the chamber list
 
-                // Destroy all GameObjects with TileWorldCorridor attached to them
-                TileWorldCorridor[] allCorridors = FindObjectsByType<TileWorldCorridor>(FindObjectsSortMode.None);
-                foreach (TileWorldCorridor corridor in allCorridors)
-                {
-                    Destroy(corridor.gameObject); // Destroy the GameObject that holds the TileWorldCorridor script
-                }
+            //    // Destroy all GameObjects with TileWorldCorridor attached to them
+            //    TileWorldCorridor[] allCorridors = FindObjectsByType<TileWorldCorridor>(FindObjectsSortMode.None);
+            //    foreach (TileWorldCorridor corridor in allCorridors)
+            //    {
+            //        Destroy(corridor.gameObject); // Destroy the GameObject that holds the TileWorldCorridor script
+            //    }
 
-                // Restart the world generation process
-                Start();
-            }
+            //    // Restart the world generation process
+            //    Start();
+            //}
         }
 
 
@@ -260,6 +271,9 @@ namespace ProjectColombo.LevelManagement
         {
             PosDir startExit = start.GetComponent<TileWorldChamber>().GetExitCoord();
             PosDir endEntrance = end.GetComponent<TileWorldChamber>().GetEntranceCoord();
+
+            start.GetComponent<TileWorldChamber>().exitsConnected = true;
+            end.GetComponent<TileWorldChamber>().entrancesConnected = true;
 
             List<Vector2> result = algorythm.GetPath(startExit.GetRealPos(), endEntrance.GetRealPos(), world);
 

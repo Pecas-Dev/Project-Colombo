@@ -1,22 +1,24 @@
+using ProjectColombo.Enemies.Pathfinding;
 using UnityEngine;
 
 namespace ProjectColombo.LevelManagement
 {
     public class ActivateChamberTrigger : MonoBehaviour
     {
-        ChamberData myChamberData;
+        TileWorldChamber myChamberData;
 
         private void Start()
         {
-            myChamberData = GetComponentInParent<ChamberData>();
+            myChamberData = GetComponentInParent<TileWorldChamber>();
         }
 
         private void OnTriggerEnter(Collider other)
         {
             if (other.gameObject.CompareTag("Player"))
             {
-                myChamberData.ActivateSpawners();
-                myChamberData.LockEntrance();
+                myChamberData.GetComponentInChildren<GridManager>().CreateGrid();
+                myChamberData.ActivateChamber();
+                gameObject.SetActive(false);
             }
         }
     }
