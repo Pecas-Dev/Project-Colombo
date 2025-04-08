@@ -30,10 +30,10 @@ namespace ProjectColombo.GameInputSystem
         {
             playerInputActions.Player.Enable();
 
-            playerInputActions.Player.Move.performed += OnMovePerformed;
-            playerInputActions.Player.Move.canceled += OnMoveCanceled;
+            //outdated playerInputActions.Player.Move.performed += OnMovePerformed;
+            //outdated playerInputActions.Player.Move.canceled += OnMoveCanceled;
 
-            playerInputActions.Player.Attack.performed += OnAttackPerformed;
+            //outdated playerInputActions.Player.Attack.performed += OnAttackPerformed;
 
             playerInputActions.Player.Roll.performed += OnRollPerformed;
 
@@ -45,10 +45,10 @@ namespace ProjectColombo.GameInputSystem
 
         void OnDisable()
         {
-            playerInputActions.Player.Move.performed -= OnMovePerformed;
-            playerInputActions.Player.Move.canceled -= OnMoveCanceled;
+            //outdated playerInputActions.Player.Move.performed -= OnMovePerformed;
+            //outdated playerInputActions.Player.Move.canceled -= OnMoveCanceled;
 
-            playerInputActions.Player.Attack.performed -= OnAttackPerformed;
+            //outdated playerInputActions.Player.Attack.performed -= OnAttackPerformed;
 
             playerInputActions.Player.Roll.performed -= OnRollPerformed;
 

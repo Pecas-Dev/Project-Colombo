@@ -215,7 +215,7 @@ namespace ProjectColombo.LevelManagement
             //connect all open exits from first layer
             foreach (GameObject c in firstLayerChambers)
             {
-                if (c.GetComponent<TileWorldChamber>().exitsConnected)
+                if (!c.GetComponent<TileWorldChamber>().exitsConnected)
                 {
                     int index = Random.Range(0, firstLayerChambers.Count);
 
@@ -374,11 +374,11 @@ namespace ProjectColombo.LevelManagement
                     }
                     else if (openings == 1)
                     {
-                        Debug.Log("only one opening: " + x + ", " + y);
+                        //Debug.Log("only one opening: " + x + ", " + y);
                     }
                     else
                     {
-                        Debug.Log("too many openings: " + x + ", " + y);
+                        //Debug.Log("too many openings: " + x + ", " + y);
                     }
                 }
             }

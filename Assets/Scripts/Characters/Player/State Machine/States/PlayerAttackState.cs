@@ -23,7 +23,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Enter()
         {
-            if (!stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.StaminaConfig.ComboStaminaCost))
+            if (!stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.staminaConfig.ComboStaminaCost))
             {
                 stateMachine.SwitchState(new PlayerMovementState(stateMachine));
                 return;
