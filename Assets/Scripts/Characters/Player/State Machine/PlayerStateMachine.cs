@@ -120,11 +120,6 @@ namespace ProjectColombo.StateMachine.Player
                 Debug.LogError("PlayerRigidbody reference is missing!");
             }
 
-            //if (myAnimator == null)
-            //{
-            //    Debug.LogError("Player Animator missing!");
-            //}
-
             if (myPlayerAnimator == null)
             {
                 Debug.LogError("PlayerAnimator reference is missing!");

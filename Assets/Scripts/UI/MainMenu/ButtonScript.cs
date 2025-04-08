@@ -1,3 +1,4 @@
+using ProjectColombo.GameManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,12 +11,18 @@ namespace ProjectColombo.UI
         {
             if (targetScene >= 0 && targetScene < SceneManager.sceneCountInBuildSettings)
             {
+                SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene().buildIndex);
                 SceneManager.LoadScene(targetScene);
             }
             else
             {
                 Debug.LogError("Invalid scene index: " + targetScene);
             }
+        }
+
+        public void ResumeGame()
+        {
+            GameManager.Instance.ResumeGame();
         }
     }
 }
