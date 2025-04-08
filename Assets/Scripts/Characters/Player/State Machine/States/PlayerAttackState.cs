@@ -33,7 +33,7 @@ namespace ProjectColombo.StateMachine.Player
 
             // We also need to add a "Hold Animation at the End" if button is still pressed.
 
-            stateMachine.gameInputSO.DisableAllInputsExcept(InputActionType.Roll, InputActionType.Parry, InputActionType.Attack);
+            stateMachine.gameInputSO.DisableAllInputsExcept(InputActionType.Roll, InputActionType.MajorParry, InputActionType.MajorAttack);
 
             stateMachine.myPlayerAnimator.PlayAttackAnimation(attack.AnimationName, attack.TransitionDuration);
 
@@ -59,9 +59,9 @@ namespace ProjectColombo.StateMachine.Player
                 return;
             }
 
-            if (stateMachine.gameInputSO.ParryPressed)
+            if (stateMachine.gameInputSO.MajorParryPressed)
             {
-                stateMachine.gameInputSO.ResetParryPressed();
+                stateMachine.gameInputSO.ResetMajorParryPressed();
                 stateMachine.SwitchState(new PlayerParryState(stateMachine));
 
                 return;
@@ -88,16 +88,16 @@ namespace ProjectColombo.StateMachine.Player
         {
             if (attack.ComboStateIndex == -1)
             {
-                stateMachine.gameInputSO.ResetAttackPressed();
+                stateMachine.gameInputSO.ResetMajorAttackPressed();
                 return;
             }
             if (normalizedTime < attack.ComboAttackTime)
             {
-                stateMachine.gameInputSO.ResetAttackPressed();
+                stateMachine.gameInputSO.ResetMajorAttackPressed();
                 return;
             }
 
-            stateMachine.gameInputSO.ResetAttackPressed();
+            stateMachine.gameInputSO.ResetMajorAttackPressed();
             stateMachine.SwitchState(new PlayerAttackState(stateMachine, attack.ComboStateIndex));
         }
 

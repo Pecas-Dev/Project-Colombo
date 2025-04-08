@@ -21,9 +21,9 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Tick(float deltaTime)
         {
-            if (stateMachine.gameInputSO.AttackPressed)
+            if (stateMachine.gameInputSO.MajorAttackPressed)
             {
-                stateMachine.gameInputSO.ResetAttackPressed();
+                stateMachine.gameInputSO.ResetMajorAttackPressed();
                 stateMachine.SwitchState(new PlayerAttackState(stateMachine, 0));
                 return;
             }
@@ -35,9 +35,9 @@ namespace ProjectColombo.StateMachine.Player
                 return;
             }
 
-            if (stateMachine.gameInputSO.ParryPressed)
+            if (stateMachine.gameInputSO.MajorParryPressed)
             {
-                stateMachine.gameInputSO.ResetParryPressed();
+                stateMachine.gameInputSO.ResetMajorParryPressed();
                 stateMachine.SwitchState(new PlayerParryState(stateMachine));
                 return;
             }
