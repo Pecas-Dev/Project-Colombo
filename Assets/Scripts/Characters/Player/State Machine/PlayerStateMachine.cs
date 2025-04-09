@@ -39,8 +39,9 @@ namespace ProjectColombo.StateMachine.Player
         public PlayerState currentState;
 
 
-        [Header("Input Reference")]
-        public GameInputSO gameInputSO;
+        //[Header("Input Reference")]
+        //public GameInputSO gameInputSO;
+        [HideInInspector] public GameInputSO gameInputSO;
 
         [Header("Isometric Settings")]
         [SerializeField, Range(0.0f, 90.0f)] float angle = 45.0f;
@@ -54,14 +55,10 @@ namespace ProjectColombo.StateMachine.Player
 
         void Awake()
         {
-            if (gameInputSO != null)
-            {
-                gameInputSO.Initialize();
-            }
-
             //get current selected weapon
             Instantiate(GameManager.Instance.GetMyWeapon(), weaponHand);
             GetComponent<PlayerInventory>().ChangeWeapon(GetComponentInChildren<WeaponAttributes>().name);
+            gameInputSO = GameManager.Instance.gameInput;
 
             myRigidbody = GetComponent<Rigidbody>();
             myStamina = GetComponent<Stamina>();
@@ -77,8 +74,8 @@ namespace ProjectColombo.StateMachine.Player
         void Start()
         {
             LogMissingReferenceErrors();
-            gameInputSO.Initialize();
-            gameInputSO.EnableAllInputs();
+            //gameInputSO.Initialize();
+            //gameInputSO.EnableAllInputs();
             SwitchState(new PlayerMovementState(this));
         }
 

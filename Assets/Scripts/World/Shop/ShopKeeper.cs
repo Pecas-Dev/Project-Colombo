@@ -1,4 +1,5 @@
 using ProjectColombo.GameInputSystem;
+using ProjectColombo.GameManagement;
 using ProjectColombo.StateMachine.Player;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -11,11 +12,12 @@ namespace ProjectColombo.Shop
         public GameObject shopScreen;
         public GameObject shopIndicator;
         bool playerInRange;
-        [SerializeField] private GameInputSO gameInput;
+        private GameInputSO gameInput;
         public GameObject firstSelect;
 
         private void Start()
         {
+            gameInput = GameManager.Instance.gameInput;
             shopScreen.SetActive(false);
             shopIndicator.SetActive(false);
         }

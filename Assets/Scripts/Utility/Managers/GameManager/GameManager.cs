@@ -13,13 +13,15 @@ namespace ProjectColombo.GameManagement
         public AllWeapons playerWeapon;
         public List<GameObject> allWeapons;
 
-        [SerializeField] private GameInputSO gameInput;
+        public GameInputSO gameInput;
         public GameObject pauseMenuUI;
         public GameObject firstSelectedButton;
         public bool gameIsPaused = false;
 
         private void Awake()
         {
+            gameInput.Initialize();
+
             if (Instance != null && Instance != this)
             {
                 Destroy(gameObject); // Destroy duplicates
@@ -52,6 +54,11 @@ namespace ProjectColombo.GameManagement
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             ResumeGame();
+
+            // Reset input system properly on new scene load
+            gameInput.Uninitialize();
+            gameInput.Initialize();
+            gameInput.EnableAllInputs();
         }
 
         public GameObject GetMyWeapon()

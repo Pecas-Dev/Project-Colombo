@@ -11,7 +11,6 @@ namespace ProjectColombo.UI
         {
             if (targetScene >= 0 && targetScene < SceneManager.sceneCountInBuildSettings)
             {
-                SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene().buildIndex);
                 SceneManager.LoadScene(targetScene);
             }
             else

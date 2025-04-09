@@ -87,6 +87,9 @@ namespace ProjectColombo.GameInputSystem
 
         public void Uninitialize()
         {
+
+            if (playerInputActions == null) return;
+
             playerInputActions.Player.Movement.performed -= OnMovePerformed;
             playerInputActions.Player.Movement.canceled -= OnMoveCanceled;
 
@@ -112,6 +115,7 @@ namespace ProjectColombo.GameInputSystem
             playerInputActions.Player.Pause.performed -= OnPausePerformed;
 
             playerInputActions.Player.Disable();
+            playerInputActions = null;
         }
 
         public void DisableAllInputs()
