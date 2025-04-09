@@ -1,5 +1,6 @@
 using ProjectColombo.Enemies.Pathfinding;
 using ProjectColombo.LevelManagement;
+using ProjectColombo.StateMachine.Mommotti;
 using UnityEngine;
 
 
@@ -36,6 +37,9 @@ namespace ProjectColombo.Enemies.Mommotti
                 newEnemy.GetComponent<MommottiAttributes>().spawnPointLocation = transform.position;
                 newEnemy.GetComponent<MommottiAttributes>().patrolAreaDistance = patrolAreaDistance;
                 newEnemy.GetComponent<MommottiAttributes>().myGridManager = myGridManager;
+
+                int rand = Random.Range(1, 3);
+                newEnemy.GetComponent<MommottiStateMachine>().SetScale((GameGlobals.MusicScale)rand);
             }
         }
 

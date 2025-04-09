@@ -3,7 +3,7 @@ namespace ProjectColombo
 {
     public static class GameGlobals
     {
-        public enum MusicKey { MAJOR, MINOR }
+        public enum MusicScale { NONE = 0, MAJOR, MINOR }
 
         public static int TILESIZE = 20;
     }

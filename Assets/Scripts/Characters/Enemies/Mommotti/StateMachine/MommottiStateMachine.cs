@@ -19,6 +19,7 @@ namespace ProjectColombo.StateMachine.Mommotti
         public WeaponAttributes myWeaponAttributes;
         public HealthManager myHealthManager;
         public SkinnedMeshRenderer myColorfullSkin;
+        public ParticleSystem scaleParticles;
 
         public MommottiState currentState;
 
@@ -37,7 +38,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             myPathfindingAlgorythm = GetComponent<Pathfinding>();
             myWeaponAttributes = GetComponentInChildren<WeaponAttributes>();
             myHealthManager = GetComponent<HealthManager>();
-
+            SetScale(GameGlobals.MusicScale.MINOR);
         }
 
         void Start()
@@ -175,6 +176,29 @@ namespace ProjectColombo.StateMachine.Mommotti
         public void Telegraphing()
         {
             myWeaponAttributes.Telegraphing();
+        }
+
+        public void SetScale(GameGlobals.MusicScale scale)
+        {
+            myEntityAttributes.currentScale = scale;
+            myWeaponAttributes.currentScale = scale;
+
+            var main = scaleParticles.main;
+
+            if (scale == GameGlobals.MusicScale.MINOR)
+            {
+                main.startColor = new ParticleSystem.MinMaxGradient(Color.blue);
+                scaleParticles.Play();
+            }
+            else if (scale == GameGlobals.MusicScale.MAJOR)
+            {
+                main.startColor = new ParticleSystem.MinMaxGradient(Color.green);
+                scaleParticles.Play();
+            }
+            else
+            {
+                scaleParticles.Stop();
+            }
         }
     }
 }

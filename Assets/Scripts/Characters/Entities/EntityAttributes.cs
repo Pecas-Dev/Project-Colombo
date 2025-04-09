@@ -1,3 +1,4 @@
+using ProjectColombo.Combat;
 using UnityEngine;
 
 namespace ProjectColombo
@@ -17,10 +18,18 @@ namespace ProjectColombo
         public float attackImpulseForce = 2.5f;
         [Tooltip("Stagger duration for now. We have to decide how to control it")]
         public float stunnedTime = 1f;
+        [HideInInspector] public GameGlobals.MusicScale currentScale = GameGlobals.MusicScale.NONE;
 
         public void Destroy()
         {
             Destroy(this.gameObject);
+        }
+
+        public void SetScale(GameGlobals.MusicScale scale)
+        {
+            currentScale = scale;
+
+            GetComponentInChildren<WeaponAttributes>().currentScale = scale;
         }
     }
 }

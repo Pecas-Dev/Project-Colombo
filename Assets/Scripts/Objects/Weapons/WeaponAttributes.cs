@@ -13,6 +13,10 @@ namespace ProjectColombo.Combat
         public int additionalDamageOnHeavyAttack;
         public int additionalDamageMissedParry;
 
+        public int correctAttackScaleBonusPercentage = 10;
+        public int blockDamageReductionPercentage = 10;
+        public int missedParryPaneltyPercentage = 10;
+
         public float knockback;
         public float cooldown;
         float currentTimer;
@@ -21,11 +25,13 @@ namespace ProjectColombo.Combat
         public float distanceToActivateForwardImpulse = 3f;     // player should be close already
         public float maxDistanceAfterImpulse = 1f;              // furthest away
         public float minDistanceAfterImpulse = .5f;             // closest
+
         [SerializeField, ReadOnlyInspector] string ownerTag;
         [HideInInspector] public bool onCooldown;
         [HideInInspector] public bool isAttacking;
         [HideInInspector] public bool heavyAttack;
         [HideInInspector] public Animator myAnimator;
+        [HideInInspector] public GameGlobals.MusicScale currentScale = GameGlobals.MusicScale.NONE;
         ParticleSystem myParticles;
 
         private void Start()
@@ -68,79 +74,91 @@ namespace ProjectColombo.Combat
 
         private void OnTriggerEnter(Collider other)
         {
-            Debug.Log("weapon hit from: " + ownerTag + "to: " + other.tag);
-
             int damage = Random.Range(minDamage, maxDamage);
-            bool shouldStagger = false;
-            float knockbackStrength = 0;
             Vector3 attackDirection = (other.transform.position - transform.parent.position).normalized; //get direction from user to target
             attackDirection.y = 0.0f; //could be increased to make the hit entity jump a bit
 
-            if (ownerTag == "Enemy" && other.CompareTag("Player"))
+            if (ownerTag == "Player" && other.CompareTag("Destroyable"))
             {
-                PlayerStateMachine otherStateMachine = other.GetComponent<PlayerStateMachine>();
+                Debug.Log("Player hit Destroyable");
                 HealthManager otherHealth = other.GetComponent<HealthManager>();
 
-                if (otherStateMachine != null && otherHealth != null && otherHealth.CurrentHealth > 0) 
+                if (otherHealth != null)
                 {
-                    if (otherStateMachine.isInvunerable) return; //if player rolling
-
-                    if (otherStateMachine.isParrying) //if player parrying successfully
-                    {
-                        StopTime(); //hitstop if successfull parry
-                        GetComponentInParent<MommottiStateMachine>().Impact(attackDirection, 0); // stagger enemy if parry successfull
-                        return;
-                    }
-
-                    if (heavyAttack) //knockback only on heavy attacks and additional damage
-                    {
-                        shouldStagger = true;
-                        knockbackStrength = knockback;
-                        damage += additionalDamageOnHeavyAttack;
-                        ScreenShake();
-                    }
-                    else
-                    {
-                        shouldStagger = true;
-                        knockbackStrength = 0;
-                    }
-
-                    if (otherStateMachine.tryParrying) //penalty for parrying to early
-                    {
-                        damage += additionalDamageMissedParry;
-                    }
-
-
                     otherHealth.TakeDamage(damage);
-
-                    if (shouldStagger)
-                    {
-                        otherStateMachine.Impact(attackDirection, knockbackStrength);
-                    }
-                    return;
                 }
             }
-            else if (ownerTag == "Player" && other.tag == "Enemy")
+            else if (ownerTag == "Player" && other.CompareTag("Enemy"))
             {
+                Debug.Log("Player hit Enemy");
                 MommottiStateMachine otherStateMachine = other.GetComponent<MommottiStateMachine>();
+                EntityAttributes otherAttributes = other.GetComponent<EntityAttributes>();
                 HealthManager otherHealth = other.GetComponent<HealthManager>();
-
 
                 if (otherStateMachine != null && otherHealth != null && otherHealth.CurrentHealth > 0)
                 {
                     StopTime();
                     ScreenShake();
 
+                    if (currentScale != otherAttributes.currentScale)
+                    {
+                        Debug.Log("..with the opposite scale");
+                        AddTemporaryDamagePercentage(damage, correctAttackScaleBonusPercentage);
+                    }
+                    else
+                    {
+                        Debug.Log("..but not the opposite scale");
+                    }
+
                     otherHealth.TakeDamage(damage);
                     otherStateMachine.Impact(attackDirection, knockback);
                 }
             }
-            else if (ownerTag == "Player" && other.tag == "Destroyable")
+            else if (ownerTag == "Enemy" && other.CompareTag("Player"))
             {
+                Debug.Log("Enemy hit Player");
+                PlayerStateMachine otherStateMachine = other.GetComponent<PlayerStateMachine>();
+                EntityAttributes otherAttributes = other.GetComponent<EntityAttributes>();
                 HealthManager otherHealth = other.GetComponent<HealthManager>();
 
-                if (otherHealth != null)
+                if (otherStateMachine != null && otherHealth != null && otherHealth.CurrentHealth > 0)
                 {
+                    StopTime();
+                    ScreenShake();
+
+                    if (otherStateMachine.isBlocking)
+                    {
+                        Debug.Log("Player blocked incoming attack");
+
+                        AddTemporaryDamagePercentage(damage, -blockDamageReductionPercentage);
+                    }
+                    else if (otherStateMachine.isParrying)
+                    {
+                        Debug.Log("Player parried");
+
+                        damage = 0;
+
+                        if (currentScale != otherAttributes.currentScale)
+                        {
+                            Debug.Log("..with opposite scale -> stagger enemy");
+                            GetComponentInParent<MommottiStateMachine>().Impact(attackDirection, 0); //no knockback but stagger
+                        }
+                        else
+                        {
+                            Debug.Log("..but not the opposite scale");
+                        }
+                    }
+                    else if (otherStateMachine.tryParrying)
+                    {
+                        Debug.Log("Player missed parry");
+
+                        if (currentScale != otherAttributes.currentScale)
+                        {
+                            Debug.Log("..with opposite scale -> extra damage");
+                            AddTemporaryDamagePercentage(damage, missedParryPaneltyPercentage);
+                        }
+                    }
+
                     otherHealth.TakeDamage(damage);
                 }
             }
@@ -150,6 +168,11 @@ namespace ProjectColombo.Combat
         {
             minDamage += (int)(percentage / 100 * minDamage);
             maxDamage += (int)(percentage / 100 * maxDamage);
+        }
+
+        private void AddTemporaryDamagePercentage(int damage, int percentage)
+        {
+            damage += (int)(percentage / 100 * damage);
         }
 
         private void ScreenShake()
