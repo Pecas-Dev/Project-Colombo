@@ -18,7 +18,8 @@ namespace ProjectColombo.StateMachine.Player
             Attack,
             Parry,
             Dead,
-            Shop
+            Shop,
+            Block
         }
 
 

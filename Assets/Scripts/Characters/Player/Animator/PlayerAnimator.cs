@@ -75,6 +75,15 @@ namespace ProjectColombo.Control
 
 
         // ---------------------------------------------------------
+        // Roll
+        // ---------------------------------------------------------
+        public void TriggerBlock()
+        {
+            isInRoll = true;
+            animator.SetTrigger("block");
+        }
+
+        // ---------------------------------------------------------
         // Parry
         // ---------------------------------------------------------
         public void TriggerParry(float transitionDuration = 0.2f)

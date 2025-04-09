@@ -21,6 +21,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Tick(float deltaTime)
         {
+            //set attack states
             if (stateMachine.gameInputSO.MajorAttackPressed)
             {
                 stateMachine.gameInputSO.ResetMajorAttackPressed();
@@ -28,6 +29,14 @@ namespace ProjectColombo.StateMachine.Player
                 return;
             }
 
+            if (stateMachine.gameInputSO.MinorAttackPressed)
+            {
+                stateMachine.gameInputSO.ResetMinorAttackPressed();
+                stateMachine.SwitchState(new PlayerAttackState(stateMachine, 0));
+                return;
+            }
+
+            //set defense states
             if (stateMachine.gameInputSO.RollPressed)
             {
                 stateMachine.gameInputSO.ResetRollPressed();
@@ -35,10 +44,24 @@ namespace ProjectColombo.StateMachine.Player
                 return;
             }
 
+            if (stateMachine.gameInputSO.BlockPressed)
+            {
+                stateMachine.SwitchState(new PlayerBlockState(stateMachine));
+                return;
+            }
+
+            //set parry states
             if (stateMachine.gameInputSO.MajorParryPressed)
             {
                 stateMachine.gameInputSO.ResetMajorParryPressed();
-                stateMachine.SwitchState(new PlayerParryState(stateMachine));
+                stateMachine.SwitchState(new PlayerParryState(stateMachine, GameGlobals.MusicScale.MAJOR));
+                return;
+            }
+
+            if (stateMachine.gameInputSO.MinorParryPressed)
+            {
+                stateMachine.gameInputSO.ResetMinorParryPressed();
+                stateMachine.SwitchState(new PlayerParryState(stateMachine, GameGlobals.MusicScale.MINOR));
                 return;
             }
 

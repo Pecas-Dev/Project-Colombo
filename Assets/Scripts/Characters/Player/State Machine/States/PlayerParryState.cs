@@ -5,8 +5,9 @@ namespace ProjectColombo.StateMachine.Player
 {
     public class PlayerParryState : PlayerBaseState
     {
-        public PlayerParryState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
+        public PlayerParryState(PlayerStateMachine playerStateMachine, GameGlobals.MusicScale scale) : base(playerStateMachine)
         {
+            stateMachine.myEntityAttributes.SetScale(scale);
         }
 
         public override void Enter()
@@ -23,12 +24,11 @@ namespace ProjectColombo.StateMachine.Player
             {
                 stateMachine.SwitchState(new PlayerMovementState(stateMachine));
             }
-
-            //HandleAirPhysicsIfNeeded(deltaTime);
         }
 
         public override void Exit()
         {
+            stateMachine.myEntityAttributes.SetScale(GameGlobals.MusicScale.NONE);
             stateMachine.gameInputSO.EnableAllInputs();
             stateMachine.ParryFrameStop();
         }
