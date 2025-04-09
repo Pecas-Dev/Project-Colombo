@@ -5,11 +5,11 @@ namespace ProjectColombo.LevelManagement
 {
     public class TileWorldCorridor : MonoBehaviour
     {
-        int TILESIZE = 20;
+        int tilesize = GameGlobals.TILESIZE;
         public void PlaceICorridor(Tile tile)
         {
             Quaternion rotation = transform.rotation;
-            Vector3 position = new Vector3(tile.position.x - TILESIZE/2, 0, tile.position.y - TILESIZE / 2);
+            Vector3 position = new Vector3(tile.position.x - tilesize / 2, 0, tile.position.y - tilesize / 2);
 
             if (tile.openings.Contains(Directions.NORTH))
             {
@@ -23,7 +23,7 @@ namespace ProjectColombo.LevelManagement
         public void PlaceLCorridor(Tile tile)
         {
             Quaternion rotation = transform.rotation;
-            Vector3 position = new Vector3(tile.position.x - TILESIZE / 2, 0, tile.position.y - TILESIZE / 2);
+            Vector3 position = new Vector3(tile.position.x - tilesize / 2, 0, tile.position.y - tilesize / 2);
 
             if (tile.openings.Contains(Directions.WEST) && tile.openings.Contains(Directions.NORTH))
                 rotation *= Quaternion.Euler(0, 0, 0);
@@ -40,7 +40,7 @@ namespace ProjectColombo.LevelManagement
         public void PlaceTCorridor(Tile tile)
         {
             Quaternion rotation = transform.rotation * Quaternion.Euler(0,180,0);
-            Vector3 position = new Vector3(tile.position.x - TILESIZE / 2, 0, tile.position.y - TILESIZE / 2);
+            Vector3 position = new Vector3(tile.position.x - tilesize / 2, 0, tile.position.y - tilesize / 2);
 
             foreach (Directions d in Enum.GetValues(typeof(Directions)))
             {
@@ -56,7 +56,7 @@ namespace ProjectColombo.LevelManagement
 
         public void PlaceXCorridor(Tile tile)
         {
-            Vector3 position = new Vector3(tile.position.x - TILESIZE / 2, 0, tile.position.y - TILESIZE / 2);
+            Vector3 position = new Vector3(tile.position.x - tilesize / 2, 0, tile.position.y - tilesize / 2);
             Instantiate(this.gameObject, position, transform.rotation);
         }
     }

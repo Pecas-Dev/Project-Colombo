@@ -6,7 +6,7 @@ namespace ProjectColombo.LevelManagement
 {
     public class TileWorldChamber : MonoBehaviour
     {
-        int TILESIZE = 20;
+        int tilesize = GameGlobals.TILESIZE;
 
         public Vector2 chamberSize = new(1,1);
         public bool isShop = false;
@@ -44,7 +44,7 @@ namespace ProjectColombo.LevelManagement
                 Vector3 localPosVec3 = entrance.transform.position; //get relative Position
 
                 Vector2 localPos = new( localPosVec3.x, localPosVec3.z ); //translate to x,y
-                localPos = localPos / TILESIZE; //get to tile coord size
+                localPos = localPos / tilesize; //get to tile coord size
 
                 localPos.x = Mathf.RoundToInt(localPos.x); //round to int
                 localPos.y = Mathf.RoundToInt(localPos.y); //round to int
@@ -62,7 +62,7 @@ namespace ProjectColombo.LevelManagement
                 Vector3 localPosVec3 = exit.transform.position; //get relative Position
 
                 Vector2 localPos = new(localPosVec3.x, localPosVec3.z); //translate to x,y
-                localPos = localPos / TILESIZE; //get to tile coord size
+                localPos = localPos / tilesize; //get to tile coord size
 
                 localPos.x = Mathf.RoundToInt(localPos.x); //round to int
                 localPos.y = Mathf.RoundToInt(localPos.y); //round to int

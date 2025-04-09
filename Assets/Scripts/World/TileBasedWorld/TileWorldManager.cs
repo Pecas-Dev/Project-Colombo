@@ -1,13 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using DG.Tweening;
-using NUnit.Framework.Internal;
-using ProjectColombo.Enemies.Pathfinding;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
-using UnityEngine.InputSystem.EnhancedTouch;
-using UnityEngine.UIElements;
-using Unity.Collections.LowLevel.Unsafe;
+using Autodesk.Fbx;
 
 namespace ProjectColombo.LevelManagement
 {
@@ -88,7 +81,7 @@ namespace ProjectColombo.LevelManagement
 
     public struct Tilemap
     {
-        int TILESIZE;
+        int tilesize;
 
         public Tile[,] map;
         public int height;
@@ -97,20 +90,20 @@ namespace ProjectColombo.LevelManagement
 
         public void CreateTilemap(int w, int h)
         {
-            TILESIZE = 20;
+            tilesize = GameGlobals.TILESIZE;
             width = w;
             height = h;
 
             map = new Tile[width, height];
 
-            float halfTileSize = TILESIZE / 2;
+            float halfTileSize = tilesize / 2;
 
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
-                    Vector2 position = new(halfTileSize + x * TILESIZE, halfTileSize + y * TILESIZE);
-                    map[x, y].CreateTile(new(halfTileSize + x * TILESIZE, halfTileSize + y * TILESIZE));
+                    Vector2 position = new(halfTileSize + x * tilesize, halfTileSize + y * tilesize);
+                    map[x, y].CreateTile(new(halfTileSize + x * tilesize, halfTileSize + y * tilesize));
                     map[x, y].index = x + y * width;
                     map[x, y].xPos = x;
                     map[x, y].yPos = y;
@@ -145,7 +138,7 @@ namespace ProjectColombo.LevelManagement
 
     public class TileWorldManager : MonoBehaviour
     {
-        int TILESIZE = 20;
+        int tilesize = GameGlobals.TILESIZE;
 
         //data
         public int worldWidth = 15;
@@ -320,14 +313,14 @@ namespace ProjectColombo.LevelManagement
             TileWorldChamber myChamber = result.GetComponent<TileWorldChamber>();
 
             //align even chamberes
-            if (myChamber.chamberSize.x % 2 == 0) result.transform.position = new(result.transform.position.x - TILESIZE / 2, result.transform.position.y, result.transform.position.z);
-            if (myChamber.chamberSize.y % 2 == 0) result.transform.position = new(result.transform.position.x, result.transform.position.y, result.transform.position.z - TILESIZE / 2);
+            if (myChamber.chamberSize.x % 2 == 0) result.transform.position = new(result.transform.position.x - tilesize / 2, result.transform.position.y, result.transform.position.z);
+            if (myChamber.chamberSize.y % 2 == 0) result.transform.position = new(result.transform.position.x, result.transform.position.y, result.transform.position.z - tilesize / 2);
 
             myChamber.Initialize(position);
 
             if (myChamber.CheckAndBlockOnTilemap(position, world))
             {
-                Vector3 startPos = new Vector3(position.x * TILESIZE, 0, position.y * TILESIZE);
+                Vector3 startPos = new Vector3(position.x * tilesize, 0, position.y * tilesize);
                 result.transform.position = result.transform.position + startPos;
                 list.Add(result);
             }
@@ -351,7 +344,7 @@ namespace ProjectColombo.LevelManagement
                         continue; //if no openings no path on tile
                     }
 
-                    Vector3 pos = new Vector3(x * TILESIZE, 0, y * TILESIZE);
+                    Vector3 pos = new Vector3(x * tilesize, 0, y * tilesize);
 
                     if (openings == 2)
                     {
@@ -389,19 +382,19 @@ namespace ProjectColombo.LevelManagement
             if (world.map == null) return;
 
             float gizmoHeight = 0.2f;
-            float halfTile = TILESIZE / 2f;
-            float openingLength = TILESIZE * 0.3f;
+            float halfTile = tilesize / 2f;
+            float openingLength = tilesize * 0.3f;
 
             for (int y = 0; y < worldHeight; y++)
             {
                 for (int x = 0; x < worldWidth; x++)
                 {
                     Tile tile = world.map[x, y];
-                    Vector3 center = new Vector3(tile.position.x - TILESIZE / 2, gizmoHeight, tile.position.y - TILESIZE / 2);
+                    Vector3 center = new Vector3(tile.position.x - tilesize / 2, gizmoHeight, tile.position.y - tilesize / 2);
 
                     // Draw tile base
                     Gizmos.color = tile.walkable ? Color.green : Color.red;
-                    Gizmos.DrawWireCube(center, new Vector3(TILESIZE * 0.9f, 0.1f, TILESIZE * 0.9f));
+                    Gizmos.DrawWireCube(center, new Vector3(tilesize * 0.9f, 0.1f, tilesize * 0.9f));
 
                     if (!tile.walkable) continue;
 
@@ -431,19 +424,19 @@ namespace ProjectColombo.LevelManagement
                 if (c == null) continue;
 
                 Vector2 basePos = new Vector2(
-                    Mathf.RoundToInt(chamber.transform.position.x / TILESIZE),
-                    Mathf.RoundToInt(chamber.transform.position.z / TILESIZE)
+                    Mathf.RoundToInt(chamber.transform.position.x / tilesize),
+                    Mathf.RoundToInt(chamber.transform.position.z / tilesize)
                 );
 
                 // Entrance
                 PosDir entrance = c.GetEntranceCoord();
-                Vector3 entranceRealPos = new Vector3(entrance.GetRealPos().x * TILESIZE, gizmoHeight, entrance.GetRealPos().y * TILESIZE);
+                Vector3 entranceRealPos = new Vector3(entrance.GetRealPos().x * tilesize, gizmoHeight, entrance.GetRealPos().y * tilesize);
                 Gizmos.color = Color.yellow;
                 Gizmos.DrawCube(entranceRealPos, Vector3.one * 2);
 
                 // Exit
                 PosDir exit = c.GetExitCoord();
-                Vector3 exitRealPos = new Vector3(exit.GetRealPos().x * TILESIZE, gizmoHeight, exit.GetRealPos().y * TILESIZE);
+                Vector3 exitRealPos = new Vector3(exit.GetRealPos().x * tilesize, gizmoHeight, exit.GetRealPos().y * tilesize);
                 Gizmos.DrawCube(exitRealPos, Vector3.one * 2);
             }
         }
