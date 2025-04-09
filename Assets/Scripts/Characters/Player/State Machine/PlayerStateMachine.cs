@@ -38,9 +38,6 @@ namespace ProjectColombo.StateMachine.Player
         [Header("Player State")]
         public PlayerState currentState;
 
-
-        //[Header("Input Reference")]
-        //public GameInputSO gameInputSO;
         [HideInInspector] public GameInputSO gameInputSO;
 
         [Header("Isometric Settings")]
@@ -74,8 +71,6 @@ namespace ProjectColombo.StateMachine.Player
         void Start()
         {
             LogMissingReferenceErrors();
-            //gameInputSO.Initialize();
-            //gameInputSO.EnableAllInputs();
             SwitchState(new PlayerMovementState(this));
         }
 

@@ -3,13 +3,14 @@ using ProjectColombo.Combat;
 
 using UnityEngine;
 using ProjectColombo.StateMachine.Mommotti;
+using UnityEngine.SceneManagement;
 
 
 namespace ProjectColombo.StateMachine.Player
 {
     public class PlayerDeathState : PlayerBaseState
     {
-
+        float timer = 0;
         public PlayerDeathState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
         {
 
@@ -26,7 +27,12 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Tick(float deltaTime)
         {
+            timer += deltaTime;
 
+            if (timer > 2)
+            {
+                SceneManager.LoadScene(3);
+            }
         }
 
         public override void Exit()
