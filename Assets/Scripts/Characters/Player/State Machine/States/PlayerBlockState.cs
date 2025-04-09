@@ -38,6 +38,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Exit()
         {
+            stateMachine.gameInputSO.EnableAllInputs();
             stateMachine.isBlocking = false;
         }
     }

@@ -54,17 +54,12 @@ namespace ProjectColombo.StateMachine.Player
 
         void Awake()
         {
-            //get current selected weapon
-            Instantiate(GameManager.Instance.GetMyWeapon(), weaponHand);
-            GetComponent<PlayerInventory>().ChangeWeapon(GetComponentInChildren<WeaponAttributes>().name);
-            gameInputSO = GameManager.Instance.gameInput;
 
             myRigidbody = GetComponent<Rigidbody>();
             myStamina = GetComponent<Stamina>();
             myPlayerAnimator = GetComponent<PlayerAnimator>();
             myEntityAttributes = GetComponent<EntityAttributes>();
             myHealthManager = GetComponent<HealthManager>();
-            myWeaponAttributes = GetComponentInChildren<WeaponAttributes>();
             myTargeter = GetComponentInChildren<Targeter>();
 
             closeShop = null;
@@ -74,6 +69,9 @@ namespace ProjectColombo.StateMachine.Player
         {
             LogMissingReferenceErrors();
             SwitchState(new PlayerMovementState(this));
+
+            //get current selected weapon
+            SwapWeapon();
         }
 
         public void Impact(Vector3 direction, float knockbackStrength)
@@ -127,11 +125,6 @@ namespace ProjectColombo.StateMachine.Player
             if (myStamina == null)
             {
                 Debug.LogError("StaminaSystem reference is missing!");
-            }
-
-            if (myWeaponAttributes == null)
-            {
-                Debug.LogError("no weapon in player");
             }
 
             if (myTargeter == null)
@@ -235,6 +228,14 @@ namespace ProjectColombo.StateMachine.Player
         public void RollInvincibleFrameStop()
         {
             isInvunerable = false;
+        }
+
+        void SwapWeapon()
+        {
+            Instantiate(GameManager.Instance.GetMyWeapon(), weaponHand);
+            myWeaponAttributes = GetComponentInChildren<WeaponAttributes>();
+            GetComponent<PlayerInventory>().ChangeWeapon(GetComponentInChildren<WeaponAttributes>().name);
+            gameInputSO = GameManager.Instance.gameInput;
         }
     }
 }

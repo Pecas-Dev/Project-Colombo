@@ -79,8 +79,7 @@ namespace ProjectColombo.Control
         // ---------------------------------------------------------
         public void TriggerBlock()
         {
-            isInRoll = true;
-            animator.SetTrigger("block");
+            //animator.SetTrigger("block");
         }
 
         // ---------------------------------------------------------

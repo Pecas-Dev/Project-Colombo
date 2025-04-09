@@ -61,7 +61,6 @@ namespace ProjectColombo.StateMachine.Player
 
             if (stateMachine.gameInputSO.BlockPressed)
             {
-                stateMachine.gameInputSO.ResetBlockPressed();
                 stateMachine.SwitchState(new PlayerBlockState(stateMachine));
 
                 return;

@@ -37,7 +37,9 @@ namespace ProjectColombo.GameInputSystem
         public bool UseSpecialAbilityPressed { get; private set; } = false;
         public bool UseItemPressed { get; private set; } = false;
         public bool RollPressed { get; private set; } = false;
-        public bool BlockPressed { get; private set; } = false;
+        //public bool BlockPressed { get; private set; } = false;
+        public bool BlockPressed => playerInputActions.Player.Block.IsPressed();
+
         public bool MinorParryPressed { get; private set; } = false;
         public bool MajorParryPressed { get; private set; } = false;
         public bool TargetPressed { get; private set; } = false;
@@ -69,7 +71,6 @@ namespace ProjectColombo.GameInputSystem
             playerInputActions.Player.UseItem.performed += OnUseItemPerformed;
 
             playerInputActions.Player.Roll.performed += OnRollPerformed;
-            playerInputActions.Player.Block.performed += OnBlockPerformed;
             playerInputActions.Player.MajorParry.performed += OnMajorParryPerformed;
             playerInputActions.Player.MinorParry.performed += OnMinorParryPerformed;
 
@@ -99,7 +100,6 @@ namespace ProjectColombo.GameInputSystem
             playerInputActions.Player.UseItem.performed -= OnUseItemPerformed;
 
             playerInputActions.Player.Roll.performed -= OnRollPerformed;
-            playerInputActions.Player.Block.performed -= OnBlockPerformed;
             playerInputActions.Player.MajorParry.performed -= OnMajorParryPerformed;
             playerInputActions.Player.MinorParry.performed -= OnMinorParryPerformed;
 
@@ -164,7 +164,7 @@ namespace ProjectColombo.GameInputSystem
             UseSpecialAbilityPressed    = false;
             UseItemPressed              = false;
             RollPressed                 = false;
-            BlockPressed                = false;
+            //BlockPressed                = false;
             MinorParryPressed           = false;
             MajorParryPressed           = false;
             TargetPressed               = false;
@@ -301,17 +301,7 @@ namespace ProjectColombo.GameInputSystem
         {
             RollPressed = false;
         }
-        void OnBlockPerformed(InputAction.CallbackContext context)
-        {
-            if (!IsInputEnabled(InputActionType.Block)) return;
 
-            BlockPressed = true;
-        }
-
-        public void ResetBlockPressed()
-        {
-            BlockPressed = false;
-        }
 
         // ########################################################
 
