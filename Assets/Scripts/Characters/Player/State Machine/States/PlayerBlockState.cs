@@ -6,7 +6,6 @@ namespace ProjectColombo.StateMachine.Player
 {
     public class PlayerBlockState : PlayerBaseState
     {
-        float timer = 0;
         public PlayerBlockState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
         {
 

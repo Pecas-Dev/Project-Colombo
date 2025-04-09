@@ -59,10 +59,26 @@ namespace ProjectColombo.StateMachine.Player
                 return;
             }
 
+            if (stateMachine.gameInputSO.BlockPressed)
+            {
+                stateMachine.gameInputSO.ResetBlockPressed();
+                stateMachine.SwitchState(new PlayerBlockState(stateMachine));
+
+                return;
+            }
+
             if (stateMachine.gameInputSO.MajorParryPressed)
             {
                 stateMachine.gameInputSO.ResetMajorParryPressed();
-                stateMachine.SwitchState(new PlayerParryState(stateMachine));
+                stateMachine.SwitchState(new PlayerParryState(stateMachine, GameGlobals.MusicScale.MAJOR));
+
+                return;
+            }
+
+            if (stateMachine.gameInputSO.MinorParryPressed)
+            {
+                stateMachine.gameInputSO.ResetMinorParryPressed();
+                stateMachine.SwitchState(new PlayerParryState(stateMachine, GameGlobals.MusicScale.MINOR));
 
                 return;
             }
