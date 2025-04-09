@@ -6,7 +6,7 @@ using ProjectColombo.GameInputSystem;
 
 namespace ProjectColombo.UI.HUD
 {
-    public class Currency : MonoBehaviour
+    public class InventoryHUD : MonoBehaviour
     {
         PlayerInventory inventory;
         public TMP_Text currencyAmountText;

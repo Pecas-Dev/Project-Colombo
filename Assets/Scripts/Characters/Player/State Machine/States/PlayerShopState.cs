@@ -22,12 +22,12 @@ namespace ProjectColombo.StateMachine.Player
             stateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Shop);
             Debug.Log("player entered shop state");
 
-            Currency playerInventory = stateMachine.GetComponentInChildren<Currency>();
+            //InventoryHUD playerInventory = stateMachine.GetComponentInChildren<InventoryHUD>();
 
-            if (playerInventory.visible)
-            {
-                playerInventory.ToggleVisability();
-            }
+            //if (playerInventory.visible)
+            //{
+            //    playerInventory.ToggleVisability();
+            //}
         }
 
         public override void Tick(float deltaTime)
@@ -48,12 +48,12 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Exit()
         {
-            Currency playerInventory = stateMachine.GetComponentInChildren<Currency>();
+            //InventoryHUD playerInventory = stateMachine.GetComponentInChildren<InventoryHUD>();
 
-            if (!playerInventory.visible)
-            {
-                playerInventory.ToggleVisability();
-            }
+            //if (!playerInventory.visible)
+            //{
+            //    playerInventory.ToggleVisability();
+            //}
         }
     }
 }
