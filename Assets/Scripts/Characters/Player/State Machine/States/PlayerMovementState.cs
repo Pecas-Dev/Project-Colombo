@@ -5,7 +5,6 @@ namespace ProjectColombo.StateMachine.Player
 {
     public class PlayerMovementState : PlayerBaseState
     {
-        Vector2 movementInput;
         Matrix4x4 isometricMatrix;
 
         public PlayerMovementState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
@@ -15,6 +14,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Enter()
         {
+            stateMachine.currentComboString = "";
             stateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Movement);
             stateMachine.myPlayerAnimator.PlayMovementAnimation();
             stateMachine.gameInputSO.EnableAllInputs();
@@ -26,8 +26,6 @@ namespace ProjectColombo.StateMachine.Player
 
             HandleMovement(deltaTime);
             HandleRotation(deltaTime);
-
-            //HandleAirPhysicsIfNeeded(deltaTime);
 
             UpdateAnimator();
         }

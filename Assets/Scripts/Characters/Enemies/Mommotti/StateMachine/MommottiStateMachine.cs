@@ -70,7 +70,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             }
         }
 
-        public void Impact(Vector3 direction, float knockbackStrength)
+        public void ApplyKnockback(Vector3 direction, float knockbackStrength)
         {
             if (myHealthManager.CurrentHealth <= 0)
             {
@@ -78,10 +78,15 @@ namespace ProjectColombo.StateMachine.Mommotti
             }
 
             myRigidbody.AddForce(direction * knockbackStrength, ForceMode.Impulse);
+        }
+
+        public void SetStaggered()
+        {
             InterruptAttack();
             canAttack = true;
             SwitchState(new MommottiStateStagger(this)); //when attacked switch to attacking
         }
+
 
         void LogMissingReferenceErrors()
         {

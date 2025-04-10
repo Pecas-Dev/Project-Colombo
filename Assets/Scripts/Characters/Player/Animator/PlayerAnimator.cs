@@ -1,15 +1,19 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 
 namespace ProjectColombo.Control
 {
+    [System.Serializable]
+    public class AttackAnimation
+    {
+        public string comboKey;
+        public string animationName;
+    }
+
     public class PlayerAnimator : MonoBehaviour
     {
-        const string PARRY_STATE = "Parry";
-
-
         Animator animator;
-
 
         bool isInParry = false;
         bool isInRoll = false;
@@ -20,10 +24,19 @@ namespace ProjectColombo.Control
         public bool IsInRoll => isInRoll;
         public bool IsInStagger => isInStagger;
 
+        public List<AttackAnimation> attackCombinations;
+        Dictionary<string, string> attackAnimations;
+
 
         void Awake()
         {
             animator = GetComponent<Animator>();
+
+            attackAnimations = new();
+            foreach (AttackAnimation combo in attackCombinations)
+            {
+                attackAnimations[combo.comboKey] = combo.animationName;
+            }
         }
 
         public void UpdateAnimator(float speed, bool isRolling, bool hasMovementInput)
@@ -45,10 +58,18 @@ namespace ProjectColombo.Control
         // Attack
         // ---------------------------------------------------------
         string currentAnimation;
-        public void PlayAttackAnimation(string animationName, float transitionDuration)
+        public void PlayAttackAnimation(string currentCombo, float transitionDuration)
         {
-            currentAnimation = animationName;
-            animator.CrossFadeInFixedTime(animationName, transitionDuration);
+
+            currentAnimation = attackAnimations.GetValueOrDefault(currentCombo, "none");
+
+            if (currentAnimation == "none")
+            {
+                Debug.Log("no animation found");
+                return;
+            }
+
+            animator.CrossFadeInFixedTime(currentAnimation, transitionDuration);
         }
 
         public bool FinishedAttack()
@@ -75,7 +96,7 @@ namespace ProjectColombo.Control
 
 
         // ---------------------------------------------------------
-        // Roll
+        // Block
         // ---------------------------------------------------------
         public void TriggerBlock()
         {

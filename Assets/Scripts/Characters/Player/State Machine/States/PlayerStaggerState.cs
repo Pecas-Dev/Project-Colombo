@@ -17,6 +17,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Enter()
         {
+            stateMachine.currentComboString = "";
             stateMachine.myPlayerAnimator.TriggerStagger();
             stateMachine.gameInputSO.DisableAllInputs();
         }

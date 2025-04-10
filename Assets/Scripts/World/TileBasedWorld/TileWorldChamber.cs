@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using DG.DemiLib;
+using ProjectColombo.GameManagement;
 
 namespace ProjectColombo.LevelManagement
 {
@@ -23,6 +24,15 @@ namespace ProjectColombo.LevelManagement
         List<Directions> entranceDir; //for directions
         List<Vector2> exitsLocal; //for local position in tile coords
         List<Directions> exitDir; //for directions
+
+        public void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                Initialize(transform.position);
+                ActivateChamber();
+            }
+        }
 
         public void Initialize(Vector2 pos)
         {

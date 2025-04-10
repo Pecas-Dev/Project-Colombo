@@ -7,28 +7,43 @@ namespace ProjectColombo.StateMachine.Player
 {
     public class PlayerAttackState : PlayerBaseState
     {
-        Attack attack;
+        bool comboWindowOpened = false;
+        GameGlobals.MusicScale myScale = GameGlobals.MusicScale.NONE;
 
-        public PlayerAttackState(PlayerStateMachine playerStateMachine, int attackIndex) : base(playerStateMachine)
+        bool tooEarly = false;
+        bool hitCombo = false;
+        GameGlobals.MusicScale nextScale = GameGlobals.MusicScale.NONE;
+        
+        public PlayerAttackState(PlayerStateMachine playerStateMachine, GameGlobals.MusicScale scale) : base(playerStateMachine)
         {
-            attack = playerStateMachine.attacks[attackIndex];
+            myScale = scale;
         }
 
         public override void Enter()
         {
             if (!stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.staminaConfig.ComboStaminaCost))
             {
+                Debug.Log("no stamina");
                 stateMachine.SwitchState(new PlayerMovementState(stateMachine));
                 return;
             }
 
+            stateMachine.currentComboString += myScale == GameGlobals.MusicScale.MAJOR ? "M" : "m";
+            Debug.Log(stateMachine.currentComboString);
+            stateMachine.myWeaponAttributes.currentScale = myScale;
+            stateMachine.comboWindowOpen = false;
+
             stateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Attack);
 
-            // We also need to add a "Hold Animation at the End" if button is still pressed.
+            stateMachine.gameInputSO.DisableAllInputsExcept(
+                InputActionType.Roll, 
+                InputActionType.Block, 
+                InputActionType.MajorParry, 
+                InputActionType.MinorParry,
+                InputActionType.MajorAttack,
+                InputActionType.MinorAttack);
 
-            stateMachine.gameInputSO.DisableAllInputsExcept(InputActionType.Roll, InputActionType.Block, InputActionType.MajorParry, InputActionType.MinorParry, InputActionType.MajorAttack, InputActionType.MinorAttack);
-
-            stateMachine.myPlayerAnimator.PlayAttackAnimation(attack.AnimationName, attack.TransitionDuration);
+            stateMachine.myPlayerAnimator.PlayAttackAnimation(stateMachine.currentComboString, 0.3f);
 
             Vector3 zeroVelocity = stateMachine.myRigidbody.linearVelocity;
 
@@ -48,10 +63,49 @@ namespace ProjectColombo.StateMachine.Player
 
             if (stateMachine.myPlayerAnimator.FinishedAttack())
             {
-                stateMachine.SwitchState(new PlayerMovementState(stateMachine));
+                if (hitCombo && !tooEarly)
+                {
+                    stateMachine.SwitchState(new PlayerAttackState(stateMachine, nextScale));
+                    return;
+                }
+                else
+                {
+                    stateMachine.currentComboString = "";
+                    stateMachine.SwitchState(new PlayerMovementState(stateMachine));
+                    return;
+                }
             }
 
-            //TODO: new combo logic
+            if (stateMachine.comboWindowOpen)
+            {
+                if (!comboWindowOpened) comboWindowOpened = true;
+            }
+
+            if (stateMachine.gameInputSO.MajorAttackPressed)
+            {
+                if (!comboWindowOpened)
+                {
+                    tooEarly = true;
+                    Debug.Log("hit too early");
+                }
+
+                stateMachine.gameInputSO.ResetMajorAttackPressed();
+                hitCombo = true;
+                nextScale = GameGlobals.MusicScale.MAJOR;
+            }
+
+            if (stateMachine.gameInputSO.MinorAttackPressed)
+            {
+                if (!comboWindowOpened)
+                {
+                    tooEarly = true;
+                    Debug.Log("hit too early");
+                }
+
+                stateMachine.gameInputSO.ResetMinorAttackPressed();
+                hitCombo = true;
+                nextScale = GameGlobals.MusicScale.MINOR;
+            }
 
             FaceLockedTarget(deltaTime);
             ApplyAttackImpulse();
@@ -59,24 +113,10 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Exit()
         {
+            stateMachine.myWeaponAttributes.currentScale = GameGlobals.MusicScale.NONE;
+            stateMachine.gameInputSO.EnableInput(InputActionType.MajorAttack);
+            stateMachine.gameInputSO.EnableInput(InputActionType.MinorAttack);
             stateMachine.gameInputSO.EnableAllInputs();
-        }
-
-        void ComboAttack(float normalizedTime)
-        {
-            if (attack.ComboStateIndex == -1)
-            {
-                stateMachine.gameInputSO.ResetMajorAttackPressed();
-                return;
-            }
-            if (normalizedTime < attack.ComboAttackTime)
-            {
-                stateMachine.gameInputSO.ResetMajorAttackPressed();
-                return;
-            }
-
-            stateMachine.gameInputSO.ResetMajorAttackPressed();
-            stateMachine.SwitchState(new PlayerAttackState(stateMachine, attack.ComboStateIndex));
         }
 
         void FaceLockedTarget(float deltaTime)
@@ -102,30 +142,6 @@ namespace ProjectColombo.StateMachine.Player
             Quaternion targetRotation = Quaternion.LookRotation(toTarget);
 
             stateMachine.myRigidbody.rotation = Quaternion.RotateTowards(stateMachine.myRigidbody.rotation, targetRotation, stateMachine.myEntityAttributes.rotationSpeedPlayer * deltaTime);
-        }
-
-        void FaceLockedTargetInstant()
-        {
-            var targeter = stateMachine.myTargeter;
-
-            if (targeter == null || !targeter.isTargetingActive || targeter.currentTarget == null)
-            {
-                return;
-            }
-
-            Vector3 toTarget = targeter.currentTarget.transform.position - stateMachine.myRigidbody.position;
-
-            toTarget.y = 0f;
-
-            if (toTarget.sqrMagnitude < 0.0001f)
-            {
-                return;
-            }
-
-            toTarget.Normalize();
-
-            Quaternion targetRotation = Quaternion.LookRotation(toTarget);
-            stateMachine.myRigidbody.rotation = targetRotation;
         }
 
         Vector3 LookForClosestEnemy()
@@ -177,7 +193,6 @@ namespace ProjectColombo.StateMachine.Player
                 if (targetPosition == Vector3.zero) return;
 
                 targetPosition.y = stateMachine.myRigidbody.position.y;
-                //return; // If no target, do nothing
             }
 
             //turn to target

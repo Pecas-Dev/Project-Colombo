@@ -32,7 +32,7 @@ namespace ProjectColombo.Combat
         SphereCollider sphereCollider;
 
 
-        void Awake()
+        void Start()
         {
             gameInputSO = GameManager.Instance.gameInput;
             entityAttributes = GetComponentInParent<EntityAttributes>();

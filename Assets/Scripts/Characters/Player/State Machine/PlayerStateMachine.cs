@@ -26,18 +26,20 @@ namespace ProjectColombo.StateMachine.Player
         [Header("Component References")]
         public Transform weaponHand;
         public Rigidbody myRigidbody;
-        //public Animator myAnimator;
         public Stamina myStamina;
         public PlayerAnimator myPlayerAnimator;
         public EntityAttributes myEntityAttributes;
         public HealthManager myHealthManager;
         public WeaponAttributes myWeaponAttributes;
         public Targeter myTargeter;
-        public Attack[] attacks;
+        //public Attack[] attacks;
 
 
         [Header("Player State")]
         public PlayerState currentState;
+
+        [Header("VFX")]
+        public ParticleSystem comboParticles;
 
         [HideInInspector] public GameInputSO gameInputSO;
 
@@ -50,6 +52,8 @@ namespace ProjectColombo.StateMachine.Player
         [HideInInspector] public bool isParrying = false;
         [HideInInspector] public bool tryParrying = false;
         [HideInInspector] public bool isInRoll = false;
+        [HideInInspector] public bool comboWindowOpen = false;
+        [HideInInspector] public string currentComboString = "";
         [HideInInspector] public ShopKeeper closeShop = null;
 
         void Awake()
@@ -74,7 +78,7 @@ namespace ProjectColombo.StateMachine.Player
             SwapWeapon();
         }
 
-        public void Impact(Vector3 direction, float knockbackStrength)
+        public void ApplyKnockback(Vector3 direction, float knockbackStrength)
         {
             if (GetComponent<HealthManager>().CurrentHealth <= 0)
             {
@@ -82,10 +86,13 @@ namespace ProjectColombo.StateMachine.Player
             }
 
             myRigidbody.AddForce(direction * knockbackStrength, ForceMode.Impulse);
+        }
+
+        public void SetStaggered()
+        {
             myWeaponAttributes.GetComponent<Animator>().SetTrigger("Interrupt");
             SwitchState(new PlayerStaggerState(this)); //when interrupt switch to stagger
         }
-
 
         void OnDisable()
         {
@@ -236,6 +243,27 @@ namespace ProjectColombo.StateMachine.Player
             myWeaponAttributes = GetComponentInChildren<WeaponAttributes>();
             GetComponent<PlayerInventory>().ChangeWeapon(GetComponentInChildren<WeaponAttributes>().name);
             gameInputSO = GameManager.Instance.gameInput;
+        }
+
+        public void OpenComboWindow()
+        {
+            if (currentComboString.Length <= 2)
+            {
+                Debug.Log("combo Window open");
+                comboParticles.Play();
+                comboWindowOpen = true;
+            }
+            else
+            {
+                Debug.Log("third combo already. no opening");
+            }
+        }
+
+        public void CloseComboWindow()
+        {
+            Debug.Log("combo Window closed");
+            comboParticles.Stop();
+            comboWindowOpen = false;
         }
     }
 }

@@ -13,11 +13,16 @@ namespace ProjectColombo.Enemies.UI
         void Start()
         {
             myHealthManager = GetComponentInParent<HealthManager>();
-            transform.position = offset;
+            GetComponent<RectTransform>().position = GetComponentInParent<EntityAttributes>().gameObject.transform.position + offset;
         }
 
         public void UpdateHealthbar(float current, float max)
         {
+            if (current <= 0)
+            {
+                Destroy(this.gameObject);
+            }
+
             float value = current / max;
             GetComponent<Slider>().value = value;
         }
@@ -26,6 +31,7 @@ namespace ProjectColombo.Enemies.UI
         void Update()
         {
             UpdateHealthbar(myHealthManager.currentHealth, myHealthManager.MaxHealth);
+            GetComponent<RectTransform>().position = GetComponentInParent<EntityAttributes>().gameObject.transform.position + offset;
             transform.rotation = UnityEngine.Camera.main.transform.rotation;
         }
     }

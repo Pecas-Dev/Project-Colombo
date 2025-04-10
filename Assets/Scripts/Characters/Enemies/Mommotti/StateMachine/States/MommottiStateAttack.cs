@@ -10,8 +10,6 @@ namespace ProjectColombo.StateMachine.Mommotti
         Vector3 targetDirection;
         float attackCheckTimer = 0;
         float intervallToCheckAttack = 1f;
-        bool doHeavyAttack = false;
-        bool decided = false;
 
         public MommottiStateAttack(MommottiStateMachine stateMachine) : base(stateMachine)
         {
@@ -42,35 +40,9 @@ namespace ProjectColombo.StateMachine.Mommotti
             targetDirection.y = 0;
             float distanceToPlayer = targetDirection.magnitude;
 
-            //decide if heavy or light attack once
-            if (stateMachine.canAttack && !decided)
-            {
-                if (distanceToPlayer > 0.75 * stateMachine.myMommottiAttributes.circleDistance) //this could be adjusted to a heavy attack range
-                {
-                    // Player is further away, use heavy attack
-                    doHeavyAttack = true;
-                }
-                else
-                {
-                    // Player is close enough, use light attack
-                    doHeavyAttack = false;
-                }
-
-                decided = true;
-            }
-
             if (stateMachine.canAttack && !stateMachine.myWeaponAttributes.onCooldown && distanceToPlayer < stateMachine.myWeaponAttributes.reach)
             {
-                if (doHeavyAttack)
-                {
-                    HeavyAttack();
-                }
-                else
-                {
-                    LightAttack();
-                }
-
-                decided = false;
+                Attack();
             }
 
             //rotate towards player
@@ -100,20 +72,8 @@ namespace ProjectColombo.StateMachine.Mommotti
         {
         }
 
-        private void LightAttack()
+        private void Attack()
         {
-            Debug.Log("light attack");
-            stateMachine.myWeaponAttributes.heavyAttack = false; //no impact on light attack
-            stateMachine.myAnimator.SetTrigger("Attack");
-            stateMachine.myWeaponAttributes.onCooldown = true;
-            stateMachine.myWeaponAttributes.isAttacking = true;
-            stateMachine.canAttack = false;
-        }
-
-        private void HeavyAttack()
-        {
-            Debug.Log("heavy attack");
-            stateMachine.myWeaponAttributes.heavyAttack = true; //deal impact on hard attack
             stateMachine.myAnimator.SetTrigger("Attack");
             stateMachine.myWeaponAttributes.onCooldown = true;
             stateMachine.myWeaponAttributes.isAttacking = true;

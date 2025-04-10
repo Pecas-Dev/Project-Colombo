@@ -1,5 +1,5 @@
+using ProjectColombo.GameInputSystem;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 
 namespace ProjectColombo.StateMachine.Player
@@ -18,7 +18,14 @@ namespace ProjectColombo.StateMachine.Player
             Debug.Log("Player entered Blocking State");
 
             stateMachine.isBlocking = true;
-            stateMachine.gameInputSO.DisableAllInputsExcept(GameInputSystem.InputActionType.Block, GameInputSystem.InputActionType.Roll);
+            stateMachine.gameInputSO.DisableAllInputsExcept(
+                InputActionType.Block,
+                InputActionType.Roll,
+                InputActionType.MajorAttack,
+                InputActionType.MinorAttack,
+                InputActionType.MajorParry,
+                InputActionType.MinorParry);
+
         }
 
         public override void Tick(float deltaTime)
