@@ -63,7 +63,7 @@ namespace ProjectColombo.Combat
 
                 if (otherStateMachine != null && targetHealth != null && targetHealth.CurrentHealth > 0)
                 {
-                    otherStateMachine.Impact(attackDirection, leftHandKnockbackForce);
+                    otherStateMachine.ApplyKnockback(attackDirection, leftHandKnockbackForce);
                     targetHealth.TakeDamage(leftHandDamage);
                 }
             }
@@ -111,7 +111,7 @@ namespace ProjectColombo.Combat
 
                 if (otherStateMachine != null && targetHealth != null && targetHealth.CurrentHealth > 0)
                 {
-                    otherStateMachine.Impact(attackDirection, rightHandKnockbackForce);
+                    otherStateMachine.ApplyKnockback(attackDirection, rightHandKnockbackForce);
                     targetHealth.TakeDamage(rightHandDamage);
                 }
             }

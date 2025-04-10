@@ -26,7 +26,6 @@ namespace ProjectColombo.StateMachine.Player
         [Header("Component References")]
         public Transform weaponHand;
         public Rigidbody myRigidbody;
-        //public Animator myAnimator;
         public Stamina myStamina;
         public PlayerAnimator myPlayerAnimator;
         public EntityAttributes myEntityAttributes;
@@ -74,7 +73,7 @@ namespace ProjectColombo.StateMachine.Player
             SwapWeapon();
         }
 
-        public void Impact(Vector3 direction, float knockbackStrength)
+        public void ApplyKnockback(Vector3 direction, float knockbackStrength)
         {
             if (GetComponent<HealthManager>().CurrentHealth <= 0)
             {
@@ -82,10 +81,13 @@ namespace ProjectColombo.StateMachine.Player
             }
 
             myRigidbody.AddForce(direction * knockbackStrength, ForceMode.Impulse);
+        }
+
+        public void SetStaggered()
+        {
             myWeaponAttributes.GetComponent<Animator>().SetTrigger("Interrupt");
             SwitchState(new PlayerStaggerState(this)); //when interrupt switch to stagger
         }
-
 
         void OnDisable()
         {

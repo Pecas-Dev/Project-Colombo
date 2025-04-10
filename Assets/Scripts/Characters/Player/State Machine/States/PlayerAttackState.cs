@@ -177,7 +177,6 @@ namespace ProjectColombo.StateMachine.Player
                 if (targetPosition == Vector3.zero) return;
 
                 targetPosition.y = stateMachine.myRigidbody.position.y;
-                //return; // If no target, do nothing
             }
 
             //turn to target

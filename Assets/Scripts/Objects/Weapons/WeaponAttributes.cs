@@ -111,7 +111,7 @@ namespace ProjectColombo.Combat
                     }
 
                     otherHealth.TakeDamage(damage);
-                    otherStateMachine.Impact(attackDirection, knockback);
+                    otherStateMachine.ApplyKnockback(attackDirection, knockback);
                 }
             }
             else if (ownerTag == "Enemy" && other.CompareTag("Player"))
@@ -141,7 +141,7 @@ namespace ProjectColombo.Combat
                         if (currentScale != otherAttributes.currentScale)
                         {
                             Debug.Log("..with opposite scale -> stagger enemy");
-                            GetComponentInParent<MommottiStateMachine>().Impact(attackDirection, 0); //no knockback but stagger
+                            GetComponentInParent<MommottiStateMachine>().SetStaggered();
                         }
                         else
                         {
@@ -159,6 +159,7 @@ namespace ProjectColombo.Combat
                         }
                     }
 
+                    otherStateMachine.SetStaggered();
                     otherHealth.TakeDamage(damage);
                 }
             }
