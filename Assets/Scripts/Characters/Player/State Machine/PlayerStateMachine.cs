@@ -32,11 +32,14 @@ namespace ProjectColombo.StateMachine.Player
         public HealthManager myHealthManager;
         public WeaponAttributes myWeaponAttributes;
         public Targeter myTargeter;
-        public Attack[] attacks;
+        //public Attack[] attacks;
 
 
         [Header("Player State")]
         public PlayerState currentState;
+
+        [Header("VFX")]
+        public ParticleSystem comboParticles;
 
         [HideInInspector] public GameInputSO gameInputSO;
 
@@ -49,6 +52,8 @@ namespace ProjectColombo.StateMachine.Player
         [HideInInspector] public bool isParrying = false;
         [HideInInspector] public bool tryParrying = false;
         [HideInInspector] public bool isInRoll = false;
+        [HideInInspector] public bool comboWindowOpen = false;
+        [HideInInspector] public string currentComboString = "";
         [HideInInspector] public ShopKeeper closeShop = null;
 
         void Awake()
@@ -238,6 +243,27 @@ namespace ProjectColombo.StateMachine.Player
             myWeaponAttributes = GetComponentInChildren<WeaponAttributes>();
             GetComponent<PlayerInventory>().ChangeWeapon(GetComponentInChildren<WeaponAttributes>().name);
             gameInputSO = GameManager.Instance.gameInput;
+        }
+
+        public void OpenComboWindow()
+        {
+            if (currentComboString.Length <= 2)
+            {
+                Debug.Log("combo Window open");
+                comboParticles.Play();
+                comboWindowOpen = true;
+            }
+            else
+            {
+                Debug.Log("third combo already. no opening");
+            }
+        }
+
+        public void CloseComboWindow()
+        {
+            Debug.Log("combo Window closed");
+            comboParticles.Stop();
+            comboWindowOpen = false;
         }
     }
 }

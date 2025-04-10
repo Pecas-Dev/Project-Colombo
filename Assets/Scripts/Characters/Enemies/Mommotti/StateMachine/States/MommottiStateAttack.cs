@@ -74,7 +74,6 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         private void Attack()
         {
-            Debug.Log("light attack");
             stateMachine.myAnimator.SetTrigger("Attack");
             stateMachine.myWeaponAttributes.onCooldown = true;
             stateMachine.myWeaponAttributes.isAttacking = true;
