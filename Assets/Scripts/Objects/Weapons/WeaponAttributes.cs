@@ -8,10 +8,7 @@ namespace ProjectColombo.Combat
 {
     public class WeaponAttributes : MonoBehaviour
     {
-        public int minDamage;
-        public int maxDamage;
-        public int additionalDamageOnHeavyAttack;
-        public int additionalDamageMissedParry;
+        public int defaultDamage;
 
         public int correctAttackScaleBonusPercentage = 10;
         public int blockDamageReductionPercentage = 10;
@@ -29,7 +26,6 @@ namespace ProjectColombo.Combat
         [SerializeField, ReadOnlyInspector] string ownerTag;
         [HideInInspector] public bool onCooldown;
         [HideInInspector] public bool isAttacking;
-        [HideInInspector] public bool heavyAttack;
         [HideInInspector] public Animator myAnimator;
         [HideInInspector] public GameGlobals.MusicScale currentScale = GameGlobals.MusicScale.NONE;
         ParticleSystem myParticles;
@@ -66,7 +62,7 @@ namespace ProjectColombo.Combat
                 myParticles.Clear();
 
                 var mainModule = myParticles.main;
-                mainModule.startColor = heavyAttack ? Color.red : Color.green;
+                mainModule.startColor = Color.red;
 
                 myParticles.Play();
             }
@@ -74,7 +70,7 @@ namespace ProjectColombo.Combat
 
         private void OnTriggerEnter(Collider other)
         {
-            int damage = Random.Range(minDamage, maxDamage);
+            int damage = defaultDamage;
             Vector3 attackDirection = (other.transform.position - transform.parent.position).normalized; //get direction from user to target
             attackDirection.y = 0.0f; //could be increased to make the hit entity jump a bit
 
@@ -167,8 +163,7 @@ namespace ProjectColombo.Combat
 
         public void AddDamagePercentage(int percentage)
         {
-            minDamage += (int)(percentage / 100 * minDamage);
-            maxDamage += (int)(percentage / 100 * maxDamage);
+            defaultDamage += (int)(percentage / 100 * defaultDamage);
         }
 
         private void AddTemporaryDamagePercentage(int damage, int percentage)
