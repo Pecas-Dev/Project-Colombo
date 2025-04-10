@@ -1,4 +1,5 @@
 using ProjectColombo.GameInputSystem;
+using ProjectColombo.GameManagement;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,10 +9,8 @@ namespace ProjectColombo.Combat
     public class Targeter : MonoBehaviour
     {
         [Header("References")]
-        [Tooltip("Reference to the GameInput script.")]
-        [SerializeField] GameInputSO gameInputScript;
-        [Tooltip("Reference to the EntityAttributes for initial facing direction.")]
-        [SerializeField] EntityAttributes entityAttributes;
+        GameInputSO gameInputSO;
+        EntityAttributes entityAttributes;
 
         [Header("Targeting State")]
         public bool isTargetingActive = false;
@@ -35,20 +34,8 @@ namespace ProjectColombo.Combat
 
         void Awake()
         {
-            if (gameInputScript == null)
-            {
-                Debug.LogError("GameInput reference not found. Please assign it in the inspector!");
-            }
-
-            if (entityAttributes == null)
-            {
-                entityAttributes = GetComponentInParent<EntityAttributes>();
-                if (entityAttributes == null)
-                {
-                    Debug.LogError("EntityAttributes reference not found. Please assign it in the inspector!");
-                }
-            }
-
+            gameInputSO = GameManager.Instance.gameInput;
+            entityAttributes = GetComponentInParent<EntityAttributes>();
             sphereCollider = GetComponent<SphereCollider>();
         }
 
@@ -76,6 +63,10 @@ namespace ProjectColombo.Combat
                     UpdateTargetByInput();
                 }
             }
+            else
+            {
+                currentTarget = null;
+            }
 
             if (targetSwitchTimer > 0)
             {
@@ -85,12 +76,7 @@ namespace ProjectColombo.Combat
 
         void HandleTargetingInput()
         {
-            if (gameInputScript == null)
-            {
-                return;
-            }
-
-            if (gameInputScript.TargetPressed)
+            if (gameInputSO.TargetPressed)
             {
                 if (isTargetingActive)
                 {
@@ -107,10 +93,10 @@ namespace ProjectColombo.Combat
                 }
                 else
                 {
-                    Debug.LogWarning("No targets available to lock on. Targeting not activated.");
+                    Debug.Log("No targets available to lock on. Targeting not activated.");
                 }
 
-                gameInputScript.ResetTargetPressed();
+                gameInputSO.ResetTargetPressed();
             }
         }
 
@@ -147,7 +133,7 @@ namespace ProjectColombo.Combat
                 return;
             }
 
-            Vector2 inputDirection = gameInputScript.TargetPointInput;
+            Vector2 inputDirection = gameInputSO.TargetPointInput;
 
             if (inputDirection.magnitude < MIN_INPUT_MAGNITUDE)
             {

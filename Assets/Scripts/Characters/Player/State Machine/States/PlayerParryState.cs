@@ -20,10 +20,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Tick(float deltaTime)
         {
-            if (!stateMachine.myPlayerAnimator.IsInParry)
-            {
-                stateMachine.SwitchState(new PlayerMovementState(stateMachine));
-            }
+            HandleStateSwitchFromInput();
         }
 
         public override void Exit()

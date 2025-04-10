@@ -115,6 +115,53 @@ namespace ProjectColombo.StateMachine.Player
                 ApplyAirPhysics(deltaTime);
             }
         }
+
+        protected void HandleStateSwitchFromInput()
+        {
+            //set attack states
+            if (stateMachine.gameInputSO.MajorAttackPressed)
+            {
+                stateMachine.gameInputSO.ResetMajorAttackPressed();
+                stateMachine.SwitchState(new PlayerAttackState(stateMachine, 0));
+                return;
+            }
+
+            if (stateMachine.gameInputSO.MinorAttackPressed)
+            {
+                stateMachine.gameInputSO.ResetMinorAttackPressed();
+                stateMachine.SwitchState(new PlayerAttackState(stateMachine, 0));
+                return;
+            }
+
+            //set defense states
+            if (stateMachine.gameInputSO.RollPressed)
+            {
+                stateMachine.gameInputSO.ResetRollPressed();
+                stateMachine.SwitchState(new PlayerRollState(stateMachine));
+                return;
+            }
+
+            if (stateMachine.gameInputSO.BlockPressed)
+            {
+                stateMachine.SwitchState(new PlayerBlockState(stateMachine));
+                return;
+            }
+
+            //set parry states
+            if (stateMachine.gameInputSO.MajorParryPressed)
+            {
+                stateMachine.gameInputSO.ResetMajorParryPressed();
+                stateMachine.SwitchState(new PlayerParryState(stateMachine, GameGlobals.MusicScale.MAJOR));
+                return;
+            }
+
+            if (stateMachine.gameInputSO.MinorParryPressed)
+            {
+                stateMachine.gameInputSO.ResetMinorParryPressed();
+                stateMachine.SwitchState(new PlayerParryState(stateMachine, GameGlobals.MusicScale.MINOR));
+                return;
+            }
+        }
     }
 }
 

@@ -23,15 +23,11 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Tick(float deltaTime)
         {
+            HandleStateSwitchFromInput();
+
             if (!stateMachine.gameInputSO.BlockPressed)
             {
                 stateMachine.SwitchState(new PlayerMovementState(stateMachine));
-                return;
-            }
-
-            if (stateMachine.gameInputSO.RollPressed)
-            {
-                stateMachine.SwitchState(new PlayerRollState(stateMachine));
                 return;
             }
         }

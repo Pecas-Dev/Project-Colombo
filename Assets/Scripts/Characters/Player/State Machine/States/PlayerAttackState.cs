@@ -1,9 +1,6 @@
 using ProjectColombo.GameInputSystem;
 using ProjectColombo.Combat;
-
-using System.Collections.Generic;
 using UnityEngine;
-using NUnit.Framework;
 
 
 namespace ProjectColombo.StateMachine.Player
@@ -11,14 +8,10 @@ namespace ProjectColombo.StateMachine.Player
     public class PlayerAttackState : PlayerBaseState
     {
         Attack attack;
-        Matrix4x4 isometricMatrix;
 
         public PlayerAttackState(PlayerStateMachine playerStateMachine, int attackIndex) : base(playerStateMachine)
         {
             attack = playerStateMachine.attacks[attackIndex];
-
-
-            isometricMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, stateMachine.Angle, 0));
         }
 
         public override void Enter()
@@ -33,7 +26,7 @@ namespace ProjectColombo.StateMachine.Player
 
             // We also need to add a "Hold Animation at the End" if button is still pressed.
 
-            stateMachine.gameInputSO.DisableAllInputsExcept(InputActionType.Roll, InputActionType.MajorParry, InputActionType.MajorAttack);
+            stateMachine.gameInputSO.DisableAllInputsExcept(InputActionType.Roll, InputActionType.Block, InputActionType.MajorParry, InputActionType.MinorParry, InputActionType.MajorAttack, InputActionType.MinorAttack);
 
             stateMachine.myPlayerAnimator.PlayAttackAnimation(attack.AnimationName, attack.TransitionDuration);
 
@@ -51,36 +44,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Tick(float deltaTime)
         {
-            if (stateMachine.gameInputSO.RollPressed)
-            {
-                stateMachine.gameInputSO.ResetRollPressed();
-                stateMachine.SwitchState(new PlayerRollState(stateMachine));
-
-                return;
-            }
-
-            if (stateMachine.gameInputSO.BlockPressed)
-            {
-                stateMachine.SwitchState(new PlayerBlockState(stateMachine));
-
-                return;
-            }
-
-            if (stateMachine.gameInputSO.MajorParryPressed)
-            {
-                stateMachine.gameInputSO.ResetMajorParryPressed();
-                stateMachine.SwitchState(new PlayerParryState(stateMachine, GameGlobals.MusicScale.MAJOR));
-
-                return;
-            }
-
-            if (stateMachine.gameInputSO.MinorParryPressed)
-            {
-                stateMachine.gameInputSO.ResetMinorParryPressed();
-                stateMachine.SwitchState(new PlayerParryState(stateMachine, GameGlobals.MusicScale.MINOR));
-
-                return;
-            }
+            HandleStateSwitchFromInput(); //extracted inputs to base state to remove repetition, 
 
             if (stateMachine.myPlayerAnimator.FinishedAttack())
             {
@@ -88,7 +52,6 @@ namespace ProjectColombo.StateMachine.Player
             }
 
             //TODO: new combo logic
- 
 
             FaceLockedTarget(deltaTime);
             ApplyAttackImpulse();
@@ -171,7 +134,7 @@ namespace ProjectColombo.StateMachine.Player
 
             if (enemies.Length == 0)
             {
-                return Vector3.forward;
+                return Vector3.zero;
             }
 
             Vector3 myPosition = stateMachine.transform.position;
@@ -209,9 +172,12 @@ namespace ProjectColombo.StateMachine.Player
             }
             else
             {
-               targetPosition = LookForClosestEnemy();
-               targetPosition.y = stateMachine.myRigidbody.position.y;
-               //return; // If no target, do nothing
+                targetPosition = LookForClosestEnemy();
+
+                if (targetPosition == Vector3.zero) return;
+
+                targetPosition.y = stateMachine.myRigidbody.position.y;
+                //return; // If no target, do nothing
             }
 
             //turn to target
@@ -245,11 +211,6 @@ namespace ProjectColombo.StateMachine.Player
                 float retreatSpeed = stateMachine.myEntityAttributes.attackImpulseForce;
                 stateMachine.myRigidbody.MovePosition(stateMachine.myRigidbody.position + directionAwayFromTarget * retreatSpeed * Time.deltaTime);
             }
-        }
-
-        private Vector3 TransformDirectionToIsometric(Vector3 direction)
-        {
-            return isometricMatrix.MultiplyVector(direction).normalized;
         }
     }
 }

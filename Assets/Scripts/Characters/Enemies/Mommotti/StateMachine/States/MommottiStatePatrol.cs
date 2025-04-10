@@ -65,6 +65,7 @@ namespace ProjectColombo.StateMachine.Mommotti
                 }
 
                 Node currentNode = stateMachine.myPathfindingAlgorythm.GetNode(stateMachine.transform.position);
+
                 if (currentNode.walkable)
                 {
                     lastWalkableNode = currentNode;
@@ -78,11 +79,13 @@ namespace ProjectColombo.StateMachine.Mommotti
                 lastWalkableNode = currentPath[pathIndex];
                 movingDirection = currentPath[pathIndex].worldPosition - stateMachine.transform.position;
 
-                if (movingDirection.magnitude < stateMachine.myEntityAttributes.moveSpeed * deltaTime) // Reached current path node
-                {
+                float nodeReachThreshold = 0.1f; // Or 0.2f if your nodes are spaced wider
+
+                if (movingDirection.magnitude <= nodeReachThreshold)
+                { 
                     pathIndex++;
 
-                    if (pathIndex == currentPath.Count)
+                    if (pathIndex >= currentPath.Count)
                     {
                         currentPath = null;
                         pathIndex = 0;
