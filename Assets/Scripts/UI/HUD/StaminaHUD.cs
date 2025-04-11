@@ -18,7 +18,6 @@ namespace ProjectColombo.UI.HUD
 
         private void Update()
         {
-            //UpdateText();
             UpdateVisuals();
         }
 
@@ -57,15 +56,15 @@ namespace ProjectColombo.UI.HUD
 
         void UpdateVisuals()
         {
+            float current = myStamina.currentStamina;
+            
             for (int i = 0; i < indicators.Count; i++)
             {
-                float current = myStamina.currentStamina;
-                
-                if (current > i)
+                if (current >= i + 1)
                 {
                     indicators[i].GetComponentInChildren<StaminaIndicator>().UpdateDisplay(1);
                 }
-                else if (current > i - 1)
+                else if (current > i)
                 {
                     indicators[i].GetComponentInChildren<StaminaIndicator>().UpdateDisplay(current % 1);
                 }
