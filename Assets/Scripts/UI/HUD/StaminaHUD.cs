@@ -19,6 +19,7 @@ namespace ProjectColombo.UI.HUD
         private void Update()
         {
             UpdateVisuals();
+            UpdateText();
         }
 
         public void Reset()
@@ -51,7 +52,7 @@ namespace ProjectColombo.UI.HUD
 
         void UpdateText()
         {
-            staminaText.text = myStamina.currentStamina + " / " + myStamina.maxStamina;
+            staminaText.text = Mathf.FloorToInt(myStamina.currentStamina) + " / " + myStamina.maxStamina;
         }
 
         void UpdateVisuals()
