@@ -63,24 +63,25 @@ namespace ProjectColombo.StateMachine.Player
 
             if (stateMachine.myPlayerAnimator.FinishedAttack())
             {
-                if (hitCombo && !tooEarly)
-                {
-                    stateMachine.SwitchState(new PlayerAttackState(stateMachine, nextScale));
-                    return;
-                }
-                else
-                {
-                    stateMachine.currentComboString = "";
-                    stateMachine.SwitchState(new PlayerMovementState(stateMachine));
-                    return;
-                }
+                stateMachine.currentComboString = "";
+                stateMachine.SwitchState(new PlayerMovementState(stateMachine));
+                return;
             }
 
+            //check if the combo window has opened
             if (stateMachine.comboWindowOpen)
             {
                 if (!comboWindowOpened) comboWindowOpened = true;
             }
 
+            //if combo window is closed again and the conditions are right switch to next attack
+            if (!stateMachine.comboWindowOpen && comboWindowOpened)
+            {
+                CheckComboSwitch();
+            }
+
+
+            //handle inputs
             if (stateMachine.gameInputSO.MajorAttackPressed)
             {
                 if (!comboWindowOpened)
@@ -117,6 +118,15 @@ namespace ProjectColombo.StateMachine.Player
             stateMachine.gameInputSO.EnableInput(InputActionType.MajorAttack);
             stateMachine.gameInputSO.EnableInput(InputActionType.MinorAttack);
             stateMachine.gameInputSO.EnableAllInputs();
+        }
+
+        void CheckComboSwitch()
+        {
+            if (hitCombo && !tooEarly)
+            {
+                stateMachine.SwitchState(new PlayerAttackState(stateMachine, nextScale));
+                return;
+            }
         }
 
         void FaceLockedTarget(float deltaTime)
