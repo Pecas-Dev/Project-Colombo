@@ -1,11 +1,8 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
 using System.Collections.Generic;
-using System;
 using ProjectColombo.Inventory;
-using UnityEditor.UIElements;
-using UnityEngine.EventSystems;
+
 
 namespace ProjectColombo.Shop
 {
