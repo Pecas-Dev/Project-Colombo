@@ -21,6 +21,11 @@ namespace ProjectColombo.Enemies.Mommotti
             TileWorldChamber myChamber = GetComponentInParent<TileWorldChamber>();
             myGridManager = myChamber.GetComponentInChildren<GridManager>();
 
+            if (myGridManager == null)
+            {
+                Debug.Log("Mommotti Spawn Point grid == null");
+            }
+
             int amountOfEnemies = Random.Range(minAmountEnemies, maxAmountEnemies + 1);
 
             if (enemyType == null || amountOfEnemies == 0)

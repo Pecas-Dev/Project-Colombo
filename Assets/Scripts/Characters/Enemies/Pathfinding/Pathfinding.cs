@@ -1,3 +1,4 @@
+using ProjectColombo.Enemies.Mommotti;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,11 +8,13 @@ namespace ProjectColombo.Enemies.Pathfinding
     {
         public GridManager gridManager;
 
-        private void Awake()
+        private void Start()
         {
+            gridManager = GetComponent<MommottiAttributes>().myGridManager;
+
             if (gridManager == null)
             {
-                gridManager = GameObject.Find("GridManager").GetComponent<GridManager>();
+                Debug.Log("Pathfinding Grid manager == null");
             }
         }
 

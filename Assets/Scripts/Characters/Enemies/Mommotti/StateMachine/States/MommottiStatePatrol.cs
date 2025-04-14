@@ -43,6 +43,11 @@ namespace ProjectColombo.StateMachine.Mommotti
             }
 
 
+            if (stateMachine.myPathfindingAlgorythm.gridManager == null) //safe keeping i think there is just a timing issue :D
+            {
+                return;
+            }
+
             lastWalkableNode = stateMachine.myPathfindingAlgorythm.GetNode(stateMachine.transform.position);
             SetTarget(GetNextPatrolPoint());
             pathIndex = 0;
@@ -97,6 +102,12 @@ namespace ProjectColombo.StateMachine.Mommotti
                     RotateTowardsTarget(currentPath[pathIndex].worldPosition, deltaTime, rotationSpeed);
                     MoveToTarget(currentPath[pathIndex].worldPosition, deltaTime, patrolSpeed);
                 }
+            }
+            else
+            {
+                currentPath = null;
+                pathIndex = 0;
+                SetTarget(GetNextPatrolPoint());
             }
         }
 

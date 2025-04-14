@@ -51,6 +51,7 @@ namespace ProjectColombo.Enemies.Pathfinding
 
         private void Start()
         {
+            showGizmos = true;
             CreateGrid();
         }
         public void CreateGrid()
