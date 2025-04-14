@@ -12,6 +12,20 @@ namespace ProjectColombo.LevelManagement
         public List<GameObject> secondLayerModuls;
         public float secondLayerHeight = 5;
 
+        private void Start()
+        {
+            PlaceRandomFromList(baseModuls, 0);
+            PlaceRandomFromList(firstLayerModuls, baseModuleHeight);
+            PlaceRandomFromList(secondLayerModuls, baseModuleHeight + firstLayerHeight);
+        }
 
+        void PlaceRandomFromList(List<GameObject> list, float heightOffset)
+        {
+            int rand = Random.Range(0, list.Count);
+            Vector3 pos = new(transform.position.x, transform.position.y + heightOffset, transform.position.z);
+            Quaternion rot = transform.rotation;
+
+            Instantiate(list[rand], pos, rot);
+        }
     }
 }
