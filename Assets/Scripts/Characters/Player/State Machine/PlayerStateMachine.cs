@@ -32,7 +32,6 @@ namespace ProjectColombo.StateMachine.Player
         public HealthManager myHealthManager;
         public WeaponAttributes myWeaponAttributes;
         public Targeter myTargeter;
-        //public Attack[] attacks;
 
 
         [Header("Player State")]

@@ -20,6 +20,9 @@ namespace ProjectColombo.GameManagement
 
         private void Awake()
         {
+            Cursor.visible = false;            // Hide the cursor
+            Cursor.lockState = CursorLockMode.Locked; // Lock the cursor to the center of the screen (optional)
+            
             gameInput.Initialize();
 
             if (Instance != null && Instance != this)

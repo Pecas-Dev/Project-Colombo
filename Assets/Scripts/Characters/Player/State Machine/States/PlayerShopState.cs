@@ -20,6 +20,9 @@ namespace ProjectColombo.StateMachine.Player
         public override void Enter()
         {
             stateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Shop);
+            stateMachine.myRigidbody.linearVelocity = Vector3.zero;
+            stateMachine.myPlayerAnimator.UpdateAnimator(0, false, false);
+            stateMachine.myPlayerAnimator.PlayMovementAnimation();
             Debug.Log("player entered shop state");
 
             //InventoryHUD playerInventory = stateMachine.GetComponentInChildren<InventoryHUD>();
