@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UIElements;
 
 namespace ProjectColombo.LevelManagement
 {
@@ -159,7 +160,6 @@ namespace ProjectColombo.LevelManagement
         Tilemap world;
         TileWorldPathAlgorythm algorythm;
         List<List<Vector2>> paths = new();
-
         List<GameObject> createdChambers = new();
 
         private void Start()
