@@ -1,6 +1,8 @@
 using ProjectColombo.GameInputSystem;
 using ProjectColombo.Combat;
 using UnityEngine;
+using Unity.VisualScripting;
+using System.Collections.Generic;
 
 
 namespace ProjectColombo.StateMachine.Player
@@ -10,9 +12,11 @@ namespace ProjectColombo.StateMachine.Player
         bool comboWindowOpened = false;
         GameGlobals.MusicScale myScale = GameGlobals.MusicScale.NONE;
 
-        bool tooEarly = false;
+        //bool tooEarly = false; removed for now but might come back
         bool hitCombo = false;
         GameGlobals.MusicScale nextScale = GameGlobals.MusicScale.NONE;
+
+        GameObject currentTarget;
         
         public PlayerAttackState(PlayerStateMachine playerStateMachine, GameGlobals.MusicScale scale) : base(playerStateMachine)
         {
@@ -54,13 +58,11 @@ namespace ProjectColombo.StateMachine.Player
 
             var targeter = stateMachine.myTargeter;
 
-            ApplyAttackImpulse();
+            currentTarget = GetClosestTarget();
         }
 
         public override void Tick(float deltaTime)
         {
-            HandleStateSwitchFromInput(); //extracted inputs to base state to remove repetition, 
-
             if (stateMachine.myPlayerAnimator.FinishedAttack())
             {
                 stateMachine.currentComboString = "";
@@ -84,45 +86,53 @@ namespace ProjectColombo.StateMachine.Player
             //handle inputs
             if (stateMachine.gameInputSO.MajorAttackPressed)
             {
-                if (!comboWindowOpened)
-                {
-                    tooEarly = true;
-                    Debug.Log("hit too early");
-                }
+                //if (!comboWindowOpened)
+                //{
+                //    tooEarly = true;
+                //    Debug.Log("hit too early");
+                //}
 
                 stateMachine.gameInputSO.ResetMajorAttackPressed();
                 hitCombo = true;
                 nextScale = GameGlobals.MusicScale.MAJOR;
+                return;
             }
 
             if (stateMachine.gameInputSO.MinorAttackPressed)
             {
-                if (!comboWindowOpened)
-                {
-                    tooEarly = true;
-                    Debug.Log("hit too early");
-                }
+                //if (!comboWindowOpened)
+                //{
+                //    tooEarly = true;
+                //    Debug.Log("hit too early");
+                //}
 
                 stateMachine.gameInputSO.ResetMinorAttackPressed();
                 hitCombo = true;
                 nextScale = GameGlobals.MusicScale.MINOR;
+                return;
             }
 
             FaceLockedTarget(deltaTime);
             ApplyAttackImpulse();
+            HandleStateSwitchFromInput(); //extracted inputs to base state to remove repetition, 
         }
 
         public override void Exit()
         {
+            Debug.Log("exit attack state");
             stateMachine.myWeaponAttributes.currentScale = GameGlobals.MusicScale.NONE;
-            stateMachine.gameInputSO.EnableInput(InputActionType.MajorAttack);
-            stateMachine.gameInputSO.EnableInput(InputActionType.MinorAttack);
+
+            if (stateMachine.comboWindowOpen)
+            {
+                stateMachine.CloseComboWindow();
+            }
+
             stateMachine.gameInputSO.EnableAllInputs();
         }
 
         void CheckComboSwitch()
         {
-            if (hitCombo && !tooEarly)
+            if (hitCombo)// && !tooEarly)
             {
                 stateMachine.SwitchState(new PlayerAttackState(stateMachine, nextScale));
                 return;
@@ -131,52 +141,60 @@ namespace ProjectColombo.StateMachine.Player
 
         void FaceLockedTarget(float deltaTime)
         {
+            Transform target = null;
             var targeter = stateMachine.myTargeter;
 
-            if (targeter == null || !targeter.isTargetingActive || targeter.currentTarget == null)
+            if (targeter != null && targeter.isTargetingActive && targeter.currentTarget != null)
             {
-                return;
+                target = targeter.currentTarget.transform;
+            }
+            else if (currentTarget != null)
+            {
+                target = currentTarget.transform;
             }
 
-            Vector3 toTarget = targeter.currentTarget.transform.position - stateMachine.myRigidbody.position;
+            if (target == null) return;
 
+            Vector3 toTarget = target.position - stateMachine.myRigidbody.position;
             toTarget.y = 0f;
 
-            if (toTarget.sqrMagnitude < 0.0001f)
-            {
-                return;
-            }
+            if (toTarget.sqrMagnitude < 0.0001f) return;
 
             toTarget.Normalize();
-
             Quaternion targetRotation = Quaternion.LookRotation(toTarget);
 
-            stateMachine.myRigidbody.rotation = Quaternion.RotateTowards(stateMachine.myRigidbody.rotation, targetRotation, stateMachine.myEntityAttributes.rotationSpeedPlayer * deltaTime);
+            stateMachine.myRigidbody.rotation = Quaternion.RotateTowards(
+                stateMachine.myRigidbody.rotation,
+                targetRotation,
+                stateMachine.myEntityAttributes.rotationSpeedPlayer * deltaTime
+            );
         }
 
-        Vector3 LookForClosestEnemy()
+        GameObject GetClosestTarget()
         {
-            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            List<GameObject> enemies = new List<GameObject>(GameObject.FindGameObjectsWithTag("Enemy"));
+            enemies.AddRange(GameObject.FindGameObjectsWithTag("Destroyable")); //also lock to vases and stuff
 
-            if (enemies.Length == 0)
+
+            if (enemies.Count == 0)
             {
-                return Vector3.zero;
+                return null;
             }
 
             Vector3 myPosition = stateMachine.transform.position;
-            Vector3 closestPosition = myPosition;
-            float closestDistance = Mathf.Infinity;
+            GameObject closestTarget = null;
+            float closestDistance = 5; //adjust this number to make auto lock range
 
             foreach (GameObject e in enemies)
             {
                 if ((e.transform.position - myPosition).magnitude < closestDistance)
                 {
-                    closestPosition = e.transform.position;
+                    closestTarget = e;
                     closestDistance = (e.transform.position - myPosition).magnitude;
                 }
             }
 
-            return closestPosition;
+            return closestTarget;
         }
 
         void ApplyAttackImpulse()
@@ -194,17 +212,17 @@ namespace ProjectColombo.StateMachine.Player
             if (targeter != null && targeter.isTargetingActive && targeter.currentTarget != null)
             {
                 targetPosition = targeter.currentTarget.transform.position;
-                targetPosition.y = stateMachine.myRigidbody.position.y;
+            }
+            else if (currentTarget != null)
+            {
+                targetPosition = currentTarget.transform.position;
             }
             else
             {
-                targetPosition = LookForClosestEnemy();
-
-                if (targetPosition == Vector3.zero) return;
-
-                targetPosition.y = stateMachine.myRigidbody.position.y;
+                return;
             }
 
+            targetPosition.y = stateMachine.transform.position.y;
             //turn to target
             Quaternion targetRotation = Quaternion.LookRotation(targetPosition - stateMachine.transform.position);
             stateMachine.myRigidbody.rotation = targetRotation;
