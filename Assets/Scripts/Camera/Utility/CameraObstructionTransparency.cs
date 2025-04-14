@@ -21,6 +21,11 @@ namespace ProjectColombo.Camera
 
         private void Update()
         {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                Start();
+            }
+
             foreach (GameObject g in obstructingElements)
             {
                 MakeTransparent(g);

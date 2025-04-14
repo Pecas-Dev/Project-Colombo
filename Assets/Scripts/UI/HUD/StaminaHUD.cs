@@ -27,7 +27,7 @@ namespace ProjectColombo.UI.HUD
             myStamina = GetComponentInParent<Stamina>();
             indicators = new List<GameObject>();
 
-            Debug.Log("max Stamina: " + myStamina.maxStamina);
+            //Debug.Log("max Stamina: " + myStamina.maxStamina);
 
             RectTransform firstRT = firstIndicator.GetComponent<RectTransform>();
             Vector2 firstPos = firstRT.anchoredPosition;
