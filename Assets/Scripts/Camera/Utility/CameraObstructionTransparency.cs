@@ -6,35 +6,21 @@ namespace ProjectColombo.Camera
 {
     public class CameraObstructionTransparency : MonoBehaviour
     {
-        Transform playerTransform;
-        Transform cameraTransform;
-        List<GameObject> obstructingElements;
-        List<GameObject> oldObstructingElements;
+        public List<GameObject> obstructingElements;
+        public List<GameObject> oldObstructingElements;
 
-        float timer;
-        public float checkInterval = 0.2f;
         public float targetOpacity = 0.0f;
         public float opacityChange = 0.1f;
         public LayerMask obstructingLayers;
 
         private void Start()
         {
-            playerTransform = GameObject.Find("Player").transform;
-            cameraTransform = GameObject.Find("Main Camera").transform;
             obstructingElements = new List<GameObject>();
             oldObstructingElements = new List<GameObject>();
         }
 
         private void Update()
         {
-            timer += Time.deltaTime;
-
-            if (timer >= checkInterval)
-            {
-                CheckForObstructingElements();
-                timer = 0;
-            }
-
             foreach (GameObject g in obstructingElements)
             {
                 MakeTransparent(g);
@@ -49,35 +35,27 @@ namespace ProjectColombo.Camera
             }
         }
 
-        private void CheckForObstructingElements()
+        private void OnTriggerEnter(Collider other)
         {
-            Vector3 origin = playerTransform.position;
-            Vector3 direction = cameraTransform.position - origin;
-
-            RaycastHit[] hits = Physics.RaycastAll(origin, direction.normalized, direction.magnitude);
-
-            List<GameObject> newHits = new();
-
-            foreach (RaycastHit hit in hits)
+            if (((1 << other.gameObject.layer) & obstructingLayers) != 0)
             {
-                if (((1 << hit.collider.gameObject.layer) & obstructingLayers) != 0)
+                if (!obstructingElements.Contains(other.gameObject))
                 {
-                    GameObject obj = hit.collider.gameObject;
-                    newHits.Add(obj);
+                    obstructingElements.Add(other.gameObject);
                 }
             }
+        }
 
-            foreach (GameObject obj in obstructingElements)
+        private void OnTriggerExit(Collider other)
+        {
+            if (((1 << other.gameObject.layer) & obstructingLayers) != 0)
             {
-                if (!newHits.Contains(obj))
+                if (obstructingElements.Contains(other.gameObject))
                 {
-                    oldObstructingElements.Add(obj);
+                    obstructingElements.Remove(other.gameObject);
+                    oldObstructingElements.Add(other.gameObject);
                 }
             }
-
-            obstructingElements = newHits;
-
-            Debug.DrawRay(origin, direction, Color.red, 0.1f);
         }
 
         private void MakeTransparent(GameObject g)

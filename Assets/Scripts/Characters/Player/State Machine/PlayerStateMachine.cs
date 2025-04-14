@@ -248,19 +248,19 @@ namespace ProjectColombo.StateMachine.Player
         {
             if (currentComboString.Length <= 2)
             {
-                Debug.Log("combo Window open");
+                //Debug.Log("combo Window open");
                 comboParticles.Play();
                 comboWindowOpen = true;
             }
             else
             {
-                Debug.Log("third combo already. no opening");
+                //Debug.Log("third combo already. no opening");
             }
         }
 
         public void CloseComboWindow()
         {
-            Debug.Log("combo Window closed");
+            //Debug.Log("combo Window closed");
             comboParticles.Stop();
             comboWindowOpen = false;
         }

@@ -119,7 +119,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Exit()
         {
-            Debug.Log("exit attack state");
+            //Debug.Log("exit attack state");
             stateMachine.myWeaponAttributes.currentScale = GameGlobals.MusicScale.NONE;
 
             if (stateMachine.comboWindowOpen)
