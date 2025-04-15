@@ -10,22 +10,41 @@ namespace ProjectColombo.LevelManagement
         public List<GameObject> firstLayerModuls;
         public float firstLayerHeight = 5;
         public List<GameObject> secondLayerModuls;
-        public float secondLayerHeight = 5;
+
+        public int minNumberOfMiddleModules = 0;
+        public int maxNumberOfMiddleModules = 3;
+        float currentHeightOffset = 0;
 
         private void Start()
         {
-            PlaceRandomFromList(baseModuls, 0);
-            PlaceRandomFromList(firstLayerModuls, baseModuleHeight);
-            PlaceRandomFromList(secondLayerModuls, baseModuleHeight + firstLayerHeight);
+            foreach (Transform child in transform)
+            {
+                Destroy(child.gameObject);
+            }
+
+            int rand = Random.Range(minNumberOfMiddleModules, maxNumberOfMiddleModules + 1);
+
+            PlaceRandomFromList(baseModuls, baseModuleHeight);
+
+            for (int i = 0; i < rand; i++)
+            {
+                PlaceRandomFromList(firstLayerModuls, firstLayerHeight);
+            }
+
+            PlaceRandomFromList(secondLayerModuls, currentHeightOffset);
         }
 
         void PlaceRandomFromList(List<GameObject> list, float heightOffset)
         {
             int rand = Random.Range(0, list.Count);
-            Vector3 pos = new(transform.position.x, transform.position.y + heightOffset, transform.position.z);
-            Quaternion rot = transform.rotation;
+            currentHeightOffset += heightOffset;
 
-            Instantiate(list[rand], pos, rot);
+            GameObject module = Instantiate(list[rand]);
+            module.transform.SetParent(transform, false); // false keeps local transform intact
+            module.transform.localPosition = new Vector3(0, heightOffset, 0);
+            module.transform.localRotation = Quaternion.identity;
+
+            Debug.Log(heightOffset);
         }
     }
 }

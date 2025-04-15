@@ -6,13 +6,14 @@ namespace ProjectColombo.LevelManagement
 {
     public class HouseRandomizer : MonoBehaviour
     {
-        public List<Mesh> buildingVariants;
+        public List<GameObject> buildingVariants;
 
         private void Start()
         {
             int rand = Random.Range(0, buildingVariants.Count);
 
-            GetComponent<MeshFilter>().mesh = buildingVariants[rand];
+            Instantiate(buildingVariants[rand], transform.position, transform.rotation);
+            Destroy(this.gameObject);
         }
     }
 }
