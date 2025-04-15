@@ -26,8 +26,15 @@ namespace ProjectColombo.Camera
                 Start();
             }
 
-            foreach (GameObject g in obstructingElements)
+            for (int i = obstructingElements.Count - 1; i >= 0; i--)
             {
+                GameObject g = obstructingElements[i];
+                if (g == null)
+                {
+                    obstructingElements.RemoveAt(i);
+                    continue;
+                }
+
                 MakeTransparent(g);
             }
 
@@ -92,8 +99,6 @@ namespace ProjectColombo.Camera
             }
             else
             {
-                SetMaterialOpaque(renderer);
-
                 oldObstructingElements.Remove(g);
                 return true;
             }
@@ -102,29 +107,26 @@ namespace ProjectColombo.Camera
         private void SetMaterialTransparent(Renderer renderer)
         {
             Material material = renderer.material;
-            if (material.renderQueue == 3000) return;
+            if (material == null) return;
 
-            material.SetInt("_SrcBlend", (int)BlendMode.SrcAlpha);
-            material.SetInt("_DstBlend", (int)BlendMode.OneMinusSrcAlpha);
+            // Mark the surface as transparent (URP)
+            material.SetFloat("_Surface", 1); // 1 = Transparent
+            material.SetOverrideTag("RenderType", "Transparent");
+            material.renderQueue = (int)RenderQueue.Transparent;
+
+            // Make sure blending is enabled properly
+            material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
             material.SetInt("_ZWrite", 0);
-            material.DisableKeyword("_ALPHATEST_ON");
+
+            // URP transparency keywords
+            material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            material.DisableKeyword("_SURFACE_TYPE_OPAQUE");
+            material.DisableKeyword("_ALPHATEST_ON"); // optional unless using cutout
+            material.EnableKeyword("_ALPHAPREMULTIPLY_ON"); // optional, depending on how you want the blend
+
+            // This is key: force the GPU to recompile material with updated properties
             material.EnableKeyword("_ALPHABLEND_ON");
-            material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-            material.renderQueue = 3000;
-        }
-
-        private void SetMaterialOpaque(Renderer renderer)
-        {
-            Material material = renderer.material;
-            if (material.renderQueue == 2000) return;
-
-            material.SetInt("_SrcBlend", (int)BlendMode.One);
-            material.SetInt("_DstBlend", (int)BlendMode.Zero);
-            material.SetInt("_ZWrite", 1);
-            material.DisableKeyword("_ALPHATEST_ON");
-            material.DisableKeyword("_ALPHABLEND_ON");
-            material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-            material.renderQueue = 2000;
         }
     }
 }
