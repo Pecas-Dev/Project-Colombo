@@ -40,8 +40,10 @@ namespace ProjectColombo.LevelManagement
 
             GameObject module = Instantiate(list[rand]);
             module.transform.SetParent(transform, false); // false keeps local transform intact
-            module.transform.localPosition = new Vector3(0, 0, currentHeightOffset);
-            module.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            module.transform.localPosition = new Vector3(0, currentHeightOffset, 0);
+            module.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+            module.AddComponent<BoxCollider>();
+            module.layer = 6;
 
             currentHeightOffset += heightOffset;
         }
