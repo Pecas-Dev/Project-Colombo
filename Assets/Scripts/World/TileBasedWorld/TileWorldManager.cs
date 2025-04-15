@@ -284,14 +284,14 @@ namespace ProjectColombo.LevelManagement
             TileWorldChamber myChamber = result.GetComponent<TileWorldChamber>();
 
             //align even chamberes
-            if (myChamber.chamberSize.x % 2 == 0) result.transform.position = new(result.transform.position.x - tilesize / 2, result.transform.position.y, result.transform.position.z);
-            if (myChamber.chamberSize.y % 2 == 0) result.transform.position = new(result.transform.position.x, result.transform.position.y, result.transform.position.z - tilesize / 2);
+            if (myChamber.chamberSize.x % 2 == 0) result.transform.position = new((float)(result.transform.position.x - tilesize / 2f), result.transform.position.y, result.transform.position.z);
+            if (myChamber.chamberSize.y % 2 == 0) result.transform.position = new(result.transform.position.x, result.transform.position.y, (float)(result.transform.position.z - tilesize / 2f));
 
             myChamber.Initialize(position);
 
             if (myChamber.CheckAndBlockOnTilemap(position, world))
             {
-                Vector3 startPos = new Vector3(position.x * tilesize, 0, position.y * tilesize);
+                Vector3 startPos = new Vector3(position.x * (float)tilesize, 0, position.y * (float)tilesize);
                 result.transform.position = result.transform.position + startPos;
                 list.Add(result);
             }
