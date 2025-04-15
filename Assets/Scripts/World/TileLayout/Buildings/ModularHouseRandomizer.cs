@@ -37,14 +37,13 @@ namespace ProjectColombo.LevelManagement
         void PlaceRandomFromList(List<GameObject> list, float heightOffset)
         {
             int rand = Random.Range(0, list.Count);
-            currentHeightOffset += heightOffset;
 
             GameObject module = Instantiate(list[rand]);
             module.transform.SetParent(transform, false); // false keeps local transform intact
-            module.transform.localPosition = new Vector3(0, heightOffset, 0);
+            module.transform.localPosition = new Vector3(0, 0, currentHeightOffset);
             module.transform.localRotation = Quaternion.identity;
 
-            Debug.Log(heightOffset);
+            currentHeightOffset += heightOffset;
         }
     }
 }
