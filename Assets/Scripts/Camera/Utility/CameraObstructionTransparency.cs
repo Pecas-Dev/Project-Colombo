@@ -77,11 +77,11 @@ namespace ProjectColombo.Camera
 
             SetMaterialTransparent(renderer);
 
-            Color color = renderer.material.color;
-            if (color.a > targetOpacity)
+            float currentTransparency = renderer.material.GetFloat("_Transparency");
+            if (currentTransparency > targetOpacity)
             {
-                color.a = Mathf.Max(targetOpacity, color.a - opacityChange * Time.deltaTime);
-                renderer.material.color = color;
+                currentTransparency = Mathf.Max(targetOpacity, currentTransparency - opacityChange * Time.deltaTime);
+                renderer.material.SetFloat("_Transparency", currentTransparency);
             }
         }
 
@@ -90,11 +90,11 @@ namespace ProjectColombo.Camera
             Renderer renderer = g.GetComponent<Renderer>();
             if (renderer == null) return false;
 
-            Color color = renderer.material.color;
-            if (color.a < 1)
+            float currentTransparency = renderer.material.GetFloat("_Transparency");
+            if (currentTransparency < 1)
             {
-                color.a = Mathf.Min(1, color.a + opacityChange * Time.deltaTime);
-                renderer.material.color = color;
+                currentTransparency = Mathf.Min(1, currentTransparency + opacityChange * Time.deltaTime);
+                renderer.material.SetFloat("_Transparency", currentTransparency);
                 return false;
             }
             else
@@ -109,24 +109,24 @@ namespace ProjectColombo.Camera
             Material material = renderer.material;
             if (material == null) return;
 
-            // Mark the surface as transparent (URP)
-            material.SetFloat("_Surface", 1); // 1 = Transparent
-            material.SetOverrideTag("RenderType", "Transparent");
-            material.renderQueue = (int)RenderQueue.Transparent;
+            //// Mark the surface as transparent (URP)
+            //material.SetFloat("_Surface", 1); // 1 = Transparent
+            //material.SetOverrideTag("RenderType", "Transparent");
+            //material.renderQueue = (int)RenderQueue.Transparent;
 
-            // Make sure blending is enabled properly
-            material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-            material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-            material.SetInt("_ZWrite", 0);
+            //// Make sure blending is enabled properly
+            //material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            //material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            //material.SetInt("_ZWrite", 0);
 
-            // URP transparency keywords
-            material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-            material.DisableKeyword("_SURFACE_TYPE_OPAQUE");
-            material.DisableKeyword("_ALPHATEST_ON"); // optional unless using cutout
-            material.EnableKeyword("_ALPHAPREMULTIPLY_ON"); // optional, depending on how you want the blend
+            //// URP transparency keywords
+            //material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            //material.DisableKeyword("_SURFACE_TYPE_OPAQUE");
+            //material.DisableKeyword("_ALPHATEST_ON"); // optional unless using cutout
+            //material.EnableKeyword("_ALPHAPREMULTIPLY_ON"); // optional, depending on how you want the blend
 
-            // This is key: force the GPU to recompile material with updated properties
-            material.EnableKeyword("_ALPHABLEND_ON");
+            //// This is key: force the GPU to recompile material with updated properties
+            //material.EnableKeyword("_ALPHABLEND_ON");
         }
     }
 }
