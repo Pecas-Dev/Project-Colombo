@@ -211,7 +211,7 @@ namespace ProjectColombo.LevelManagement
             {
                 if (!c.GetComponent<TileWorldChamber>().exitsConnected)
                 {
-                    int index = Random.Range(0, firstLayerChambers.Count);
+                    int index = Random.Range(0, secondLayerChambers.Count);
 
                     paths.Add(CreatePath(c, secondLayerChambers[index]));
                 }
