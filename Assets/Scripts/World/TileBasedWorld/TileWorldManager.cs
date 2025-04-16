@@ -173,19 +173,21 @@ namespace ProjectColombo.LevelManagement
             Vector2 endChamberTilePos = new(worldWidth - 1, Mathf.RoundToInt(worldHeight/2));
             TryToMakeChamber(endChamber, endChamberTilePos, createdChambers);
 
-
+            int startY = (int)(startChamberTilePos.y - chamberAmountFirstLayer / 2 * 3 + 1);
             //create first layer chambers
             for (int i = 0; i < chamberAmountFirstLayer; i++)
             {
-                Vector2 position = new(5, i * 5 + 3);
+                Vector2 position = new(3, startY + i * 4);
                 int index = Random.Range(0, chamberVariants.Count);
                 TryToMakeChamber(chamberVariants[index], position, firstLayerChambers);
             }
 
+            startY = (int)(startChamberTilePos.y - chamberAmountSecondLayer / 2 * 3 + 1);
+
             //create second layer chambers
             for (int i = 0; i < chamberAmountSecondLayer; i++)
             {
-                Vector2 position = new(10, i * 5 + 3);
+                Vector2 position = new(7, startY + i * 4);
                 int index = Random.Range(0, chamberVariants.Count);
                 TryToMakeChamber(chamberVariants[index], position, secondLayerChambers);
             }
