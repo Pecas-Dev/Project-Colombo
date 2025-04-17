@@ -5,12 +5,12 @@ namespace ProjectColombo.LevelManagement
 {
     public class TileWorldEndSceneTrigger : MonoBehaviour
     {
-        public int nextScene = 0;
-
         private void OnTriggerEnter(Collider other)
         {
             if (other.gameObject.CompareTag("Player"))
             {
+                int nextScene = SceneManager.GetActiveScene().buildIndex + 1;
+
                 if (nextScene >= 0 && nextScene < SceneManager.sceneCountInBuildSettings)
                 {
                     SceneManager.LoadScene(nextScene);

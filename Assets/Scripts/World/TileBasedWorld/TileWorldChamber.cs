@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using DG.DemiLib;
 using ProjectColombo.GameManagement;
+using Unity.VisualScripting;
 
 namespace ProjectColombo.LevelManagement
 {
@@ -19,6 +20,9 @@ namespace ProjectColombo.LevelManagement
         [HideInInspector] public Vector2 chamberTilePosition = new();
         [HideInInspector] public bool entrancesConnected = false;
         [HideInInspector] public bool exitsConnected = false;
+        bool isActive = false;
+        float timer = 0;
+        float checkIntervall = 1f;
 
         List<Vector2> entrancesLocal; //for local position in tile coords
         List<Directions> entranceDir; //for directions
@@ -31,6 +35,29 @@ namespace ProjectColombo.LevelManagement
             {
                 Initialize(transform.position);
                 ActivateChamber();
+            }
+
+
+            if (isActive)
+            {
+                timer += Time.deltaTime;
+
+                if (timer >= checkIntervall)
+                {
+                    GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+                    if (enemies.Length <= 0)
+                    {
+                        foreach (GameObject exit in exits)
+                        {
+                            exit.GetComponent<BoxCollider>().isTrigger = true;
+                        }
+
+                        isActive = false;
+                    }
+
+                    timer = 0;
+                }
             }
         }
 
@@ -64,7 +91,8 @@ namespace ProjectColombo.LevelManagement
                 entrancesLocal.Add(localPos);
                 entranceDir.Add((Directions)((entrance.transform.eulerAngles.y+180) % 360));
                 //Debug.Log(entranceDir[0] + ": " + GetEntranceCoord().GetRealPos());
-                entrance.SetActive(false);
+                entrance.GetComponent<MeshRenderer>().enabled = false ;
+                entrance.GetComponent<BoxCollider>().isTrigger = true;
             }
 
             foreach (GameObject exit in exits)
@@ -81,7 +109,8 @@ namespace ProjectColombo.LevelManagement
                 exitsLocal.Add(localPos);
                 exitDir.Add((Directions)exit.transform.eulerAngles.y);
                 //Debug.Log(exitDir[0] + ": " + GetExitCoord().GetRealPos());
-                exit.SetActive(false);
+                exit.GetComponent<MeshRenderer>().enabled = false;
+                exit.GetComponent<BoxCollider>().isTrigger = true;
             }
         }
 
@@ -91,6 +120,18 @@ namespace ProjectColombo.LevelManagement
             {
                 spawner.SetActive(true);
             }
+
+            foreach (GameObject entrance in entrances)
+            {
+                entrance.GetComponent<BoxCollider>().isTrigger = false;
+            }
+
+            foreach (GameObject exit in exits)
+            {
+                exit.GetComponent<BoxCollider>().isTrigger = false;
+            }
+
+            isActive = true;
         }
 
         Vector2 LocalToWorldCoord(Vector2 local)

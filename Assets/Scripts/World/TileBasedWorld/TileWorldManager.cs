@@ -141,8 +141,9 @@ namespace ProjectColombo.LevelManagement
         int tilesize = GameGlobals.TILESIZE;
 
         //data
-        public int worldWidth = 15;
-        public int worldHeight = 15;   
+        int worldHeight = 20;
+        int worldWidth = 0;
+        int chamberOffset = 4;
 
         public List<GameObject> chamberVariants;
         public List<GameObject> ICorridors;
@@ -151,11 +152,9 @@ namespace ProjectColombo.LevelManagement
         public List<GameObject> XCorridors;
         public GameObject startChamber;
         public GameObject endChamber;
+        public List<int> layersOfChambers;
 
-        public int chamberAmountFirstLayer = 2;
-        List<GameObject> firstLayerChambers = new();
-        public int chamberAmountSecondLayer = 3;
-        List<GameObject> secondLayerChambers = new();
+        List<List<GameObject>> chamberLayers = new();
 
         Tilemap world;
         TileWorldPathAlgorythm algorythm;
@@ -165,59 +164,50 @@ namespace ProjectColombo.LevelManagement
         private void Start()
         {
             algorythm = GetComponent<TileWorldPathAlgorythm>();
+            worldWidth = 2 * chamberOffset + layersOfChambers.Count * chamberOffset;
+
             world.CreateTilemap(worldWidth, worldHeight);
 
-            Vector2 startChamberTilePos = new(0, Mathf.RoundToInt(worldHeight / 2));
+            Vector2 startChamberTilePos = new(1, Mathf.RoundToInt(worldHeight / 2));
             TryToMakeChamber(startChamber, startChamberTilePos, createdChambers);
 
-            Vector2 endChamberTilePos = new(worldWidth - 1, Mathf.RoundToInt(worldHeight/2));
+            Vector2 endChamberTilePos = new(chamberOffset + layersOfChambers.Count * chamberOffset, Mathf.RoundToInt(worldHeight / 2));
             TryToMakeChamber(endChamber, endChamberTilePos, createdChambers);
 
-            int startY = (int)(startChamberTilePos.y - chamberAmountFirstLayer / 2 * 3 + 1);
-            //create first layer chambers
-            for (int i = 0; i < chamberAmountFirstLayer; i++)
+            for (int layer = 0; layer < layersOfChambers.Count; layer++)
             {
-                Vector2 position = new(3, startY + i * 4);
-                int index = Random.Range(0, chamberVariants.Count);
-                TryToMakeChamber(chamberVariants[index], position, firstLayerChambers);
-            }
+                List<GameObject> currentLayer = new();
+                int chamberCount = layersOfChambers[layer];
 
-            startY = (int)(startChamberTilePos.y - chamberAmountSecondLayer / 2 * 3 + 1);
+                int posX = chamberOffset * layer + chamberOffset; //start + currentlayer
+                int posY = (int)(startChamberTilePos.y - (chamberCount / 2f) * chamberOffset + 3); //move down to centralize
+                
+                //create  layer chambers
+                for (int i = 0; i < chamberCount; i++)
+                {
+                    Vector2 position = new(posX, posY);
+                    int index = Random.Range(0, chamberVariants.Count);
+                    TryToMakeChamber(chamberVariants[index], position, currentLayer);
+                    posY += chamberOffset;
+                }
 
-            //create second layer chambers
-            for (int i = 0; i < chamberAmountSecondLayer; i++)
-            {
-                Vector2 position = new(7, startY + i * 4);
-                int index = Random.Range(0, chamberVariants.Count);
-                TryToMakeChamber(chamberVariants[index], position, secondLayerChambers);
+                chamberLayers.Add(currentLayer);
             }
 
             //connect first layer to entrance
-            foreach (GameObject c in firstLayerChambers)
+            foreach (GameObject c in chamberLayers[0])
             {
                 paths.Add(CreatePath(createdChambers[0], c));
             }
 
-            //connect each second layer to first layer
-            foreach (GameObject c in secondLayerChambers)
+            //connect layers to one another
+            for (int i = 0; i < chamberLayers.Count - 1; i++)
             {
-                int index = Random.Range(0, firstLayerChambers.Count);
-
-                paths.Add(CreatePath(firstLayerChambers[index], c));
+                ConnectLayers(chamberLayers[i], chamberLayers[i + 1]);
             }
 
-            //connect all open exits from first layer
-            foreach (GameObject c in firstLayerChambers)
-            {
-                if (!c.GetComponent<TileWorldChamber>().exitsConnected)
-                {
-                    int index = Random.Range(0, secondLayerChambers.Count);
-
-                    paths.Add(CreatePath(c, secondLayerChambers[index]));
-                }
-            }
-
-            foreach (GameObject c in secondLayerChambers)
+            //connect last layer to exit
+            foreach (GameObject c in chamberLayers[^1]) //^1 means last
             {
                 paths.Add(CreatePath(c, createdChambers[1]));
             }
@@ -230,6 +220,30 @@ namespace ProjectColombo.LevelManagement
             if (Input.GetKeyDown(KeyCode.R))
             {
                 ReRollWorld();
+            }
+        }
+
+        void ConnectLayers(List<GameObject> firstLayer, List<GameObject> secondLayer)
+        {
+            int currentIndexFirst = 0;
+            int currentIndexSecond = 0;
+
+            //Debug.Log("firstlayer: " + firstLayer.Count + ", " + currentIndexFirst);
+            //Debug.Log("firstlayer: " + secondLayer.Count + ", " + currentIndexSecond);
+
+            while (currentIndexFirst < firstLayer.Count || currentIndexSecond < secondLayer.Count)
+            {
+                //in case one is smaller as the other they need to be set back to their last chamber
+                if (currentIndexFirst == firstLayer.Count) currentIndexFirst--;
+                if (currentIndexSecond == secondLayer.Count) currentIndexSecond--;
+
+                //Debug.Log("firstlayer: " + firstLayer.Count + ", " + currentIndexFirst);
+                //Debug.Log("firstlayer: " + secondLayer.Count + ", " + currentIndexSecond);
+
+                paths.Add(CreatePath(firstLayer[currentIndexFirst], secondLayer[currentIndexSecond]));
+
+                currentIndexFirst++;
+                currentIndexSecond++;
             }
         }
 
@@ -423,17 +437,15 @@ namespace ProjectColombo.LevelManagement
             }
             createdChambers.Clear(); // Clear the chamber list
 
-            foreach (GameObject chamber in firstLayerChambers)
+            foreach (var layer in chamberLayers)
             {
-                Destroy(chamber);
+                foreach (GameObject chamber in layer)
+                {
+                    Destroy(chamber);
+                }
             }
-            firstLayerChambers.Clear(); // Clear the chamber list
 
-            foreach (GameObject chamber in secondLayerChambers)
-            {
-                Destroy(chamber);
-            }
-            secondLayerChambers.Clear(); // Clear the chamber list
+            chamberLayers = new();
 
             // Destroy all GameObjects with TileWorldCorridor attached to them
             TileWorldCorridor[] allCorridors = FindObjectsByType<TileWorldCorridor>(FindObjectsSortMode.None);
