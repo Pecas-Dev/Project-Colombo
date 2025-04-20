@@ -31,7 +31,7 @@ namespace ProjectColombo.StateMachine.Player
 
             if (timer > 2)
             {
-                SceneManager.LoadScene(3);
+                SceneManager.LoadScene(5);
             }
         }
 

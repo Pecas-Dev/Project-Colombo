@@ -62,9 +62,21 @@ namespace ProjectColombo.Combat
                 myParticles.Clear();
 
                 var mainModule = myParticles.main;
-                mainModule.startColor = Color.red;
 
-                myParticles.Play();
+                if (currentScale == GameGlobals.MusicScale.MAJOR)
+                {
+                    mainModule.startColor = Color.green;
+                }
+                else if (currentScale == GameGlobals.MusicScale.MINOR)
+                {
+                    mainModule.startColor = Color.blue;
+                }
+                else
+                {
+                    mainModule.startColor = Color.red;
+                }
+
+                    myParticles.Play();
             }
         }
 

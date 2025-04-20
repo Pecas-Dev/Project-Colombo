@@ -104,13 +104,14 @@ namespace ProjectColombo.LevelManagement
 
                 localPos.x = Mathf.RoundToInt(localPos.x); //round to int
                 localPos.y = Mathf.RoundToInt(localPos.y); //round to int
+
                 //Debug.Log("Exit: " + exit.transform.position + "Global: " + chamberTilePosition + localPos);
 
                 exitsLocal.Add(localPos);
                 exitDir.Add((Directions)exit.transform.eulerAngles.y);
                 //Debug.Log(exitDir[0] + ": " + GetExitCoord().GetRealPos());
                 exit.GetComponent<MeshRenderer>().enabled = false;
-                exit.GetComponent<BoxCollider>().isTrigger = true;
+                exit.GetComponent<BoxCollider>().isTrigger = false; //all exits are locked from the get go
             }
         }
 

@@ -89,6 +89,8 @@ namespace ProjectColombo.StateMachine.Player
 
         public void SetStaggered()
         {
+            if (currentState == PlayerState.Block) return;
+
             myWeaponAttributes.GetComponent<Animator>().SetTrigger("Interrupt");
             SwitchState(new PlayerStaggerState(this)); //when interrupt switch to stagger
         }
