@@ -12,15 +12,6 @@ namespace ProjectColombo.Objects.Charms
         [TextArea] public string charmDescription;
         [TextArea] public string charmLore;
 
-        private void Start()
-        {
-            Equip();
-        }
-
-        private void OnDestroy()
-        {
-            Remove();
-        }
 
         public abstract void Equip();
         public abstract void Remove();
