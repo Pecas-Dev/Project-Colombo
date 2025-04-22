@@ -49,7 +49,8 @@ namespace ProjectColombo.GameInputSystem
         public bool PausePressed { get; private set; } = false;
 
         InputActionType allowedInputs = InputActionType.All;
-        InputSystem_Actions playerInputActions;
+
+        public InputSystem_Actions playerInputActions;
 
         public void Initialize()
         {

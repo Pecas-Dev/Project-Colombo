@@ -18,9 +18,16 @@ namespace ProjectColombo.GameManagement
         public GameObject firstSelectedButton;
         public bool gameIsPaused = false;
 
+        // SCENE NAMES
+
+        static string MAIN_MENU = "2_MainMenu";
+        static string MAIN_MENU_2 = "00_MainMenu";
+
+        //------------
+
         private void Awake()
         {
-            Cursor.visible = false;            // Hide the cursor
+            //Cursor.visible = false;            // Hide the cursor
             Cursor.lockState = CursorLockMode.Locked; // Lock the cursor to the center of the screen (optional)
             
             gameInput.Initialize();
@@ -51,6 +58,21 @@ namespace ProjectColombo.GameManagement
                 }
 
                 gameInput.ResetPausePressed();
+            }
+
+            if(SceneManager.GetActiveScene().name == MAIN_MENU || SceneManager.GetActiveScene().name == MAIN_MENU_2)
+            {
+                gameInput.EnableUIMode();
+            }
+
+            if (gameInput.playerInputActions.Player.enabled == false)
+            {
+                Debug.Log("Player is dead now, come back later");
+            }
+
+            if (gameInput.playerInputActions.UI.enabled == true)
+            {
+                Debug.Log("It's UI Time! (:");
             }
         }
 
