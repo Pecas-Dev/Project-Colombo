@@ -1,4 +1,5 @@
 using ProjectColombo.Combat;
+using ProjectColombo.GameManagement.Events;
 using System.Data;
 using UnityEngine;
 
@@ -28,7 +29,9 @@ namespace ProjectColombo.Inventory.Collectable
             switch (myData.type)
             {
                 case CollectableData.CollectibleType.Currency:
-                    playerInventory.AddCurrency(Random.Range(myData.minAmount, myData.maxAmount));
+                    int amount = Random.Range(myData.minAmount, myData.maxAmount);
+                    playerInventory.AddCurrency(amount);
+                    CustomEvents.CoinsCollected(amount);
                     break;
 
                 case CollectableData.CollectibleType.Charm:

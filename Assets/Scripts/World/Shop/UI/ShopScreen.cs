@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 using ProjectColombo.Inventory;
+using ProjectColombo.GameManagement.Events;
 
 
 namespace ProjectColombo.Shop
@@ -71,6 +72,7 @@ namespace ProjectColombo.Shop
         public void BuyItem(ItemToSell item)
         {
             playerInventory.currencyAmount -= item.price;
+            CustomEvents.ItemPurchased(item.price);
             Instantiate(item.item, playerInventory.transform.position, Quaternion.identity); //spawn bought item
             //Debug.Log("instantiate " + item.item.name + " at " + playerInventory.transform.position);
             currentPlayerCurrency.text = playerInventory.currencyAmount.ToString(); //update text

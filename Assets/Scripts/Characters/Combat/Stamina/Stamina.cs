@@ -1,3 +1,4 @@
+using ProjectColombo.GameManagement.Events;
 using ProjectColombo.UI.HUD;
 using UnityEngine;
 
@@ -33,12 +34,25 @@ namespace ProjectColombo.Combat
 
         void RegenerateStamina(float deltaTime)
         {
-            // How much stamina to regenerate based on the configured rate
-            float regenerationAmount = staminaConfig.StaminaRegenerationRate * deltaTime; // Apply frame time (Time.deltaTime)
+            // Calculate the stamina to regenerate this frame
+            float regenerationAmount = staminaConfig.StaminaRegenerationRate * deltaTime;
 
-            // Add the regeneration amount but make sure we don't exceed max stamina
+            // Store the old integer value of stamina
+            int oldStaminaInt = Mathf.FloorToInt(currentStamina);
+
+            // Regenerate stamina but cap it at max
             currentStamina = Mathf.Min(currentStamina + regenerationAmount, staminaConfig.MaxStaminaPoints);
+
+            // Store the new integer value of stamina
+            int newStaminaInt = Mathf.FloorToInt(currentStamina);
+
+            // Fire event for every integer increase
+            for (int i = oldStaminaInt + 1; i <= newStaminaInt; i++)
+            {
+                CustomEvents.StaminaRegenerated();
+            }
         }
+
 
         public bool HasEnoughStamina(float staminaCost)
         {
@@ -56,6 +70,7 @@ namespace ProjectColombo.Combat
             if (Mathf.FloorToInt(currentStamina) >= staminaCost)
             {
                 currentStamina -= staminaCost;
+                CustomEvents.StaminaUsed();
                 return true;
             }
 

@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using ProjectColombo.StateMachine.Mommotti;
 using ProjectColombo.StateMachine.Player;
+using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Camera;
 
 namespace ProjectColombo.Combat
@@ -119,6 +120,7 @@ namespace ProjectColombo.Combat
                     }
 
                     otherHealth.TakeDamage(damage);
+                    CustomEvents.DamageDelt(damage, currentScale, otherHealth);
                     otherStateMachine.ApplyKnockback(attackDirection, knockback);
                 }
             }
@@ -139,6 +141,7 @@ namespace ProjectColombo.Combat
                         Debug.Log("Player blocked incoming attack");
 
                         AddTemporaryDamagePercentage(damage, -blockDamageReductionPercentage);
+                        CustomEvents.DamageBlocked(damage, currentScale, otherHealth);
                     }
                     else if (otherStateMachine.isParrying)
                     {
@@ -155,20 +158,27 @@ namespace ProjectColombo.Combat
                         {
                             Debug.Log("..but not the opposite scale");
                         }
+
+                        CustomEvents.SuccessfullParry(currentScale);
                     }
                     else if (otherStateMachine.tryParrying)
                     {
                         Debug.Log("Player missed parry");
+                        bool sameScale = true;
 
                         if (currentScale != otherAttributes.currentScale)
                         {
                             Debug.Log("..with opposite scale -> extra damage");
                             AddTemporaryDamagePercentage(damage, missedParryPaneltyPercentage);
+                            sameScale = false;
                         }
+
+                        CustomEvents.FailedParry(damage, currentScale, otherHealth, sameScale);
                     }
 
                     otherStateMachine.SetStaggered();
                     otherHealth.TakeDamage(damage);
+                    CustomEvents.DamageReceived(damage, currentScale, otherHealth);
                 }
             }
         }

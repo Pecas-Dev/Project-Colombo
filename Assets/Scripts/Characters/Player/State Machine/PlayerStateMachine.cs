@@ -5,6 +5,7 @@ using ProjectColombo.GameInputSystem;
 using ProjectColombo.Shop;
 using ProjectColombo.Inventory;
 using UnityEngine;
+using ProjectColombo.GameManagement.Events;
 
 
 namespace ProjectColombo.StateMachine.Player
@@ -198,6 +199,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public void EnterShopState(GameObject shop)
         {
+            CustomEvents.ShopOpen();
             if (currentState == PlayerState.Movement)
             {
                 SwitchState(new PlayerShopState(this, shop));
@@ -206,6 +208,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public void ExitShopState()
         {
+            CustomEvents.ShopClose();
             if (currentState == PlayerState.Shop)
             {
                 SwitchState(new PlayerMovementState(this));

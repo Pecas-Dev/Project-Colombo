@@ -21,9 +21,6 @@ namespace ProjectColombo.Combat
         public delegate void OnHealthChanged(int currentHealth, int maxHealth);
         public event OnHealthChanged HealthChanged;
 
-        public delegate void OnDeath();
-        public event OnDeath Died;
-
         void Awake()
         {
             currentHealth = maxHealth;
@@ -63,7 +60,7 @@ namespace ProjectColombo.Combat
         public void AddHealthPercentage(int percentage)
         {
             maxHealth += (int)(percentage/100f * maxHealth);
-            currentHealth += (int)(percentage/100f * currentHealth);
+            currentHealth += (int)(percentage/100f * maxHealth);
         }
 
         void Die()
@@ -77,8 +74,6 @@ namespace ProjectColombo.Combat
             {
                 Destroy(this.gameObject);
             }
-
-            Died?.Invoke();
         }
     }
 }

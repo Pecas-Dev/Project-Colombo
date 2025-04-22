@@ -1,0 +1,106 @@
+using UnityEngine;
+using System;
+using ProjectColombo.Combat;
+
+namespace ProjectColombo.GameManagement.Events
+{
+    public class CustomEvents : MonoBehaviour
+    {
+        public static event Action<int, GameGlobals.MusicScale, HealthManager> OnDamageDelt;
+        public static event Action<int, GameGlobals.MusicScale, HealthManager> OnDamageReceived;
+        public static event Action OnEnemyDeath;
+        public static event Action OnPlayerDeath;
+        public static event Action<GameGlobals.MusicScale> OnSuccessfullParry;
+        public static event Action<int, GameGlobals.MusicScale, HealthManager, bool> OnParryFailed;
+        public static event Action<int, GameGlobals.MusicScale, HealthManager> OnDamageBlocked;
+        public static event Action OnShopOpen;
+        public static event Action OnShopClose;
+        public static event Action<int> OnItemPurchase;
+        public static event Action<int> OnCoinsCollected;
+        public static event Action OnStaminaRegenerated;
+        public static event Action OnStaminaUsed;
+
+        public static void DamageDelt(int damage, GameGlobals.MusicScale scale, HealthManager enemyHealthManager)
+        {
+            OnDamageDelt?.Invoke(damage, scale, enemyHealthManager);
+        }
+
+        public static void DamageReceived(int damage, GameGlobals.MusicScale scale, HealthManager playerHealthManager)
+        {
+            OnDamageReceived?.Invoke(damage, scale, playerHealthManager);
+        }
+
+        public static void EnemyDied()
+        {
+            OnEnemyDeath?.Invoke();
+        }
+
+        public static void PlayerDied()
+        {
+            OnPlayerDeath?.Invoke();
+        }
+
+        public static void SuccessfullParry(GameGlobals.MusicScale scale)
+        {
+            OnSuccessfullParry?.Invoke(scale);
+        }
+
+        public static void FailedParry(int damage, GameGlobals.MusicScale scale, HealthManager playerHealthManager, bool sameScale)
+        {
+            OnParryFailed?.Invoke(damage, scale, playerHealthManager, sameScale);
+        }
+
+        public static void DamageBlocked(int damage, GameGlobals.MusicScale scale, HealthManager playerHealthManager)
+        {
+            OnDamageBlocked?.Invoke(damage, scale, playerHealthManager);
+        }
+
+        public static void ShopOpen()
+        {
+            OnShopOpen?.Invoke();
+        }
+
+        public static void ShopClose()
+        {
+            OnShopClose?.Invoke();
+        }
+
+        public static void ItemPurchased(int price)
+        {
+            OnItemPurchase?.Invoke(price);
+        }
+
+        public static void CoinsCollected(int amount)
+        {
+            OnCoinsCollected?.Invoke(amount);
+        }
+
+        public static void StaminaRegenerated()
+        {
+            OnStaminaRegenerated?.Invoke();
+        }
+
+        public static void StaminaUsed()
+        {
+            OnStaminaUsed?.Invoke();
+        }
+
+
+        //maybe have to use this?
+        public static void ResetAllEvents()
+        {
+            OnDamageDelt = null;
+            OnDamageReceived = null;
+            OnEnemyDeath = null;
+            OnPlayerDeath = null;
+            OnSuccessfullParry = null;
+            OnParryFailed = null;
+            OnDamageBlocked = null;
+            OnShopOpen = null;
+            OnItemPurchase = null;
+            OnCoinsCollected = null;
+            OnStaminaRegenerated = null;
+            OnStaminaUsed = null;
+        }
+    }
+}

@@ -4,6 +4,7 @@ using ProjectColombo.Combat;
 using UnityEngine;
 using ProjectColombo.StateMachine.Mommotti;
 using UnityEngine.SceneManagement;
+using ProjectColombo.GameManagement.Events;
 
 
 namespace ProjectColombo.StateMachine.Player
@@ -19,6 +20,7 @@ namespace ProjectColombo.StateMachine.Player
         public override void Enter()
         {
             stateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Dead);
+            CustomEvents.PlayerDied();
             stateMachine.myPlayerAnimator.TriggerDeath();
             Debug.Log("Player entered Death State");
 
