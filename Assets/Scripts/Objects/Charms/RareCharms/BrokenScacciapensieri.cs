@@ -10,12 +10,12 @@ namespace ProjectColombo.Objects.Charms
         public int damageIncreaseMajor = 4;
         public int damageIncreaseMinor = 12;
         public int moveSpeedIncrease = 6;
-        float defaultSpeed;
+        float speedIncrease;
 
         public override void Equip()
         {
-            defaultSpeed = GetComponentInParent<EntityAttributes>().moveSpeed;
-            GetComponentInParent<EntityAttributes>().moveSpeed += defaultSpeed / 100f * moveSpeedIncrease;
+            speedIncrease = GetComponentInParent<EntityAttributes>().moveSpeed / 100f * moveSpeedIncrease;
+            GetComponentInParent<EntityAttributes>().moveSpeed += speedIncrease;
 
             CustomEvents.OnDamageDelt += IncreaseDamage;
             
@@ -38,7 +38,7 @@ namespace ProjectColombo.Objects.Charms
 
         public override void Remove()
         {
-            GetComponentInParent<EntityAttributes>().moveSpeed = defaultSpeed;
+            GetComponentInParent<EntityAttributes>().moveSpeed -= speedIncrease;
             CustomEvents.OnDamageDelt -= IncreaseDamage;
         }
     }

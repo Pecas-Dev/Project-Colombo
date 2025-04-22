@@ -8,18 +8,18 @@ namespace ProjectColombo.Objects.Charms
     public class MarbleCannolo : BaseCharm
     {
         public int staminaRegenIncrease = 10;
-        float defaultSpeed;
+        float value;
 
         public override void Equip()
         {
-            defaultSpeed = GetComponentInParent<Stamina>().regenSpeed;
-            GetComponentInParent<Stamina>().regenSpeed += defaultSpeed / 100f * staminaRegenIncrease;
+            value = GetComponentInParent<Stamina>().regenSpeed/ 100f * staminaRegenIncrease;
+            GetComponentInParent<Stamina>().regenSpeed += value;
         }
 
 
         public override void Remove()
         {
-            GetComponentInParent<Stamina>().regenSpeed = defaultSpeed;
+            GetComponentInParent<Stamina>().regenSpeed -= value;
         }
     }
 }

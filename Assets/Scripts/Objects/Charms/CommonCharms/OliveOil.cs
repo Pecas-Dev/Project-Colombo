@@ -6,17 +6,17 @@ namespace ProjectColombo.Objects.Charms
     public class OliveOil : BaseCharm
     {
         public int movementSpeedIncrease = 8;
-        float defaultMoveSpeed;
+        float value;
 
         public override void Equip()
         {
-            defaultMoveSpeed = GetComponentInParent<EntityAttributes>().moveSpeed;
-            GetComponentInParent<EntityAttributes>().moveSpeed += defaultMoveSpeed / 100 * movementSpeedIncrease;
+            value = GetComponentInParent<EntityAttributes>().moveSpeed / 100 * movementSpeedIncrease;
+            GetComponentInParent<EntityAttributes>().moveSpeed += value;
         }
 
         public override void Remove()
         {
-            GetComponentInParent<EntityAttributes>().moveSpeed = defaultMoveSpeed;
+            GetComponentInParent<EntityAttributes>().moveSpeed -= value;
         }
     }
 }
