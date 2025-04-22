@@ -119,8 +119,8 @@ namespace ProjectColombo.Combat
                         Debug.Log("..but not the opposite scale");
                     }
 
-                    otherHealth.TakeDamage(damage);
                     CustomEvents.DamageDelt(damage, currentScale, otherHealth);
+                    otherHealth.TakeDamage(damage);
                     otherStateMachine.ApplyKnockback(attackDirection, knockback);
                 }
             }
@@ -176,9 +176,9 @@ namespace ProjectColombo.Combat
                         CustomEvents.FailedParry(damage, currentScale, otherHealth, sameScale);
                     }
 
+                    CustomEvents.DamageReceived(damage, currentScale, otherHealth);
                     otherStateMachine.SetStaggered();
                     otherHealth.TakeDamage(damage);
-                    CustomEvents.DamageReceived(damage, currentScale, otherHealth);
                 }
             }
         }
