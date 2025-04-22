@@ -13,10 +13,12 @@ namespace ProjectColombo.Combat
 
         [HideInInspector] public int maxStamina = 0;
         [HideInInspector] public float currentStamina = 0f;
+        [HideInInspector] public float regenSpeed;
 
 
         void Start()
         {
+            regenSpeed = staminaConfig.StaminaRegenerationRate;
             maxStamina = (int)staminaConfig.MaxStaminaPoints;
             currentStamina = staminaConfig.MaxStaminaPoints;
 
@@ -35,7 +37,7 @@ namespace ProjectColombo.Combat
         void RegenerateStamina(float deltaTime)
         {
             // Calculate the stamina to regenerate this frame
-            float regenerationAmount = staminaConfig.StaminaRegenerationRate * deltaTime;
+            float regenerationAmount = regenSpeed * deltaTime;
 
             // Store the old integer value of stamina
             int oldStaminaInt = Mathf.FloorToInt(currentStamina);

@@ -63,6 +63,12 @@ namespace ProjectColombo.Combat
             currentHealth += (int)(percentage/100f * maxHealth);
         }
 
+        public void AddHealthPoints(int points)
+        {
+            maxHealth += points;
+            currentHealth += points;
+        }
+
         void Die()
         {
             if (TryGetComponent<DropSystem>(out _))
