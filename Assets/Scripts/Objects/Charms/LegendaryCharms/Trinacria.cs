@@ -41,7 +41,7 @@ namespace ProjectColombo.Objects.Charms
         {
             if (abilityReady)
             {
-                if (GetComponentInParent<PlayerStateMachine>().gameInputSO.UseSpecialAbilityPressed)
+                if (GetComponentInParent<PlayerStateMachine>().gameInputSO.UseItemPressed)
                 {
                     StartCoroutine(Ability());
                     abilityReady = false;
