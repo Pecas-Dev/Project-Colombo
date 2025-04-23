@@ -5426,6 +5426,7 @@ MonoBehaviour:
   rotationSpeedPlayer: 5
   attackImpulseForce: 5
   stunnedTime: 1
+  currentLuck: 0
   currentScale: 0
 --- !u!114 &2458615397977204604
 MonoBehaviour:
@@ -5463,7 +5464,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de7e534c6d0c808458b38f233fad212b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 25
+  maxHealth: 200
   currentHealth: 0
 --- !u!114 &5774820696114806963
 MonoBehaviour:
@@ -7255,6 +7256,10 @@ PrefabInstance:
     - target: {fileID: 1739228436494150860, guid: f0ea5c1eb43848b42a4c9d84dfd9e3fe, type: 3}
       propertyPath: m_Name
       value: WeaponSword
+      objectReference: {fileID: 0}
+    - target: {fileID: 2056621055143935407, guid: f0ea5c1eb43848b42a4c9d84dfd9e3fe, type: 3}
+      propertyPath: defaultDamage
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 6866123986114022371, guid: f0ea5c1eb43848b42a4c9d84dfd9e3fe, type: 3}
       propertyPath: m_LocalPosition.x

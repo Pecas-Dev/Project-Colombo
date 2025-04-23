@@ -27,8 +27,8 @@ namespace ProjectColombo.UI.HUD
             currentHealth = playerHealthManager.CurrentHealth;
 
             healthText.text = currentHealth + " / " + maxHealth;
-            maxHealthImage.GetComponent<RectTransform>().sizeDelta = new Vector2(maxHealth * 5 + 10, 50);
-            currentHealthImage.GetComponent<RectTransform>().sizeDelta = new Vector2(currentHealth * 5, 40);
+            maxHealthImage.GetComponent<RectTransform>().sizeDelta = new Vector2(maxHealth * 0.5f + 10, 50);
+            currentHealthImage.GetComponent<RectTransform>().sizeDelta = new Vector2(currentHealth * 0.5f, 40);
         }
     }
 }
