@@ -5,7 +5,7 @@ namespace ProjectColombo.Objects.Charms
 {
     public class OliveOil : BaseCharm
     {
-        public int movementSpeedIncrease = 8;
+        public float movementSpeedIncrease = 8;
         float value;
 
         public override void Equip()

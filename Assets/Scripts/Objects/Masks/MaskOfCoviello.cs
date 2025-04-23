@@ -11,11 +11,11 @@ namespace ProjectColombo.Objects.Masks
     public class MaskOfCoviello : BaseMask
     {
         //general
-        public int majorScaleDamageIncreasePercent = 12;
-        public int minorScaleDamageIncreasePercent = 12;
+        public float majorScaleDamageIncreasePercent = 12;
+        public float minorScaleDamageIncreasePercent = 12;
         public float extraDamageForMissingHealthPercent = 1.2f;
         public int extraDamageForHowManyPoints = 50;
-        public int extraDamageReceivePercent = 12;
+        public float extraDamageReceivePercent = 12;
         public float extraDamageReceiveForMissingHealthPercent = 0.32f;
         public int extraDamageReceiveForHowManyPoints = 100;
         public float extraDamageIncraseMissingParryForPoints = 0.125f;
@@ -33,9 +33,9 @@ namespace ProjectColombo.Objects.Masks
         public float extraDamageForStaminaPercent = 5;
         public int extraDamageDuration = 8;
         public int removeHealthPerAttack = 20;
-        public int attackSpeedIncreasePercent = 10;
+        public float attackSpeedIncreasePercent = 10;
         float attackSpeedIncreaseValue;
-        public int movementSpeedIncreasePercent = 8;
+        public float movementSpeedIncreasePercent = 8;
         float movementSpeedIncreaseValue;
 
         PlayerStateMachine myPlayerStateMachine;
@@ -74,7 +74,7 @@ namespace ProjectColombo.Objects.Masks
             int currentMissingHealth = myPlayerStateMachine.myHealthManager.MaxHealth - myPlayerStateMachine.myHealthManager.currentHealth;
             int extra = (int)(Mathf.FloorToInt(currentMissingHealth / extraDamageForHowManyPoints) * extraDamageForMissingHealthPercent);
 
-            int abilityExtra = (int)(damage * extraDamageForStaminaPercent / 100f);
+            int abilityExtra = (int)(abilityExtraDamageCounter * damage * extraDamageForStaminaPercent / 100f);
             healthmanager.TakeDamage(abilityExtra);
 
             if (scale == GameGlobals.MusicScale.MAJOR)
@@ -94,6 +94,7 @@ namespace ProjectColombo.Objects.Masks
             CustomEvents.OnDamageDelt -= AddDamageDelt;
             CustomEvents.OnDamageReceived -= AddDamageReceive;
             CustomEvents.OnParryFailed -= AddFailedParry;
+            CustomEvents.OnStaminaUsed -= OnStaminaUsed;
 
             myPlayerStateMachine.myHealthManager.AddHealthPoints(-100);
         }

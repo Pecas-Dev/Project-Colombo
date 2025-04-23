@@ -1,14 +1,13 @@
 using ProjectColombo.Combat;
 using ProjectColombo.GameManagement.Events;
-using ProjectColombo.StateMachine.Player;
-using UnityEngine;
+
 
 namespace ProjectColombo.Objects.Charms
 {
     public class MassaniellosCoppola : BaseCharm
     {
-        public int damageResistancePercentage = 10;
-        public int failedParryBonus = 25;
+        public float damageResistancePercentage = 10;
+        public float failedParryBonus = 25;
 
         public override void Equip()
         {

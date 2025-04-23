@@ -1,13 +1,12 @@
 using ProjectColombo.Combat;
 using ProjectColombo.GameManagement.Events;
-using ProjectColombo.StateMachine.Player;
-using UnityEngine;
+
 
 namespace ProjectColombo.Objects.Charms
 {
     public class AncestralLimoncello : BaseCharm
     {
-        public int damageIncreasePercentage = 6;
+        public float damageIncreasePercentage = 6;
 
         public override void Equip()
         {

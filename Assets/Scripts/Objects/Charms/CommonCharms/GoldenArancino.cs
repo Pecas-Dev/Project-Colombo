@@ -6,16 +6,16 @@ namespace ProjectColombo.Objects.Charms
 {
     public class GoldenArancino : BaseCharm
     {
-        public int healthIncrease = 100;
+        public int healthPointsIncrease = 100;
 
         public override void Equip()
         {
-            GetComponentInParent<HealthManager>().AddHealthPoints(healthIncrease);
+            GetComponentInParent<HealthManager>().AddHealthPoints(healthPointsIncrease);
         }
 
         public override void Remove()
         {
-            GetComponentInParent<HealthManager>().AddHealthPoints(-healthIncrease);
+            GetComponentInParent<HealthManager>().AddHealthPoints(-healthPointsIncrease);
         }
     }
 }
