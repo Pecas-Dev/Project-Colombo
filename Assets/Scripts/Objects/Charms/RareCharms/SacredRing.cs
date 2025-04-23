@@ -10,13 +10,14 @@ namespace ProjectColombo.Objects.Charms
         public float evadeChance = 20;
         public int addedStamina = 1;
         public float doubleGoldChance = 25;
-
+        Stamina myStamina;
         public override void Equip()
         {
             CustomEvents.OnDamageReceived += Evade;
             CustomEvents.OnCoinsCollected += DoubleGold;
 
-            GetComponentInParent<Stamina>().maxStamina += addedStamina;
+            myStamina = GameObject.Find("Player").GetComponent<Stamina>();
+            myStamina.maxStamina += addedStamina;
         }
 
         private void Evade(int damage, GameGlobals.MusicScale scale, HealthManager healthmanager)
@@ -35,7 +36,7 @@ namespace ProjectColombo.Objects.Charms
 
             if (rand < doubleGoldChance)
             {
-                GetComponentInParent<PlayerInventory>().currencyAmount += amount;
+                GameObject.Find("Player").GetComponent<PlayerInventory>().currencyAmount += amount;
             }
         }
        
@@ -45,7 +46,7 @@ namespace ProjectColombo.Objects.Charms
             CustomEvents.OnDamageReceived -= Evade;
             CustomEvents.OnCoinsCollected -= DoubleGold;
 
-            GetComponentInParent<Stamina>().maxStamina -= addedStamina;
+            myStamina.maxStamina -= addedStamina;
         }
     }
 }

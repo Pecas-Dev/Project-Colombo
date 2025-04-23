@@ -1,5 +1,5 @@
 using ProjectColombo.Combat;
-
+using UnityEngine;
 
 namespace ProjectColombo.Objects.Charms
 {
@@ -7,17 +7,19 @@ namespace ProjectColombo.Objects.Charms
     {
         public int staminaRegenIncrease = 10;
         float value;
+        Stamina myStamina;
 
         public override void Equip()
         {
-            value = GetComponentInParent<Stamina>().regenSpeed/ 100f * staminaRegenIncrease;
-            GetComponentInParent<Stamina>().regenSpeed += value;
+            myStamina = GameObject.Find("Player").GetComponent<Stamina>();
+            value = myStamina.regenSpeed/ 100f * staminaRegenIncrease;
+            myStamina.regenSpeed += value;
         }
 
 
         public override void Remove()
         {
-            GetComponentInParent<Stamina>().regenSpeed -= value;
+            myStamina.regenSpeed -= value;
         }
     }
 }

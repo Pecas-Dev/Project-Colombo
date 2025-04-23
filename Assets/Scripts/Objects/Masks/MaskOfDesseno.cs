@@ -24,7 +24,7 @@ namespace ProjectColombo.Objects.Masks
 
         public override void Equip()
         {
-            myPlayerInventory = GetComponentInParent<PlayerInventory>();
+            myPlayerInventory = GameObject.Find("Player").GetComponent<PlayerInventory>();
             CustomEvents.OnDamageDelt += OnDamageDelt;
             CustomEvents.OnDamageReceived += OnDamageReceived;
             CustomEvents.OnSuccessfullParry += OnSuccessfullParry;

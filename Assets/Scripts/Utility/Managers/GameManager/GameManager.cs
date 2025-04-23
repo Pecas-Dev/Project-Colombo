@@ -65,15 +65,15 @@ namespace ProjectColombo.GameManagement
                 gameInput.EnableUIMode();
             }
 
-            if (gameInput.playerInputActions.Player.enabled == false)
-            {
-                Debug.Log("Player is dead now, come back later");
-            }
+            //if (gameInput.playerInputActions.Player.enabled == false)
+            //{
+            //    Debug.Log("Player is dead now, come back later");
+            //}
 
-            if (gameInput.playerInputActions.UI.enabled == true)
-            {
-                Debug.Log("It's UI Time! (:");
-            }
+            //if (gameInput.playerInputActions.UI.enabled == true)
+            //{
+            //    Debug.Log("It's UI Time! (:");
+            //}
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -99,6 +99,7 @@ namespace ProjectColombo.GameManagement
 
         public void PauseGame()
         {
+            gameInput.EnableUIMode();
             Time.timeScale = 0;
             pauseMenuUI.SetActive(true);
             EventSystem.current.SetSelectedGameObject(firstSelectedButton);
@@ -107,6 +108,14 @@ namespace ProjectColombo.GameManagement
 
         public void ResumeGame()
         {
+            gameInput.DisableUIMode();
+            gameInput.EnableAllInputs();
+
+            if (SceneManager.GetActiveScene().name == MAIN_MENU || SceneManager.GetActiveScene().name == MAIN_MENU_2)
+            {
+                gameInput.EnableUIMode();
+            }
+
             Time.timeScale = 1;
             pauseMenuUI.SetActive(false);
             gameIsPaused = false;

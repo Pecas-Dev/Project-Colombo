@@ -59,8 +59,9 @@ namespace ProjectColombo.Combat
 
         public void AddHealthPercentage(int percentage)
         {
-            maxHealth += (int)(percentage/100f * maxHealth);
-            currentHealth += (int)(percentage/100f * maxHealth);
+            int delta = (int)(percentage / 100f * maxHealth);
+            maxHealth += delta;
+            currentHealth += delta;
         }
 
         public void AddHealthPoints(int points)

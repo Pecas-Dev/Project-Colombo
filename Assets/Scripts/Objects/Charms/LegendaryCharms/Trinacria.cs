@@ -41,7 +41,7 @@ namespace ProjectColombo.Objects.Charms
         {
             if (abilityReady)
             {
-                if (GetComponentInParent<PlayerStateMachine>().gameInputSO.UseItemPressed)
+                if (GameObject.Find("Player").GetComponent<PlayerStateMachine>().gameInputSO.UseItemPressed)
                 {
                     StartCoroutine(Ability());
                     abilityReady = false;
@@ -66,14 +66,14 @@ namespace ProjectColombo.Objects.Charms
             CustomEvents.OnDamageBlocked += DecreaseBlockedDamage;
             CustomEvents.OnParryFailed += IncreaseFailParryDamage;
 
-            weaponCooldownDeltaGeneral = GetComponentInParent<PlayerStateMachine>().myWeaponAttributes.cooldown / 100f * attackSpeedIncreasePercent;
-            GetComponentInParent<PlayerStateMachine>().myWeaponAttributes.cooldown -= weaponCooldownDeltaGeneral;
+            weaponCooldownDeltaGeneral = GameObject.Find("Player").GetComponent<PlayerStateMachine>().myWeaponAttributes.cooldown / 100f * attackSpeedIncreasePercent;
+            GameObject.Find("Player").GetComponent<PlayerStateMachine>().myWeaponAttributes.cooldown -= weaponCooldownDeltaGeneral;
 
-            moveSpeedDeltaGeneral = GetComponentInParent<EntityAttributes>().moveSpeed / 100f * moveSpeedIncreasePercent;
-            GetComponentInParent<EntityAttributes>().moveSpeed += moveSpeedDeltaGeneral;
+            moveSpeedDeltaGeneral = GameObject.Find("Player").GetComponent<EntityAttributes>().moveSpeed / 100f * moveSpeedIncreasePercent;
+            GameObject.Find("Player").GetComponent<EntityAttributes>().moveSpeed += moveSpeedDeltaGeneral;
 
-            staminaRegenDeltaGeneral = GetComponentInParent<Stamina>().regenSpeed / 100f * staminaRegenIncreasePercent;
-            GetComponentInParent<Stamina>().regenSpeed -= staminaRegenDeltaGeneral;
+            staminaRegenDeltaGeneral = GameObject.Find("Player").GetComponent<Stamina>().regenSpeed / 100f * staminaRegenIncreasePercent;
+            GameObject.Find("Player").GetComponent<Stamina>().regenSpeed -= staminaRegenDeltaGeneral;
         }
 
         private void IncreaseFailParryDamage(int damage, GameGlobals.MusicScale scale, HealthManager healthmanager, bool sameScale)
@@ -123,9 +123,9 @@ namespace ProjectColombo.Objects.Charms
             CustomEvents.OnDamageBlocked -= DecreaseBlockedDamage;
             CustomEvents.OnParryFailed -= IncreaseFailParryDamage;
 
-            GetComponentInParent<PlayerStateMachine>().myWeaponAttributes.cooldown += weaponCooldownDeltaGeneral;
-            GetComponentInParent<EntityAttributes>().moveSpeed -= moveSpeedDeltaGeneral;
-            GetComponentInParent<Stamina>().regenSpeed += staminaRegenDeltaGeneral;
+            GameObject.Find("Player").GetComponent<PlayerStateMachine>().myWeaponAttributes.cooldown += weaponCooldownDeltaGeneral;
+            GameObject.Find("Player").GetComponent<EntityAttributes>().moveSpeed -= moveSpeedDeltaGeneral;
+            GameObject.Find("Player").GetComponent<Stamina>().regenSpeed += staminaRegenDeltaGeneral;
         }
 
         IEnumerator Ability()
@@ -152,15 +152,15 @@ namespace ProjectColombo.Objects.Charms
         {
             firstStepAbility = false;
 
-            moveSpeedDeltaAbility = GetComponentInParent<EntityAttributes>().moveSpeed / 100f * moveSpeedDecreaseAbility;
-            GetComponentInParent<EntityAttributes>().moveSpeed -= moveSpeedDeltaAbility;
+            moveSpeedDeltaAbility = GameObject.Find("Player").GetComponent<EntityAttributes>().moveSpeed / 100f * moveSpeedDecreaseAbility;
+            GameObject.Find("Player").GetComponent<EntityAttributes>().moveSpeed -= moveSpeedDeltaAbility;
         }
 
         void RemoveAbilityStats()
         {
             abilityActive = false;
 
-            GetComponentInParent<EntityAttributes>().moveSpeed += moveSpeedDeltaAbility;
+            GameObject.Find("Player").GetComponent<EntityAttributes>().moveSpeed += moveSpeedDeltaAbility;
         }
     }
 }

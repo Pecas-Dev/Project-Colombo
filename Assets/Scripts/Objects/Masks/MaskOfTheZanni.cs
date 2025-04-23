@@ -28,7 +28,7 @@ namespace ProjectColombo.Objects.Masks
 
         public override void Equip()
         {
-            myPlayerStateMachine = GetComponentInParent<PlayerStateMachine>();
+            myPlayerStateMachine = GameObject.Find("Player").GetComponent<PlayerStateMachine>();
             myPlayerStateMachine.myEntityAttributes.currentLuck += luckPointsIncrease;
             regenSpeedDelta = myPlayerStateMachine.myStamina.regenSpeed / 100f * staminaRegenSpeedIncreasePercent;
             myPlayerStateMachine.myStamina.regenSpeed += regenSpeedDelta;

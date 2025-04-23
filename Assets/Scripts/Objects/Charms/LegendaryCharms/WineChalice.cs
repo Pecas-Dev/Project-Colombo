@@ -37,7 +37,7 @@ namespace ProjectColombo.Objects.Charms
         {
             if (abilityReady)
             {
-                if (GetComponentInParent<PlayerStateMachine>().gameInputSO.UseItemPressed)
+                if (GameObject.Find("Player").GetComponent<PlayerStateMachine>().gameInputSO.UseItemPressed)
                 {
                     StartCoroutine(Ability());
                     abilityReady = false;
@@ -60,8 +60,8 @@ namespace ProjectColombo.Objects.Charms
             CustomEvents.OnDamageDelt += DamageIncrease;
             CustomEvents.OnDamageReceived += IncomingDamageIncrease;
 
-            weaponCooldownDeltaGeneral = GetComponentInParent<PlayerStateMachine>().myWeaponAttributes.cooldown / 100f * attackSpeedIncreasePercent;
-            GetComponentInParent<PlayerStateMachine>().myWeaponAttributes.cooldown -= weaponCooldownDeltaGeneral;
+            weaponCooldownDeltaGeneral = GameObject.Find("Player").GetComponent<PlayerStateMachine>().myWeaponAttributes.cooldown / 100f * attackSpeedIncreasePercent;
+            GameObject.Find("Player").GetComponent<PlayerStateMachine>().myWeaponAttributes.cooldown -= weaponCooldownDeltaGeneral;
         }
 
         private void IncomingDamageIncrease(int damage, GameGlobals.MusicScale scale, HealthManager healthmanager)
@@ -79,7 +79,7 @@ namespace ProjectColombo.Objects.Charms
                 delta += (int)(damage / 100f * damageIncreasePercentAbility);
 
                 int health = (int)(healAmountOfDamage * (damage + delta));
-                GetComponentInParent<HealthManager>().Heal(health);
+                GameObject.Find("Player").GetComponent<HealthManager>().Heal(health);
             }
 
             healthmanager.TakeDamage(delta);
@@ -90,7 +90,7 @@ namespace ProjectColombo.Objects.Charms
             CustomEvents.OnDamageDelt -= DamageIncrease;
             CustomEvents.OnDamageReceived -= IncomingDamageIncrease;
 
-            GetComponentInParent<PlayerStateMachine>().myWeaponAttributes.cooldown += weaponCooldownDeltaGeneral;
+            GameObject.Find("Player").GetComponent<PlayerStateMachine>().myWeaponAttributes.cooldown += weaponCooldownDeltaGeneral;
         }
 
         IEnumerator Ability()
@@ -106,23 +106,23 @@ namespace ProjectColombo.Objects.Charms
         {
             abilityActive = true;
 
-            weaponCooldownDeltaAbility = GetComponentInParent<PlayerStateMachine>().myWeaponAttributes.cooldown / 100f * attackSpeedDecreasePercent;
-            GetComponentInParent<PlayerStateMachine>().myWeaponAttributes.cooldown -= weaponCooldownDeltaAbility;
+            weaponCooldownDeltaAbility = GameObject.Find("Player").GetComponent<PlayerStateMachine>().myWeaponAttributes.cooldown / 100f * attackSpeedDecreasePercent;
+            GameObject.Find("Player").GetComponent<PlayerStateMachine>().myWeaponAttributes.cooldown -= weaponCooldownDeltaAbility;
 
-            moveSpeedDeltaAbility = GetComponentInParent<EntityAttributes>().moveSpeed / 100f * moveSpeedDecreasePercent;
-            GetComponentInParent<EntityAttributes>().moveSpeed -= moveSpeedDeltaAbility;
+            moveSpeedDeltaAbility = GameObject.Find("Player").GetComponent<EntityAttributes>().moveSpeed / 100f * moveSpeedDecreasePercent;
+            GameObject.Find("Player").GetComponent<EntityAttributes>().moveSpeed -= moveSpeedDeltaAbility;
 
-            staminaRegenDeltaAbility = GetComponentInParent<Stamina>().regenSpeed / 100f * staminaRegenDecreasePercent;
-            GetComponentInParent<Stamina>().regenSpeed -= staminaRegenDeltaAbility;
+            staminaRegenDeltaAbility = GameObject.Find("Player").GetComponent<Stamina>().regenSpeed / 100f * staminaRegenDecreasePercent;
+            GameObject.Find("Player").GetComponent<Stamina>().regenSpeed -= staminaRegenDeltaAbility;
         }
 
         void RemoveAbilityStats()
         {
             abilityActive = false;
 
-            GetComponentInParent<PlayerStateMachine>().myWeaponAttributes.cooldown += weaponCooldownDeltaAbility;
-            GetComponentInParent<EntityAttributes>().moveSpeed += moveSpeedDeltaAbility;
-            GetComponentInParent<Stamina>().regenSpeed += staminaRegenDeltaAbility;
+            GameObject.Find("Player").GetComponent<PlayerStateMachine>().myWeaponAttributes.cooldown += weaponCooldownDeltaAbility;
+            GameObject.Find("Player").GetComponent<EntityAttributes>().moveSpeed += moveSpeedDeltaAbility;
+            GameObject.Find("Player").GetComponent<Stamina>().regenSpeed += staminaRegenDeltaAbility;
         }
     }
 }

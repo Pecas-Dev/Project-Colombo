@@ -1,5 +1,6 @@
 using ProjectColombo.Combat;
 using ProjectColombo.GameManagement.Events;
+using UnityEngine;
 
 
 namespace ProjectColombo.Objects.Charms
@@ -11,10 +12,13 @@ namespace ProjectColombo.Objects.Charms
         public float moveSpeedIncrease = 6;
         float speedIncrease;
 
+        EntityAttributes myEntityAttributes;
+
         public override void Equip()
         {
-            speedIncrease = GetComponentInParent<EntityAttributes>().moveSpeed / 100f * moveSpeedIncrease;
-            GetComponentInParent<EntityAttributes>().moveSpeed += speedIncrease;
+            myEntityAttributes = GameObject.Find("Player").GetComponent<EntityAttributes>();
+            speedIncrease = myEntityAttributes.moveSpeed / 100f * moveSpeedIncrease;
+            myEntityAttributes.moveSpeed += speedIncrease;
 
             CustomEvents.OnDamageDelt += IncreaseDamage;
             
@@ -37,7 +41,7 @@ namespace ProjectColombo.Objects.Charms
 
         public override void Remove()
         {
-            GetComponentInParent<EntityAttributes>().moveSpeed -= speedIncrease;
+            myEntityAttributes.moveSpeed -= speedIncrease;
             CustomEvents.OnDamageDelt -= IncreaseDamage;
         }
     }

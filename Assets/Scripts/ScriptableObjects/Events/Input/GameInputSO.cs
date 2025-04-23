@@ -416,7 +416,6 @@ namespace ProjectColombo.GameInputSystem
             if (!IsInputEnabled(InputActionType.Pause)) return;
 
             PausePressed = true;
-            Debug.Log("bing");
         }
 
         public void ResetPausePressed()

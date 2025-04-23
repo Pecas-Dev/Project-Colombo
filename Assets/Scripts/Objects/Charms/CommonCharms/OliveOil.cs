@@ -7,16 +7,17 @@ namespace ProjectColombo.Objects.Charms
     {
         public float movementSpeedIncrease = 8;
         float value;
-
+        EntityAttributes myEntityAttributes;
         public override void Equip()
         {
-            value = GetComponentInParent<EntityAttributes>().moveSpeed / 100 * movementSpeedIncrease;
-            GetComponentInParent<EntityAttributes>().moveSpeed += value;
+            myEntityAttributes = GameObject.Find("Player").GetComponent<EntityAttributes>();
+            value = myEntityAttributes.moveSpeed / 100 * movementSpeedIncrease;
+            myEntityAttributes.moveSpeed += value;
         }
 
         public override void Remove()
         {
-            GetComponentInParent<EntityAttributes>().moveSpeed -= value;
+            myEntityAttributes.moveSpeed -= value;
         }
     }
 }

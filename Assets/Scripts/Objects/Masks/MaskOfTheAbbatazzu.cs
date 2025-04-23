@@ -29,7 +29,7 @@ namespace ProjectColombo.Objects.Masks
 
         public override void Equip()
         {
-            myPlayerStateMachine = GetComponentInParent<PlayerStateMachine>();
+            myPlayerStateMachine = GameObject.Find("Player").GetComponent<PlayerStateMachine>();
 
             CustomEvents.OnEnemyDeath += OnEnemyDeath;
             CustomEvents.OnDamageDelt += OnDamageDelt;

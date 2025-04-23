@@ -128,6 +128,8 @@ namespace ProjectColombo.StateMachine.Player
                 stateMachine.CloseComboWindow();
             }
 
+            stateMachine.myWeaponAttributes.GetComponent<Collider>().enabled = false;
+
             stateMachine.gameInputSO.EnableAllInputs();
         }
 
