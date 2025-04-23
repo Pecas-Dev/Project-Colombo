@@ -31,7 +31,7 @@ namespace ProjectColombo.LevelManagement
 
         public void Update()
         {
-            if (Input.GetKeyDown(KeyCode.A))
+            if (Input.GetKeyDown(KeyCode.P))
             {
                 Initialize(transform.position);
                 ActivateChamber();
