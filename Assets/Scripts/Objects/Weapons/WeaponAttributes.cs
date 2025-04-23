@@ -146,20 +146,21 @@ namespace ProjectColombo.Combat
                     else if (otherStateMachine.isParrying)
                     {
                         Debug.Log("Player parried");
-
+                        bool sameScale = true;
                         damage = 0;
 
                         if (currentScale != otherAttributes.currentScale)
                         {
                             Debug.Log("..with opposite scale -> stagger enemy");
                             GetComponentInParent<MommottiStateMachine>().SetStaggered();
+                            sameScale = false;
                         }
                         else
                         {
                             Debug.Log("..but not the opposite scale");
                         }
 
-                        CustomEvents.SuccessfullParry(currentScale);
+                        CustomEvents.SuccessfullParry(currentScale, sameScale);
                     }
                     else if (otherStateMachine.tryParrying)
                     {

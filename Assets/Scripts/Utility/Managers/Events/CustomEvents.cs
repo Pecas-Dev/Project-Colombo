@@ -10,7 +10,7 @@ namespace ProjectColombo.GameManagement.Events
         public static event Action<int, GameGlobals.MusicScale, HealthManager> OnDamageReceived;
         public static event Action OnEnemyDeath;
         public static event Action OnPlayerDeath;
-        public static event Action<GameGlobals.MusicScale> OnSuccessfullParry;
+        public static event Action<GameGlobals.MusicScale, bool> OnSuccessfullParry;
         public static event Action<int, GameGlobals.MusicScale, HealthManager, bool> OnParryFailed;
         public static event Action<int, GameGlobals.MusicScale, HealthManager> OnDamageBlocked;
         public static event Action OnShopOpen;
@@ -40,9 +40,9 @@ namespace ProjectColombo.GameManagement.Events
             OnPlayerDeath?.Invoke();
         }
 
-        public static void SuccessfullParry(GameGlobals.MusicScale scale)
+        public static void SuccessfullParry(GameGlobals.MusicScale scale, bool sameScale)
         {
-            OnSuccessfullParry?.Invoke(scale);
+            OnSuccessfullParry?.Invoke(scale, sameScale);
         }
 
         public static void FailedParry(int damage, GameGlobals.MusicScale scale, HealthManager playerHealthManager, bool sameScale)

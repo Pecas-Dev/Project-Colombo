@@ -10,7 +10,7 @@ namespace ProjectColombo.Objects.Items
         public RARITY itemRarity;
         public Texture2D itemPicture;
         [TextArea] public string itemDescription;
-        [TextArea] public string itenLore;
+        [TextArea] public string itemLore;
 
         public abstract void Activate();
     }
