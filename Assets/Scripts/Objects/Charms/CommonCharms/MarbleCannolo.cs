@@ -1,7 +1,5 @@
 using ProjectColombo.Combat;
-using ProjectColombo.GameManagement.Events;
-using ProjectColombo.StateMachine.Player;
-using UnityEngine;
+
 
 namespace ProjectColombo.Objects.Charms
 {

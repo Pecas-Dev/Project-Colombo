@@ -7,7 +7,7 @@ namespace ProjectColombo.Objects.Charms
 {
     public class GlassCassata : BaseCharm
     {
-        public int resistancePercentage = 5;
+        public float resistancePercentage = 5;
 
         public override void Equip()
         {

@@ -10,22 +10,22 @@ namespace ProjectColombo.Objects.Charms
     public class WineChalice : BaseCharm
     {
         //general
-        public int damageIncreasePercent = 16;
-        public int attackSpeedIncreasePercent = 5;
+        public float damageIncreasePercent = 16;
+        public float attackSpeedIncreasePercent = 5;
         float weaponCooldownDeltaGeneral;
-        public int incomingDamageIncreasePercent = 10;
+        public float incomingDamageIncreasePercent = 10;
 
 
         //ability
         public float abilityCooldown = 120;
         public float abilityDuration = 6;
-        public int attackSpeedDecreasePercent = 10;
+        public float attackSpeedDecreasePercent = 10;
         float weaponCooldownDeltaAbility;
-        public int moveSpeedDecreasePercent = 8;
+        public float moveSpeedDecreasePercent = 8;
         float moveSpeedDeltaAbility;
-        public int staminaRegenDecreasePercent = 15;
+        public float staminaRegenDecreasePercent = 15;
         float staminaRegenDeltaAbility;
-        public int damageIncreasePercentAbility = 18;
+        public float damageIncreasePercentAbility = 18;
         public int healAmountOfDamage = 6;
         float timer = 0;
         bool abilityReady = false;

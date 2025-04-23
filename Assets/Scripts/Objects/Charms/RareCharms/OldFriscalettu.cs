@@ -7,9 +7,9 @@ namespace ProjectColombo.Objects.Charms
 {
     public class OldFriscalettu : BaseCharm
     {
-        public int damageIncreaseMajor = 12;
-        public int damageIncreaseMinor = 4;
-        public int damageResistance = 4; 
+        public float damageIncreaseMajor = 12;
+        public float damageIncreaseMinor = 4;
+        public float damageResistance = 4; 
 
         public override void Equip()
         {
@@ -42,6 +42,7 @@ namespace ProjectColombo.Objects.Charms
         public override void Remove()
         {
             CustomEvents.OnDamageDelt -= IncreaseDamage;
+            CustomEvents.OnDamageReceived -= AddResistance;
         }
     }
 }

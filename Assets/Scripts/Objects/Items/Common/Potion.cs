@@ -6,7 +6,7 @@ namespace ProjectColombo.Objects.Items
     public class Potion : BaseItem
     {
         public int healPoints = 100;
-        public int healPercentage = 15;
+        public float healPercentage = 15;
 
         public override void Activate()
         {

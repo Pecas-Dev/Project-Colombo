@@ -7,9 +7,9 @@ namespace ProjectColombo.Objects.Charms
 {
     public class SacredRing : BaseCharm
     {
-        public int evadeChance = 20;
+        public float evadeChance = 20;
         public int addedStamina = 1;
-        public int doubleGoldChance = 25;
+        public float doubleGoldChance = 25;
 
         public override void Equip()
         {

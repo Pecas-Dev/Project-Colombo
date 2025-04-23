@@ -1,15 +1,14 @@
 using ProjectColombo.Combat;
 using ProjectColombo.GameManagement.Events;
-using ProjectColombo.StateMachine.Player;
-using UnityEngine;
+
 
 namespace ProjectColombo.Objects.Charms
 {
     public class BrokenScacciapensieri : BaseCharm
     {
-        public int damageIncreaseMajor = 4;
-        public int damageIncreaseMinor = 12;
-        public int moveSpeedIncrease = 6;
+        public float damageIncreaseMajor = 4;
+        public float damageIncreaseMinor = 12;
+        public float moveSpeedIncrease = 6;
         float speedIncrease;
 
         public override void Equip()

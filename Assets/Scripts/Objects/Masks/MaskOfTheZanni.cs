@@ -10,13 +10,13 @@ namespace ProjectColombo.Objects.Masks
     public class MaskOfTheZanni : BaseMask
     {
         //general
-        public int majorDamageIncreasePercent = 6;
-        public int minorDamageDecreasePercent = 8;
-        public int receivedDamageIncreasePercent = 5;
-        public int failedParryDamageIncreasePercent = 20;
-        public int staminaRegenSpeedIncreasePercent = 25;
+        public float majorDamageIncreasePercent = 6;
+        public float minorDamageDecreasePercent = 8;
+        public float receivedDamageIncreasePercent = 5;
+        public float failedParryDamageIncreasePercent = 20;
+        public float staminaRegenSpeedIncreasePercent = 25;
         float regenSpeedDelta;
-        public int chanceOfDoubleStamina = 50;
+        public float chanceOfDoubleStamina = 50;
         public int luckPointsIncrease = 20;
 
         //ability

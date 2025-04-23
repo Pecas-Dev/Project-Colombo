@@ -10,26 +10,26 @@ namespace ProjectColombo.Objects.Charms
     public class Trinacria : BaseCharm
     {
         //general
-        public int damageIncreasePercent = 5;
-        public int attackSpeedIncreasePercent = 3;
+        public float damageIncreasePercent = 5;
+        public float attackSpeedIncreasePercent = 3;
         float weaponCooldownDeltaGeneral;
-        public int moveSpeedIncreasePercent = 3;
+        public float moveSpeedIncreasePercent = 3;
         float moveSpeedDeltaGeneral;
-        public int incomingDamageDecreasePercent = 5;
-        public int staminaRegenIncreasePercent = 6;
+        public float incomingDamageDecreasePercent = 5;
+        public float staminaRegenIncreasePercent = 6;
         float staminaRegenDeltaGeneral;
-        public int decreaseBlockDamagePercent = 15;
-        public int failedParryDamageIncreasePercent = 10;
+        public float decreaseBlockDamagePercent = 15;
+        public float failedParryDamageIncreasePercent = 10;
 
 
         //ability
         public float abilityCooldown = 160;
         public float firstDuration = 2;
         public float secondDuration = 4;
-        public int damageDecreaseAbility = 10;
-        public int moveSpeedDecreaseAbility = 3;
+        public float damageDecreaseAbility = 10;
+        public float moveSpeedDecreaseAbility = 3;
         float moveSpeedDeltaAbility;
-        public int incomingDamageIncreasePercentAbility = 8;
+        public float incomingDamageIncreasePercentAbility = 8;
         float timer = 0;
         bool abilityReady = false;
         bool abilityActive = false;
@@ -120,6 +120,8 @@ namespace ProjectColombo.Objects.Charms
         {
             CustomEvents.OnDamageDelt -= DamageIncrease;
             CustomEvents.OnDamageReceived -= IncomingDamageDecrease;
+            CustomEvents.OnDamageBlocked -= DecreaseBlockedDamage;
+            CustomEvents.OnParryFailed -= IncreaseFailParryDamage;
 
             GetComponentInParent<PlayerStateMachine>().myWeaponAttributes.cooldown += weaponCooldownDeltaGeneral;
             GetComponentInParent<EntityAttributes>().moveSpeed -= moveSpeedDeltaGeneral;

@@ -1,6 +1,5 @@
 
 using ProjectColombo.GameManagement;
-using ProjectColombo.StateMachine.Player;
 using UnityEngine;
 
 namespace ProjectColombo.Objects.Masks
@@ -40,31 +39,3 @@ namespace ProjectColombo.Objects.Masks
         public abstract void Remove();
     }
 }
-
-
-
-
-//using ProjectColombo.GameManagement.Events;
-//using UnityEngine;
-
-//namespace ProjectColombo.Objects.Masks
-//{
-//    public class MaskOfTheZanni : BaseMask
-//    {
-
-//        public override void Equip()
-//        {
-//            throw new System.NotImplementedException();
-//        }
-
-//        public override void Remove()
-//        {
-//            throw new System.NotImplementedException();
-//        }
-
-//        public override void UseAbility()
-//        {
-//            throw new System.NotImplementedException();
-//        }
-//    }
-//}
