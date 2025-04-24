@@ -11,7 +11,7 @@ namespace ProjectColombo.Enemies.Mommotti
         public GameObject enemyType;
         public int minAmountEnemies;
         public int maxAmountEnemies;
-
+        public GameGlobals.MusicScale scale;
         public float patrolAreaDistance;
 
         [HideInInspector] public GridManager myGridManager;
@@ -43,8 +43,7 @@ namespace ProjectColombo.Enemies.Mommotti
                 newEnemy.GetComponent<MommottiAttributes>().patrolAreaDistance = patrolAreaDistance;
                 newEnemy.GetComponent<MommottiAttributes>().myGridManager = myGridManager;
 
-                int rand = Random.Range(1, 3);
-                newEnemy.GetComponent<MommottiStateMachine>().SetScale((GameGlobals.MusicScale)rand);
+                newEnemy.GetComponent<MommottiStateMachine>().SetScale(scale);
             }
         }
 
