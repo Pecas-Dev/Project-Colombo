@@ -1,6 +1,6 @@
 using ProjectColombo.Combat;
 using ProjectColombo.GameManagement.Events;
-
+using UnityEngine;
 
 namespace ProjectColombo.Objects.Charms
 {
@@ -16,6 +16,7 @@ namespace ProjectColombo.Objects.Charms
         private void IncreaseDamage(int damage, GameGlobals.MusicScale scale, HealthManager healthmanager)
         {
             int extraDamage = (int)(damage / 100f * damageIncreasePercentage);
+            Debug.Log("increased damage from: " + damage + ", by: " + extraDamage);
             healthmanager.TakeDamage(extraDamage);
         }
 

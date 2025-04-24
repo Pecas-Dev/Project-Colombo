@@ -31,13 +31,13 @@ namespace ProjectColombo.Objects.Charms
         bool abilityReady = false;
         bool abilityActive = false;
 
-
+        PlayerStateMachine myPlayerStateMachine;
 
         private void Update()
         {
             if (abilityReady)
             {
-                if (GameObject.Find("Player").GetComponent<PlayerStateMachine>().gameInputSO.UseItemPressed)
+                if (myPlayerStateMachine.gameInputSO.UseItemPressed)
                 {
                     StartCoroutine(Ability());
                     abilityReady = false;
@@ -57,16 +57,19 @@ namespace ProjectColombo.Objects.Charms
 
         public override void Equip()
         {
+            myPlayerStateMachine = GameObject.Find("Player").GetComponent<PlayerStateMachine>();
             CustomEvents.OnDamageDelt += DamageIncrease;
             CustomEvents.OnDamageReceived += IncomingDamageIncrease;
 
-            weaponCooldownDeltaGeneral = GameObject.Find("Player").GetComponent<PlayerStateMachine>().myWeaponAttributes.cooldown / 100f * attackSpeedIncreasePercent;
-            GameObject.Find("Player").GetComponent<PlayerStateMachine>().myWeaponAttributes.cooldown -= weaponCooldownDeltaGeneral;
+            weaponCooldownDeltaGeneral = myPlayerStateMachine.myWeaponAttributes.cooldown / 100f * attackSpeedIncreasePercent;
+            Debug.Log("decreased weapon cooldown from: " + myPlayerStateMachine.myWeaponAttributes.cooldown + ", by: " + weaponCooldownDeltaGeneral);
+            myPlayerStateMachine.myWeaponAttributes.cooldown -= weaponCooldownDeltaGeneral;
         }
 
         private void IncomingDamageIncrease(int damage, GameGlobals.MusicScale scale, HealthManager healthmanager)
         {
             int delta = (int)(damage / 100f * incomingDamageIncreasePercent);
+            Debug.Log("increased damage from: " + damage + ", by: " + delta);
             healthmanager.TakeDamage(delta);
         }
 
@@ -76,11 +79,13 @@ namespace ProjectColombo.Objects.Charms
 
             if (abilityActive)
             {
+                Debug.Log("ability active");
                 delta += (int)(damage / 100f * damageIncreasePercentAbility);
 
                 int health = (int)(healAmountOfDamage * (damage + delta));
-                GameObject.Find("Player").GetComponent<HealthManager>().Heal(health);
+                myPlayerStateMachine.myHealthManager.Heal(health);
             }
+            Debug.Log("decreased damage from: " + damage + ", by: " + delta);
 
             healthmanager.TakeDamage(delta);
         }
@@ -90,15 +95,22 @@ namespace ProjectColombo.Objects.Charms
             CustomEvents.OnDamageDelt -= DamageIncrease;
             CustomEvents.OnDamageReceived -= IncomingDamageIncrease;
 
-            GameObject.Find("Player").GetComponent<PlayerStateMachine>().myWeaponAttributes.cooldown += weaponCooldownDeltaGeneral;
+            if (abilityActive)
+            {
+                RemoveAbilityStats();
+            }
+
+            myPlayerStateMachine.myWeaponAttributes.cooldown += weaponCooldownDeltaGeneral;
         }
 
         IEnumerator Ability()
         {
+            Debug.Log("start ability");
             ApplyAbilityStats();
 
             yield return new WaitForSeconds(abilityDuration);
 
+            Debug.Log("ability over");
             RemoveAbilityStats();
         }
 
@@ -106,23 +118,26 @@ namespace ProjectColombo.Objects.Charms
         {
             abilityActive = true;
 
-            weaponCooldownDeltaAbility = GameObject.Find("Player").GetComponent<PlayerStateMachine>().myWeaponAttributes.cooldown / 100f * attackSpeedDecreasePercent;
-            GameObject.Find("Player").GetComponent<PlayerStateMachine>().myWeaponAttributes.cooldown -= weaponCooldownDeltaAbility;
+            weaponCooldownDeltaAbility = myPlayerStateMachine.myWeaponAttributes.cooldown / 100f * attackSpeedDecreasePercent;
+            Debug.Log("decreased weapon cooldown from: " + myPlayerStateMachine.myWeaponAttributes.cooldown+ ", by: " + weaponCooldownDeltaAbility);
+            myPlayerStateMachine.myWeaponAttributes.cooldown -= weaponCooldownDeltaAbility;
 
-            moveSpeedDeltaAbility = GameObject.Find("Player").GetComponent<EntityAttributes>().moveSpeed / 100f * moveSpeedDecreasePercent;
-            GameObject.Find("Player").GetComponent<EntityAttributes>().moveSpeed -= moveSpeedDeltaAbility;
+            moveSpeedDeltaAbility = myPlayerStateMachine.myEntityAttributes.moveSpeed / 100f * moveSpeedDecreasePercent;
+            Debug.Log("decreased speed from: " + myPlayerStateMachine.myEntityAttributes.moveSpeed + ", by: " + moveSpeedDeltaAbility);
+            myPlayerStateMachine.myEntityAttributes.moveSpeed -= moveSpeedDeltaAbility;
 
-            staminaRegenDeltaAbility = GameObject.Find("Player").GetComponent<Stamina>().regenSpeed / 100f * staminaRegenDecreasePercent;
-            GameObject.Find("Player").GetComponent<Stamina>().regenSpeed -= staminaRegenDeltaAbility;
+            staminaRegenDeltaAbility = myPlayerStateMachine.myStamina.regenSpeed / 100f * staminaRegenDecreasePercent;
+            Debug.Log("decreased stamina regen from: " + myPlayerStateMachine.myStamina.regenSpeed + ", by: " + staminaRegenDeltaAbility);
+            myPlayerStateMachine.myStamina.regenSpeed -= staminaRegenDeltaAbility;
         }
 
         void RemoveAbilityStats()
         {
             abilityActive = false;
 
-            GameObject.Find("Player").GetComponent<PlayerStateMachine>().myWeaponAttributes.cooldown += weaponCooldownDeltaAbility;
-            GameObject.Find("Player").GetComponent<EntityAttributes>().moveSpeed += moveSpeedDeltaAbility;
-            GameObject.Find("Player").GetComponent<Stamina>().regenSpeed += staminaRegenDeltaAbility;
+            myPlayerStateMachine.myWeaponAttributes.cooldown += weaponCooldownDeltaAbility;
+            myPlayerStateMachine.myEntityAttributes.moveSpeed += moveSpeedDeltaAbility;
+            myPlayerStateMachine.myStamina.regenSpeed += staminaRegenDeltaAbility;
         }
     }
 }

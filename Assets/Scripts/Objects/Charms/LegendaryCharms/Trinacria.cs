@@ -35,7 +35,7 @@ namespace ProjectColombo.Objects.Charms
         bool abilityActive = false;
         bool firstStepAbility = false;
 
-
+        PlayerStateMachine myPlayerStateMachine;
 
         private void Update()
         {
@@ -61,30 +61,37 @@ namespace ProjectColombo.Objects.Charms
 
         public override void Equip()
         {
+            myPlayerStateMachine = GameObject.Find("Player").GetComponent<PlayerStateMachine>();
+
             CustomEvents.OnDamageDelt += DamageIncrease;
             CustomEvents.OnDamageReceived += IncomingDamageDecrease;
             CustomEvents.OnDamageBlocked += DecreaseBlockedDamage;
             CustomEvents.OnParryFailed += IncreaseFailParryDamage;
 
-            weaponCooldownDeltaGeneral = GameObject.Find("Player").GetComponent<PlayerStateMachine>().myWeaponAttributes.cooldown / 100f * attackSpeedIncreasePercent;
-            GameObject.Find("Player").GetComponent<PlayerStateMachine>().myWeaponAttributes.cooldown -= weaponCooldownDeltaGeneral;
+            weaponCooldownDeltaGeneral = myPlayerStateMachine.myWeaponAttributes.cooldown / 100f * attackSpeedIncreasePercent;
+            Debug.Log("increased weapon cooldown from: " + myPlayerStateMachine.myWeaponAttributes.cooldown + ", by: " + weaponCooldownDeltaGeneral);
+            myPlayerStateMachine.myWeaponAttributes.cooldown -= weaponCooldownDeltaGeneral;
 
-            moveSpeedDeltaGeneral = GameObject.Find("Player").GetComponent<EntityAttributes>().moveSpeed / 100f * moveSpeedIncreasePercent;
-            GameObject.Find("Player").GetComponent<EntityAttributes>().moveSpeed += moveSpeedDeltaGeneral;
+            moveSpeedDeltaGeneral = myPlayerStateMachine.myEntityAttributes.moveSpeed / 100f * moveSpeedIncreasePercent;
+            Debug.Log("increased speed from: " + myPlayerStateMachine.myEntityAttributes.moveSpeed + ", by: " + moveSpeedDeltaGeneral);
+            myPlayerStateMachine.myEntityAttributes.moveSpeed += moveSpeedDeltaGeneral;
 
-            staminaRegenDeltaGeneral = GameObject.Find("Player").GetComponent<Stamina>().regenSpeed / 100f * staminaRegenIncreasePercent;
-            GameObject.Find("Player").GetComponent<Stamina>().regenSpeed -= staminaRegenDeltaGeneral;
+            staminaRegenDeltaGeneral = myPlayerStateMachine.myStamina.regenSpeed / 100f * staminaRegenIncreasePercent;
+            Debug.Log("increased speed from: " + myPlayerStateMachine.myStamina.regenSpeed + ", by: " + staminaRegenDeltaGeneral);
+            myPlayerStateMachine.myStamina.regenSpeed -= staminaRegenDeltaGeneral;
         }
 
         private void IncreaseFailParryDamage(int damage, GameGlobals.MusicScale scale, HealthManager healthmanager, bool sameScale)
         {
             int delta = (int)(damage / 100f * failedParryDamageIncreasePercent);
+            Debug.Log("increased failed parry damage from: " + damage + ", by: " + delta);
             healthmanager.TakeDamage(delta);
         }
 
         private void DecreaseBlockedDamage(int damage, GameGlobals.MusicScale scale, HealthManager healthmanager)
         {
             int delta = (int)(damage / 100f * decreaseBlockDamagePercent);
+            Debug.Log("decreased block damage from: " + damage + ", by: " + delta);
             healthmanager.TakeDamage(-delta);
         }
 
@@ -95,11 +102,15 @@ namespace ProjectColombo.Objects.Charms
             if (firstStepAbility)
             {
                 delta = damage;
+                Debug.Log("firstStepability");
             }
             else if (abilityActive)
             {
                 delta = -(int)(damage /100f * incomingDamageIncreasePercentAbility);
+                Debug.Log("second step ability");
             }
+
+            Debug.Log("decreased damage from: " + damage + ", by: " + delta);
 
             healthmanager.TakeDamage(-delta);
         }
@@ -110,9 +121,11 @@ namespace ProjectColombo.Objects.Charms
 
             if (!firstStepAbility && abilityActive)
             {
+                Debug.Log("second step ability");
                 delta = (int)(damage / 100f * damageDecreaseAbility);
             }
 
+            Debug.Log("increased damage from: " + damage + ", by: " + delta);
             healthmanager.TakeDamage(delta);
         }
 
@@ -123,21 +136,24 @@ namespace ProjectColombo.Objects.Charms
             CustomEvents.OnDamageBlocked -= DecreaseBlockedDamage;
             CustomEvents.OnParryFailed -= IncreaseFailParryDamage;
 
-            GameObject.Find("Player").GetComponent<PlayerStateMachine>().myWeaponAttributes.cooldown += weaponCooldownDeltaGeneral;
-            GameObject.Find("Player").GetComponent<EntityAttributes>().moveSpeed -= moveSpeedDeltaGeneral;
-            GameObject.Find("Player").GetComponent<Stamina>().regenSpeed += staminaRegenDeltaGeneral;
+            myPlayerStateMachine.myWeaponAttributes.cooldown += weaponCooldownDeltaGeneral;
+            myPlayerStateMachine.myEntityAttributes.moveSpeed -= moveSpeedDeltaGeneral;
+            myPlayerStateMachine.myStamina.regenSpeed += staminaRegenDeltaGeneral;
         }
 
         IEnumerator Ability()
         {
+            Debug.Log("Start ability");
             ApplyAbilityStats();
 
             yield return new WaitForSeconds(firstDuration);
 
+            Debug.Log("second step starts");
             MiddleStepAbility();
 
             yield return new WaitForSeconds(secondDuration);
 
+            Debug.Log("ability over");
             RemoveAbilityStats();
         }
 
@@ -152,15 +168,17 @@ namespace ProjectColombo.Objects.Charms
         {
             firstStepAbility = false;
 
-            moveSpeedDeltaAbility = GameObject.Find("Player").GetComponent<EntityAttributes>().moveSpeed / 100f * moveSpeedDecreaseAbility;
-            GameObject.Find("Player").GetComponent<EntityAttributes>().moveSpeed -= moveSpeedDeltaAbility;
+            moveSpeedDeltaAbility = myPlayerStateMachine.myEntityAttributes.moveSpeed / 100f * moveSpeedDecreaseAbility;
+            Debug.Log("increased speed from: " + myPlayerStateMachine.myEntityAttributes.moveSpeed + ", by: " + moveSpeedDeltaAbility);
+            myPlayerStateMachine.myEntityAttributes.moveSpeed -= moveSpeedDeltaAbility;
         }
 
         void RemoveAbilityStats()
         {
             abilityActive = false;
 
-            GameObject.Find("Player").GetComponent<EntityAttributes>().moveSpeed += moveSpeedDeltaAbility;
+            myPlayerStateMachine.myEntityAttributes.moveSpeed += moveSpeedDeltaAbility;
+            Debug.Log("decreased speed from: " + myPlayerStateMachine.myEntityAttributes.moveSpeed + ", by: " + moveSpeedDeltaAbility);
         }
     }
 }

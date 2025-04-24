@@ -18,6 +18,7 @@ namespace ProjectColombo.Objects.Charms
         {
             myEntityAttributes = GameObject.Find("Player").GetComponent<EntityAttributes>();
             speedIncrease = myEntityAttributes.moveSpeed / 100f * moveSpeedIncrease;
+            Debug.Log("increased speed from: " + myEntityAttributes.moveSpeed + ", by: " + speedIncrease);
             myEntityAttributes.moveSpeed += speedIncrease;
 
             CustomEvents.OnDamageDelt += IncreaseDamage;
@@ -30,10 +31,12 @@ namespace ProjectColombo.Objects.Charms
             if (scale == GameGlobals.MusicScale.MAJOR)
             {
                 additionalDamage += (int)(damage * damageIncreaseMajor / 100f);
+                Debug.Log("increased major damage from: " + damage + ", by: " + additionalDamage);
             }
             else if (scale == GameGlobals.MusicScale.MINOR)
             {
                 additionalDamage += (int)(damage * damageIncreaseMinor / 100f);
+                Debug.Log("increased minor damage from: " + damage + ", by: " + additionalDamage);
             }
 
             healthManager.TakeDamage(damage);

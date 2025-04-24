@@ -13,6 +13,7 @@ namespace ProjectColombo.Objects.Charms
         {
             myStamina = GameObject.Find("Player").GetComponent<Stamina>();
             value = myStamina.regenSpeed/ 100f * staminaRegenIncrease;
+            Debug.Log("increased stamina regen speed from: " + myStamina.regenSpeed + ", by: " + staminaRegenIncrease);
             myStamina.regenSpeed += value;
         }
 

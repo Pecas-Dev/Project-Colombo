@@ -12,6 +12,7 @@ namespace ProjectColombo.Objects.Charms
         {
             myEntityAttributes = GameObject.Find("Player").GetComponent<EntityAttributes>();
             myEntityAttributes.currentLuck += luckIncrease;
+            Debug.Log("increased luck from: " + myEntityAttributes.currentLuck + ", by: " + luckIncrease);
         }
 
         public override void Remove()

@@ -15,6 +15,7 @@ namespace ProjectColombo.Objects.Items
             playerHealth.Heal(healPoints);
 
             float value = (playerHealth.MaxHealth - playerHealth.currentHealth) / 100f * healPercentage;
+            Debug.Log("healed by: " + healPoints+ ", and " + value);
             playerHealth.Heal((int)(value));
         }
     }

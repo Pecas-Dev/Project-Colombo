@@ -12,6 +12,7 @@ namespace ProjectColombo.Objects.Charms
         public override void Equip()
         {
             myHealthManager = GameObject.Find("Player").GetComponent<HealthManager>();
+            Debug.Log("increased health from: " + myHealthManager.MaxHealth + ", by: " + healthPointsIncrease);
             myHealthManager.AddHealthPoints(healthPointsIncrease);
         }
 

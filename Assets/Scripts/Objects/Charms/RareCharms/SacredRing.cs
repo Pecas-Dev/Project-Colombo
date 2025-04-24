@@ -17,26 +17,31 @@ namespace ProjectColombo.Objects.Charms
             CustomEvents.OnCoinsCollected += DoubleGold;
 
             myStamina = GameObject.Find("Player").GetComponent<Stamina>();
+            Debug.Log("increased stamina from: " + myStamina.maxStamina + ", by: " + addedStamina);
             myStamina.maxStamina += addedStamina;
         }
 
         private void Evade(int damage, GameGlobals.MusicScale scale, HealthManager healthmanager)
         {
             int rand = Random.Range(0, 101);
+            Debug.Log("try to evade");
 
             if (rand < evadeChance)
             {
                 healthmanager.TakeDamage(-damage);
+                Debug.Log("evaded");
             }
         }
 
         private void DoubleGold(int amount)
         {
             int rand = Random.Range(0, 101);
+            Debug.Log("try to double gold " + amount);
 
             if (rand < doubleGoldChance)
             {
                 GameObject.Find("Player").GetComponent<PlayerInventory>().currencyAmount += amount;
+                Debug.Log("doubled gold");
             }
         }
        
