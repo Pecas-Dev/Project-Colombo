@@ -16,6 +16,7 @@ namespace ProjectColombo.Objects.Masks
         public float failedParryDamageIncreasePercent = 20;
         public float staminaRegenSpeedIncreasePercent = 25;
         float regenSpeedDelta;
+        bool hasUsedDoubleStamina = false;
         public float chanceOfDoubleStamina = 50;
         public int luckPointsIncrease = 20;
 
@@ -45,6 +46,8 @@ namespace ProjectColombo.Objects.Masks
 
         private void AddStaminaUsed()
         {
+            if (hasUsedDoubleStamina) return;
+
             if (myPlayerStateMachine.currentComboString.Length >= 2 || myPlayerStateMachine.currentState == PlayerStateMachine.PlayerState.Roll)
             {
                 Debug.Log("chance to double stamina for roll and final attack");
@@ -53,9 +56,16 @@ namespace ProjectColombo.Objects.Masks
                 if (rand > chanceOfDoubleStamina)
                 {
                     Debug.Log("double stamina");
+                    hasUsedDoubleStamina = true;
                     myPlayerStateMachine.myStamina.TryConsumeStamina(1);
                 }
             }
+        }
+
+
+        private void LateUpdate()
+        {
+            hasUsedDoubleStamina = false;
         }
 
         private void AddFailedParry(int damage, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager, bool sameScale)
