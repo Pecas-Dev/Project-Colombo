@@ -269,6 +269,25 @@ namespace ProjectColombo.StateMachine.Player
             comboParticles.Stop();
             comboWindowOpen = false;
         }
+
+        public void OnCollisionEnter(Collision collision)
+        {
+            if (currentState == PlayerState.Roll)
+            {
+                GameObject other = collision.gameObject;
+
+                if (other.CompareTag("Destroyable"))
+                {
+                    //Debug.Log("Player hit Destroyable");
+                    HealthManager otherHealth = other.GetComponent<HealthManager>();
+
+                    if (otherHealth != null)
+                    {
+                        otherHealth.TakeDamage(1000);
+                    }
+                }
+            }
+        }
     }
 }
 
