@@ -1,4 +1,5 @@
 
+using ProjectColombo.GameManagement;
 using UnityEngine;
 
 namespace ProjectColombo.Objects.Items
@@ -11,6 +12,21 @@ namespace ProjectColombo.Objects.Items
         public Texture2D itemPicture;
         [TextArea] public string itemDescription;
         [TextArea] public string itemLore;
+
+        private void Start()
+        {
+            GameManager.Instance.gameInput.EnableInput(GameInputSystem.InputActionType.UseItem);
+        }
+
+        private void Update()
+        {
+            if (GameManager.Instance.gameInput.UseItemPressed)
+            {
+                GameManager.Instance.gameInput.ResetUseItemPressed();
+                Activate();
+            }
+        }
+
 
         public abstract void Activate();
     }

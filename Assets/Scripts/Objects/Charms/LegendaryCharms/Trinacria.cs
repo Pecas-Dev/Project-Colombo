@@ -1,4 +1,5 @@
 using ProjectColombo.Combat;
+using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.StateMachine.Player;
 using System.Collections;
@@ -23,7 +24,7 @@ namespace ProjectColombo.Objects.Charms
 
 
         //ability
-        public float abilityCooldown = 160;
+        public float abilityCooldown = 10;
         public float firstDuration = 2;
         public float secondDuration = 4;
         public float damageDecreaseAbility = 10;
@@ -41,8 +42,9 @@ namespace ProjectColombo.Objects.Charms
         {
             if (abilityReady)
             {
-                if (GameObject.Find("Player").GetComponent<PlayerStateMachine>().gameInputSO.UseItemPressed)
+                if (GameManager.Instance.gameInput.UseItemPressed)
                 {
+                    GameManager.Instance.gameInput.ResetUseItemPressed();
                     StartCoroutine(Ability());
                     abilityReady = false;
                     timer = 0;
@@ -54,6 +56,7 @@ namespace ProjectColombo.Objects.Charms
 
                 if (timer >= abilityCooldown)
                 {
+                    Debug.Log("ability ready");
                     abilityReady = true;
                 }
             }
@@ -62,6 +65,7 @@ namespace ProjectColombo.Objects.Charms
         public override void Equip()
         {
             myPlayerStateMachine = GameObject.Find("Player").GetComponent<PlayerStateMachine>();
+            GameManager.Instance.gameInput.EnableInput(GameInputSystem.InputActionType.UseItem);
 
             CustomEvents.OnDamageDelt += DamageIncrease;
             CustomEvents.OnDamageReceived += IncomingDamageDecrease;

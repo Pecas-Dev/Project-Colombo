@@ -1,4 +1,5 @@
 using ProjectColombo.Combat;
+using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.StateMachine.Player;
 using System.Collections;
@@ -39,6 +40,7 @@ namespace ProjectColombo.Objects.Charms
             {
                 if (myPlayerStateMachine.gameInputSO.UseItemPressed)
                 {
+                    GameManager.Instance.gameInput.ResetUseItemPressed();
                     StartCoroutine(Ability());
                     abilityReady = false;
                     timer = 0;
@@ -58,6 +60,7 @@ namespace ProjectColombo.Objects.Charms
         public override void Equip()
         {
             myPlayerStateMachine = GameObject.Find("Player").GetComponent<PlayerStateMachine>();
+            GameManager.Instance.gameInput.EnableInput(GameInputSystem.InputActionType.UseItem);
             CustomEvents.OnDamageDelt += DamageIncrease;
             CustomEvents.OnDamageReceived += IncomingDamageIncrease;
 
@@ -82,8 +85,8 @@ namespace ProjectColombo.Objects.Charms
                 Debug.Log("ability active");
                 delta += (int)(damage / 100f * damageIncreasePercentAbility);
 
-                int health = (int)(healAmountOfDamage * (damage + delta));
-                myPlayerStateMachine.myHealthManager.Heal(health);
+                Debug.Log("heal from: " + damage + ", with: " + delta);
+                myPlayerStateMachine.myHealthManager.Heal(delta);
             }
             Debug.Log("decreased damage from: " + damage + ", by: " + delta);
 
