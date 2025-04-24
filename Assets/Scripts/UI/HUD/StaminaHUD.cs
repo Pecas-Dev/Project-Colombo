@@ -8,13 +8,13 @@ namespace ProjectColombo.UI.HUD
 {
     public class StaminaHUD : MonoBehaviour
     {
-        Stamina myStamina;
+        public Stamina myStamina;
         public TMP_Text staminaText;
         public GameObject firstIndicator;
         public float offsetX = 90;
 
 
-        List<GameObject> indicators;
+        List<GameObject> indicators = new();
 
         private void Update()
         {
@@ -24,7 +24,13 @@ namespace ProjectColombo.UI.HUD
 
         public void Reset()
         {
-            myStamina = GetComponentInParent<Stamina>();
+            foreach (GameObject o in indicators)
+            {
+                Destroy(o);
+            }
+
+            firstIndicator.SetActive(true);
+
             indicators = new List<GameObject>();
 
             //Debug.Log("max Stamina: " + myStamina.maxStamina);
@@ -32,7 +38,7 @@ namespace ProjectColombo.UI.HUD
             RectTransform firstRT = firstIndicator.GetComponent<RectTransform>();
             Vector2 firstPos = firstRT.anchoredPosition;
 
-            for (int i = 0; i < myStamina.maxStamina; i++)
+            for (int i = 0; i < myStamina.currentMaxStamina; i++)
             {
                 // Clone the indicator
                 GameObject newIndicator = Instantiate(firstIndicator, firstIndicator.transform.parent);
@@ -52,12 +58,14 @@ namespace ProjectColombo.UI.HUD
 
         void UpdateText()
         {
-            staminaText.text = Mathf.FloorToInt(myStamina.currentStamina) + " / " + myStamina.maxStamina;
+            staminaText.text = Mathf.FloorToInt(myStamina.currentStamina) + " / " + myStamina.currentMaxStamina;
         }
 
         void UpdateVisuals()
         {
             float current = myStamina.currentStamina;
+
+            if (indicators.Count == 0) return;
             
             for (int i = 0; i < indicators.Count; i++)
             {

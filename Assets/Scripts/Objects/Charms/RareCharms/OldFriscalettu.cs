@@ -27,7 +27,7 @@ namespace ProjectColombo.Objects.Charms
 
         private void IncreaseDamage(int damage, GameGlobals.MusicScale scale, HealthManager healthManager)
         {
-            int additionalDamage = damage;
+            int additionalDamage = 0;
             if (scale == GameGlobals.MusicScale.MAJOR)
             {
                 additionalDamage += (int)(damage * damageIncreaseMajor / 100f);
@@ -39,7 +39,7 @@ namespace ProjectColombo.Objects.Charms
                 Debug.Log("increased minor damage from: " + damage + ", by: " + additionalDamage);
             }
 
-            healthManager.TakeDamage(damage);
+            healthManager.TakeDamage(additionalDamage);
         }
 
         public override void Remove()

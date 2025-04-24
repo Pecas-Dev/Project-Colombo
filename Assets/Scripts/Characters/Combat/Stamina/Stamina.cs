@@ -9,18 +9,19 @@ namespace ProjectColombo.Combat
     public class Stamina : MonoBehaviour
     {
         [Header("Configuration")]
-        [SerializeField] public StaminaConfigSO staminaConfig;
-
-        [HideInInspector] public int maxStamina = 0;
+        public int defaultStamina = 7;
+        [HideInInspector] public int currentMaxStamina;
+        public float regenSpeed = 0.5f;
+        
         [HideInInspector] public float currentStamina = 0f;
-        [HideInInspector] public float regenSpeed;
-
+        [Header("Costs")]
+        public int staminaToRoll = 1;
+        public int staminaToAttack = 1;
 
         void Start()
         {
-            regenSpeed = staminaConfig.StaminaRegenerationRate;
-            maxStamina = (int)staminaConfig.MaxStaminaPoints;
-            currentStamina = staminaConfig.MaxStaminaPoints;
+            currentMaxStamina = defaultStamina;
+            currentStamina = currentMaxStamina;
 
             GetComponentInChildren<StaminaHUD>().Reset();
         }
@@ -28,7 +29,7 @@ namespace ProjectColombo.Combat
         void Update()
         {
             // If the current stamina is less than max stamina, regenerate it over time
-            if (currentStamina < staminaConfig.MaxStaminaPoints)
+            if (currentStamina < currentMaxStamina)
             {
                 RegenerateStamina(Time.deltaTime);
             }
@@ -43,7 +44,7 @@ namespace ProjectColombo.Combat
             int oldStaminaInt = Mathf.FloorToInt(currentStamina);
 
             // Regenerate stamina but cap it at max
-            currentStamina = Mathf.Min(currentStamina + regenerationAmount, staminaConfig.MaxStaminaPoints);
+            currentStamina = Mathf.Min(currentStamina + regenerationAmount, currentMaxStamina);
 
             // Store the new integer value of stamina
             int newStaminaInt = Mathf.FloorToInt(currentStamina);
@@ -53,6 +54,19 @@ namespace ProjectColombo.Combat
             {
                 CustomEvents.StaminaRegenerated();
             }
+        }
+
+        public void AddStamina(int extra)
+        {
+            Debug.Log("changed stamina from: " + currentMaxStamina+ ", by: " + extra);
+            currentMaxStamina += extra;
+
+            if (currentStamina > currentMaxStamina)
+            {
+                currentStamina = currentMaxStamina;
+            }
+
+            GetComponentInChildren<StaminaHUD>().Reset();
         }
 
 
@@ -65,7 +79,7 @@ namespace ProjectColombo.Combat
         {
             if (staminaCost < 0)
             {
-                currentStamina = Mathf.Min(currentStamina - staminaCost, staminaConfig.MaxStaminaPoints);
+                currentStamina = Mathf.Min(currentStamina - staminaCost, currentMaxStamina);
                 return true;
             }
 

@@ -17,7 +17,7 @@ namespace ProjectColombo.Objects.Charms
         private void AddResistance(int damage, GameGlobals.MusicScale scale, HealthManager healthmanager)
         {
             int calculatedResistance = (int)(damage / 100f * resistancePercentage);
-            Debug.Log("decreased damage from: " + damage + ", to: " + calculatedResistance);
+            Debug.Log("decreased damage from: " + damage + ", by: " + calculatedResistance);
             healthmanager.TakeDamage(-calculatedResistance);
         }
 

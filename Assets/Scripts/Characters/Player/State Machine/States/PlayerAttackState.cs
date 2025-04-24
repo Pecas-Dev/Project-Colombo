@@ -25,7 +25,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Enter()
         {
-            if (!stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.staminaConfig.ComboStaminaCost))
+            if (!stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.staminaToAttack))
             {
                 Debug.Log("no stamina");
                 stateMachine.SwitchState(new PlayerMovementState(stateMachine));

@@ -44,7 +44,7 @@ namespace ProjectColombo.StateMachine.Player
                 return;
             }
 
-            if (!stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.staminaConfig.RollStaminaCost))
+            if (!stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.staminaToRoll))
             {
                 stateMachine.SwitchState(new PlayerMovementState(stateMachine));
                 return;

@@ -17,8 +17,7 @@ namespace ProjectColombo.Objects.Charms
             CustomEvents.OnCoinsCollected += DoubleGold;
 
             myStamina = GameObject.Find("Player").GetComponent<Stamina>();
-            Debug.Log("increased stamina from: " + myStamina.maxStamina + ", by: " + addedStamina);
-            myStamina.maxStamina += addedStamina;
+            myStamina.AddStamina(addedStamina);
         }
 
         private void Evade(int damage, GameGlobals.MusicScale scale, HealthManager healthmanager)
@@ -51,7 +50,7 @@ namespace ProjectColombo.Objects.Charms
             CustomEvents.OnDamageReceived -= Evade;
             CustomEvents.OnCoinsCollected -= DoubleGold;
 
-            myStamina.maxStamina -= addedStamina;
+            myStamina.AddStamina(-addedStamina);
         }
     }
 }

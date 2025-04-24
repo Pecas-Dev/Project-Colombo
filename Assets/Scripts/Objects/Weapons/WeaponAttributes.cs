@@ -89,7 +89,7 @@ namespace ProjectColombo.Combat
 
             if (ownerTag == "Player" && other.CompareTag("Destroyable"))
             {
-                Debug.Log("Player hit Destroyable");
+                //Debug.Log("Player hit Destroyable");
                 HealthManager otherHealth = other.GetComponent<HealthManager>();
 
                 if (otherHealth != null)
@@ -99,7 +99,7 @@ namespace ProjectColombo.Combat
             }
             else if (ownerTag == "Player" && other.CompareTag("Enemy"))
             {
-                Debug.Log("Player hit Enemy");
+                //Debug.Log("Player hit Enemy");
                 MommottiStateMachine otherStateMachine = other.GetComponent<MommottiStateMachine>();
                 EntityAttributes otherAttributes = other.GetComponent<EntityAttributes>();
                 HealthManager otherHealth = other.GetComponent<HealthManager>();
@@ -111,12 +111,12 @@ namespace ProjectColombo.Combat
 
                     if (currentScale != otherAttributes.currentScale)
                     {
-                        Debug.Log("..with the opposite scale");
+                        //Debug.Log("..with the opposite scale");
                         AddTemporaryDamagePercentage(damage, correctAttackScaleBonusPercentage);
                     }
                     else
                     {
-                        Debug.Log("..but not the opposite scale");
+                        //Debug.Log("..but not the opposite scale");
                     }
 
                     CustomEvents.DamageDelt(damage, currentScale, otherHealth);
@@ -126,7 +126,7 @@ namespace ProjectColombo.Combat
             }
             else if (ownerTag == "Enemy" && other.CompareTag("Player"))
             {
-                Debug.Log("Enemy hit Player");
+                //Debug.Log("Enemy hit Player");
                 PlayerStateMachine otherStateMachine = other.GetComponent<PlayerStateMachine>();
                 EntityAttributes otherAttributes = other.GetComponent<EntityAttributes>();
                 HealthManager otherHealth = other.GetComponent<HealthManager>();
@@ -138,46 +138,49 @@ namespace ProjectColombo.Combat
 
                     if (otherStateMachine.isBlocking)
                     {
-                        Debug.Log("Player blocked incoming attack");
+                        //Debug.Log("Player blocked incoming attack");
 
                         AddTemporaryDamagePercentage(damage, -blockDamageReductionPercentage);
                         CustomEvents.DamageBlocked(damage, currentScale, otherHealth);
                     }
                     else if (otherStateMachine.isParrying)
                     {
-                        Debug.Log("Player parried");
+                        //Debug.Log("Player parried");
                         bool sameScale = true;
                         damage = 0;
 
                         if (currentScale != otherAttributes.currentScale)
                         {
-                            Debug.Log("..with opposite scale -> stagger enemy");
+                            //Debug.Log("..with opposite scale -> stagger enemy");
                             GetComponentInParent<MommottiStateMachine>().SetStaggered();
                             sameScale = false;
                         }
                         else
                         {
-                            Debug.Log("..but not the opposite scale");
+                            //Debug.Log("..but not the opposite scale");
                         }
 
                         CustomEvents.SuccessfullParry(currentScale, sameScale);
                     }
                     else if (otherStateMachine.tryParrying)
                     {
-                        Debug.Log("Player missed parry");
+                        //Debug.Log("Player missed parry");
                         bool sameScale = true;
 
                         if (currentScale != otherAttributes.currentScale)
                         {
-                            Debug.Log("..with opposite scale -> extra damage");
+                            //Debug.Log("..with opposite scale -> extra damage");
                             AddTemporaryDamagePercentage(damage, missedParryPaneltyPercentage);
                             sameScale = false;
                         }
 
                         CustomEvents.FailedParry(damage, currentScale, otherHealth, sameScale);
                     }
+                    else
+                    {
+                        CustomEvents.DamageReceived(damage, currentScale, otherHealth);
+                    }
 
-                    CustomEvents.DamageReceived(damage, currentScale, otherHealth);
                     otherStateMachine.SetStaggered();
                     otherHealth.TakeDamage(damage);
                 }
