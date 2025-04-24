@@ -16,7 +16,7 @@ namespace ProjectColombo.Objects.Masks
         float staminaRegenDelta;
         public int extraHealthPointsOnPickup = 300;
         public float damageReceiveDecreasePercent = 6f;
-        public float extraDamageIncreasePerHealth = 0.32f;
+        public float extraDamageReceiveIncreasePerHealth = 0.32f;
         public float shopDiscountPercent = 15f;
         public float healthPunishmentForPurchasePercent = 20f;
 
@@ -76,7 +76,7 @@ namespace ProjectColombo.Objects.Masks
             }
 
             int maxHealth = myPlayerStateMachine.myHealthManager.MaxHealth;
-            int extra = (int)(maxHealth * extraDamageIncreasePerHealth);
+            int extra = (int)(maxHealth * extraDamageReceiveIncreasePerHealth / 100f);
 
             int value = (int)(damage * damageReceiveDecreasePercent / 100f);
             Debug.Log("extra damage received: " + -value + " and: " + extra);
@@ -86,7 +86,7 @@ namespace ProjectColombo.Objects.Masks
         private void OnDamageDelt(int damage, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager)
         {
             int maxHealth = myPlayerStateMachine.myHealthManager.MaxHealth;
-            int extra = (int)(maxHealth * extraDamageIncreasePerHealthPercent);
+            int extra = (int)(maxHealth * extraDamageIncreasePerHealthPercent / 100f);
 
             int value = (int)(damage * extraDamageDecreasePercent / 100f);
             Debug.Log("extra damage delt: " + -value + " and: " + extra);

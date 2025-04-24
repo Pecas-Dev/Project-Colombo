@@ -51,10 +51,12 @@ namespace ProjectColombo.Objects.Masks
 
         private void OnDamageReceived(int damage, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager)
         {
-            myPlayerInventory.currencyAmount -= (int)(myPlayerInventory.currencyAmount * looseCoinsWhenDamagedPercent / 100f);
+            int lost = (int)(myPlayerInventory.currencyAmount * looseCoinsWhenDamagedPercent / 100f);
+            myPlayerInventory.currencyAmount -= lost;
+            Debug.Log("coins lost: " + lost);
 
             int value = (int)(myPlayerInventory.currencyAmount * extraDamageReceivePerCoin / 100f);
-            Debug.Log("extra damage received for coins: " + value);
+            Debug.Log("extra damage for coins: " + value);
             healthmanager.TakeDamage(value);
         }
 
@@ -62,6 +64,7 @@ namespace ProjectColombo.Objects.Masks
         {
             int rand = Random.Range(minAmountOfCoinsPerDamage, maxAmountOfCoinsPerDamage + 1);
             myPlayerInventory.currencyAmount += rand;
+            Debug.Log("coins gained: " + rand);
 
             int value = (int)(myPlayerInventory.currencyAmount * extraDamagePerCoinPercent / 100f);
             Debug.Log("extra damage delt for coins: " + value);

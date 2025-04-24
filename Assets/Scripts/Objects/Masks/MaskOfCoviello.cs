@@ -23,8 +23,6 @@ namespace ProjectColombo.Objects.Masks
         public int extraHealthPoints = 100;
 
 
-
-
         //ability
         public float abilityCooldown = 120;
         public float abilityDuration = 6;
@@ -38,6 +36,7 @@ namespace ProjectColombo.Objects.Masks
         public float movementSpeedIncreasePercent = 8;
         float movementSpeedIncreaseValue;
 
+        bool abilityActive = false;
         PlayerStateMachine myPlayerStateMachine;
 
         public override void Equip()
@@ -79,6 +78,12 @@ namespace ProjectColombo.Objects.Masks
 
             int abilityExtra = (int)(abilityExtraDamageCounter * damage * extraDamageForStaminaPercent / 100f);
             healthmanager.TakeDamage(abilityExtra);
+
+            if (abilityActive)
+            {
+                Debug.Log("lost health for attacking: " + removeHealthPerAttack);
+                myPlayerStateMachine.myHealthManager.TakeDamage(removeHealthPerAttack);
+            }
 
             if (scale == GameGlobals.MusicScale.MAJOR)
             {
@@ -122,15 +127,11 @@ namespace ProjectColombo.Objects.Masks
             {
                 StartCoroutine(AbilityExtraDamage());
             }
-
-            if (myPlayerStateMachine.currentState == PlayerStateMachine.PlayerState.Attack)
-            {
-                myPlayerStateMachine.myHealthManager.TakeDamage(removeHealthPerAttack);
-            }
         }
 
         IEnumerator Ability()
         {
+            abilityActive = true;
             Debug.Log("increased speed from: " + myPlayerStateMachine.myEntityAttributes.moveSpeed + " by: " + movementSpeedIncreaseValue);
             myPlayerStateMachine.myEntityAttributes.moveSpeed += movementSpeedIncreaseValue;
             Debug.Log("increased attack speed from: " + myPlayerStateMachine.myWeaponAttributes.cooldown + " by: " + attackSpeedIncreaseValue);
@@ -142,6 +143,7 @@ namespace ProjectColombo.Objects.Masks
             yield return new WaitForSeconds(abilityDuration);
 
             Debug.Log("end ability");
+            abilityActive = false;
             myPlayerStateMachine.myEntityAttributes.moveSpeed -= movementSpeedIncreaseValue;
             myPlayerStateMachine.myWeaponAttributes.cooldown += attackSpeedIncreaseValue;
 

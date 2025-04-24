@@ -113,17 +113,19 @@ namespace ProjectColombo.Objects.Masks
         {
             currentAbilityCooldown = defaultAbilityCooldown - (cooldownDecreasePerLuck * myPlayerStateMachine.myEntityAttributes.currentLuck);
 
-            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemies");
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            Debug.Log("enemies found: " + enemies.Length);
 
             foreach (GameObject e in enemies)
             {
-                float distance = (e.transform.position - transform.position).magnitude;
+                float distance = Vector3.Distance(e.transform.position, myPlayerStateMachine.transform.position);
 
                 if (distance < abilityArea)
                 {
                     Debug.Log("stunned enemy");
                     e.GetComponent<MommottiStateMachine>().SetStaggered();
                 }
+
             }
 
             Debug.Log("end ability");
