@@ -14,6 +14,11 @@ namespace ProjectColombo.Objects.Masks
         [HideInInspector] public float currentAbilityCooldown = 0;
         [HideInInspector] public float timer = 0;
 
+        private void Start()
+        {
+            GameManager.Instance.gameInput.EnableInput(GameInputSystem.InputActionType.UseSpecialAbility);
+        }
+
         private void Update()
         {
             if (!abilityAvailable)
@@ -22,6 +27,7 @@ namespace ProjectColombo.Objects.Masks
 
                 if (timer >= currentAbilityCooldown)
                 {
+                    Debug.Log("ability available");
                     abilityAvailable = true;
                     timer = 0;
                 }
@@ -29,6 +35,8 @@ namespace ProjectColombo.Objects.Masks
 
             if (GameManager.Instance.gameInput.UseSpecialAbilityPressed && abilityAvailable)
             {
+                Debug.Log("start ability");
+                GameManager.Instance.gameInput.ResetUseSpecialAbilityPressed();
                 abilityAvailable = false;
                 UseAbility();
             }

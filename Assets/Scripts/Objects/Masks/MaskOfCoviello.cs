@@ -48,7 +48,8 @@ namespace ProjectColombo.Objects.Masks
             CustomEvents.OnDamageReceived += AddDamageReceive;
             CustomEvents.OnParryFailed += AddFailedParry;
 
-            myPlayerStateMachine.myHealthManager.AddHealthPoints(100);
+            Debug.Log("added health: " + extraHealthPoints);
+            myPlayerStateMachine.myHealthManager.AddHealthPoints(extraHealthPoints);
         }
 
         private void AddFailedParry(int damage, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager, bool sameScale)
@@ -57,6 +58,7 @@ namespace ProjectColombo.Objects.Masks
             int extra = (int)(Mathf.FloorToInt(currentHealth / extraMissingParryForHowManyPoints) * extraDamageIncraseMissingParryForPoints);
 
             int value = (int)(damage * extraDamageReceivePercent / 100f);
+            Debug.Log("extra failed parry damage: " + (value + extra));
             healthmanager.TakeDamage(value + extra);
         }
 
@@ -66,6 +68,7 @@ namespace ProjectColombo.Objects.Masks
             int extra = (int)(Mathf.FloorToInt(currentHealth / extraDamageReceiveForHowManyPoints) * extraDamageReceiveForMissingHealthPercent);
 
             int value = (int)(damage * extraDamageReceivePercent / 100f);
+            Debug.Log("extra receive damage: " + (value + extra));
             healthmanager.TakeDamage(value + extra);
         }
 
@@ -80,11 +83,13 @@ namespace ProjectColombo.Objects.Masks
             if (scale == GameGlobals.MusicScale.MAJOR)
             {
                 int value = (int)(damage * majorScaleDamageIncreasePercent / 100f);
+                Debug.Log("extra major damage: " + (value + extra));
                 healthmanager.TakeDamage(value + extra);
             }
             else if (scale == GameGlobals.MusicScale.MINOR)
             {
                 int value = (int)(damage * minorScaleDamageIncreasePercent / 100f);
+                Debug.Log("extra minor damage: " + (value + extra));
                 healthmanager.TakeDamage(value + extra);
             }
         }
@@ -96,7 +101,7 @@ namespace ProjectColombo.Objects.Masks
             CustomEvents.OnParryFailed -= AddFailedParry;
             CustomEvents.OnStaminaUsed -= OnStaminaUsed;
 
-            myPlayerStateMachine.myHealthManager.AddHealthPoints(-100);
+            myPlayerStateMachine.myHealthManager.AddHealthPoints(-extraHealthPoints);
         }
 
         public override void UseAbility()
@@ -126,7 +131,9 @@ namespace ProjectColombo.Objects.Masks
 
         IEnumerator Ability()
         {
+            Debug.Log("increased speed from: " + myPlayerStateMachine.myEntityAttributes.moveSpeed + " by: " + movementSpeedIncreaseValue);
             myPlayerStateMachine.myEntityAttributes.moveSpeed += movementSpeedIncreaseValue;
+            Debug.Log("increased attack speed from: " + myPlayerStateMachine.myWeaponAttributes.cooldown + " by: " + attackSpeedIncreaseValue);
             myPlayerStateMachine.myWeaponAttributes.cooldown -= attackSpeedIncreaseValue;
             staminaCounter = 0;
 
@@ -134,6 +141,7 @@ namespace ProjectColombo.Objects.Masks
 
             yield return new WaitForSeconds(abilityDuration);
 
+            Debug.Log("end ability");
             myPlayerStateMachine.myEntityAttributes.moveSpeed -= movementSpeedIncreaseValue;
             myPlayerStateMachine.myWeaponAttributes.cooldown += attackSpeedIncreaseValue;
 
@@ -142,11 +150,13 @@ namespace ProjectColombo.Objects.Masks
 
         IEnumerator AbilityExtraDamage()
         {
+            Debug.Log("start extra damage");
             abilityExtraDamageCounter++;
 
             yield return new WaitForSeconds(extraDamageDuration);
 
             abilityExtraDamageCounter--;
+            Debug.Log("end extra damage. Remaining: " + abilityExtraDamageCounter);
         }
     }
 }

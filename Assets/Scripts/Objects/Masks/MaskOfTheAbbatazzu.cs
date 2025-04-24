@@ -40,15 +40,19 @@ namespace ProjectColombo.Objects.Masks
 
 
             attackSpeedDelta = myPlayerStateMachine.myWeaponAttributes.cooldown * attackSpeedDecreasePercent / 100f;
+            Debug.Log("changed attack speed from: " + myPlayerStateMachine.myWeaponAttributes.cooldown + " by: " + attackSpeedDelta);
             myPlayerStateMachine.myWeaponAttributes.cooldown += attackSpeedDelta;
 
             staminaRegenDelta = myPlayerStateMachine.myStamina.regenSpeed * staminaRegenDecreasePercent / 100;
+            Debug.Log("changed stamina regen speed from: " + myPlayerStateMachine.myStamina.regenSpeed + " by: " + staminaRegenDelta);
             myPlayerStateMachine.myStamina.regenSpeed += staminaRegenDelta;
         }
 
         private void OnItemPurchase(int damageAmount)
         {
-            myPlayerStateMachine.myHealthManager.TakeDamage((int)(damageAmount * healthPunishmentForPurchasePercent / 100f));
+            int value = (int)(damageAmount * healthPunishmentForPurchasePercent / 100f);
+            Debug.Log("damage for buying item: " + value);
+            myPlayerStateMachine.myHealthManager.TakeDamage(value);
         }
 
         private void OnShopOpen()
@@ -58,6 +62,7 @@ namespace ProjectColombo.Objects.Masks
 
         private void OnCoinsCollected(int obj)
         {
+            Debug.Log("extra health for coins pickup: " + extraHealthPointsOnPickup);
             myPlayerStateMachine.myHealthManager.AddHealthPoints(extraHealthPointsOnPickup);
         }
 
@@ -65,6 +70,7 @@ namespace ProjectColombo.Objects.Masks
         {
             if (ignoreDamage)
             {
+                Debug.Log("ignore damaged of: " + damage);
                 healthmanager.Heal(damage);
                 return;
             }
@@ -73,6 +79,7 @@ namespace ProjectColombo.Objects.Masks
             int extra = (int)(maxHealth * extraDamageIncreasePerHealth);
 
             int value = (int)(damage * damageReceiveDecreasePercent / 100f);
+            Debug.Log("extra damage received: " + -value + " and: " + extra);
             healthmanager.TakeDamage(-value + extra);
         }
 
@@ -82,11 +89,13 @@ namespace ProjectColombo.Objects.Masks
             int extra = (int)(maxHealth * extraDamageIncreasePerHealthPercent);
 
             int value = (int)(damage * extraDamageDecreasePercent / 100f);
+            Debug.Log("extra damage delt: " + -value + " and: " + extra);
             healthmanager.TakeDamage(-value + extra);
         }
 
         private void OnEnemyDeath()
         {
+            Debug.Log("gained health for kill: " + gainHealthPointsPerKill);
             myPlayerStateMachine.myHealthManager.AddHealthPoints(gainHealthPointsPerKill);
         }
 
@@ -115,6 +124,7 @@ namespace ProjectColombo.Objects.Masks
         {
             ignoreDamage = true;
             yield return new WaitForSeconds(abilityDuration);
+            Debug.Log("end ability");
             ignoreDamage = false;
         }
     }

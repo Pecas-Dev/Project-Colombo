@@ -29,8 +29,12 @@ namespace ProjectColombo.Objects.Masks
         public override void Equip()
         {
             myPlayerStateMachine = GameObject.Find("Player").GetComponent<PlayerStateMachine>();
+
+            Debug.Log("added luck points: " + luckPointsIncrease);
             myPlayerStateMachine.myEntityAttributes.currentLuck += luckPointsIncrease;
+
             regenSpeedDelta = myPlayerStateMachine.myStamina.regenSpeed / 100f * staminaRegenSpeedIncreasePercent;
+            Debug.Log("lowered stamina regen speed from: " + myPlayerStateMachine.myStamina.regenSpeed + " by: " + regenSpeedDelta);
             myPlayerStateMachine.myStamina.regenSpeed += regenSpeedDelta;
 
             CustomEvents.OnDamageDelt += AddDamageDelt;
@@ -43,10 +47,12 @@ namespace ProjectColombo.Objects.Masks
         {
             if (myPlayerStateMachine.currentComboString.Length >= 2 || myPlayerStateMachine.currentState == PlayerStateMachine.PlayerState.Roll)
             {
+                Debug.Log("chance to double stamina for roll and final attack");
                 int rand = Random.Range(0, 101);
 
                 if (rand > chanceOfDoubleStamina)
                 {
+                    Debug.Log("double stamina");
                     myPlayerStateMachine.myStamina.TryConsumeStamina(1);
                 }
             }
@@ -55,12 +61,14 @@ namespace ProjectColombo.Objects.Masks
         private void AddFailedParry(int damage, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager, bool sameScale)
         {
             int value = (int)(damage * failedParryDamageIncreasePercent / 100f);
+            Debug.Log("increase failed parry punishment: " + value);
             healthmanager.TakeDamage(value);
         }
 
         private void AddDamageReceive(int damage, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager)
         {
             int value = (int)(damage * receivedDamageIncreasePercent / 100f);
+            Debug.Log("increase receive damage: " + value);
             healthmanager.TakeDamage(value);
         }
 
@@ -69,11 +77,13 @@ namespace ProjectColombo.Objects.Masks
             if (scale == GameGlobals.MusicScale.MAJOR)
             {
                 int value = (int)(damage * majorDamageIncreasePercent / 100f);
+                Debug.Log("increase major damage by: " + value);
                 healthmanager.TakeDamage(value);
             }
             else if (scale == GameGlobals.MusicScale.MINOR)
             {
                 int value = (int)(damage * minorDamageDecreasePercent / 100f);
+                Debug.Log("decrease minor damage by: " + value);
                 healthmanager.TakeDamage(-value);
             }
         }
@@ -101,9 +111,12 @@ namespace ProjectColombo.Objects.Masks
 
                 if (distance < abilityArea)
                 {
+                    Debug.Log("stunned enemy");
                     e.GetComponent<MommottiStateMachine>().SetStaggered();
                 }
             }
+
+            Debug.Log("end ability");
         }
     }
 }

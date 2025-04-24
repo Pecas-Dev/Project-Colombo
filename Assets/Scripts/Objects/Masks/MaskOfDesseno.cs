@@ -2,6 +2,7 @@ using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Inventory;
 using ProjectColombo.Shop;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace ProjectColombo.Objects.Masks
 {
@@ -33,7 +34,9 @@ namespace ProjectColombo.Objects.Masks
 
         private void OnCoinsCollected(int amount)
         {
-            myPlayerInventory.currencyAmount += (int)(amount * extraCoinsPercentage / 100f);
+            int value = (int)(amount * extraCoinsPercentage / 100f);
+            Debug.Log("extra money: " + value);
+            myPlayerInventory.currencyAmount += value;
         }
 
         private void OnSuccessfullParry(GameGlobals.MusicScale scale, bool sameScale)
@@ -41,6 +44,7 @@ namespace ProjectColombo.Objects.Masks
             if (!sameScale)
             {
                 int rand = Random.Range(minAmountOfCoinsPerParry, maxAmountOfCoinsPerParry + 1);
+                Debug.Log("extra money for samescale successfull parry: " + rand);
                 myPlayerInventory.currencyAmount += rand;
             }
         }
@@ -50,6 +54,7 @@ namespace ProjectColombo.Objects.Masks
             myPlayerInventory.currencyAmount -= (int)(myPlayerInventory.currencyAmount * looseCoinsWhenDamagedPercent / 100f);
 
             int value = (int)(myPlayerInventory.currencyAmount * extraDamageReceivePerCoin / 100f);
+            Debug.Log("extra damage received for coins: " + value);
             healthmanager.TakeDamage(value);
         }
 
@@ -59,6 +64,7 @@ namespace ProjectColombo.Objects.Masks
             myPlayerInventory.currencyAmount += rand;
 
             int value = (int)(myPlayerInventory.currencyAmount * extraDamagePerCoinPercent / 100f);
+            Debug.Log("extra damage delt for coins: " + value);
             healthmanager.TakeDamage(value);
         }
 
@@ -88,9 +94,11 @@ namespace ProjectColombo.Objects.Masks
         private void OnItemPurchase(int obj)
         {
             boughtItemsCounter++;
+            Debug.Log("item purchased: " + boughtItemsCounter);
 
             if (boughtItemsCounter >= boughtItemsToReset)
             {
+                Debug.Log("end ability");
                 currentAbilityCooldown = 0;
                 abilityAvailable = true;
                 CustomEvents.OnShopOpen -= OnShopOpen;
