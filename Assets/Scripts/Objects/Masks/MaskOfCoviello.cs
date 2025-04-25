@@ -114,7 +114,7 @@ namespace ProjectColombo.Objects.Masks
             currentAbilityCooldown = abilityCooldown;
 
             movementSpeedIncreaseValue = myPlayerStateMachine.myEntityAttributes.moveSpeed * movementSpeedIncreasePercent / 100f;
-            attackSpeedIncreaseValue = myPlayerStateMachine.myWeaponAttributes.cooldown * attackSpeedIncreasePercent / 100f;
+            attackSpeedIncreaseValue = attackSpeedIncreasePercent / 100f;
 
             StartCoroutine(Ability());
         }
@@ -134,8 +134,8 @@ namespace ProjectColombo.Objects.Masks
             abilityActive = true;
             Debug.Log("increased speed from: " + myPlayerStateMachine.myEntityAttributes.moveSpeed + " by: " + movementSpeedIncreaseValue);
             myPlayerStateMachine.myEntityAttributes.moveSpeed += movementSpeedIncreaseValue;
-            Debug.Log("increased attack speed from: " + myPlayerStateMachine.myWeaponAttributes.cooldown + " by: " + attackSpeedIncreaseValue);
-            myPlayerStateMachine.myWeaponAttributes.cooldown -= attackSpeedIncreaseValue;
+            Debug.Log("increased attack speed from: " + myPlayerStateMachine.myEntityAttributes.attackSpeed + " by: " + attackSpeedIncreaseValue);
+            myPlayerStateMachine.myEntityAttributes.attackSpeed -= attackSpeedIncreaseValue;
             staminaCounter = 0;
 
             CustomEvents.OnStaminaUsed += OnStaminaUsed;
@@ -145,7 +145,7 @@ namespace ProjectColombo.Objects.Masks
             Debug.Log("end ability");
             abilityActive = false;
             myPlayerStateMachine.myEntityAttributes.moveSpeed -= movementSpeedIncreaseValue;
-            myPlayerStateMachine.myWeaponAttributes.cooldown += attackSpeedIncreaseValue;
+            myPlayerStateMachine.myEntityAttributes.attackSpeed += attackSpeedIncreaseValue;
 
             CustomEvents.OnStaminaUsed -= OnStaminaUsed;
         }

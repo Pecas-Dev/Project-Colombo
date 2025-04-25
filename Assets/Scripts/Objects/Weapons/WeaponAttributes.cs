@@ -49,9 +49,14 @@ namespace ProjectColombo.Combat
             myParticles = GetComponent<ParticleSystem>();
         }
 
+        private void OnDestroy()
+        {
+            CustomEvents.OnLevelChange -= SaveCurrentStats;
+        }
+
         private void SaveCurrentStats()
         {
-            if (gameObject.CompareTag("Player"))
+            if (GetComponentInParent<EntityAttributes>().CompareTag("Player"))
             {
                 myGlobalStats.currentPlayerDamage = defaultDamage;
                 myGlobalStats.currentCorrectAttackScalePercent = correctAttackScaleBonusPercentage;
@@ -62,14 +67,15 @@ namespace ProjectColombo.Combat
 
         void GetCurrentStats()
         {
-            if (gameObject.CompareTag("Player"))
+            if (GetComponentInParent<EntityAttributes>().CompareTag("Player"))
             {
+                Debug.Log("set weapon stats");
                 defaultDamage = myGlobalStats.currentPlayerDamage;
                 correctAttackScaleBonusPercentage = myGlobalStats.currentCorrectAttackScalePercent;
                 blockDamageReductionPercentage = myGlobalStats.currentBlockReductionPercent;
                 missedParryPaneltyPercentage = myGlobalStats.currentMissedParryPaneltyPercent;
             }
-            else if (gameObject.CompareTag("Enemy"))
+            else if (GetComponentInParent<EntityAttributes>().CompareTag("Enemy"))
             {
                 defaultDamage = myGlobalStats.currentMommottiDamage;
             }

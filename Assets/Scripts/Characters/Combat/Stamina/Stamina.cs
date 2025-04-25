@@ -31,6 +31,11 @@ namespace ProjectColombo.Combat
             GetComponentInChildren<StaminaHUD>().Reset();
         }
 
+        private void OnDestroy()
+        {
+            CustomEvents.OnLevelChange -= SaveCurrentStats;
+        }
+
         private void SaveCurrentStats()
         {
              myGlobalStats.currentPlayerStamina = currentMaxStamina;

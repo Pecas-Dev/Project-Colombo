@@ -2,6 +2,7 @@ using ProjectColombo.Objects.Charms;
 using ProjectColombo.Objects.Masks;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace ProjectColombo.UI.Pausescreen
@@ -15,6 +16,43 @@ namespace ProjectColombo.UI.Pausescreen
         public GameObject CharmSlot;
         public GameObject MaskSlot;
         public GameObject ItemSlot;
+
+        private void Start()
+        {
+            SceneManager.sceneLoaded += OnLoadScene;
+        }
+
+        private void OnLoadScene(Scene arg0, LoadSceneMode arg1)
+        {
+            MakeSelection();
+        }
+
+        public void ResetSelection()
+        {
+            // Remove existing children
+            foreach (Transform child in CharmSlot.transform)
+            {
+                BaseCharm childcharm = child.GetComponent<BaseCharm>();
+                childcharm.Remove();
+                GameObject.Destroy(child.gameObject);
+            }
+
+            // Remove existing children
+            foreach (Transform child in MaskSlot.transform)
+            {
+                child.GetComponent<BaseMask>().Remove();
+                GameObject.Destroy(child.gameObject);
+
+            }
+
+            // Remove existing children
+            foreach (Transform child in ItemSlot.transform)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+        }
+
+
 
 
         public void MakeSelection()

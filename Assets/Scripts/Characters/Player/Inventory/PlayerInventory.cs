@@ -21,6 +21,11 @@ namespace ProjectColombo.Inventory
             GetCurrentStats();
         }
 
+        private void OnDestroy()
+        {
+            CustomEvents.OnLevelChange -= SaveCurrentStats;
+        }
+
         private void SaveCurrentStats()
         {
             myGlobalStats.currentCurrencyAmount = currencyAmount;

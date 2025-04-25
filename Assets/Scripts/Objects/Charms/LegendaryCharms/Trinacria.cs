@@ -13,7 +13,7 @@ namespace ProjectColombo.Objects.Charms
         //general
         public float damageIncreasePercent = 5;
         public float attackSpeedIncreasePercent = 3;
-        float weaponCooldownDeltaGeneral;
+        float attackSpeedDelta;
         public float moveSpeedIncreasePercent = 3;
         float moveSpeedDeltaGeneral;
         public float incomingDamageDecreasePercent = 5;
@@ -72,9 +72,9 @@ namespace ProjectColombo.Objects.Charms
             CustomEvents.OnDamageBlocked += DecreaseBlockedDamage;
             CustomEvents.OnParryFailed += IncreaseFailParryDamage;
 
-            weaponCooldownDeltaGeneral = myPlayerStateMachine.myWeaponAttributes.cooldown / 100f * attackSpeedIncreasePercent;
-            Debug.Log("increased weapon cooldown from: " + myPlayerStateMachine.myWeaponAttributes.cooldown + ", by: " + weaponCooldownDeltaGeneral);
-            myPlayerStateMachine.myWeaponAttributes.cooldown -= weaponCooldownDeltaGeneral;
+            attackSpeedDelta = attackSpeedIncreasePercent / 100f;
+            Debug.Log("increased weapon cooldown from: " + myPlayerStateMachine.myEntityAttributes.attackSpeed + ", by: " + attackSpeedDelta);
+            myPlayerStateMachine.myEntityAttributes.attackSpeed -= attackSpeedDelta;
 
             moveSpeedDeltaGeneral = myPlayerStateMachine.myEntityAttributes.moveSpeed / 100f * moveSpeedIncreasePercent;
             Debug.Log("increased speed from: " + myPlayerStateMachine.myEntityAttributes.moveSpeed + ", by: " + moveSpeedDeltaGeneral);
@@ -140,7 +140,7 @@ namespace ProjectColombo.Objects.Charms
             CustomEvents.OnDamageBlocked -= DecreaseBlockedDamage;
             CustomEvents.OnParryFailed -= IncreaseFailParryDamage;
 
-            myPlayerStateMachine.myWeaponAttributes.cooldown += weaponCooldownDeltaGeneral;
+            myPlayerStateMachine.myEntityAttributes.attackSpeed += attackSpeedDelta;
             myPlayerStateMachine.myEntityAttributes.moveSpeed -= moveSpeedDeltaGeneral;
             myPlayerStateMachine.myStamina.regenSpeed += staminaRegenDeltaGeneral;
         }

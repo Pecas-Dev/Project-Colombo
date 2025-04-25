@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -58,9 +59,8 @@ namespace ProjectColombo.Control
         // Attack
         // ---------------------------------------------------------
         string currentAnimation;
-        public void PlayAttackAnimation(string currentCombo, float transitionDuration)
+        public void PlayAttackAnimation(string currentCombo, float transitionDuration, float animationSpeed)
         {
-
             currentAnimation = attackAnimations.GetValueOrDefault(currentCombo, "none");
 
             if (currentAnimation == "none")
@@ -69,7 +69,18 @@ namespace ProjectColombo.Control
                 return;
             }
 
+            animator.speed = animationSpeed;
             animator.CrossFadeInFixedTime(currentAnimation, transitionDuration);
+
+            // Optionally reset after the animation duration
+            float animationLength = animator.GetCurrentAnimatorStateInfo(0).length;
+            StartCoroutine(ResetAnimatorSpeed(animationLength / animationSpeed));
+        }
+
+        private IEnumerator ResetAnimatorSpeed(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            animator.speed = 1f;
         }
 
         public bool FinishedAttack()

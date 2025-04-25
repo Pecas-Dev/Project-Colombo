@@ -29,6 +29,11 @@ namespace ProjectColombo
             GetCurrentStats();
         }
 
+        private void OnDestroy()
+        {
+            CustomEvents.OnLevelChange -= SaveCurrentStats;
+        }
+
         private void SaveCurrentStats()
         {
             if (gameObject.CompareTag("Player"))

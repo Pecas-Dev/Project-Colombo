@@ -48,7 +48,7 @@ namespace ProjectColombo.StateMachine.Player
                 InputActionType.MajorAttack,
                 InputActionType.MinorAttack);
 
-            stateMachine.myPlayerAnimator.PlayAttackAnimation(stateMachine.currentComboString, 0.3f);
+            stateMachine.myPlayerAnimator.PlayAttackAnimation(stateMachine.currentComboString, 0.3f, stateMachine.myEntityAttributes.attackSpeed);
 
             Vector3 zeroVelocity = stateMachine.myRigidbody.linearVelocity;
 

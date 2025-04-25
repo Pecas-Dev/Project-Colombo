@@ -1,4 +1,7 @@
+using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
+using ProjectColombo.UI.Pausescreen;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,18 +13,26 @@ namespace ProjectColombo.LevelManagement
         {
             if (other.gameObject.CompareTag("Player"))
             {
-                CustomEvents.LevelChanged();
+                GameManager.Instance.pauseMenuUI.GetComponent<PauseMenuUI>().ResetSelection();
+                StartCoroutine(LoadNextSceneDelayed());
+            }
+        }
 
-                int nextScene = SceneManager.GetActiveScene().buildIndex + 1;
+        private IEnumerator LoadNextSceneDelayed()
+        {
+            CustomEvents.LevelChanged(); //set event
 
-                if (nextScene >= 0 && nextScene < SceneManager.sceneCountInBuildSettings)
-                {
-                    SceneManager.LoadScene(nextScene);
-                }
-                else
-                { 
-                    Debug.LogError("Invalid scene index: " + nextScene);
-                }
+            yield return new WaitForSeconds(0.2f); //let events handle first and then load next
+
+            int nextScene = SceneManager.GetActiveScene().buildIndex + 1;
+
+            if (nextScene >= 0 && nextScene < SceneManager.sceneCountInBuildSettings)
+            {
+                SceneManager.LoadScene(nextScene);
+            }
+            else
+            {
+                Debug.LogError("Invalid scene index: " + nextScene);
             }
         }
     }

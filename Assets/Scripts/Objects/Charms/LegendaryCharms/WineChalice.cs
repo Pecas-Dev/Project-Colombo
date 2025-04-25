@@ -13,7 +13,7 @@ namespace ProjectColombo.Objects.Charms
         //general
         public float damageIncreasePercent = 16;
         public float attackSpeedIncreasePercent = 5;
-        float weaponCooldownDeltaGeneral;
+        float attackSpeedDelta;
         public float incomingDamageIncreasePercent = 10;
 
 
@@ -64,9 +64,9 @@ namespace ProjectColombo.Objects.Charms
             CustomEvents.OnDamageDelt += DamageIncrease;
             CustomEvents.OnDamageReceived += IncomingDamageIncrease;
 
-            weaponCooldownDeltaGeneral = myPlayerStateMachine.myWeaponAttributes.cooldown / 100f * attackSpeedIncreasePercent;
-            Debug.Log("decreased weapon cooldown from: " + myPlayerStateMachine.myWeaponAttributes.cooldown + ", by: " + weaponCooldownDeltaGeneral);
-            myPlayerStateMachine.myWeaponAttributes.cooldown -= weaponCooldownDeltaGeneral;
+            attackSpeedDelta = attackSpeedIncreasePercent / 100;
+            Debug.Log("decreased weapon cooldown from: " + myPlayerStateMachine.myEntityAttributes.attackSpeed + ", by: " + attackSpeedDelta);
+            myPlayerStateMachine.myEntityAttributes.attackSpeed -= attackSpeedDelta;
         }
 
         private void IncomingDamageIncrease(int damage, GameGlobals.MusicScale scale, HealthManager healthmanager)
@@ -103,7 +103,7 @@ namespace ProjectColombo.Objects.Charms
                 RemoveAbilityStats();
             }
 
-            myPlayerStateMachine.myWeaponAttributes.cooldown += weaponCooldownDeltaGeneral;
+            myPlayerStateMachine.myEntityAttributes.attackSpeed += attackSpeedDelta;
         }
 
         IEnumerator Ability()
