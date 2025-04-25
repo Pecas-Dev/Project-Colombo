@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
+using ProjectColombo.GameInputSystem;
 
 
 public class ButtonBehaviour : MonoBehaviour
@@ -24,11 +26,42 @@ public class ButtonBehaviour : MonoBehaviour
     [SerializeField] float growAnimationDuration = 0.3f;
     [SerializeField] float shrinkAnimationDuration = 0.3f;
 
+    [Header("Scene Names")]
+    [SerializeField] string[] sceneNames;
+
+    [Header("Sound Sources (TEST)")]
+    [SerializeField] AudioSource[] audioSources;
+
+    [Header("Game Input")]
+    [SerializeField] GameInputSO gameInputSO;
+
 
     int currentSelectedIndex = -1;
 
 
+    Animator transitionAnimation;
+
+
     Coroutine[] sizeAnimationCoroutines;
+
+    void Awake()
+    {
+        GameObject transitionObject = GameObject.FindGameObjectWithTag("Transition");
+
+        if (transitionObject != null)
+        {
+            transitionAnimation = transitionObject.GetComponent<Animator>();
+
+            if (transitionAnimation == null)
+            {
+                Debug.LogWarning("GameObject with tag 'Transition' doesn't have an Animator component.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("No GameObject with tag 'Transition' found in the scene.");
+        }
+    }
 
 
     void Start()
@@ -81,7 +114,7 @@ public class ButtonBehaviour : MonoBehaviour
         }
     }
 
-    private void AddEventTriggerEntry(EventTrigger trigger, EventTriggerType type, UnityEngine.Events.UnityAction<BaseEventData> action)
+    void AddEventTriggerEntry(EventTrigger trigger, EventTriggerType type, UnityEngine.Events.UnityAction<BaseEventData> action)
     {
         EventTrigger.Entry entry = new EventTrigger.Entry();
         entry.eventID = type;
@@ -188,5 +221,54 @@ public class ButtonBehaviour : MonoBehaviour
                 EventSystem.current.SetSelectedGameObject(buttons[index].gameObject);
             }
         }
+    }
+
+    public void StartGame()
+    {
+        gameInputSO.playerInputActions.UI.Disable();
+
+        StartCoroutine(ToFirstLevel());
+    }
+
+    public void ExitGame()
+    {
+        StartCoroutine(CloseGame());
+    }
+
+    IEnumerator ToFirstLevel()
+    {
+        transitionAnimation.Play("Close");
+
+        yield return new WaitForSecondsRealtime(2.5f);
+
+        SceneManager.LoadScene(sceneNames[0]);
+    }
+
+    IEnumerator CloseGame()
+    {
+        transitionAnimation.Play("Close");
+
+        if (audioSources.Length > 0 && audioSources[0] != null)
+        {
+            float startVolume = audioSources[0].volume;
+            float duration = 2.75f; 
+            float elapsedTime = 0f;
+
+            while (elapsedTime < duration)
+            {
+                elapsedTime += Time.unscaledDeltaTime; 
+                float volumePercent = Mathf.Lerp(startVolume, 0f, elapsedTime / duration);
+                audioSources[0].volume = volumePercent;
+
+                yield return null;
+            }
+
+            audioSources[0].volume = 0f;
+        }
+
+        yield return new WaitForSecondsRealtime(0.5f);
+
+        Application.Quit();
+        Debug.Log("Game is closed!");
     }
 }

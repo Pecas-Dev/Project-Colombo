@@ -20,15 +20,17 @@ namespace ProjectColombo.GameManagement
 
         // SCENE NAMES
 
-        static string MAIN_MENU = "2_MainMenu";
-        static string MAIN_MENU_2 = "00_MainMenu";
+        static string MAIN_MENU = "00_MainMenu";
 
         //------------
+
+        [Header("Transition")]
+        [SerializeField] Animator transition;
 
         private void Awake()
         {
             //Cursor.visible = false;            // Hide the cursor
-            Cursor.lockState = CursorLockMode.Locked; // Lock the cursor to the center of the screen (optional)
+            //Cursor.lockState = CursorLockMode.Locked; // Lock the cursor to the center of the screen (optional)
             
             gameInput.Initialize();
 
@@ -60,7 +62,7 @@ namespace ProjectColombo.GameManagement
                 gameInput.ResetPausePressed();
             }
 
-            if(SceneManager.GetActiveScene().name == MAIN_MENU || SceneManager.GetActiveScene().name == MAIN_MENU_2)
+            if(SceneManager.GetActiveScene().name == MAIN_MENU)
             {
                 gameInput.EnableUIMode();
             }
@@ -79,6 +81,8 @@ namespace ProjectColombo.GameManagement
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             ResumeGame();
+
+            transition.Play("Open");
 
             // Reset input system properly on new scene load
             gameInput.Uninitialize();
@@ -111,7 +115,7 @@ namespace ProjectColombo.GameManagement
             gameInput.DisableUIMode();
             gameInput.EnableAllInputs();
 
-            if (SceneManager.GetActiveScene().name == MAIN_MENU || SceneManager.GetActiveScene().name == MAIN_MENU_2)
+            if (SceneManager.GetActiveScene().name == MAIN_MENU)
             {
                 gameInput.EnableUIMode();
             }
