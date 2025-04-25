@@ -4,16 +4,18 @@ using ProjectColombo.StateMachine.Mommotti;
 using ProjectColombo.StateMachine.Player;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Camera;
+using ProjectColombo.GameManagement.Stats;
+using ProjectColombo.GameManagement;
 
 namespace ProjectColombo.Combat
 {
     public class WeaponAttributes : MonoBehaviour
     {
-        public int defaultDamage;
+        int defaultDamage;
 
-        public int correctAttackScaleBonusPercentage = 10;
-        public int blockDamageReductionPercentage = 10;
-        public int missedParryPaneltyPercentage = 10;
+        float correctAttackScaleBonusPercentage;
+        float blockDamageReductionPercentage;
+        float missedParryPaneltyPercentage;
 
         public float knockback;
         public float cooldown;
@@ -31,14 +33,49 @@ namespace ProjectColombo.Combat
         [HideInInspector] public GameGlobals.MusicScale currentScale = GameGlobals.MusicScale.NONE;
         ParticleSystem myParticles;
 
+
+        GlobalStats myGlobalStats;
+
+
         private void Start()
         {
+            CustomEvents.OnLevelChange += SaveCurrentStats;
+            myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
+            GetCurrentStats();
             myAnimator = GetComponent<Animator>();
             isAttacking = false;
             currentTimer = 0;
             ownerTag = GetComponentInParent<HealthManager>().tag;
             myParticles = GetComponent<ParticleSystem>();
         }
+
+        private void SaveCurrentStats()
+        {
+            if (gameObject.CompareTag("Player"))
+            {
+                myGlobalStats.currentPlayerDamage = defaultDamage;
+                myGlobalStats.currentCorrectAttackScalePercent = correctAttackScaleBonusPercentage;
+                myGlobalStats.currentBlockReductionPercent = blockDamageReductionPercentage;
+                myGlobalStats.currentMissedParryPaneltyPercent = missedParryPaneltyPercentage;
+            }
+        }
+
+        void GetCurrentStats()
+        {
+            if (gameObject.CompareTag("Player"))
+            {
+                defaultDamage = myGlobalStats.currentPlayerDamage;
+                correctAttackScaleBonusPercentage = myGlobalStats.currentCorrectAttackScalePercent;
+                blockDamageReductionPercentage = myGlobalStats.currentBlockReductionPercent;
+                missedParryPaneltyPercentage = myGlobalStats.currentMissedParryPaneltyPercent;
+            }
+            else if (gameObject.CompareTag("Enemy"))
+            {
+                defaultDamage = myGlobalStats.currentMommottiDamage;
+            }
+        }
+
+
 
         private void Update()
         {
@@ -192,7 +229,7 @@ namespace ProjectColombo.Combat
             defaultDamage += (int)(percentage / 100 * defaultDamage);
         }
 
-        private void AddTemporaryDamagePercentage(int damage, int percentage)
+        private void AddTemporaryDamagePercentage(int damage, float percentage)
         {
             damage += (int)(percentage / 100 * damage);
         }

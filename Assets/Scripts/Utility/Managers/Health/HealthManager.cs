@@ -1,17 +1,17 @@
 using UnityEngine;
 using ProjectColombo.Enemies.DropSystem;
+using ProjectColombo.GameManagement.Stats;
+using ProjectColombo.GameManagement;
+using ProjectColombo.GameManagement.Events;
 
 
 namespace ProjectColombo.Combat
 {
     public class HealthManager : MonoBehaviour
     {
-        [Header("Health Settings")]
-        [Tooltip("Maximum health for this entity.")]
-        [SerializeField] int maxHealth = 100;
+        GlobalStats myGlobalStats;
+        int maxHealth = 100;
 
-
-        [Tooltip("Maximum health for this entity.")]
         [ReadOnlyInspector] public int currentHealth;
 
 
@@ -23,7 +23,36 @@ namespace ProjectColombo.Combat
 
         void Awake()
         {
-            currentHealth = maxHealth;
+            CustomEvents.OnLevelChange += SaveCurrentStats;
+            myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
+            GetCurrentStats();
+        }
+
+        private void SaveCurrentStats()
+        {
+            if (gameObject.CompareTag("Player"))
+            {
+                myGlobalStats.currentPlayerMaxHealth = maxHealth;
+                myGlobalStats.currentPlayerHealth = currentHealth;
+            }
+        }
+
+        void GetCurrentStats()
+        {
+            if (gameObject.CompareTag("Player"))
+            {
+                maxHealth = myGlobalStats.currentPlayerMaxHealth;
+                currentHealth = myGlobalStats.currentPlayerHealth;
+            }
+            else if (gameObject.CompareTag("Enemy"))
+            {
+                maxHealth = myGlobalStats.currentMommottiMaxHealth;
+                currentHealth = maxHealth;
+            }
+            else if (gameObject.CompareTag("Destroyable"))
+            {
+                maxHealth = currentHealth = 1;
+            }
         }
 
         public void TakeDamage(int damageAmount)

@@ -1,3 +1,4 @@
+using ProjectColombo.GameManagement.Events;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,6 +10,8 @@ namespace ProjectColombo.LevelManagement
         {
             if (other.gameObject.CompareTag("Player"))
             {
+                CustomEvents.LevelChanged();
+
                 int nextScene = SceneManager.GetActiveScene().buildIndex + 1;
 
                 if (nextScene >= 0 && nextScene < SceneManager.sceneCountInBuildSettings)

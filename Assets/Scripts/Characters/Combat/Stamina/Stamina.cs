@@ -1,4 +1,6 @@
+using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
+using ProjectColombo.GameManagement.Stats;
 using ProjectColombo.UI.HUD;
 using UnityEngine;
 
@@ -8,23 +10,41 @@ namespace ProjectColombo.Combat
 {
     public class Stamina : MonoBehaviour
     {
+        GlobalStats myGlobalStats;
         [Header("Configuration")]
-        public int defaultStamina = 7;
         [HideInInspector] public int currentMaxStamina;
-        public float regenSpeed = 0.5f;
-        
+        [HideInInspector] public float regenSpeed;
         [HideInInspector] public float currentStamina = 0f;
+
+
         [Header("Costs")]
         public int staminaToRoll = 1;
         public int staminaToAttack = 1;
 
-        void Start()
-        {
-            currentMaxStamina = defaultStamina;
-            currentStamina = currentMaxStamina;
 
+
+        private void Start()
+        {
+            CustomEvents.OnLevelChange += SaveCurrentStats;
+            myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
+            GetCurrentStats();
             GetComponentInChildren<StaminaHUD>().Reset();
         }
+
+        private void SaveCurrentStats()
+        {
+             myGlobalStats.currentPlayerStamina = currentMaxStamina;
+             myGlobalStats.currentStaminaRegenSpeed = regenSpeed;
+        }
+
+        void GetCurrentStats()
+        {
+            currentMaxStamina = myGlobalStats.currentPlayerStamina;
+            currentStamina = currentMaxStamina;
+            regenSpeed = myGlobalStats.currentStaminaRegenSpeed;
+        }
+
+
 
         void Update()
         {

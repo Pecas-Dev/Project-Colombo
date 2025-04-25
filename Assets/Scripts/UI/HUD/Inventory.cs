@@ -26,23 +26,15 @@ namespace ProjectColombo.UI.HUD
         private void Update()
         {
             currencyAmountText.text = inventory.currencyAmount.ToString();
-            currentWeaponText.text = inventory.currentWeapon;
 
             StringBuilder charmAmount = new();
 
-            foreach (var type in inventory.charms)
-            {
-                charmAmount.AppendLine(type.Key + ": " + type.Value);
-            }
+
 
             charmAmountText.text = charmAmount.ToString();
 
             StringBuilder maskAmount = new();
 
-            foreach (var type in inventory.masks)
-            {
-                maskAmount.AppendLine(type.Key + ": " + type.Value);
-            }
 
             maskAmountText.text = maskAmount.ToString();
 

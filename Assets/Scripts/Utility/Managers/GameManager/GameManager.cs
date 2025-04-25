@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using ProjectColombo.GameManagement.Stats;
 namespace ProjectColombo.GameManagement
 {
-    public enum AllWeapons { SWORD };
 
     public class GameManager : MonoBehaviour
     {
         public static GameManager Instance;
-        public AllWeapons playerWeapon;
-        public List<GameObject> allWeapons;
+
 
         public GameInputSO gameInput;
         public GameObject pauseMenuUI;
@@ -62,20 +61,10 @@ namespace ProjectColombo.GameManagement
                 gameInput.ResetPausePressed();
             }
 
-            if(SceneManager.GetActiveScene().name == MAIN_MENU)
+            if (SceneManager.GetActiveScene().name == MAIN_MENU)
             {
                 gameInput.EnableUIMode();
             }
-
-            //if (gameInput.playerInputActions.Player.enabled == false)
-            //{
-            //    Debug.Log("Player is dead now, come back later");
-            //}
-
-            //if (gameInput.playerInputActions.UI.enabled == true)
-            //{
-            //    Debug.Log("It's UI Time! (:");
-            //}
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -88,18 +77,15 @@ namespace ProjectColombo.GameManagement
             gameInput.Uninitialize();
             gameInput.Initialize();
             gameInput.EnableAllInputs();
-        }
 
-        public GameObject GetMyWeapon()
-        {
-            switch (playerWeapon)
+            if (SceneManager.GetActiveScene().name == MAIN_MENU)
             {
-            case AllWeapons.SWORD:
-                return allWeapons[0];
+                //reset stats to default when in main menu
+                GetComponent<GlobalStats>().ResetStats();
             }
-
-            return null;
         }
+
+
 
         public void PauseGame()
         {

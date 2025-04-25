@@ -1,25 +1,57 @@
 using ProjectColombo.Combat;
+using ProjectColombo.GameManagement;
+using ProjectColombo.GameManagement.Events;
+using ProjectColombo.GameManagement.Stats;
 using UnityEngine;
 
 namespace ProjectColombo
 {
     public class EntityAttributes : MonoBehaviour
     {
-        [Header("Movement Settings")]
-        [Tooltip("Controls the Movement Speed.")]
-        public float moveSpeed = 5f;
+        GlobalStats myGlobalStats;
+        [HideInInspector]public float moveSpeed;
+        [HideInInspector]public float attackSpeed;
+        
 
-        [Tooltip("Controls the Rotation Speed (Degrees per second).")]
+        
+        [Header("Movement Settings")]
         public float rotationSpeedPlayer = 720f;
 
-
         [Header("Attack Settings")]
-        [Tooltip("Controls the Attack Impulse Forward.")]
         public float attackImpulseForce = 2.5f;
-        [Tooltip("Stagger duration for now. We have to decide how to control it")]
         public float stunnedTime = 1f;
-        public int currentLuck = 0;
         [HideInInspector] public GameGlobals.MusicScale currentScale = GameGlobals.MusicScale.NONE;
+
+        private void Start()
+        {
+            CustomEvents.OnLevelChange += SaveCurrentStats;
+            myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
+            GetCurrentStats();
+        }
+
+        private void SaveCurrentStats()
+        {
+            if (gameObject.CompareTag("Player"))
+            {
+                myGlobalStats.currentPlayerSpeed = moveSpeed;
+                myGlobalStats.currentPlayerAttackSpeed = attackSpeed;
+            }
+        }
+
+        void GetCurrentStats()
+        {
+            if (gameObject.CompareTag("Player"))
+            {
+                moveSpeed = myGlobalStats.currentPlayerSpeed;
+                attackSpeed = myGlobalStats.currentPlayerAttackSpeed;
+                
+            }
+            else if (gameObject.CompareTag("Enemy"))
+            {
+                moveSpeed = myGlobalStats.currentMommottiSpeed;
+            }
+        }
+
 
         public void Destroy()
         {

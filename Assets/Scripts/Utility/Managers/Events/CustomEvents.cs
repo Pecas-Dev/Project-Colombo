@@ -19,6 +19,7 @@ namespace ProjectColombo.GameManagement.Events
         public static event Action<int> OnCoinsCollected;
         public static event Action OnStaminaRegenerated;
         public static event Action OnStaminaUsed;
+        public static event Action OnLevelChange;
 
         public static void DamageDelt(int damage, GameGlobals.MusicScale scale, HealthManager enemyHealthManager)
         {
@@ -85,6 +86,10 @@ namespace ProjectColombo.GameManagement.Events
             OnStaminaUsed?.Invoke();
         }
 
+        public static void LevelChanged()
+        {
+            OnLevelChange?.Invoke();
+        }
 
         //maybe have to use this?
         public static void ResetAllEvents()

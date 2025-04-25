@@ -5328,6 +5328,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6657307741488687647}
   - component: {fileID: 1170428604619267753}
+  - component: {fileID: 3205656012161248344}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -5367,14 +5368,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c25475836571214ba1d75fb2f57a6e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerWeapon: 0
-  allWeapons:
-  - {fileID: 1739228436494150860, guid: f0ea5c1eb43848b42a4c9d84dfd9e3fe, type: 3}
   gameInput: {fileID: 11400000, guid: 4cbc555f8dd252548884cda6a4b53710, type: 2}
   pauseMenuUI: {fileID: 5008676995159746912}
   firstSelectedButton: {fileID: 2190779153300565801}
   gameIsPaused: 0
   transition: {fileID: 1802622847604617918}
+--- !u!114 &3205656012161248344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6775568680766651447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec59d65d3c5ef74469e833a40667bad0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultPlayerSpeed: 5.55
+  defaultPlayerAttackSpeed: 1
+  currentPlayerSpeed: 0
+  currentPlayerAttackSpeed: 0
+  defaultPlayerMaxHealth: 1000
+  currentPlayerHealth: 0
+  currentPlayerMaxHealth: 0
+  defaultPlayerStamina: 7
+  defaultStaminaRegenSpeed: 0.5
+  currentPlayerStamina: 0
+  currentStaminaRegenSpeed: 0
+  defaultLuckPoints: 0
+  defaultCurrencyAmount: 0
+  currentLuckPoints: 0
+  currentCurrencyAmount: 0
+  playerWeapon: 0
+  allWeapons: []
+  defaultPlayerDamage: 50
+  defaultCorrectAttackScalePercent: 40
+  defaultBlockReductionPercent: 20
+  defaultMissedParryPaneltyPercent: 25
+  currentPlayerDamage: 0
+  currentCorrectAttackScalePercent: 0
+  currentBlockReductionPercent: 0
+  currentMissedParryPaneltyPercent: 0
+  defaultMommottiSpeed: 3
+  currentMommottiSpeed: 0
+  defaultMommottiMaxHealth: 200
+  currentMommottiMaxHealth: 0
+  defaultMommottiDamage: 50
+  currentMommottiDamage: 0
 --- !u!1 &6828058593613732050
 GameObject:
   m_ObjectHideFlags: 0

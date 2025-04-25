@@ -30,12 +30,10 @@ namespace ProjectColombo.Inventory.Collectable
             {
                 case CollectableData.CollectibleType.Currency:
                     int amount = Random.Range(myData.minAmount, myData.maxAmount);
-                    playerInventory.AddCurrency(amount);
                     CustomEvents.CoinsCollected(amount);
                     break;
 
                 case CollectableData.CollectibleType.Charm:
-                    playerInventory.AddCharm(myData.charmType);
 
                     if (myData.charmType == CollectableData.CharmType.Health)
                     {
@@ -53,7 +51,6 @@ namespace ProjectColombo.Inventory.Collectable
                     break;
 
                 case CollectableData.CollectibleType.Mask:
-                    playerInventory.AddMask(myData.maskType);
                     break;
 
                 default:

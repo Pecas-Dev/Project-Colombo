@@ -6,6 +6,7 @@ using ProjectColombo.Shop;
 using ProjectColombo.Inventory;
 using UnityEngine;
 using ProjectColombo.GameManagement.Events;
+using ProjectColombo.GameManagement.Stats;
 
 
 namespace ProjectColombo.StateMachine.Player
@@ -243,9 +244,8 @@ namespace ProjectColombo.StateMachine.Player
 
         void SwapWeapon()
         {
-            Instantiate(GameManager.Instance.GetMyWeapon(), weaponHand);
+            Instantiate(GameManager.Instance.gameObject.GetComponent<GlobalStats>().GetMyWeapon(), weaponHand);
             myWeaponAttributes = GetComponentInChildren<WeaponAttributes>();
-            GetComponent<PlayerInventory>().ChangeWeapon(GetComponentInChildren<WeaponAttributes>().name);
             gameInputSO = GameManager.Instance.gameInput;
         }
 
