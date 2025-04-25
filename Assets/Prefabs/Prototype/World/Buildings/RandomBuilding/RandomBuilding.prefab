@@ -9,10 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5156751697360570305}
-  - component: {fileID: 2093324824095669255}
-  - component: {fileID: 8060367590748438635}
-  - component: {fileID: 5154754887022385200}
-  - component: {fileID: 3968782150047817287}
   m_Layer: 6
   m_Name: RandomBuilding
   m_TagString: Untagged
@@ -30,26 +26,62 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: -0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_ConstrainProportionsScale: 1
-  m_Children: []
+  m_Children:
+  - {fileID: 4892644356483684671}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 270, y: 0, z: 0}
---- !u!33 &2093324824095669255
+--- !u!1 &7001386970942723014
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4892644356483684671}
+  - component: {fileID: 3117026627625636587}
+  - component: {fileID: 9215753600196668327}
+  - component: {fileID: 672942788164676025}
+  - component: {fileID: 7013011538197489680}
+  m_Layer: 6
+  m_Name: Randomizer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4892644356483684671
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7001386970942723014}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 424, y: -369, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5156751697360570305}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!33 &3117026627625636587
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6413983414317315108}
-  m_Mesh: {fileID: -510947992021003309, guid: 5b16bcdb6fe23354db16bb456d79be77, type: 3}
---- !u!23 &8060367590748438635
+  m_GameObject: {fileID: 7001386970942723014}
+  m_Mesh: {fileID: -8471052050917231821, guid: e48d222861ad58f458074d51f02351b1, type: 3}
+--- !u!23 &9215753600196668327
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6413983414317315108}
+  m_GameObject: {fileID: 7001386970942723014}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -66,7 +98,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b6e61c5a443c9244da26a0b36ffdc474, type: 2}
+  - {fileID: 2100000, guid: b1b72cbb416bdb147a7a0a79a4586b6b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -88,13 +120,13 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &5154754887022385200
+--- !u!65 &672942788164676025
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6413983414317315108}
+  m_GameObject: {fileID: 7001386970942723014}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -109,20 +141,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.09843488, y: 0.06, z: 0.07669766}
   m_Center: {x: 0.007306041, y: 0, z: 0.03834883}
---- !u!114 &3968782150047817287
+--- !u!114 &7013011538197489680
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6413983414317315108}
+  m_GameObject: {fileID: 7001386970942723014}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 77cff7d0a484bfb4186efbdd0a3310df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   buildingVariants:
-  - {fileID: 8754431316096559799, guid: 5b7fbf9b4ca8aa547b8f880ff15e7d89, type: 3}
   - {fileID: 8007130803161651987, guid: c8fe0b49abce39b47ae206a45f051404, type: 3}
   - {fileID: 9148574604704939695, guid: d466ba7d2296b254fa1bc48ec66e43dd, type: 3}
   - {fileID: 30134889171583980, guid: 22a3d208df04c4e4291d6d841fdaff73, type: 3}
