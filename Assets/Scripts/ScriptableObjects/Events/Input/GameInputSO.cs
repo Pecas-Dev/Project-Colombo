@@ -445,13 +445,11 @@ namespace ProjectColombo.GameInputSystem
 
             if (playerInputActions != null)
             {
-                // Only disable player controls if they're currently enabled
                 if (playerInputActions.Player.enabled)
                 {
                     playerInputActions.Player.Disable(); // Disable player controls
                 }
                 
-                // Only enable UI if it's not already enabled
                 if (!playerInputActions.UI.enabled)
                 {
                     playerInputActions.UI.Enable(); // Enable UI navigation
@@ -465,13 +463,11 @@ namespace ProjectColombo.GameInputSystem
 
                 if (playerInputActions != null)
                 {
-                    // Make sure Player actions are disabled
                     if (playerInputActions.Player.enabled)
                     {
                         playerInputActions.Player.Disable();
                     }
                     
-                    // And UI actions are enabled
                     if (!playerInputActions.UI.enabled)
                     {
                         playerInputActions.UI.Enable();
@@ -482,16 +478,13 @@ namespace ProjectColombo.GameInputSystem
 
         public void DisableUIMode()
         {
-            // Make sure UI actions are initialized before trying to disable them
             if (playerInputActions != null) //&& playerInputActions.UI != null)
             {
-                // Only disable if currently enabled to avoid warning messages
                 if (playerInputActions.UI.enabled)
                 {
                     playerInputActions.UI.Disable(); // Disable UI input
                 }
                 
-                // Only enable if not already enabled
                 if (!playerInputActions.Player.enabled)
                 {
                     playerInputActions.Player.Enable(); // Re-enable player controls

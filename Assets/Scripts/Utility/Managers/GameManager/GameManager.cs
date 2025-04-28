@@ -1,5 +1,4 @@
 using ProjectColombo.GameInputSystem;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
