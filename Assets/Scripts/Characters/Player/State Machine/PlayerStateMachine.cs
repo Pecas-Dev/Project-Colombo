@@ -93,7 +93,7 @@ namespace ProjectColombo.StateMachine.Player
         {
             if (currentState == PlayerState.Block) return;
 
-            myWeaponAttributes.GetComponent<Animator>().SetTrigger("Interrupt");
+            myWeaponAttributes.DisableWeaponHitbox();
             SwitchState(new PlayerStaggerState(this)); //when interrupt switch to stagger
         }
 

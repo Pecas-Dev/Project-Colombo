@@ -48,7 +48,7 @@ namespace ProjectColombo.StateMachine.Player
                 InputActionType.MajorAttack,
                 InputActionType.MinorAttack);
 
-            stateMachine.myPlayerAnimator.PlayAttackAnimation(stateMachine.currentComboString, 0.3f, stateMachine.myEntityAttributes.attackSpeed);
+            stateMachine.myPlayerAnimator.PlayAttackAnimation(stateMachine.currentComboString, 0.1f, stateMachine.myEntityAttributes.attackSpeed);
 
             Vector3 zeroVelocity = stateMachine.myRigidbody.linearVelocity;
 
@@ -228,7 +228,12 @@ namespace ProjectColombo.StateMachine.Player
             targetPosition.y = stateMachine.transform.position.y;
             //turn to target
             Quaternion targetRotation = Quaternion.LookRotation(targetPosition - stateMachine.transform.position);
-            stateMachine.myRigidbody.rotation = targetRotation;
+
+            // Rotate to fit animation
+            Quaternion offsetRotation = Quaternion.AngleAxis(-35f, Vector3.up);
+            Quaternion finalRotation = offsetRotation * targetRotation;
+
+            stateMachine.myRigidbody.rotation = finalRotation;
 
             // Calculate the direction to the target
             Vector3 directionToTarget = targetPosition - stateMachine.myRigidbody.position;

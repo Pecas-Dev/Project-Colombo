@@ -41,6 +41,7 @@ namespace ProjectColombo.Combat
             CustomEvents.OnLevelChange += SaveCurrentStats;
             myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
             myCollider = GetComponent<Collider>();
+            DisableWeaponHitbox();
             GetCurrentStats();
             isAttacking = false;
             currentTimer = 0;
