@@ -17,15 +17,5 @@ namespace ProjectColombo.Objects.Charms
 
         public abstract void Equip();
         public abstract void Remove();
-
-        private void OnTriggerEnter(Collider other)
-        {
-            if (other.gameObject.CompareTag("Player"))
-            {
-                //other.GetComponent<PlayerInventory>().
-                Debug.Log("added charm to inventory: " + charmName);
-                Destroy(this.gameObject);
-            }
-        }
     }
 }

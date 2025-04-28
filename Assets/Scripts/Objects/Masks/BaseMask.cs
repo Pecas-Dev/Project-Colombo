@@ -45,15 +45,5 @@ namespace ProjectColombo.Objects.Masks
         public abstract void Equip();
         public abstract void UseAbility();
         public abstract void Remove();
-
-        private void OnTriggerEnter(Collider other)
-        {
-            if (other.gameObject.CompareTag("Player"))
-            {
-                //other.GetComponent<PlayerInventory>().
-                Debug.Log("added mask to inventory: " + maskName);
-                Destroy(this.gameObject);
-            }
-        }
     }
 }
