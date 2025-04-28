@@ -26,10 +26,10 @@ namespace ProjectColombo.GameManagement.Stats
 
         [Header("Stamina")]
         public int defaultPlayerStamina = 7;
-        public float defaultStaminaRegenSpeed = 0.5f;
+        public float defaultStaminaRegenTime = 0.5f;
 
         [ReadOnlyInspector] public int currentPlayerStamina;
-        [ReadOnlyInspector] public float currentStaminaRegenSpeed;
+        [ReadOnlyInspector] public float currentStaminaRegenTime;
 
 
         [Header("Inventory")]
@@ -83,7 +83,7 @@ namespace ProjectColombo.GameManagement.Stats
             currentPlayerHealth = currentPlayerMaxHealth;
 
             currentPlayerStamina = defaultPlayerStamina;
-            currentStaminaRegenSpeed = defaultStaminaRegenSpeed;
+            currentStaminaRegenTime = defaultStaminaRegenTime;
 
             currentLuckPoints = defaultLuckPoints;
             currentCurrencyAmount = defaultCurrencyAmount;

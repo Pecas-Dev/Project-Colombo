@@ -80,9 +80,9 @@ namespace ProjectColombo.Objects.Charms
             Debug.Log("increased speed from: " + myPlayerStateMachine.myEntityAttributes.moveSpeed + ", by: " + moveSpeedDeltaGeneral);
             myPlayerStateMachine.myEntityAttributes.moveSpeed += moveSpeedDeltaGeneral;
 
-            staminaRegenDeltaGeneral = myPlayerStateMachine.myStamina.regenSpeed / 100f * staminaRegenIncreasePercent;
-            Debug.Log("increased speed from: " + myPlayerStateMachine.myStamina.regenSpeed + ", by: " + staminaRegenDeltaGeneral);
-            myPlayerStateMachine.myStamina.regenSpeed -= staminaRegenDeltaGeneral;
+            staminaRegenDeltaGeneral = myPlayerStateMachine.myStamina.regenTime / 100f * staminaRegenIncreasePercent;
+            Debug.Log("increased speed from: " + myPlayerStateMachine.myStamina.regenTime + ", by: " + staminaRegenDeltaGeneral);
+            myPlayerStateMachine.myStamina.regenTime -= staminaRegenDeltaGeneral;
         }
 
         private void IncreaseFailParryDamage(int damage, GameGlobals.MusicScale scale, HealthManager healthmanager, bool sameScale)
@@ -142,7 +142,7 @@ namespace ProjectColombo.Objects.Charms
 
             myPlayerStateMachine.myEntityAttributes.attackSpeed += attackSpeedDelta;
             myPlayerStateMachine.myEntityAttributes.moveSpeed -= moveSpeedDeltaGeneral;
-            myPlayerStateMachine.myStamina.regenSpeed += staminaRegenDeltaGeneral;
+            myPlayerStateMachine.myStamina.regenTime += staminaRegenDeltaGeneral;
         }
 
         IEnumerator Ability()

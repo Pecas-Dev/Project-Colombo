@@ -35,9 +35,9 @@ namespace ProjectColombo.Objects.Masks
             Debug.Log("added luck points: " + luckPointsIncrease);
             myPlayerStateMachine.GetComponent<PlayerInventory>().currentLuck += luckPointsIncrease;
 
-            regenSpeedDelta = myPlayerStateMachine.myStamina.regenSpeed / 100f * staminaRegenSpeedIncreasePercent;
-            Debug.Log("lowered stamina regen speed from: " + myPlayerStateMachine.myStamina.regenSpeed + " by: " + regenSpeedDelta);
-            myPlayerStateMachine.myStamina.regenSpeed += regenSpeedDelta;
+            regenSpeedDelta = myPlayerStateMachine.myStamina.regenTime / 100f * staminaRegenSpeedIncreasePercent;
+            Debug.Log("lowered stamina regen speed from: " + myPlayerStateMachine.myStamina.regenTime + " by: " + regenSpeedDelta);
+            myPlayerStateMachine.myStamina.regenTime += regenSpeedDelta;
 
             CustomEvents.OnDamageDelt += AddDamageDelt;
             CustomEvents.OnDamageReceived += AddDamageReceive;
@@ -102,7 +102,7 @@ namespace ProjectColombo.Objects.Masks
         public override void Remove()
         {
             myPlayerStateMachine.GetComponent<PlayerInventory>().currentLuck -= luckPointsIncrease;
-            myPlayerStateMachine.myStamina.regenSpeed -= regenSpeedDelta;
+            myPlayerStateMachine.myStamina.regenTime -= regenSpeedDelta;
 
             CustomEvents.OnDamageDelt -= AddDamageDelt;
             CustomEvents.OnDamageReceived -= AddDamageReceive;

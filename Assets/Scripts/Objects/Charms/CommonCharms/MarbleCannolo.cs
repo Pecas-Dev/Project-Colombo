@@ -12,15 +12,15 @@ namespace ProjectColombo.Objects.Charms
         public override void Equip()
         {
             myStamina = GameObject.Find("Player").GetComponent<Stamina>();
-            value = myStamina.regenSpeed/ 100f * staminaRegenIncrease;
-            Debug.Log("increased stamina regen speed from: " + myStamina.regenSpeed + ", by: " + staminaRegenIncrease);
-            myStamina.regenSpeed += value;
+            value = myStamina.regenTime/ 100f * staminaRegenIncrease;
+            Debug.Log("increased stamina regen speed from: " + myStamina.regenTime + ", by: " + staminaRegenIncrease);
+            myStamina.regenTime += value;
         }
 
 
         public override void Remove()
         {
-            myStamina.regenSpeed -= value;
+            myStamina.regenTime -= value;
         }
     }
 }

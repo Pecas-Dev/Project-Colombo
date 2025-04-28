@@ -129,9 +129,9 @@ namespace ProjectColombo.Objects.Charms
             Debug.Log("decreased speed from: " + myPlayerStateMachine.myEntityAttributes.moveSpeed + ", by: " + moveSpeedDeltaAbility);
             myPlayerStateMachine.myEntityAttributes.moveSpeed -= moveSpeedDeltaAbility;
 
-            staminaRegenDeltaAbility = myPlayerStateMachine.myStamina.regenSpeed / 100f * staminaRegenDecreasePercent;
-            Debug.Log("decreased stamina regen from: " + myPlayerStateMachine.myStamina.regenSpeed + ", by: " + staminaRegenDeltaAbility);
-            myPlayerStateMachine.myStamina.regenSpeed -= staminaRegenDeltaAbility;
+            staminaRegenDeltaAbility = myPlayerStateMachine.myStamina.regenTime / 100f * staminaRegenDecreasePercent;
+            Debug.Log("decreased stamina regen from: " + myPlayerStateMachine.myStamina.regenTime + ", by: " + staminaRegenDeltaAbility);
+            myPlayerStateMachine.myStamina.regenTime -= staminaRegenDeltaAbility;
         }
 
         void RemoveAbilityStats()
@@ -140,7 +140,7 @@ namespace ProjectColombo.Objects.Charms
 
             myPlayerStateMachine.myWeaponAttributes.cooldown += weaponCooldownDeltaAbility;
             myPlayerStateMachine.myEntityAttributes.moveSpeed += moveSpeedDeltaAbility;
-            myPlayerStateMachine.myStamina.regenSpeed += staminaRegenDeltaAbility;
+            myPlayerStateMachine.myStamina.regenTime += staminaRegenDeltaAbility;
         }
     }
 }

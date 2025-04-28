@@ -13,7 +13,7 @@ namespace ProjectColombo.Combat
         GlobalStats myGlobalStats;
         [Header("Configuration")]
         [HideInInspector] public int currentMaxStamina;
-        [HideInInspector] public float regenSpeed;
+        [HideInInspector] public float regenTime;
         [HideInInspector] public float currentStamina = 0f;
 
 
@@ -39,14 +39,14 @@ namespace ProjectColombo.Combat
         private void SaveCurrentStats()
         {
              myGlobalStats.currentPlayerStamina = currentMaxStamina;
-             myGlobalStats.currentStaminaRegenSpeed = regenSpeed;
+             myGlobalStats.currentStaminaRegenTime = regenTime;
         }
 
         void GetCurrentStats()
         {
             currentMaxStamina = myGlobalStats.currentPlayerStamina;
             currentStamina = currentMaxStamina;
-            regenSpeed = myGlobalStats.currentStaminaRegenSpeed;
+            regenTime = myGlobalStats.currentStaminaRegenTime;
         }
 
 
@@ -63,7 +63,7 @@ namespace ProjectColombo.Combat
         void RegenerateStamina(float deltaTime)
         {
             // Calculate the stamina to regenerate this frame
-            float regenerationAmount = regenSpeed * deltaTime;
+            float regenerationAmount = (1f / regenTime) * deltaTime;
 
             // Store the old integer value of stamina
             int oldStaminaInt = Mathf.FloorToInt(currentStamina);

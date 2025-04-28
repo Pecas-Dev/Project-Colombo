@@ -43,9 +43,9 @@ namespace ProjectColombo.Objects.Masks
             Debug.Log("changed attack speed from: " + myPlayerStateMachine.myWeaponAttributes.cooldown + " by: " + attackSpeedDelta);
             myPlayerStateMachine.myWeaponAttributes.cooldown += attackSpeedDelta;
 
-            staminaRegenDelta = myPlayerStateMachine.myStamina.regenSpeed * staminaRegenDecreasePercent / 100;
-            Debug.Log("changed stamina regen speed from: " + myPlayerStateMachine.myStamina.regenSpeed + " by: " + staminaRegenDelta);
-            myPlayerStateMachine.myStamina.regenSpeed += staminaRegenDelta;
+            staminaRegenDelta = myPlayerStateMachine.myStamina.regenTime * staminaRegenDecreasePercent / 100;
+            Debug.Log("changed stamina regen speed from: " + myPlayerStateMachine.myStamina.regenTime + " by: " + staminaRegenDelta);
+            myPlayerStateMachine.myStamina.regenTime += staminaRegenDelta;
         }
 
         private void OnItemPurchase(int damageAmount)
@@ -110,7 +110,7 @@ namespace ProjectColombo.Objects.Masks
 
 
             myPlayerStateMachine.myWeaponAttributes.cooldown -= attackSpeedDelta;
-            myPlayerStateMachine.myStamina.regenSpeed -= staminaRegenDelta;
+            myPlayerStateMachine.myStamina.regenTime -= staminaRegenDelta;
         }
 
         public override void UseAbility()
