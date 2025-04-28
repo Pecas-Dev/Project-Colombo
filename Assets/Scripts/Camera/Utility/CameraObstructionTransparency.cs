@@ -52,6 +52,11 @@ namespace ProjectColombo.Camera
         {
             if (((1 << other.gameObject.layer) & obstructingLayers) != 0)
             {
+                if (oldObstructingElements.Contains(other.gameObject))
+                {
+                    oldObstructingElements.Remove(other.gameObject);
+                }
+
                 if (!obstructingElements.Contains(other.gameObject))
                 {
                     obstructingElements.Add(other.gameObject);
