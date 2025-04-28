@@ -29,10 +29,9 @@ namespace ProjectColombo.Combat
         [SerializeField, ReadOnlyInspector] string ownerTag;
         [HideInInspector] public bool onCooldown;
         [HideInInspector] public bool isAttacking;
-        [HideInInspector] public Animator myAnimator;
         [HideInInspector] public GameGlobals.MusicScale currentScale = GameGlobals.MusicScale.NONE;
         ParticleSystem myParticles;
-
+        Collider myCollider;
 
         GlobalStats myGlobalStats;
 
@@ -41,8 +40,8 @@ namespace ProjectColombo.Combat
         {
             CustomEvents.OnLevelChange += SaveCurrentStats;
             myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
+            myCollider = GetComponent<Collider>();
             GetCurrentStats();
-            myAnimator = GetComponent<Animator>();
             isAttacking = false;
             currentTimer = 0;
             ownerTag = GetComponentInParent<HealthManager>().tag;
@@ -91,11 +90,20 @@ namespace ProjectColombo.Combat
 
                 if (currentTimer >= cooldown)
                 {
-                    myAnimator.ResetTrigger("Interrupt");
                     onCooldown = false;
                     currentTimer = 0;
                 }
             }
+        }
+
+        public void EnableWeaponHitbox()
+        {
+            myCollider.enabled = true;
+        }
+
+        public void DisableWeaponHitbox()
+        {
+            myCollider.enabled = false;
         }
 
         public void Telegraphing()

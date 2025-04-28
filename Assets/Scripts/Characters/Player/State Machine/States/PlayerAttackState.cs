@@ -128,7 +128,7 @@ namespace ProjectColombo.StateMachine.Player
                 stateMachine.CloseComboWindow();
             }
 
-            stateMachine.myWeaponAttributes.GetComponent<Collider>().enabled = false;
+            stateMachine.myWeaponAttributes.DisableWeaponHitbox();
 
             stateMachine.gameInputSO.EnableAllInputs();
         }

@@ -70,7 +70,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Exit()
         {
-            stateMachine.myWeaponAttributes.GetComponent<Collider>().enabled = false;
+            stateMachine.myWeaponAttributes.DisableWeaponHitbox();
         }
 
         private void Attack()

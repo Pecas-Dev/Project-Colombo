@@ -188,14 +188,12 @@ namespace ProjectColombo.StateMachine.Player
 
         public void StartAttack()
         {
-            myWeaponAttributes.GetComponent<Animator>().SetTrigger("Attack");
-            myWeaponAttributes.GetComponent<Animator>().ResetTrigger("Interrupt");
+            myWeaponAttributes.EnableWeaponHitbox();
         }
 
         public void InterruptAttack()
         {
-            myWeaponAttributes.GetComponent<Animator>().ResetTrigger("Attack");
-            myWeaponAttributes.GetComponent<Animator>().SetTrigger("Interrupt");
+            myWeaponAttributes.DisableWeaponHitbox();
         }
 
         public void EnterShopState(GameObject shop)
