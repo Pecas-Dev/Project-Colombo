@@ -432,8 +432,24 @@ namespace ProjectColombo.GameInputSystem
         {
             DisableInput(InputActionType.Movement); // Disable player movement
             ResetAllInputs(); // Clear any active inputs
-            playerInputActions.Player.Disable(); // Disable player controls
-            playerInputActions.UI.Enable(); // Enable UI navigation
+
+            if (playerInputActions != null)
+            {
+                playerInputActions.Player.Disable(); // Disable player controls
+                playerInputActions.UI.Enable(); // Enable UI navigation
+            }
+            else
+            {
+                Debug.LogWarning("Player input actions not initialized in EnableUIMode");
+
+                Initialize();
+
+                if (playerInputActions != null)
+                {
+                    playerInputActions.Player.Disable();
+                    playerInputActions.UI.Enable();
+                }
+            }
         }
 
         public void DisableUIMode()

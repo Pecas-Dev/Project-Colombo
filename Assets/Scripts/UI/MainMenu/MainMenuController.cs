@@ -1,71 +1,28 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using ProjectColombo.UI;
 using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-using ProjectColombo.GameInputSystem;
 
-
-public class ButtonBehaviour : MonoBehaviour
+public class MainMenuController : MenuController
 {
-    [Header("Images")]
+    [Header("Main Menu Specific")]
     [SerializeField] Image[] clefImages;
-
-    [Header("Buttons")]
     [SerializeField] Button[] buttons;
-
-    [Header("Text Components")]
     [SerializeField] TextMeshProUGUI[] buttonTexts;
-
-    [Header("Text Size Animation")]
-    [SerializeField] float selectedMinFontSize = 75f;
-    [SerializeField] float selectedMaxFontSize = 105f;
-    [SerializeField] float defaultMinFontSize = 70f;
-    [SerializeField] float defaultMaxFontSize = 100f;
-    [SerializeField] float growAnimationDuration = 0.3f;
-    [SerializeField] float shrinkAnimationDuration = 0.3f;
-
-    [Header("Scene Names")]
     [SerializeField] string[] sceneNames;
-
-    [Header("Sound Sources (TEST)")]
     [SerializeField] AudioSource[] audioSources;
-
-    [Header("Game Input")]
-    [SerializeField] GameInputSO gameInputSO;
-
 
     int currentSelectedIndex = -1;
 
-
-    Animator transitionAnimation;
-
-
     Coroutine[] sizeAnimationCoroutines;
 
-    void Awake()
+    public override void Initialize()
     {
-        GameObject transitionObject = GameObject.FindGameObjectWithTag("Transition");
+        base.Initialize();
 
-        if (transitionObject != null)
-        {
-            transitionAnimation = transitionObject.GetComponent<Animator>();
-
-            if (transitionAnimation == null)
-            {
-                Debug.LogWarning("GameObject with tag 'Transition' doesn't have an Animator component.");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("No GameObject with tag 'Transition' found in the scene.");
-        }
-    }
-
-
-    void Start()
-    {
         if (buttons.Length != clefImages.Length)
         {
             Debug.LogWarning("Number of buttons does not match number of images.");
@@ -114,13 +71,20 @@ public class ButtonBehaviour : MonoBehaviour
         }
     }
 
+    public override void Show()
+    {
+        base.Show();
+        if (currentSelectedIndex >= 0 && currentSelectedIndex < buttons.Length)
+        {
+            EventSystem.current.SetSelectedGameObject(buttons[currentSelectedIndex].gameObject);
+        }
+    }
+
     void AddEventTriggerEntry(EventTrigger trigger, EventTriggerType type, UnityEngine.Events.UnityAction<BaseEventData> action)
     {
         EventTrigger.Entry entry = new EventTrigger.Entry();
         entry.eventID = type;
-
         entry.callback.AddListener((data) => { action((BaseEventData)data); });
-
         trigger.triggers.Add(entry);
     }
 
@@ -145,7 +109,7 @@ public class ButtonBehaviour : MonoBehaviour
                     StopCoroutine(sizeAnimationCoroutines[currentSelectedIndex]);
                 }
 
-                sizeAnimationCoroutines[currentSelectedIndex] = StartCoroutine(AnimateTextSize(buttonTexts[currentSelectedIndex], selectedMinFontSize, selectedMaxFontSize, defaultMinFontSize, defaultMaxFontSize, shrinkAnimationDuration));
+                sizeAnimationCoroutines[currentSelectedIndex] = StartCoroutine(AnimateTextSize(buttonTexts[currentSelectedIndex], selectedMinFontSize, selectedMaxFontSize, defaultMinFontSize, defaultMaxFontSize, animationDuration));
             }
         }
 
@@ -163,40 +127,8 @@ public class ButtonBehaviour : MonoBehaviour
                 StopCoroutine(sizeAnimationCoroutines[index]);
             }
 
-            sizeAnimationCoroutines[index] = StartCoroutine(AnimateTextSize(buttonTexts[index], defaultMinFontSize, defaultMaxFontSize, selectedMinFontSize, selectedMaxFontSize, growAnimationDuration));
+            sizeAnimationCoroutines[index] = StartCoroutine(AnimateTextSize(buttonTexts[index], defaultMinFontSize, defaultMaxFontSize, selectedMinFontSize, selectedMaxFontSize, animationDuration));
         }
-    }
-
-    IEnumerator AnimateTextSize(TextMeshProUGUI text, float startMin, float startMax, float endMin, float endMax, float duration)
-    {
-        float elapsedTime = 0f;
-
-        while (elapsedTime < duration)
-        {
-            float t = elapsedTime / duration;
-
-            float smoothT = t * t * (3f - 2f * t);
-
-            float currentMin = Mathf.Lerp(startMin, endMin, smoothT);
-            float currentMax = Mathf.Lerp(startMax, endMax, smoothT);
-
-            text.enableAutoSizing = true;
-            text.fontSizeMin = currentMin;
-            text.fontSizeMax = currentMax;
-
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        text.fontSizeMin = endMin;
-        text.fontSizeMax = endMax;
-    }
-
-    void SetTextToDefaultSize(TextMeshProUGUI text)
-    {
-        text.enableAutoSizing = true;
-        text.fontSizeMin = defaultMinFontSize;
-        text.fontSizeMax = defaultMaxFontSize;
     }
 
     void DeactivateAllImages()
@@ -225,7 +157,10 @@ public class ButtonBehaviour : MonoBehaviour
 
     public void StartGame()
     {
-        gameInputSO.playerInputActions.UI.Disable();
+        if (gameInputSO != null)
+        {
+            gameInputSO.playerInputActions.UI.Disable();
+        }
 
         StartCoroutine(ToFirstLevel());
     }
@@ -237,7 +172,10 @@ public class ButtonBehaviour : MonoBehaviour
 
     IEnumerator ToFirstLevel()
     {
-        transitionAnimation.Play("Close");
+        if (transitionAnimation != null)
+        {
+            transitionAnimation.Play("Close");
+        }
 
         yield return new WaitForSecondsRealtime(2.5f);
 
@@ -246,17 +184,20 @@ public class ButtonBehaviour : MonoBehaviour
 
     IEnumerator CloseGame()
     {
-        transitionAnimation.Play("Close");
+        if (transitionAnimation != null)
+        {
+            transitionAnimation.Play("Close");
+        }
 
         if (audioSources.Length > 0 && audioSources[0] != null)
         {
             float startVolume = audioSources[0].volume;
-            float duration = 2.75f; 
+            float duration = 2.75f;
             float elapsedTime = 0f;
 
             while (elapsedTime < duration)
             {
-                elapsedTime += Time.unscaledDeltaTime; 
+                elapsedTime += Time.unscaledDeltaTime;
                 float volumePercent = Mathf.Lerp(startVolume, 0f, elapsedTime / duration);
                 audioSources[0].volume = volumePercent;
 
@@ -269,6 +210,7 @@ public class ButtonBehaviour : MonoBehaviour
         yield return new WaitForSecondsRealtime(0.5f);
 
         Application.Quit();
+
         Debug.Log("Game is closed!");
     }
 }
