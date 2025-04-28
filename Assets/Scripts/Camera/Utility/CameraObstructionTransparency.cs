@@ -94,6 +94,7 @@ namespace ProjectColombo.Camera
         {
             Renderer renderer = g.GetComponent<Renderer>();
             if (renderer == null) return false;
+            bool allVisible = true;
 
             foreach (Material m in renderer.materials)
             {
@@ -103,16 +104,16 @@ namespace ProjectColombo.Camera
                 {
                     currentTransparency = Mathf.Min(1, currentTransparency + opacityChange * Time.deltaTime);
                     m.SetFloat("_Transparency", currentTransparency);
-                    return false;
-                }
-                else
-                {
-                    oldObstructingElements.Remove(g);
-                    return true;
+                    allVisible = false;
                 }
             }
 
-            return false;
+            if (allVisible)
+            {
+                oldObstructingElements.Remove(g);
+            }
+
+            return allVisible;
         }
 
         private void SetMaterialTransparent(Renderer renderer)
