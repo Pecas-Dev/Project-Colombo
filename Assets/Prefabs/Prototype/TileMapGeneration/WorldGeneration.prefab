@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 9159605010880971420}
   - component: {fileID: 338681327938699103}
   - component: {fileID: 576449464546603514}
+  - component: {fileID: 7918839380679449149}
   m_Layer: 0
   m_Name: WorldGeneration
   m_TagString: Untagged
@@ -74,3 +75,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b29f012f15b5b24488bce9d7878b4379, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7918839380679449149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808508505160290486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 458d2542bf1f5ad45bf246f79c00ece9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nextSceneNumber: 0
+  defaultMommottiSpeed: 3
+  currentMommottiSpeed: 0
+  defaultMommottiMaxHealth: 200
+  currentMommottiMaxHealth: 0
+  defaultMommottiDamage: 50
+  currentMommottiDamage: 0
+  minAmountOfCoinsVase: 25
+  maxAmountOfCoinsVase: 100
+  dropChanceCommonCharmVase: 30
+  dropChanceRareCharmVase: 20
+  dropChanceLegendaryCharmVase: 10
+  dropChanceMaskVase: 5
+  minAmountOfCoinsChest: 50
+  maxAmountOfCoinsChest: 100
+  dropChanceCommonCharmChest: 30
+  dropChanceRareCharmChest: 20
+  dropChanceLegendaryCharmChest: 10
+  dropChanceMaskChest: 5
+  minAmountOfCoinsEnemies: 0
+  maxAmountOfCoinsEnemies: 20
+  dropChanceCommonCharmEnemies: 30
+  dropChanceRareCharmEnemies: 20
+  dropChanceLegendaryCharmEnemies: 10
+  dropChanceMaskEnemies: 5

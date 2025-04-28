@@ -24,7 +24,8 @@ namespace ProjectColombo.LevelManagement
 
             yield return new WaitForSeconds(0.2f); //let events handle first and then load next
 
-            int nextScene = SceneManager.GetActiveScene().buildIndex + 1;
+            
+            int nextScene = GameObject.Find("WorldGeneration").GetComponent<LevelStats>().nextSceneNumber;
 
             if (nextScene >= 0 && nextScene < SceneManager.sceneCountInBuildSettings)
             {

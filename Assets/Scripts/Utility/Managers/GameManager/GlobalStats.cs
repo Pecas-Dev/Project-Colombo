@@ -53,20 +53,6 @@ namespace ProjectColombo.GameManagement.Stats
         [ReadOnlyInspector] public float currentMissedParryPaneltyPercent;
 
 
-        [Header("Mommotti Default Stats")]
-        [Header("EntityAttributes")]
-        public float defaultMommottiSpeed = 3f;
-        [ReadOnlyInspector] public float currentMommottiSpeed;
-
-        [Header("HealthManager")]
-        public int defaultMommottiMaxHealth = 200;
-        [ReadOnlyInspector] public int currentMommottiMaxHealth;
-
-        [Header("WeaponAttibutes")]
-        public int defaultMommottiDamage = 50;
-        [ReadOnlyInspector] public int currentMommottiDamage;
-
-
 
         private void Awake()
         {
@@ -92,10 +78,6 @@ namespace ProjectColombo.GameManagement.Stats
             currentCorrectAttackScalePercent = defaultCorrectAttackScalePercent;
             currentBlockReductionPercent = defaultBlockReductionPercent;
             currentMissedParryPaneltyPercent = defaultMissedParryPaneltyPercent;
-
-            currentMommottiSpeed = defaultMommottiSpeed;
-            currentMommottiMaxHealth = defaultMommottiMaxHealth;
-            currentMommottiDamage = defaultMommottiDamage;
         }
 
 

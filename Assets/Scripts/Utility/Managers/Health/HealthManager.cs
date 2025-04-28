@@ -3,6 +3,7 @@ using ProjectColombo.Enemies.DropSystem;
 using ProjectColombo.GameManagement.Stats;
 using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
+using ProjectColombo.LevelManagement;
 
 
 namespace ProjectColombo.Combat
@@ -10,6 +11,7 @@ namespace ProjectColombo.Combat
     public class HealthManager : MonoBehaviour
     {
         GlobalStats myGlobalStats;
+        LevelStats myLevelStats;
         int maxHealth = 100;
 
         [ReadOnlyInspector] public int currentHealth;
@@ -25,6 +27,7 @@ namespace ProjectColombo.Combat
         {
             CustomEvents.OnLevelChange += SaveCurrentStats;
             myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
+            myLevelStats = GameObject.Find("WorldGeneration").GetComponent<LevelStats>();
             GetCurrentStats();
         }
 
@@ -51,7 +54,7 @@ namespace ProjectColombo.Combat
             }
             else if (gameObject.CompareTag("Enemy"))
             {
-                maxHealth = myGlobalStats.currentMommottiMaxHealth;
+                maxHealth = myLevelStats.currentMommottiMaxHealth;
                 currentHealth = maxHealth;
             }
             else if (gameObject.CompareTag("Destroyable"))

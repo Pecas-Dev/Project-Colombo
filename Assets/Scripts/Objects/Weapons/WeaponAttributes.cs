@@ -6,6 +6,7 @@ using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Camera;
 using ProjectColombo.GameManagement.Stats;
 using ProjectColombo.GameManagement;
+using ProjectColombo.LevelManagement;
 
 namespace ProjectColombo.Combat
 {
@@ -34,12 +35,14 @@ namespace ProjectColombo.Combat
         Collider myCollider;
 
         GlobalStats myGlobalStats;
+        LevelStats myLevelStats;
 
 
         private void Start()
         {
             CustomEvents.OnLevelChange += SaveCurrentStats;
             myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
+            myLevelStats = GameObject.Find("WorldGeneration").GetComponent<LevelStats>();
             myCollider = GetComponent<Collider>();
             DisableWeaponHitbox();
             GetCurrentStats();
@@ -77,7 +80,7 @@ namespace ProjectColombo.Combat
             }
             else if (GetComponentInParent<EntityAttributes>().CompareTag("Enemy"))
             {
-                defaultDamage = myGlobalStats.currentMommottiDamage;
+                defaultDamage = myLevelStats.currentMommottiDamage;
             }
         }
 

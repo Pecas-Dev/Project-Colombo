@@ -2,6 +2,7 @@ using ProjectColombo.Combat;
 using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.GameManagement.Stats;
+using ProjectColombo.LevelManagement;
 using UnityEngine;
 
 namespace ProjectColombo
@@ -9,6 +10,7 @@ namespace ProjectColombo
     public class EntityAttributes : MonoBehaviour
     {
         GlobalStats myGlobalStats;
+        LevelStats myLevelStats;
         [HideInInspector]public float moveSpeed;
         [HideInInspector]public float attackSpeed;
         
@@ -26,6 +28,7 @@ namespace ProjectColombo
         {
             CustomEvents.OnLevelChange += SaveCurrentStats;
             myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
+            myLevelStats = GameObject.Find("WorldGeneration").GetComponent<LevelStats>();
             GetCurrentStats();
         }
 
@@ -53,7 +56,7 @@ namespace ProjectColombo
             }
             else if (gameObject.CompareTag("Enemy"))
             {
-                moveSpeed = myGlobalStats.currentMommottiSpeed;
+                moveSpeed = myLevelStats.currentMommottiSpeed;
             }
         }
 

@@ -5423,10 +5423,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 3
+  attackSpeed: 0
   rotationSpeedPlayer: 5
   attackImpulseForce: 5
   stunnedTime: 1
-  currentLuck: 0
   currentScale: 0
 --- !u!114 &2458615397977204604
 MonoBehaviour:
@@ -5464,7 +5464,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de7e534c6d0c808458b38f233fad212b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 200
   currentHealth: 0
 --- !u!114 &5774820696114806963
 MonoBehaviour:
@@ -5491,13 +5490,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7094f162830e4654fb13c10acba91833, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  possibleDrops:
-  - {fileID: 1756823181022602094, guid: 0713eb3a4bbf4d442aee7fae151c18ad, type: 3}
-  - {fileID: 2046536153228139942, guid: 3fa306c8ec248414c8795c9cf32726bf, type: 3}
-  - {fileID: 8923003907424012655, guid: 1281bebdf28aae8498bee6479dbf7498, type: 3}
-  - {fileID: 7532996447266372130, guid: a57748d241322cd4eab110a8e426535a, type: 3}
-  - {fileID: 8495607831914063779, guid: b53e1d919932e8848a9d924b088fdcc5, type: 3}
-  dropChances: 03000000070000000f0000001900000014000000
+  myVariant: 2
+  commonCharms:
+  - {fileID: 2214152689029009370, guid: 42348f55bc395d144bef4fbaed4dd465, type: 3}
+  - {fileID: 5153099699462930510, guid: 0e2e9f4f450d13445bb81627be9f87bf, type: 3}
+  - {fileID: 8493266293346240001, guid: 7d761aa023c0f3e498eaa7fc64edd995, type: 3}
+  - {fileID: 1353502290456183764, guid: 802913cf77f56a747a5cdaddcfa99390, type: 3}
+  - {fileID: 5734323824044317263, guid: 08a416e269a000e4aa02d270f5588b6d, type: 3}
+  - {fileID: 6503379658991535769, guid: bc0952d1e7e249c4581f17d480891ca2, type: 3}
+  rareCharms:
+  - {fileID: 6301612966450194399, guid: bd2987e78347be749bc940720af3038f, type: 3}
+  - {fileID: 8617957453502818824, guid: 280d34746e666194c9f18d1276824db1, type: 3}
+  - {fileID: 7909642838134526958, guid: 51353da68a4a45e4c9e62348a58ef14e, type: 3}
+  - {fileID: 808636044392298626, guid: 6af26d020a99d6a40a26884a8dcce8d2, type: 3}
+  legendaryCharms:
+  - {fileID: 8441870704141843900, guid: 3c577fdfac3157748ab7f611dfcdae4a, type: 3}
+  - {fileID: 5963334831434130681, guid: 67a1d88dd596e374f99d2af77947b6a2, type: 3}
+  masks:
+  - {fileID: 9007149414703718239, guid: 657723b1673d79d4698c554063f30b2e, type: 3}
+  - {fileID: 3799292114581327272, guid: f3d5f379416e4f9428ffb6cf8e9c71a8, type: 3}
+  - {fileID: 4303818640728422693, guid: 3e9ada3cdbfbe1646aa6f1d3c1451467, type: 3}
+  - {fileID: 1969649022979653137, guid: 35bc52dee04579243b729a8f3c22e27d, type: 3}
+  coins: {fileID: 390289988588442798, guid: b213b2e361262f54482cc88949a43845, type: 3}
 --- !u!1 &8299448585058173517
 GameObject:
   m_ObjectHideFlags: 0
