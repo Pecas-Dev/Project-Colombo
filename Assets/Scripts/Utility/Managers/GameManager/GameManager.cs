@@ -30,7 +30,7 @@ namespace ProjectColombo.GameManagement
         {
             //Cursor.visible = false;            // Hide the cursor
             //Cursor.lockState = CursorLockMode.Locked; // Lock the cursor to the center of the screen (optional)
-            
+
             gameInput.Initialize();
 
             if (Instance != null && Instance != this)
@@ -53,17 +53,12 @@ namespace ProjectColombo.GameManagement
                 {
                     ResumeGame();
                 }
-                else 
+                else
                 {
-                    PauseGame(); 
+                    PauseGame();
                 }
 
                 gameInput.ResetPausePressed();
-            }
-
-            if (SceneManager.GetActiveScene().name == MAIN_MENU)
-            {
-                gameInput.EnableUIMode();
             }
         }
 

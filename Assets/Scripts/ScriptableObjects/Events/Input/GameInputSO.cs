@@ -89,11 +89,21 @@ namespace ProjectColombo.GameInputSystem
 
         public void Uninitialize()
         {
+        if (playerInputActions == null) return;
 
-            if (playerInputActions == null) return;
+        // Make sure to disable both action maps before uninitializing
+        if (playerInputActions.UI.enabled)
+        {
+            playerInputActions.UI.Disable();
+        }
+        
+        if (playerInputActions.Player.enabled)
+        {
+            playerInputActions.Player.Disable();
+        }
 
-            playerInputActions.Player.Movement.performed -= OnMovePerformed;
-            playerInputActions.Player.Movement.canceled -= OnMoveCanceled;
+        playerInputActions.Player.Movement.performed -= OnMovePerformed;
+        playerInputActions.Player.Movement.canceled -= OnMoveCanceled;
 
             playerInputActions.Player.MajorAttack.performed -= OnMajorAttackPerformed;
             playerInputActions.Player.MinorAttack.performed -= OnMinorAttackPerformed;
@@ -435,8 +445,17 @@ namespace ProjectColombo.GameInputSystem
 
             if (playerInputActions != null)
             {
-                playerInputActions.Player.Disable(); // Disable player controls
-                playerInputActions.UI.Enable(); // Enable UI navigation
+                // Only disable player controls if they're currently enabled
+                if (playerInputActions.Player.enabled)
+                {
+                    playerInputActions.Player.Disable(); // Disable player controls
+                }
+                
+                // Only enable UI if it's not already enabled
+                if (!playerInputActions.UI.enabled)
+                {
+                    playerInputActions.UI.Enable(); // Enable UI navigation
+                }
             }
             else
             {
@@ -446,17 +465,40 @@ namespace ProjectColombo.GameInputSystem
 
                 if (playerInputActions != null)
                 {
-                    playerInputActions.Player.Disable();
-                    playerInputActions.UI.Enable();
+                    // Make sure Player actions are disabled
+                    if (playerInputActions.Player.enabled)
+                    {
+                        playerInputActions.Player.Disable();
+                    }
+                    
+                    // And UI actions are enabled
+                    if (!playerInputActions.UI.enabled)
+                    {
+                        playerInputActions.UI.Enable();
+                    }
                 }
             }
         }
 
         public void DisableUIMode()
         {
-            playerInputActions.UI.Disable(); // Disable UI input
-            playerInputActions.Player.Enable(); // Re-enable player controls
-            EnableInput(InputActionType.Movement); // Allow movement again
+            // Make sure UI actions are initialized before trying to disable them
+            if (playerInputActions != null) //&& playerInputActions.UI != null)
+            {
+                // Only disable if currently enabled to avoid warning messages
+                if (playerInputActions.UI.enabled)
+                {
+                    playerInputActions.UI.Disable(); // Disable UI input
+                }
+                
+                // Only enable if not already enabled
+                if (!playerInputActions.Player.enabled)
+                {
+                    playerInputActions.Player.Enable(); // Re-enable player controls
+                }
+                
+                EnableInput(InputActionType.Movement); // Allow movement again
+            }
         }
     }
 }

@@ -49,7 +49,16 @@ namespace ProjectColombo.Enemies.Mommotti
 
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color.blue;
+            Gizmos.color = Color.white;
+
+            if (scale == GameGlobals.MusicScale.MINOR)
+            {
+                Gizmos.color = Color.red;
+            }
+            else if (scale == GameGlobals.MusicScale.MAJOR)
+            {
+                Gizmos.color = Color.green;
+            }
 
             Gizmos.DrawWireSphere(transform.position, patrolAreaDistance);
         }
