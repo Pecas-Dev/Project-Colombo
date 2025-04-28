@@ -17,6 +17,8 @@ namespace ProjectColombo.GameManagement.Events
         public static event Action OnShopClose;
         public static event Action<int> OnItemPurchase;
         public static event Action<int> OnCoinsCollected;
+        public static event Action<GameObject> OnCharmCollected;
+        public static event Action<GameObject> OnMaskCollected;
         public static event Action OnStaminaRegenerated;
         public static event Action OnStaminaUsed;
         public static event Action OnLevelChange;
@@ -74,6 +76,16 @@ namespace ProjectColombo.GameManagement.Events
         public static void CoinsCollected(int amount)
         {
             OnCoinsCollected?.Invoke(amount);
+        }
+
+        public static void CharmCollected(GameObject charm)
+        {
+            OnCharmCollected?.Invoke(charm);
+        }
+
+        public static void MaskCollected(GameObject mask)
+        {
+            OnMaskCollected?.Invoke(mask);
         }
 
         public static void StaminaRegenerated()

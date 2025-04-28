@@ -25,6 +25,7 @@ namespace ProjectColombo.Enemies.DropSystem
         public List<GameObject> rareCharms;
         public List<GameObject> legendaryCharms;
         public List<GameObject> masks;
+        public GameObject pickup;
         public GameObject coins;
 
 
@@ -75,39 +76,38 @@ namespace ProjectColombo.Enemies.DropSystem
             if (random <= dropChanceCommonCharm)
             {
                 int rand = Random.Range(0, commonCharms.Count);
-                Debug.Log("common dropped");
 
-                Instantiate(commonCharms[rand], new Vector3(transform.position.x, 1f, transform.position.z), transform.rotation);
+                GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 1f, transform.position.z), transform.rotation);
+                Instantiate(commonCharms[rand], instance.transform);
             }
             else if (random <= dropChanceRareCharm)
             {
                 int rand = Random.Range(0, rareCharms.Count);
-                Debug.Log("rare dropped");
 
-                Instantiate(rareCharms[rand], new Vector3(transform.position.x, 1f, transform.position.z), transform.rotation);
+                GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 1f, transform.position.z), transform.rotation);
+                Instantiate(rareCharms[rand], instance.transform);
 
             }
             else if (random <= dropChanceLegendaryCharm)
             {
                 int rand = Random.Range(0, legendaryCharms.Count);
-                Debug.Log("legandary dropped");
 
-                Instantiate(legendaryCharms[rand], new Vector3(transform.position.x, 1f, transform.position.z), transform.rotation);
+                GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 1f, transform.position.z), transform.rotation);
+                Instantiate(legendaryCharms[rand], instance.transform);
 
             }
             else if (random <= dropChanceMask)
             {
                 int rand = Random.Range(0, masks.Count);
-                Debug.Log("mask dropped");
 
-                Instantiate(masks[rand], new Vector3(transform.position.x, 1f, transform.position.z), transform.rotation);
+                GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 1f, transform.position.z), transform.rotation);
+                Instantiate(masks[rand], instance.transform);
             }
             else
             {
                 int rand = Random.Range(minAmountOfCoins, maxAmountOfCoins+1);
 
                 GameObject coininstance = Instantiate(coins, new Vector3(transform.position.x, 1f, transform.position.z), transform.rotation);
-                Debug.Log("coins dropped: " + rand);
                 coininstance.GetComponent<Coins>().amount = rand;
             }
         }
