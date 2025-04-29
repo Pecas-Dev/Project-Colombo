@@ -12,7 +12,7 @@ public class MainMenuController : MenuController
     [SerializeField] Image[] clefImages;
     [SerializeField] Button[] buttons;
     [SerializeField] TextMeshProUGUI[] buttonTexts;
-    [SerializeField] string[] sceneNames;
+    public int nextScene;
     [SerializeField] AudioSource[] audioSources;
 
     int currentSelectedIndex = -1;
@@ -179,7 +179,7 @@ public class MainMenuController : MenuController
 
         yield return new WaitForSecondsRealtime(2.5f);
 
-        SceneManager.LoadScene(sceneNames[0]);
+        SceneManager.LoadScene(nextScene);
     }
 
     IEnumerator CloseGame()
