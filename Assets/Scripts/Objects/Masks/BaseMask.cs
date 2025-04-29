@@ -7,7 +7,7 @@ namespace ProjectColombo.Objects.Masks
     public abstract class BaseMask : MonoBehaviour
     {
         public string maskName;
-        public Texture2D maskPicture;
+        public Sprite maskPicture;
         [TextArea] public string maskDescription;
         [TextArea] public string maskLore;
         [HideInInspector] public bool abilityAvailable = false;

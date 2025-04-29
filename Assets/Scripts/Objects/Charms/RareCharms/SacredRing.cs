@@ -1,4 +1,5 @@
 using ProjectColombo.Combat;
+using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Inventory;
 using UnityEngine;
@@ -39,7 +40,7 @@ namespace ProjectColombo.Objects.Charms
 
             if (rand < doubleGoldChance)
             {
-                GameObject.Find("Player").GetComponent<PlayerInventory>().currencyAmount += amount;
+                GameManager.Instance.GetComponent<PlayerInventory>().currencyAmount += amount;
                 Debug.Log("doubled gold");
             }
         }

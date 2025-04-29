@@ -10,7 +10,7 @@ namespace ProjectColombo.Objects.Charms
     {
         public string charmName;
         public RARITY charmRarity;
-        public Texture2D charmPicture;
+        public Sprite charmPicture;
         [TextArea] public string charmDescription;
         [TextArea] public string charmLore;
 

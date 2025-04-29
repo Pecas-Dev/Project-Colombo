@@ -1,3 +1,4 @@
+using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Inventory;
 using ProjectColombo.Shop;
@@ -25,7 +26,7 @@ namespace ProjectColombo.Objects.Masks
 
         public override void Equip()
         {
-            myPlayerInventory = GameObject.Find("Player").GetComponent<PlayerInventory>();
+            myPlayerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
             CustomEvents.OnDamageDelt += OnDamageDelt;
             CustomEvents.OnDamageReceived += OnDamageReceived;
             CustomEvents.OnSuccessfullParry += OnSuccessfullParry;

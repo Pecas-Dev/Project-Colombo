@@ -1,4 +1,5 @@
 using ProjectColombo.Combat;
+using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 using System.Data;
 using UnityEngine;
@@ -13,7 +14,7 @@ namespace ProjectColombo.Inventory.Collectable
         private void Start()
         {
             GetComponent<Renderer>().material.color = myData.itemColor;
-            playerInventory = GameObject.Find("Player").GetComponent<PlayerInventory>();
+            playerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
         }
 
         private void OnTriggerEnter(Collider other)

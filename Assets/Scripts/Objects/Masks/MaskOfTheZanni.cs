@@ -1,3 +1,4 @@
+using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Inventory;
 using ProjectColombo.StateMachine.Mommotti;
@@ -33,7 +34,7 @@ namespace ProjectColombo.Objects.Masks
             myPlayerStateMachine = GameObject.Find("Player").GetComponent<PlayerStateMachine>();
 
             Debug.Log("added luck points: " + luckPointsIncrease);
-            myPlayerStateMachine.GetComponent<PlayerInventory>().currentLuck += luckPointsIncrease;
+            GameManager.Instance.GetComponent<PlayerInventory>().currentLuck += luckPointsIncrease;
 
             regenSpeedDelta = myPlayerStateMachine.myStamina.regenTime / 100f * staminaRegenSpeedIncreasePercent;
             Debug.Log("lowered stamina regen speed from: " + myPlayerStateMachine.myStamina.regenTime + " by: " + regenSpeedDelta);
@@ -101,7 +102,7 @@ namespace ProjectColombo.Objects.Masks
 
         public override void Remove()
         {
-            myPlayerStateMachine.GetComponent<PlayerInventory>().currentLuck -= luckPointsIncrease;
+            GameManager.Instance.GetComponent<PlayerInventory>().currentLuck -= luckPointsIncrease;
             myPlayerStateMachine.myStamina.regenTime -= regenSpeedDelta;
 
             CustomEvents.OnDamageDelt -= AddDamageDelt;
@@ -112,7 +113,7 @@ namespace ProjectColombo.Objects.Masks
 
         public override void UseAbility()
         {
-            currentAbilityCooldown = defaultAbilityCooldown - (cooldownDecreasePerLuck * myPlayerStateMachine.GetComponent<PlayerInventory>().currentLuck);
+            currentAbilityCooldown = defaultAbilityCooldown - (cooldownDecreasePerLuck * GameManager.Instance.GetComponent<PlayerInventory>().currentLuck);
 
             GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
             Debug.Log("enemies found: " + enemies.Length);

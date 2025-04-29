@@ -1,3 +1,4 @@
+using ProjectColombo.GameManagement;
 using ProjectColombo.Inventory;
 using ProjectColombo.StateMachine.Player;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace ProjectColombo.Objects.Charms
 
         public override void Equip()
         {
-            myPlayerInventory = GameObject.Find("Player").GetComponent<PlayerInventory>();
+            myPlayerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
             Debug.Log("increased luck from: " + myPlayerInventory.currentLuck + ", by: " + luckIncrease);
             myPlayerInventory.currentLuck += luckIncrease;
         }

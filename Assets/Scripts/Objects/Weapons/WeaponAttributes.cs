@@ -14,7 +14,7 @@ namespace ProjectColombo.Combat
 {
     public class WeaponAttributes : MonoBehaviour
     {
-        public Texture2D weaponSprite;
+        public Sprite weaponSprite;
         public int defaultMajorDamage;
         public int defaultMinorDamage;
 
