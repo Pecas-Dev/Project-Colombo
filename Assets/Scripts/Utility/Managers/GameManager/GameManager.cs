@@ -81,12 +81,17 @@ namespace ProjectColombo.GameManagement
 
 
 
-        public void PauseGame()
+        public void PauseGame(bool showPause = true)
         {
             gameInput.EnableUIMode();
             Time.timeScale = 0;
-            pauseMenuUI.SetActive(true);
-            EventSystem.current.SetSelectedGameObject(firstSelectedButton);
+
+            if (showPause)
+            {
+                pauseMenuUI.SetActive(true);
+                EventSystem.current.SetSelectedGameObject(firstSelectedButton);
+            }
+
             gameIsPaused = true;
         }
 

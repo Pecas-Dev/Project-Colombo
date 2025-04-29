@@ -9,7 +9,7 @@ namespace ProjectColombo.Objects.Items
     {
         public string itemName;
         public RARITY itemRarity;
-        public Texture2D itemPicture;
+        public Sprite itemPicture;
         [TextArea] public string itemDescription;
         [TextArea] public string itemLore;
 

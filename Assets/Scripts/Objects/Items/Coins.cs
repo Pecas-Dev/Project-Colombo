@@ -1,3 +1,4 @@
+using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Inventory;
 using UnityEngine;
@@ -13,7 +14,7 @@ namespace ProjectColombo.Objects.Items
             if (other.gameObject.CompareTag("Player"))
             {
                 CustomEvents.CoinsCollected(amount);
-                other.GetComponent<PlayerInventory>().currencyAmount += amount;
+                GameManager.Instance.GetComponent<PlayerInventory>().currencyAmount += amount;
                 Destroy(this.gameObject);
             }
         }
