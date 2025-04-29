@@ -37,7 +37,12 @@ namespace ProjectColombo.UI
                 GameObject selection = EventSystem.current.currentSelectedGameObject;
                 if (selection != lastSelected)
                 {
-                    BaseCharm charm = selection.GetComponent<CharmButton>().charmObject.GetComponent<BaseCharm>();
+                    CharmButton button = selection.GetComponent<CharmButton>();
+                    if (button == null) return;
+
+                    BaseCharm charm = button.charmObject.GetComponent<BaseCharm>();
+                    if (charm == null) return;
+
                     selectedCharmImage.sprite = charm.charmPicture;
                     selectedCharmNameText.text = charm.charmName;
                     //could add lore: selectedCharmLoreText.text = charm.charmLore;
