@@ -27,7 +27,6 @@ namespace ProjectColombo.LevelManagement
         public float dropChanceCommonCharmVase;
         public float dropChanceRareCharmVase;
         public float dropChanceLegendaryCharmVase;
-        public float dropChanceMaskVase;
 
         [Header("Chest")]
         public int minAmountOfCoinsChest;
@@ -35,7 +34,6 @@ namespace ProjectColombo.LevelManagement
         public float dropChanceCommonCharmChest;
         public float dropChanceRareCharmChest;
         public float dropChanceLegendaryCharmChest;
-        public float dropChanceMaskChest;
 
         [Header("Enemies")]
         public int minAmountOfCoinsEnemies;
@@ -43,7 +41,6 @@ namespace ProjectColombo.LevelManagement
         public float dropChanceCommonCharmEnemies;
         public float dropChanceRareCharmEnemies;
         public float dropChanceLegendaryCharmEnemies;
-        public float dropChanceMaskEnemies;
 
 
 

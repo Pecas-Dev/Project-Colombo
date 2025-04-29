@@ -19,12 +19,10 @@ namespace ProjectColombo.Enemies.DropSystem
         float dropChanceCommonCharm;
         float dropChanceRareCharm;
         float dropChanceLegendaryCharm;
-        float dropChanceMask;
 
         public List<GameObject> commonCharms;
         public List<GameObject> rareCharms;
         public List<GameObject> legendaryCharms;
-        public List<GameObject> masks;
         public GameObject pickup;
         public GameObject coins;
 
@@ -46,7 +44,6 @@ namespace ProjectColombo.Enemies.DropSystem
                     dropChanceCommonCharm = myLevelStats.dropChanceCommonCharmVase;
                     dropChanceRareCharm = myLevelStats.dropChanceRareCharmVase;
                     dropChanceLegendaryCharm = myLevelStats.dropChanceLegendaryCharmVase;
-                    dropChanceMask = myLevelStats.dropChanceMaskVase;
                     return;
 
                 case Variant.CHEST:
@@ -55,7 +52,6 @@ namespace ProjectColombo.Enemies.DropSystem
                     dropChanceCommonCharm = myLevelStats.dropChanceCommonCharmChest;
                     dropChanceRareCharm = myLevelStats.dropChanceRareCharmChest;
                     dropChanceLegendaryCharm = myLevelStats.dropChanceLegendaryCharmChest;
-                    dropChanceMask = myLevelStats.dropChanceMaskChest;
                     return;
 
                 default:
@@ -64,7 +60,6 @@ namespace ProjectColombo.Enemies.DropSystem
                     dropChanceCommonCharm = myLevelStats.dropChanceCommonCharmEnemies;
                     dropChanceRareCharm = myLevelStats.dropChanceRareCharmEnemies;
                     dropChanceLegendaryCharm = myLevelStats.dropChanceLegendaryCharmEnemies;
-                    dropChanceMask = myLevelStats.dropChanceMaskEnemies;
                     return;
             }
         }
@@ -95,13 +90,6 @@ namespace ProjectColombo.Enemies.DropSystem
                 GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 1f, transform.position.z), transform.rotation);
                 Instantiate(legendaryCharms[rand], instance.transform);
 
-            }
-            else if (random <= dropChanceMask)
-            {
-                int rand = Random.Range(0, masks.Count);
-
-                GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 1f, transform.position.z), transform.rotation);
-                Instantiate(masks[rand], instance.transform);
             }
             else
             {

@@ -4,6 +4,7 @@ using ProjectColombo.Objects.Charms;
 using ProjectColombo.Objects.Masks;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEngine.ParticleSystem;
 
 namespace ProjectColombo.Objects
 {
@@ -11,10 +12,16 @@ namespace ProjectColombo.Objects
     {
         public GameObject indicator;
         public bool active = false;
+        ParticleSystem myParticles;
+        BaseCharm myCharm;
 
         private void Start()
         {
+            myParticles = GetComponent<ParticleSystem>();
+            myCharm = GetComponentInChildren<BaseCharm>();
             indicator.SetActive(false);
+
+            SetParticleColor();
         }
 
         private void OnTriggerEnter(Collider other)
@@ -39,7 +46,7 @@ namespace ProjectColombo.Objects
         {
             if (active && GameManager.Instance.gameInput.UseItemPressed)
             {
-                GameObject charm = GetComponentInChildren<BaseCharm>().gameObject;
+                GameObject charm = myCharm.gameObject;
                 GameManager.Instance.gameInput.ResetUseItemPressed();
 
                 if (charm != null)
@@ -50,18 +57,30 @@ namespace ProjectColombo.Objects
                     return;
                 }
 
-                GameObject mask = GetComponentInChildren<BaseMask>().gameObject;
-
-                if (mask != null)
-                {
-                    CustomEvents.MaskCollected(mask);
-                    Debug.Log("collected mask");
-                    Destroy(this.gameObject);
-                    return;
-                }
-
                 Debug.Log("invalid item in pick up");
             }
+        }
+
+        void SetParticleColor()
+        {
+            Color color;
+            if (myCharm.charmRarity == RARITY.COMMON)
+            {
+                color = Color.cyan;
+            }
+            else if (myCharm.charmRarity == RARITY.RARE)
+            {
+                color = Color.yellow;
+            }
+            else
+            {
+                color = Color.magenta;
+            }
+
+            myParticles.Stop();
+            var mainModule = myParticles.main;
+            mainModule.startColor = color;
+            myParticles.Play();
         }
     }
 }
