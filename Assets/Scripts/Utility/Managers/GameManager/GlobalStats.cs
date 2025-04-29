@@ -42,12 +42,15 @@ namespace ProjectColombo.GameManagement.Stats
         [Header("WeaponAttributes")]
         public AllWeapons playerWeapon = AllWeapons.SWORD;
         public List<GameObject> allWeapons;
-        public int defaultPlayerDamage = 50;
+        public float defaultMajorDamageMultiplyer = 1f;
+        public float defaultMinorDamageMultiplyer = 1f;
         public float defaultCorrectAttackScalePercent = 40f;
         public float defaultBlockReductionPercent = 20f;
         public float defaultMissedParryPaneltyPercent = 25f;
 
-        [ReadOnlyInspector] public int currentPlayerDamage;
+
+        [ReadOnlyInspector] public float currentMajorDamageMultiplyer;
+        [ReadOnlyInspector] public float currentMinorDamageMultiplyer; 
         [ReadOnlyInspector] public float currentCorrectAttackScalePercent;
         [ReadOnlyInspector] public float currentBlockReductionPercent;
         [ReadOnlyInspector] public float currentMissedParryPaneltyPercent;
@@ -74,7 +77,8 @@ namespace ProjectColombo.GameManagement.Stats
             currentLuckPoints = defaultLuckPoints;
             currentCurrencyAmount = defaultCurrencyAmount;
 
-            currentPlayerDamage = defaultPlayerDamage;
+            currentMajorDamageMultiplyer = defaultMajorDamageMultiplyer;
+            currentMinorDamageMultiplyer = defaultMinorDamageMultiplyer;
             currentCorrectAttackScalePercent = defaultCorrectAttackScalePercent;
             currentBlockReductionPercent = defaultBlockReductionPercent;
             currentMissedParryPaneltyPercent = defaultMissedParryPaneltyPercent;

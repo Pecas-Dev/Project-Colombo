@@ -7,12 +7,17 @@ using ProjectColombo.Camera;
 using ProjectColombo.GameManagement.Stats;
 using ProjectColombo.GameManagement;
 using ProjectColombo.LevelManagement;
+using Autodesk.Fbx;
 
 namespace ProjectColombo.Combat
 {
     public class WeaponAttributes : MonoBehaviour
     {
-        int defaultDamage;
+        public int defaultMajorDamage;
+        public int defaultMinorDamage;
+
+        float majorDamageMultiplier;
+        float minorDamageMultiplier;
 
         float correctAttackScaleBonusPercentage;
         float blockDamageReductionPercentage;
@@ -61,7 +66,8 @@ namespace ProjectColombo.Combat
         {
             if (GetComponentInParent<EntityAttributes>().CompareTag("Player"))
             {
-                myGlobalStats.currentPlayerDamage = defaultDamage;
+                myGlobalStats.currentMajorDamageMultiplyer = majorDamageMultiplier;
+                myGlobalStats.currentMinorDamageMultiplyer = minorDamageMultiplier;
                 myGlobalStats.currentCorrectAttackScalePercent = correctAttackScaleBonusPercentage;
                 myGlobalStats.currentBlockReductionPercent = blockDamageReductionPercentage;
                 myGlobalStats.currentMissedParryPaneltyPercent = missedParryPaneltyPercentage;
@@ -73,14 +79,15 @@ namespace ProjectColombo.Combat
             if (GetComponentInParent<EntityAttributes>().CompareTag("Player"))
             {
                 Debug.Log("set weapon stats");
-                defaultDamage = myGlobalStats.currentPlayerDamage;
+                majorDamageMultiplier = myGlobalStats.currentMajorDamageMultiplyer;
+                minorDamageMultiplier = myGlobalStats.currentMinorDamageMultiplyer;
                 correctAttackScaleBonusPercentage = myGlobalStats.currentCorrectAttackScalePercent;
                 blockDamageReductionPercentage = myGlobalStats.currentBlockReductionPercent;
                 missedParryPaneltyPercentage = myGlobalStats.currentMissedParryPaneltyPercent;
             }
             else if (GetComponentInParent<EntityAttributes>().CompareTag("Enemy"))
             {
-                defaultDamage = myLevelStats.currentMommottiDamage;
+                defaultMinorDamage = defaultMajorDamage = myLevelStats.currentMommottiDamage;
             }
         }
 
@@ -138,7 +145,7 @@ namespace ProjectColombo.Combat
 
         private void OnTriggerEnter(Collider other)
         {
-            int damage = defaultDamage;
+            int damage = currentScale == GameGlobals.MusicScale.MAJOR ? (int)(defaultMajorDamage * majorDamageMultiplier) : (int)(defaultMinorDamage * minorDamageMultiplier);
             Vector3 attackDirection = (other.transform.position - transform.parent.position).normalized; //get direction from user to target
             attackDirection.y = 0.0f; //could be increased to make the hit entity jump a bit
 
@@ -242,9 +249,20 @@ namespace ProjectColombo.Combat
             }
         }
 
-        public void AddDamagePercentage(int percentage)
+        public void AddDamagePercentage(int percentage, GameGlobals.MusicScale scale)
         {
-            defaultDamage += (int)(percentage / 100 * defaultDamage);
+            if (scale == GameGlobals.MusicScale.MAJOR)
+            {
+                majorDamageMultiplier += percentage / 100f;
+            }
+            else if (scale == GameGlobals.MusicScale.MINOR)
+            {
+                minorDamageMultiplier += percentage / 100f;
+            }
+            else
+            {
+                Debug.Log("no scale set in add damage");
+            }
         }
 
         private void AddTemporaryDamagePercentage(int damage, float percentage)

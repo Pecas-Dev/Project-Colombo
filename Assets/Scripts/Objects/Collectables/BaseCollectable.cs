@@ -69,7 +69,6 @@ namespace ProjectColombo.Inventory.Collectable
 
         private void AttackCharm(GameObject player)
         {
-            player.GetComponentInChildren<WeaponAttributes>().AddDamagePercentage(myData.valueModifierInPercent);
         }
 
         private void Reset()
