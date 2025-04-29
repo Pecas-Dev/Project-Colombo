@@ -1,142 +1,76 @@
+using ProjectColombo.GameManagement;
+using ProjectColombo.Inventory;
 using ProjectColombo.Objects.Charms;
-using ProjectColombo.Objects.Masks;
-using System.Linq;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
+
 
 namespace ProjectColombo.UI.Pausescreen
 {
     public class PauseMenuUI : MonoBehaviour
     {
-        public ToggleGroup charmToggleGroup;
-        public ToggleGroup maskToggleGroup;
-        public ToggleGroup itemToggleGroup;
+        public List<GameObject> charmButtons;
+        public TMP_Text charmNameText;
+        public TMP_Text charmDescriptionText;
 
-        public GameObject CharmSlot;
-        public GameObject MaskSlot;
-        public GameObject ItemSlot;
+        GameObject lastSelected;
 
         private void Start()
         {
-            SceneManager.sceneLoaded += OnLoadScene;
+            UpdateCharms();
         }
 
-        private void OnLoadScene(Scene arg0, LoadSceneMode arg1)
+        private void Update()
         {
-            MakeSelection();
-        }
+            GameObject selection = EventSystem.current.currentSelectedGameObject;
 
-        public void ResetSelection()
-        {
-            // Remove existing children
-            foreach (Transform child in CharmSlot.transform)
+            if (selection == null) return;
+
+            if (selection != lastSelected)
             {
-                BaseCharm childcharm = child.GetComponent<BaseCharm>();
-                childcharm.Remove();
-                GameObject.Destroy(child.gameObject);
-            }
+                CharmButton charm = selection.GetComponent<CharmButton>();
 
-            // Remove existing children
-            foreach (Transform child in MaskSlot.transform)
-            {
-                child.GetComponent<BaseMask>().Remove();
-                GameObject.Destroy(child.gameObject);
+                if (charm == null)
+                {
+                    charmNameText.text = "";
+                    charmDescriptionText.text = "";
+                    return;
+                }
 
-            }
+                GameObject charmobj = charm.charmObject;
+                if (charmobj == null) return;
 
-            // Remove existing children
-            foreach (Transform child in ItemSlot.transform)
-            {
-                GameObject.Destroy(child.gameObject);
+                BaseCharm charminfo = charm.charmObject.GetComponent<BaseCharm>();
+                charmNameText.text = charminfo.charmName;
+                //could add lore: charmLoreText.text = charminfo.charmLore;
+                charmDescriptionText.text = charminfo.charmDescription;
             }
         }
 
 
-
-
-        public void MakeSelection()
+        public void UpdateCharms()
         {
-            // Remove existing children
-            foreach (Transform child in CharmSlot.transform)
+            foreach (GameObject b in charmButtons)
             {
-                BaseCharm childcharm = child.GetComponent<BaseCharm>();
-                childcharm.Remove();
-                GameObject.Destroy(child.gameObject);
+                b.GetComponent<Button>().interactable = false;
             }
 
-            // Remove existing children
-            foreach (Transform child in MaskSlot.transform)
-            {
-                child.GetComponent<BaseMask>().Remove();
-                GameObject.Destroy(child.gameObject);
+            PlayerInventory inventory = GameManager.Instance.GetComponent<PlayerInventory>();
 
+            int slot = 0;
+            foreach (GameObject charm in inventory.charms)
+            {
+                charmButtons[slot].GetComponent<Button>().interactable = true;
+                charmButtons[slot].GetComponent<CharmButton>().UpdateInfo(charm);
+                slot++;
             }
 
-            // Remove existing children
-            foreach (Transform child in ItemSlot.transform)
+            for (int i = slot; i < charmButtons.Count; i++)
             {
-                GameObject.Destroy(child.gameObject);
-
-            }
-
-
-            //ProcessSelection(charmToggleGroup, CharmSlot);
-            Toggle charmtoggle = charmToggleGroup.ActiveToggles().FirstOrDefault();
-
-            if (charmtoggle != null)
-            {
-                GameObject charm = charmtoggle.GetComponent<PauseToggle>().selection;
-            
-                if (charm != null)
-                {
-
-                    // Instantiate a copy of the selected toggle into the slot
-                    GameObject newToggle = GameObject.Instantiate(charm.gameObject, CharmSlot.transform);
-                    newToggle.transform.localPosition = Vector3.zero;
-                    newToggle.transform.localRotation = Quaternion.identity;
-                    newToggle.transform.localScale = Vector3.one;
-                    BaseCharm charmscript = newToggle.GetComponent<BaseCharm>();
-                    charmscript.Equip();
-                }
-            }
-
-
-            //ProcessSelection(maskToggleGroup, MaskSlot);
-            Toggle masktoggle = maskToggleGroup.ActiveToggles().FirstOrDefault();
-            if (masktoggle != null)
-            {
-                GameObject mask = masktoggle.GetComponent<PauseToggle>().selection;
-
-                if (mask != null)
-                {
-
-
-                    // Instantiate a copy of the selected toggle into the slot
-                    GameObject newToggle = GameObject.Instantiate(mask.gameObject, MaskSlot.transform);
-                    newToggle.transform.localPosition = Vector3.zero;
-                    newToggle.transform.localRotation = Quaternion.identity;
-                    newToggle.transform.localScale = Vector3.one;
-                    newToggle.GetComponent<BaseMask>().Equip();
-                }
-            }
-
-            //ProcessSelection(itemToggleGroup, ItemSlot);
-            Toggle itemtoggle = itemToggleGroup.ActiveToggles().FirstOrDefault();
-            if (itemtoggle != null)
-            {
-                GameObject item = itemtoggle.GetComponent<PauseToggle>().selection;
-
-                if (item != null)
-                {
-
-
-                    // Instantiate a copy of the selected toggle into the slot
-                    GameObject newToggle = GameObject.Instantiate(item.gameObject, ItemSlot.transform);
-                    newToggle.transform.localPosition = Vector3.zero;
-                    newToggle.transform.localRotation = Quaternion.identity;
-                    newToggle.transform.localScale = Vector3.one;
-                }
+                charmButtons[i].GetComponent<CharmButton>().UpdateInfo(null);
             }
         }
     }

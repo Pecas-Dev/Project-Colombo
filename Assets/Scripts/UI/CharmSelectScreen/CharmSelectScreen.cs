@@ -12,7 +12,7 @@ namespace ProjectColombo.UI
     public class CharmSelectScreen : MonoBehaviour
     {
         public GameObject newCharm;
-        public List<GameObject> CharmButtons;
+        public List<GameObject> charmButtons;
 
         public Image newCharmImage;
         public TMP_Text newCharmNameText;
@@ -53,7 +53,7 @@ namespace ProjectColombo.UI
             int slot = 0;
             foreach (GameObject charm in inventory.charms)
             {
-                CharmButtons[slot].GetComponent<CharmButton>().UpdateInfo(charm);
+                charmButtons[slot].GetComponent<CharmButton>().UpdateInfo(charm);
                 slot++;
             }
         }
@@ -61,7 +61,7 @@ namespace ProjectColombo.UI
         public void ActivateScreen(GameObject newCharmObj)
         {
             UpdateFromInventory();
-            EventSystem.current.SetSelectedGameObject(CharmButtons[0].gameObject);
+            EventSystem.current.SetSelectedGameObject(charmButtons[0].gameObject);
 
             newCharm = newCharmObj;
             BaseCharm newCharmInfo = newCharm.GetComponent<BaseCharm>();

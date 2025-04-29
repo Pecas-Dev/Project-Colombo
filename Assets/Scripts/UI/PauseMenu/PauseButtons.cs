@@ -7,7 +7,6 @@ namespace ProjectColombo.UI.Pausescreen
     {
         public void MakeSelections()
         {
-            GetComponentInParent<PauseMenuUI>().MakeSelection();
         }
     }
 }

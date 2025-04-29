@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using ProjectColombo.GameManagement.Stats;
+using ProjectColombo.UI.Pausescreen;
+using ProjectColombo.Inventory;
 namespace ProjectColombo.GameManagement
 {
 
@@ -76,6 +78,7 @@ namespace ProjectColombo.GameManagement
             {
                 //reset stats to default when in main menu
                 GetComponent<GlobalStats>().ResetStats();
+                GetComponent<PlayerInventory>().Reset();
             }
         }
 
@@ -89,6 +92,7 @@ namespace ProjectColombo.GameManagement
             if (showPause)
             {
                 pauseMenuUI.SetActive(true);
+                pauseMenuUI.GetComponent<PauseMenuUI>().UpdateCharms();
                 EventSystem.current.SetSelectedGameObject(firstSelectedButton);
             }
 

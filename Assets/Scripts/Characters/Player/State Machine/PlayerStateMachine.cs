@@ -34,6 +34,7 @@ namespace ProjectColombo.StateMachine.Player
         public HealthManager myHealthManager;
         public WeaponAttributes myWeaponAttributes;
         public Targeter myTargeter;
+        public PlayerInventory myPlayerInventory;
 
 
         [Header("Player State")]
@@ -66,6 +67,7 @@ namespace ProjectColombo.StateMachine.Player
             myEntityAttributes = GetComponent<EntityAttributes>();
             myHealthManager = GetComponent<HealthManager>();
             myTargeter = GetComponentInChildren<Targeter>();
+            myPlayerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
 
             closeShop = null;
         }
@@ -77,6 +79,8 @@ namespace ProjectColombo.StateMachine.Player
 
             //get current selected weapon
             SwapWeapon();
+            myPlayerInventory.ActivateMask();
+            myPlayerInventory.ActivateCharms();
         }
 
         public void ApplyKnockback(Vector3 direction, float knockbackStrength)
@@ -140,6 +144,11 @@ namespace ProjectColombo.StateMachine.Player
             if (myTargeter == null)
             {
                 Debug.LogError("no targeter in player");
+            }
+
+            if (myPlayerAnimator == null)
+            {
+                Debug.LogError("no playerinventory");
             }
         }
 

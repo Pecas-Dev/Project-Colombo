@@ -13,7 +13,6 @@ namespace ProjectColombo.LevelManagement
         {
             if (other.gameObject.CompareTag("Player"))
             {
-                GameManager.Instance.pauseMenuUI.GetComponent<PauseMenuUI>().ResetSelection();
                 StartCoroutine(LoadNextSceneDelayed());
             }
         }

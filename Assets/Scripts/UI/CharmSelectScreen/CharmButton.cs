@@ -13,6 +13,13 @@ namespace ProjectColombo.UI
 
         public void UpdateInfo(GameObject charm)
         {
+            if (charm == null)
+            {
+                charmObject = null;
+                imageSlot.sprite = null;
+                return;
+            }
+
             charmObject = charm;
             imageSlot.sprite = charmObject.GetComponent<BaseCharm>().charmPicture;
 
