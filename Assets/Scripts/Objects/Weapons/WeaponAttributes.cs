@@ -8,11 +8,13 @@ using ProjectColombo.GameManagement.Stats;
 using ProjectColombo.GameManagement;
 using ProjectColombo.LevelManagement;
 using Autodesk.Fbx;
+using UnityEngine.UI;
 
 namespace ProjectColombo.Combat
 {
     public class WeaponAttributes : MonoBehaviour
     {
+        public Texture2D weaponSprite;
         public int defaultMajorDamage;
         public int defaultMinorDamage;
 
