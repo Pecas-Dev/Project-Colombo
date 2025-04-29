@@ -75,7 +75,7 @@ namespace ProjectColombo.Enemies.DropSystem
                 GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 1f, transform.position.z), transform.rotation);
                 Instantiate(commonCharms[rand], instance.transform);
             }
-            else if (random <= dropChanceRareCharm)
+            else if (random <= dropChanceRareCharm + dropChanceCommonCharm)
             {
                 int rand = Random.Range(0, rareCharms.Count);
 
@@ -83,7 +83,7 @@ namespace ProjectColombo.Enemies.DropSystem
                 Instantiate(rareCharms[rand], instance.transform);
 
             }
-            else if (random <= dropChanceLegendaryCharm)
+            else if (random <= dropChanceLegendaryCharm + dropChanceRareCharm + dropChanceCommonCharm)
             {
                 int rand = Random.Range(0, legendaryCharms.Count);
 
