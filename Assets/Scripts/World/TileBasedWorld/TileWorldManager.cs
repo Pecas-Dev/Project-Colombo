@@ -339,19 +339,23 @@ namespace ProjectColombo.LevelManagement
                         if (world.GetTileAt(x,y).openings.Contains(Directions.NORTH) && world.GetTileAt(x, y).openings.Contains(Directions.SOUTH) 
                             || world.GetTileAt(x, y).openings.Contains(Directions.EAST) && world.GetTileAt(x, y).openings.Contains(Directions.WEST))
                         {
-                            ICorridors[0].GetComponent<TileWorldCorridor>().PlaceICorridor(world.GetTileAt(x,y));
+                            int randI = Random.Range(0, ICorridors.Count);
+                            ICorridors[randI].GetComponent<TileWorldCorridor>().PlaceICorridor(world.GetTileAt(x,y));
                             continue;
                         }
 
-                        LCorridors[0].GetComponent<TileWorldCorridor>().PlaceLCorridor(world.GetTileAt(x, y));
+                        int rand = Random.Range(0, LCorridors.Count);
+                        LCorridors[rand].GetComponent<TileWorldCorridor>().PlaceLCorridor(world.GetTileAt(x, y));
                     }
                     else if (openings == 3)
                     {
-                        TCorridors[0].GetComponent<TileWorldCorridor>().PlaceTCorridor(world.GetTileAt(x, y));
+                        int rand = Random.Range(0, TCorridors.Count);
+                        TCorridors[rand].GetComponent<TileWorldCorridor>().PlaceTCorridor(world.GetTileAt(x, y));
                     }
                     else if (openings == 4)
                     {
-                        XCorridors[0].GetComponent<TileWorldCorridor>().PlaceXCorridor(world.GetTileAt(x, y));
+                        int rand = Random.Range(0, XCorridors.Count);
+                        XCorridors[rand].GetComponent<TileWorldCorridor>().PlaceXCorridor(world.GetTileAt(x, y));
                     }
                     else if (openings == 1)
                     {
