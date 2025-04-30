@@ -299,7 +299,7 @@ MonoBehaviour:
   m_Container: {fileID: 7393754507953280377}
   m_ItemsToInstantiate:
   - prefab: {fileID: 0}
-    Prefab: {fileID: 0}
+    Prefab: {fileID: 3283759588824449478, guid: 06815783a8081e649a181bdfd4208310, type: 3}
     probability: 0
     Probability: 0
   m_Method: 1
@@ -344,7 +344,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5507840807232097105}
   - component: {fileID: 8324090973571656080}
-  - component: {fileID: 9116576651504203108}
+  - component: {fileID: 5612616553214734363}
   m_Layer: 0
   m_Name: Spline
   m_TagString: Untagged
@@ -527,7 +527,7 @@ MonoBehaviour:
       m_Data: []
   m_Knots:
     m_KnotsLink: []
---- !u!114 &9116576651504203108
+--- !u!114 &5612616553214734363
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -542,7 +542,7 @@ MonoBehaviour:
   m_Container: {fileID: 8324090973571656080}
   m_ItemsToInstantiate:
   - prefab: {fileID: 0}
-    Prefab: {fileID: 0}
+    Prefab: {fileID: 3283759588824449478, guid: 06815783a8081e649a181bdfd4208310, type: 3}
     probability: 0
     Probability: 0
   m_Method: 1
@@ -552,8 +552,8 @@ MonoBehaviour:
   m_Forward: 2
   m_PositionOffset:
     setup: 0
-    min: {x: 0, y: 0, z: 0}
-    max: {x: 0, y: 0, z: 0}
+    min: {x: 0.05, y: 0.05, z: 0.45}
+    max: {x: 1.8, y: 0.65, z: 0.45}
     randomX: 0
     randomY: 0
     randomZ: 0
@@ -561,7 +561,7 @@ MonoBehaviour:
   m_RotationOffset:
     setup: 1
     min: {x: 0, y: 90, z: 0}
-    max: {x: 0, y: 90, z: 0}
+    max: {x: 0, y: 94.81, z: 90}
     randomX: 0
     randomY: 0
     randomZ: 0
@@ -569,14 +569,14 @@ MonoBehaviour:
   m_ScaleOffset:
     setup: 0
     min: {x: 0, y: 0, z: 0}
-    max: {x: 0, y: 90, z: 0}
+    max: {x: 0.02, y: 0.26, z: 0.52}
     randomX: 0
     randomY: 0
     randomZ: 0
     space: 0
   m_DeprecatedInstances: []
   m_AutoRefresh: 1
-  m_Seed: -605010
+  m_Seed: -5324790
 --- !u!1 &1927811836018645302
 GameObject:
   m_ObjectHideFlags: 0
