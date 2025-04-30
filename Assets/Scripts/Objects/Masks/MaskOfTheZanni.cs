@@ -62,7 +62,7 @@ namespace ProjectColombo.Objects.Masks
 
             currentKilledEnemies++;
 
-            if (currentKilledEnemies >= enemiesToKillWithMajor)
+            if (currentKilledEnemies >= enemiesToKillWithMajor && !echoUnlocked)
             {
                 UnlockEcho();
             }

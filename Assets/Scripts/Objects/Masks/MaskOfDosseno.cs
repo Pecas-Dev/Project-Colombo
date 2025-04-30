@@ -1,14 +1,13 @@
 using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Inventory;
-using ProjectColombo.Shop;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 namespace ProjectColombo.Objects.Masks
 {
-    public class MaskOfDesseno : BaseMask
+    public class MaskOfDsseno : BaseMask
     {
+        [Header("General Buffs")]
         public int minAmountOfCoinsPerDamage = 5;
         public int maxAmountOfCoinsPerDamage = 23;
         public float extraCoinsPercentage = 25;
@@ -18,11 +17,28 @@ namespace ProjectColombo.Objects.Masks
         public float looseCoinsWhenDamagedPercent = 2f;
         public float extraDamageReceivePerCoin = 1.4f;
 
-        PlayerInventory myPlayerInventory;
+        [Header("Echo Misson")]
+        public int goldToCollect = 1500;
+        int currentCollectedGold = 0;
 
+        [Header("Upgraded Buffs after Echo")]
+        public int minAmountOfCoinsPerDamageEcho = 7;
+        public int maxAmountOfCoinsPerDamageEcho = 28;
+        public float extraCoinsPercentageEcho = 30;
+        public int minAmountOfCoinsPerParryEcho = 18;
+        public int maxAmountOfCoinsPerParryEcho = 43;
+        public float extraDamagePerCoinPercentEcho = 0.41f;
+        public int addedGoldEcho = 100;
+
+
+
+        [Header("Ability Stats")]
         public int numberOfReducedItems = 2;
         public int boughtItemsToReset = 4;
         int boughtItemsCounter;
+
+
+        PlayerInventory myPlayerInventory;
 
         public override void Equip()
         {
@@ -38,6 +54,13 @@ namespace ProjectColombo.Objects.Masks
             int value = (int)(amount * extraCoinsPercentage / 100f);
             Debug.Log("extra money: " + value);
             myPlayerInventory.currencyAmount += value;
+
+            currentCollectedGold += amount + value;
+
+            if (currentCollectedGold > goldToCollect && !echoUnlocked)
+            {
+                UnlockEcho();
+            }
         }
 
         private void OnSuccessfullParry(GameGlobals.MusicScale scale, bool sameScale)
@@ -109,6 +132,23 @@ namespace ProjectColombo.Objects.Masks
                 CustomEvents.OnItemPurchase -= OnItemPurchase;
             }
         }
+
+        public override void UnlockEcho()
+        {
+            Remove();
+
+            echoUnlocked = true;
+
+            minAmountOfCoinsPerDamage = minAmountOfCoinsPerDamageEcho;
+            maxAmountOfCoinsPerDamage = maxAmountOfCoinsPerDamageEcho;
+            extraCoinsPercentage = extraCoinsPercentageEcho;
+            minAmountOfCoinsPerParry = minAmountOfCoinsPerParryEcho;
+            maxAmountOfCoinsPerParry = maxAmountOfCoinsPerParryEcho;
+            extraDamagePerCoinPercent = extraDamagePerCoinPercentEcho;
+            myPlayerInventory.currencyAmount += addedGoldEcho;
+
+            Equip();
+        }
     }
 }
 
@@ -116,16 +156,26 @@ namespace ProjectColombo.Objects.Masks
 
 
 
-//Mask of Dosseno: [insert Mask description]
-//[insert Mask image][insert Mask lore]
-
 //Effects:
-//Damaging an enemy makes the player gain a random amount of gold (5-23).
-//the player gains +25% gold.
+//Damaging an enemy makes the player gain a random amount of gold (3-21).
+//Killing an enemy increases the gold the player gains +25% gold.
 //Successfully parrying an opposite scale attack grants a random amount of money (11-38)
 //+Major/Minor scale damage by 0.23% per total held currency
 //Player will now lose 2% of total held currency on getting damaged
 //Player will now take +1.4% damage based on total held currency
+//+200 gold on pickup/selection
 
-//special ability:
+
+//ECHO OF THE MASK:
+//Collect 1500 gold
+
+
+//Awakened Stats:
+//Damaging an enemy makes the player gain a random amount of gold (7-28).
+//Killing an enemy increases the gold the player gains +30% gold.
+//Successfully parrying an opposite scale attack grants a random amount of money (18-43)
+//+Major/Minor scale damage by 0.41% per total held currency
+//+100 gold (just adds 100 gold)
+
+//Special Ability: Greed of Knowledge
 //On activation, the next two store items you will buy are discounted by 15% (buy 4 items to reset cooldown).

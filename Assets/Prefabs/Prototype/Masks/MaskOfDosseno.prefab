@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4328366187381147976}
-  - component: {fileID: 1876084586937811801}
   - component: {fileID: 4974062173150316713}
+  - component: {fileID: 7060914969376533631}
   m_Layer: 0
-  m_Name: MaskOfDesseno
+  m_Name: MaskOfDosseno
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33,35 +33,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1876084586937811801
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3799292114581327272}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b668fe02f75bd12438eba79362c51691, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maskName: Mask of Desseno
-  maskPicture: {fileID: 21300000, guid: b405d449a27db5044951a93a43dee53a, type: 3}
-  maskDescription: Desseno does something cool trust!
-  maskLore: 
-  abilityAvailable: 0
-  currentAbilityCooldown: 0
-  timer: 0
-  minAmountOfCoinsPerDamage: 5
-  maxAmountOfCoinsPerDamage: 23
-  extraCoinsPercentage: 25
-  minAmountOfCoinsPerParry: 11
-  maxAmountOfCoinsPerParry: 38
-  extraDamagePerCoinPercent: 0.23
-  looseCoinsWhenDamagedPercent: 2
-  extraDamageReceivePerCoin: 1.4
-  numberOfReducedItems: 2
-  boughtItemsToReset: 4
 --- !u!65 &4974062173150316713
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -83,3 +54,42 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3, y: 3, z: 3}
   m_Center: {x: 0, y: 1.5, z: 0}
+--- !u!114 &7060914969376533631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3799292114581327272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b668fe02f75bd12438eba79362c51691, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maskName: Mask of Dosseno
+  maskPicture: {fileID: 0}
+  echoDescription: D
+  maskDescription: 
+  maskLore: 
+  echoUnlocked: 0
+  abilityAvailable: 0
+  currentAbilityCooldown: 0
+  timer: 0
+  minAmountOfCoinsPerDamage: 5
+  maxAmountOfCoinsPerDamage: 23
+  extraCoinsPercentage: 25
+  minAmountOfCoinsPerParry: 11
+  maxAmountOfCoinsPerParry: 38
+  extraDamagePerCoinPercent: 0.23
+  looseCoinsWhenDamagedPercent: 2
+  extraDamageReceivePerCoin: 1.4
+  goldToCollect: 1500
+  minAmountOfCoinsPerDamageEcho: 7
+  maxAmountOfCoinsPerDamageEcho: 28
+  extraCoinsPercentageEcho: 30
+  minAmountOfCoinsPerParryEcho: 18
+  maxAmountOfCoinsPerParryEcho: 43
+  extraDamagePerCoinPercentEcho: 0.41
+  addedGoldEcho: 100
+  numberOfReducedItems: 2
+  boughtItemsToReset: 4

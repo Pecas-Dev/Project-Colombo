@@ -127,6 +127,11 @@ namespace ProjectColombo.Objects.Masks
             Debug.Log("end ability");
             ignoreDamage = false;
         }
+
+        public override void UnlockEcho()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
 

@@ -1,11 +1,7 @@
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.StateMachine.Player;
 using System.Collections;
-using System.Reflection;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UnityEditor.PlayerSettings;
 
 namespace ProjectColombo.Objects.Masks
 {
@@ -116,7 +112,7 @@ namespace ProjectColombo.Objects.Masks
 
             currentDamageDelt += (damage + value + extra);
 
-            if (currentDamageDelt > damageDealtForEcho)
+            if (currentDamageDelt > damageDealtForEcho && !echoUnlocked)
             {
                 UnlockEcho();
             }
