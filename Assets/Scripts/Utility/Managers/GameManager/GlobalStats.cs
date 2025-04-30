@@ -1,3 +1,4 @@
+using ProjectColombo.Inventory;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -82,6 +83,9 @@ namespace ProjectColombo.GameManagement.Stats
             currentCorrectAttackScalePercent = defaultCorrectAttackScalePercent;
             currentBlockReductionPercent = defaultBlockReductionPercent;
             currentMissedParryPaneltyPercent = defaultMissedParryPaneltyPercent;
+
+            PlayerInventory myInventory = GetComponent<PlayerInventory>();
+            myInventory.Reset();
         }
 
 

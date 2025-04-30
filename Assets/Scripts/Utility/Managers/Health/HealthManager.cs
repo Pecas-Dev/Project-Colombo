@@ -122,7 +122,7 @@ namespace ProjectColombo.Combat
             maxHealth += points;
             currentHealth += points;
 
-            if (tag == "Player")
+            if (gameObject.CompareTag("Player"))
             {
                 CustomEvents.MaxHealthIncreased(points);
             }

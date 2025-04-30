@@ -3,6 +3,8 @@ using TMPro;
 using System.Collections.Generic;
 using ProjectColombo.Inventory;
 using ProjectColombo.GameManagement.Events;
+using UnityEditor.Build.Content;
+using ProjectColombo.GameManagement;
 
 
 namespace ProjectColombo.Shop
@@ -27,7 +29,7 @@ namespace ProjectColombo.Shop
 
         private void Start()
         {
-            playerInventory = GameObject.Find("Player").GetComponent<PlayerInventory>();
+            playerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
             currentPlayerCurrency.text = playerInventory.currencyAmount.ToString();
             itemButtons = new();
 

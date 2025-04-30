@@ -74,11 +74,10 @@ namespace ProjectColombo.GameManagement
             gameInput.Initialize();
             gameInput.EnableAllInputs();
 
-            if (SceneManager.GetActiveScene().name == MAIN_MENU)
+            if (SceneManager.GetActiveScene().buildIndex == 0)
             {
                 //reset stats to default when in main menu
                 GetComponent<GlobalStats>().ResetStats();
-                GetComponent<PlayerInventory>().Reset();
             }
         }
 

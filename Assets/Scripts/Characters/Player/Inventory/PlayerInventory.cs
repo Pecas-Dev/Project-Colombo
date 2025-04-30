@@ -36,14 +36,12 @@ namespace ProjectColombo.Inventory
         {
             foreach (Transform child in maskSlot.transform)
             {
-                DeactivateMask();
                 Destroy(child.gameObject);
             }
 
-            DeactivateCharms();
-            foreach (GameObject charm in charms)
+            foreach (Transform child in charmSlot.transform)
             {
-                Destroy(charm);
+                Destroy(child.gameObject);
             }
 
             charms = new();
