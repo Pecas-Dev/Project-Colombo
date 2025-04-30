@@ -8,8 +8,11 @@ namespace ProjectColombo.Objects.Masks
     {
         public string maskName;
         public Sprite maskPicture;
+        [TextArea] public string echoDescription;
         [TextArea] public string maskDescription;
         [TextArea] public string maskLore;
+
+        [HideInInspector] public bool echoUnlocked = false;
         [HideInInspector] public bool abilityAvailable = false;
         [HideInInspector] public float currentAbilityCooldown = 0;
         [HideInInspector] public float timer = 0;
@@ -33,7 +36,7 @@ namespace ProjectColombo.Objects.Masks
                 }
             }
 
-            if (GameManager.Instance.gameInput.UseSpecialAbilityPressed && abilityAvailable)
+            if (GameManager.Instance.gameInput.UseSpecialAbilityPressed && abilityAvailable && echoUnlocked)
             {
                 Debug.Log("start ability");
                 GameManager.Instance.gameInput.ResetUseSpecialAbilityPressed();

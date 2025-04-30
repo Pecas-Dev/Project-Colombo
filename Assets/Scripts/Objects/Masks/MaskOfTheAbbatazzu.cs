@@ -93,7 +93,7 @@ namespace ProjectColombo.Objects.Masks
             healthmanager.TakeDamage(-value + extra);
         }
 
-        private void OnEnemyDeath()
+        private void OnEnemyDeath(GameGlobals.MusicScale scale)
         {
             Debug.Log("gained health for kill: " + gainHealthPointsPerKill);
             myPlayerStateMachine.myHealthManager.AddHealthPoints(gainHealthPointsPerKill);

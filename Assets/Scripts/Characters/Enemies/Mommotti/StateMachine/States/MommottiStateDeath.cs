@@ -6,15 +6,17 @@ namespace ProjectColombo.StateMachine.Mommotti
     public class MommottiStateDeath : MommottiBaseState
     {
         float fadeTime = 1f;
+        GameGlobals.MusicScale causedScale;
 
-        public MommottiStateDeath(MommottiStateMachine stateMachine) : base(stateMachine)
+        public MommottiStateDeath(MommottiStateMachine stateMachine, GameGlobals.MusicScale scale) : base(stateMachine)
         {
+            causedScale = scale;
         }
 
         public override void Enter()
         {
             stateMachine.myAnimator.SetTrigger("Death");
-            CustomEvents.EnemyDied();
+            CustomEvents.EnemyDied(causedScale);
 
             // Create a new material instance using the URP shader
             Material materialInstance = new Material(Shader.Find("Universal Render Pipeline/Lit"));

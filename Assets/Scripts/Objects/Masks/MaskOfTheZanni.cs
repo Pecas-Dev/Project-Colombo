@@ -3,16 +3,15 @@ using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Inventory;
 using ProjectColombo.StateMachine.Mommotti;
 using ProjectColombo.StateMachine.Player;
-using System.Drawing;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace ProjectColombo.Objects.Masks
 {
     public class MaskOfTheZanni : BaseMask
     {
-        //general
+        [Header("General Buffs")]
         public float majorDamageIncreasePercent = 6;
+        public float majorDamageIncreasePerLuckPoint = 0.22f;
         public float minorDamageDecreasePercent = 8;
         public float receivedDamageIncreasePercent = 5;
         public float failedParryDamageIncreasePercent = 20;
@@ -22,7 +21,17 @@ namespace ProjectColombo.Objects.Masks
         public float chanceOfDoubleStamina = 50;
         public int luckPointsIncrease = 20;
 
-        //ability
+        [Header("Echo Misson")]
+        public int enemiesToKillWithMajor = 75;
+        int currentKilledEnemies = 0;
+
+        [Header("Upgraded Buffs after Echo")]
+        public float majorDamageIncreasePercentEcho = 10f;
+        public float majorDamageIncreasePerLuckPointEcho = 0.32f;
+        public float staminaRegenSpeedIncreasePercentEcho = 30f;
+        public int luckPointsIncreaseEcho = 30;
+
+        [Header("Ability Stats")]
         public float defaultAbilityCooldown = 40f;
         public float cooldownDecreasePerLuck = 0.3f;
         public float abilityArea = 10f;
@@ -44,6 +53,19 @@ namespace ProjectColombo.Objects.Masks
             CustomEvents.OnDamageReceived += AddDamageReceive;
             CustomEvents.OnParryFailed += AddFailedParry;
             CustomEvents.OnStaminaUsed += AddStaminaUsed;
+            CustomEvents.OnEnemyDeath += OnEnemyDeath;
+        }
+
+        private void OnEnemyDeath(GameGlobals.MusicScale scale)
+        {
+            if (scale != GameGlobals.MusicScale.MAJOR) return;
+
+            currentKilledEnemies++;
+
+            if (currentKilledEnemies >= enemiesToKillWithMajor)
+            {
+                UnlockEcho();
+            }
         }
 
         private void AddStaminaUsed()
@@ -90,7 +112,10 @@ namespace ProjectColombo.Objects.Masks
             {
                 int value = (int)(damage * majorDamageIncreasePercent / 100f);
                 Debug.Log("increase major damage by: " + value);
-                healthmanager.TakeDamage(value);
+
+                int extra = (int)(damage * myPlayerStateMachine.myPlayerInventory.currentLuck * majorDamageIncreasePerLuckPoint);
+
+                healthmanager.TakeDamage(value + extra);
             }
             else if (scale == GameGlobals.MusicScale.MINOR)
             {
@@ -109,6 +134,7 @@ namespace ProjectColombo.Objects.Masks
             CustomEvents.OnDamageReceived -= AddDamageReceive;
             CustomEvents.OnParryFailed -= AddFailedParry;
             CustomEvents.OnStaminaUsed -= AddStaminaUsed;
+            CustomEvents.OnEnemyDeath -= OnEnemyDeath;
         }
 
         public override void UseAbility()
@@ -132,17 +158,42 @@ namespace ProjectColombo.Objects.Masks
 
             Debug.Log("end ability");
         }
+
+        void UnlockEcho()
+        {
+            Remove();
+
+            echoUnlocked = true;
+            majorDamageIncreasePercent = majorDamageIncreasePercentEcho;
+            majorDamageIncreasePerLuckPoint = majorDamageIncreasePerLuckPointEcho;
+            staminaRegenSpeedIncreasePercent = staminaRegenSpeedIncreasePercentEcho;
+            luckPointsIncrease = luckPointsIncreaseEcho;
+
+            CustomEvents.OnEnemyDeath -= OnEnemyDeath;
+
+            Equip();
+        }
     }
 }
 
 
 
-//+6 % Major scale damage(increases by 0.22% flat by each Luck point)
-//-8 % Minor scale damage
+//Effects:
+//+6% Major scale damage (increases by 0.22% flat by each Luck point)
+//-8% Minor scale damage
 //+5% Received damage from all sources
 //+20% Received damage from failed parry
+//+20% Stamina regeneration speed
 //50% chance of spending 2 stamina points on Last-Combo Attack and Roll (gets reduced by 0.6% flat by each Luck point)
+//+20 Luck
 
+//ECHO OF THE MASK:
+//Kill 75 enemies with Major Attacks
 
-//Special Ability:
-//On casting the ability, you unleash a contagious laugh that will stun all the enemy in a certain area around you [40 seconds cooldown - reduced by 0.3 seconds for each Luck point]
+//Awakened Stats:
+//+10% Major scale damage (increases by 0.32% flat by each Luck point)
+//+30% Stamina regeneration speed
+//+30 Luck 
+
+//Special Ability: Contagious Laughter
+//On casting the ability, you unleash a contagious laugh that will stun all the enemy in a certain area around you [60 seconds cooldown - reduced by 0.3 seconds for each Luck point]

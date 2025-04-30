@@ -8,7 +8,7 @@ namespace ProjectColombo.GameManagement.Events
     {
         public static event Action<int, GameGlobals.MusicScale, HealthManager> OnDamageDelt;
         public static event Action<int, GameGlobals.MusicScale, HealthManager> OnDamageReceived;
-        public static event Action OnEnemyDeath;
+        public static event Action<GameGlobals.MusicScale> OnEnemyDeath;
         public static event Action OnPlayerDeath;
         public static event Action<GameGlobals.MusicScale, bool> OnSuccessfullParry;
         public static event Action<int, GameGlobals.MusicScale, HealthManager, bool> OnParryFailed;
@@ -33,9 +33,9 @@ namespace ProjectColombo.GameManagement.Events
             OnDamageReceived?.Invoke(damage, scale, playerHealthManager);
         }
 
-        public static void EnemyDied()
+        public static void EnemyDied(GameGlobals.MusicScale scale)
         {
-            OnEnemyDeath?.Invoke();
+            OnEnemyDeath?.Invoke(scale);
         }
 
         public static void PlayerDied()
@@ -101,23 +101,6 @@ namespace ProjectColombo.GameManagement.Events
         public static void LevelChanged()
         {
             OnLevelChange?.Invoke();
-        }
-
-        //maybe have to use this?
-        public static void ResetAllEvents()
-        {
-            OnDamageDelt = null;
-            OnDamageReceived = null;
-            OnEnemyDeath = null;
-            OnPlayerDeath = null;
-            OnSuccessfullParry = null;
-            OnParryFailed = null;
-            OnDamageBlocked = null;
-            OnShopOpen = null;
-            OnItemPurchase = null;
-            OnCoinsCollected = null;
-            OnStaminaRegenerated = null;
-            OnStaminaUsed = null;
         }
     }
 }

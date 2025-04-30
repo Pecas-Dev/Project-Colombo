@@ -185,7 +185,7 @@ namespace ProjectColombo.Combat
 
                     CustomEvents.DamageDelt(damage, currentScale, otherHealth);
                     otherHealth.TakeDamage(damage);
-                    otherStateMachine.ApplyKnockback(attackDirection, knockback);
+                    otherStateMachine.ApplyKnockback(attackDirection, knockback, currentScale);
                 }
             }
             else if (ownerTag == "Enemy" && other.CompareTag("Player"))

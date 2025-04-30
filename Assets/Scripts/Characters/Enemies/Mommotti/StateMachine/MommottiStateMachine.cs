@@ -22,6 +22,7 @@ namespace ProjectColombo.StateMachine.Mommotti
         public ParticleSystem scaleParticles;
 
         public MommottiState currentState;
+        GameGlobals.MusicScale hitByScale;
 
         //set speed for animator
         Vector3 positionLastFrame;
@@ -54,7 +55,7 @@ namespace ProjectColombo.StateMachine.Mommotti
         {
             if (myHealthManager.CurrentHealth <= 0 && currentState != MommottiState.DEAD)
             {
-                SwitchState(new MommottiStateDeath(this));
+                SwitchState(new MommottiStateDeath(this, hitByScale));
             }
 
             //calculate speed for animator
@@ -70,13 +71,14 @@ namespace ProjectColombo.StateMachine.Mommotti
             }
         }
 
-        public void ApplyKnockback(Vector3 direction, float knockbackStrength)
+        public void ApplyKnockback(Vector3 direction, float knockbackStrength, GameGlobals.MusicScale scale)
         {
             if (myHealthManager.CurrentHealth <= 0)
             {
                 knockbackStrength *= 1.5f;
             }
 
+            hitByScale = scale;
             myRigidbody.AddForce(direction * knockbackStrength, ForceMode.Impulse);
         }
 

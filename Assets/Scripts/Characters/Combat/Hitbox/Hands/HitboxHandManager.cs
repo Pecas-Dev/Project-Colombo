@@ -13,11 +13,11 @@ namespace ProjectColombo.Combat
 
         [Header("Knockback Settings")]
         [Tooltip("How strong the left hand knockback is when it hits a rigidbody.")]
-        [SerializeField] float leftHandKnockbackForce = 2f;
+        //[SerializeField] float leftHandKnockbackForce = 2f;
         [SerializeField] int leftHandDamage = 5;
 
         [Tooltip("How strong the right hand knockback is when it hits a rigidbody.")]
-        [SerializeField] float rightHandKnockbackForce = 2f;
+        //[SerializeField] float rightHandKnockbackForce = 2f;
         [SerializeField] int rightHandDamage = 5;
 
         bool leftHandActive = false;
@@ -63,7 +63,7 @@ namespace ProjectColombo.Combat
 
                 if (otherStateMachine != null && targetHealth != null && targetHealth.CurrentHealth > 0)
                 {
-                    otherStateMachine.ApplyKnockback(attackDirection, leftHandKnockbackForce);
+                    //otherStateMachine.ApplyKnockback(attackDirection, leftHandKnockbackForce);
                     targetHealth.TakeDamage(leftHandDamage);
                 }
             }
@@ -111,7 +111,7 @@ namespace ProjectColombo.Combat
 
                 if (otherStateMachine != null && targetHealth != null && targetHealth.CurrentHealth > 0)
                 {
-                    otherStateMachine.ApplyKnockback(attackDirection, rightHandKnockbackForce);
+                    //otherStateMachine.ApplyKnockback(attackDirection, rightHandKnockbackForce);
                     targetHealth.TakeDamage(rightHandDamage);
                 }
             }
