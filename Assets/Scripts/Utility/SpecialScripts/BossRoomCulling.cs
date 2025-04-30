@@ -39,10 +39,13 @@ namespace ProjectColombo.LevelManagement
 
             SetMaterialTransparent(renderer);
 
-            Color color = renderer.material.color;
+            foreach (Material m in renderer.materials)
+            {
+                float currentTransparency = m.GetFloat("_Transparency");
 
-            color.a = targetOpacity;
-            renderer.material.color = color;
+                    currentTransparency = targetOpacity;
+                    m.SetFloat("_Transparency", currentTransparency);
+            }
         }
 
 
