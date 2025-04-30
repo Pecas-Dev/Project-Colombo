@@ -5,12 +5,13 @@ using System.Reflection;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEditor.PlayerSettings;
 
 namespace ProjectColombo.Objects.Masks
 {
     public class MaskOfCoviello : BaseMask
     {
-        //general
+        [Header("General Buffs")]
         public float majorScaleDamageIncreasePercent = 12;
         public float minorScaleDamageIncreasePercent = 12;
         public float extraDamageForMissingHealthPercent = 1.2f;
@@ -22,8 +23,22 @@ namespace ProjectColombo.Objects.Masks
         public int extraMissingParryForHowManyPoints = 200;
         public int extraHealthPoints = 100;
 
+        [Header("Echo Misson")]
+        public int damageDealtForEcho = 1250;
+        int currentDamageDelt = 0;
 
-        //ability
+        [Header("Upgraded Buffs after Echo")]
+        public float majorScaleDamageIncreasePercentEcho = 16;
+        public float minorScaleDamageIncreasePercentEcho = 16;
+        public float extraDamageForMissingHealthPercentEcho = 1.8f;
+        public int extraHealthPointsEcho = 200;
+
+        //+16 % Major scale damage(+1.8% flat each 50 missing Health points)
+        //+16 % Minor scale damage(+1.8% flat each 50 missing Health points)
+        //+200 Max Health Points 
+
+
+        [Header("Ability Stats")]
         public float abilityCooldown = 120;
         public float abilityDuration = 6;
         int staminaCounter;
@@ -75,6 +90,7 @@ namespace ProjectColombo.Objects.Masks
         {
             int currentMissingHealth = myPlayerStateMachine.myHealthManager.MaxHealth - myPlayerStateMachine.myHealthManager.currentHealth;
             int extra = (int)(Mathf.FloorToInt(currentMissingHealth / extraDamageForHowManyPoints) * extraDamageForMissingHealthPercent);
+            int value = 0;
 
             int abilityExtra = (int)(abilityExtraDamageCounter * damage * extraDamageForStaminaPercent / 100f);
             healthmanager.TakeDamage(abilityExtra);
@@ -87,15 +103,22 @@ namespace ProjectColombo.Objects.Masks
 
             if (scale == GameGlobals.MusicScale.MAJOR)
             {
-                int value = (int)(damage * majorScaleDamageIncreasePercent / 100f);
+                value = (int)(damage * majorScaleDamageIncreasePercent / 100f);
                 Debug.Log("extra major damage: " + (value + extra));
                 healthmanager.TakeDamage(value + extra);
             }
             else if (scale == GameGlobals.MusicScale.MINOR)
             {
-                int value = (int)(damage * minorScaleDamageIncreasePercent / 100f);
+                value = (int)(damage * minorScaleDamageIncreasePercent / 100f);
                 Debug.Log("extra minor damage: " + (value + extra));
                 healthmanager.TakeDamage(value + extra);
+            }
+
+            currentDamageDelt += (damage + value + extra);
+
+            if (currentDamageDelt > damageDealtForEcho)
+            {
+                UnlockEcho();
             }
         }
 
@@ -160,22 +183,48 @@ namespace ProjectColombo.Objects.Masks
             abilityExtraDamageCounter--;
             Debug.Log("end extra damage. Remaining: " + abilityExtraDamageCounter);
         }
+
+        public override void UnlockEcho()
+        {
+            Remove();
+
+            echoUnlocked = true;
+
+            majorScaleDamageIncreasePercent = majorScaleDamageIncreasePercentEcho;
+            minorScaleDamageIncreasePercent = minorScaleDamageIncreasePercentEcho;
+            extraDamageForMissingHealthPercent = extraDamageForMissingHealthPercentEcho;
+            extraHealthPoints = extraHealthPointsEcho;
+
+            Equip();
+        }
     }
 }
 
 
+//Effects:
 //+12 % Major scale damage(+1.2% flat each 50 missing Health points)
 //+12 % Minor scale damage(+1.2% flat each 50 missing Health points)
-//+12 % Received damage from all sources (increases by 0.32% for any 100 Health Points)
-//Increased damage by failing an opposite scale parry is now increased by 0.125% for any 200 Health Points
-//+100 Health Points
+//+12 % Received damage from all sources (increases by 0.32% for every 100 Max Health Points)
+//Increased damage by failing an opposite scale parry is now increased by 0.125% for every 200 Max Health Points
+//+100 Max Health Points
 
 
-//Special Ability:
+//ECHO OF THE MASK:
+//Deal a total of 1250 damage
+
+
+//Awakened Stats:
+//+16 % Major scale damage(+1.8% flat each 50 missing Health points)
+//+16 % Minor scale damage(+1.8% flat each 50 missing Health points)
+//+200 Max Health Points 
+
+
+//Special Ability: Skill Showdown
 //For next 6 seconds:
 //every 2 stamina points used, you get +5% damage for 8 seconds (stacks up to 25%)
 //each attack consumes 20 Health Points 
 //you gain +10% attack speed 
 //you gain +8% movement speed.
+
 
 

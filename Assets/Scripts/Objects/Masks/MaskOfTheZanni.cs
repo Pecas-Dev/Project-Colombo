@@ -159,7 +159,7 @@ namespace ProjectColombo.Objects.Masks
             Debug.Log("end ability");
         }
 
-        void UnlockEcho()
+        public override void UnlockEcho()
         {
             Remove();
 

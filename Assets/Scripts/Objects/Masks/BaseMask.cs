@@ -47,6 +47,7 @@ namespace ProjectColombo.Objects.Masks
 
         public abstract void Equip();
         public abstract void UseAbility();
+        public abstract void UnlockEcho();
         public abstract void Remove();
     }
 }
