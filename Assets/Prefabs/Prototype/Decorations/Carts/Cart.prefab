@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 627140336677508443}
   - component: {fileID: 1723237021004062301}
   - component: {fileID: 3898489269717457501}
+  - component: {fileID: 3495424326443887578}
   m_Layer: 12
   m_Name: CartWheels
   m_TagString: Untagged
@@ -119,6 +120,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &3495424326443887578
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5361266512433917627}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -7218069956236746800, guid: 0995a75ecb3adb34a8a86495cae8ee23, type: 3}
 --- !u!1 &7929427729047170358
 GameObject:
   m_ObjectHideFlags: 0
@@ -130,6 +153,7 @@ GameObject:
   - component: {fileID: 5252784312311956334}
   - component: {fileID: 725638071363126287}
   - component: {fileID: 601994764698202183}
+  - component: {fileID: 3878738268248896173}
   m_Layer: 12
   m_Name: CartBody
   m_TagString: Untagged
@@ -205,3 +229,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &3878738268248896173
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7929427729047170358}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -869940594002030732, guid: 7ef65c59c2c8747488754912ac47bf78, type: 3}
