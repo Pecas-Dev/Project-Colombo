@@ -295,6 +295,14 @@ namespace ProjectColombo.StateMachine.Player
                 }
             }
         }
+
+        private void LateUpdate()
+        {
+            if (gameInputSO.UseItemPressed)
+            {
+                GameManager.Instance.gameInput.ResetUseItemPressed();
+            }
+        }
     }
 }
 

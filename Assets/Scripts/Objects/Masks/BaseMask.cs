@@ -36,12 +36,16 @@ namespace ProjectColombo.Objects.Masks
                 }
             }
 
-            if (GameManager.Instance.gameInput.UseSpecialAbilityPressed && abilityAvailable && echoUnlocked)
+            if (GameManager.Instance.gameInput.UseSpecialAbilityPressed)
             {
-                Debug.Log("start ability");
                 GameManager.Instance.gameInput.ResetUseSpecialAbilityPressed();
-                abilityAvailable = false;
-                UseAbility();
+
+                if (abilityAvailable && echoUnlocked)
+                {
+                    Debug.Log("start ability");
+                    abilityAvailable = false;
+                    UseAbility();
+                }
             }
         }
 

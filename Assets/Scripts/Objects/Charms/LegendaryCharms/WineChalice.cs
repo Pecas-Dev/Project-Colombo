@@ -55,6 +55,11 @@ namespace ProjectColombo.Objects.Charms
                     abilityReady = true;
                 }
             }
+
+            if (myPlayerStateMachine.gameInputSO.UseItemPressed)
+            {
+                GameManager.Instance.gameInput.ResetUseItemPressed();
+            }
         }
 
         public override void Equip()

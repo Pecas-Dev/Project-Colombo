@@ -20,12 +20,17 @@ namespace ProjectColombo.Objects.Items
 
         private void Update()
         {
-            GameObject thisIsAHack = GameObject.Find("PickUpCanvas");
 
-            if (thisIsAHack == null && GameManager.Instance.gameInput.UseItemPressed)
+            if (GameManager.Instance.gameInput.UseItemPressed)
             {
                 GameManager.Instance.gameInput.ResetUseItemPressed();
-                Activate();
+
+                GameObject thisIsAHack = GameObject.Find("PickUpCanvas");
+
+                if (thisIsAHack == null)
+                {
+                    Activate();
+                }
             }
         }
 

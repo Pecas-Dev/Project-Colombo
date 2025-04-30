@@ -89,21 +89,21 @@ namespace ProjectColombo.GameInputSystem
 
         public void Uninitialize()
         {
-        if (playerInputActions == null) return;
+            if (playerInputActions == null) return;
 
-        // Make sure to disable both action maps before uninitializing
-        if (playerInputActions.UI.enabled)
-        {
-            playerInputActions.UI.Disable();
-        }
+            // Make sure to disable both action maps before uninitializing
+            if (playerInputActions.UI.enabled)
+            {
+                playerInputActions.UI.Disable();
+            }
         
-        if (playerInputActions.Player.enabled)
-        {
-            playerInputActions.Player.Disable();
-        }
+            if (playerInputActions.Player.enabled)
+            {
+                playerInputActions.Player.Disable();
+            }
 
-        playerInputActions.Player.Movement.performed -= OnMovePerformed;
-        playerInputActions.Player.Movement.canceled -= OnMoveCanceled;
+            playerInputActions.Player.Movement.performed -= OnMovePerformed;
+            playerInputActions.Player.Movement.canceled -= OnMoveCanceled;
 
             playerInputActions.Player.MajorAttack.performed -= OnMajorAttackPerformed;
             playerInputActions.Player.MinorAttack.performed -= OnMinorAttackPerformed;

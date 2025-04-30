@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -18,6 +19,9 @@ namespace ProjectColombo.StateMachine.Player
             if (stateMachine.gameInputSO.MajorAttackPressed && stateMachine.currentState != PlayerStateMachine.PlayerState.Attack)
             {
                 stateMachine.gameInputSO.ResetMajorAttackPressed();
+
+                if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToAttack)) return;
+
                 stateMachine.SwitchState(new PlayerAttackState(stateMachine, GameGlobals.MusicScale.MAJOR));
                 return;
             }
@@ -25,6 +29,9 @@ namespace ProjectColombo.StateMachine.Player
             if (stateMachine.gameInputSO.MinorAttackPressed && stateMachine.currentState != PlayerStateMachine.PlayerState.Attack)
             {
                 stateMachine.gameInputSO.ResetMinorAttackPressed();
+
+                if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToAttack)) return;
+
                 stateMachine.SwitchState(new PlayerAttackState(stateMachine, GameGlobals.MusicScale.MINOR));
                 return;
             }
@@ -33,6 +40,9 @@ namespace ProjectColombo.StateMachine.Player
             if (stateMachine.gameInputSO.RollPressed)
             {
                 stateMachine.gameInputSO.ResetRollPressed();
+
+                if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToRoll)) return;
+
                 stateMachine.SwitchState(new PlayerRollState(stateMachine));
                 return;
             }
