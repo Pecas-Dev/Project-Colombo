@@ -8,7 +8,7 @@ namespace ProjectColombo.UI
 {
     public class CharmButton : MonoBehaviour
     {
-        [HideInInspector] public GameObject charmObject; //set from charmselectscreen
+        [ReadOnlyInspector] public GameObject charmObject; //set from charmselectscreen
         public Image imageSlot;
 
         public void UpdateInfo(GameObject charm)

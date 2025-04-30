@@ -1,5 +1,6 @@
 using ProjectColombo.Inventory.Collectable;
 using ProjectColombo.LevelManagement;
+using ProjectColombo.Objects;
 using ProjectColombo.Objects.Items;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -73,14 +74,14 @@ namespace ProjectColombo.Enemies.DropSystem
                 int rand = Random.Range(0, commonCharms.Count);
 
                 GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 1f, transform.position.z), transform.rotation);
-                Instantiate(commonCharms[rand], instance.transform);
+                instance.GetComponent<PickUp>().SetCharm(commonCharms[rand]);
             }
             else if (random <= dropChanceRareCharm + dropChanceCommonCharm)
             {
                 int rand = Random.Range(0, rareCharms.Count);
 
                 GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 1f, transform.position.z), transform.rotation);
-                Instantiate(rareCharms[rand], instance.transform);
+                instance.GetComponent<PickUp>().SetCharm(rareCharms[rand]);
 
             }
             else if (random <= dropChanceLegendaryCharm + dropChanceRareCharm + dropChanceCommonCharm)
@@ -88,7 +89,7 @@ namespace ProjectColombo.Enemies.DropSystem
                 int rand = Random.Range(0, legendaryCharms.Count);
 
                 GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 1f, transform.position.z), transform.rotation);
-                Instantiate(legendaryCharms[rand], instance.transform);
+                instance.GetComponent<PickUp>().SetCharm(legendaryCharms[rand]);
 
             }
             else

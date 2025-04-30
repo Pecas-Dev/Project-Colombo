@@ -1,10 +1,8 @@
 using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Objects.Charms;
-using ProjectColombo.Objects.Masks;
-using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
-using static UnityEngine.ParticleSystem;
 
 namespace ProjectColombo.Objects
 {
@@ -12,16 +10,24 @@ namespace ProjectColombo.Objects
     {
         public GameObject indicator;
         public bool active = false;
+        public TMP_Text pickUpText;
         ParticleSystem myParticles;
-        BaseCharm myCharm;
+        [HideInInspector] public GameObject myCharm;
 
         private void Start()
         {
             myParticles = GetComponent<ParticleSystem>();
-            myCharm = GetComponentInChildren<BaseCharm>();
             indicator.SetActive(false);
 
             SetParticleColor();
+        }
+
+        public void SetCharm(GameObject charm)
+        {
+            myCharm = charm;
+
+            string charmName = myCharm.GetComponent<BaseCharm>().charmName;
+            pickUpText.text = "to pick up " + charmName;
         }
 
         private void OnTriggerEnter(Collider other)
@@ -46,29 +52,25 @@ namespace ProjectColombo.Objects
         {
             if (active && GameManager.Instance.gameInput.UseItemPressed)
             {
-                GameObject charm = myCharm.gameObject;
                 GameManager.Instance.gameInput.ResetUseItemPressed();
 
-                if (charm != null)
-                {
-                    CustomEvents.CharmCollected(charm);
-                    Debug.Log("collected charm");
-                    Destroy(this.gameObject);
-                    return;
-                }
-
-                Debug.Log("invalid item in pick up");
+                CustomEvents.CharmCollected(myCharm);
+                Debug.Log("collected charm");
+                Destroy(this.gameObject);
+                return;
             }
         }
 
         void SetParticleColor()
         {
+            BaseCharm charmInfo = myCharm.GetComponent<BaseCharm>();
+
             Color color;
-            if (myCharm.charmRarity == RARITY.COMMON)
+            if (charmInfo.charmRarity == RARITY.COMMON)
             {
                 color = Color.cyan;
             }
-            else if (myCharm.charmRarity == RARITY.RARE)
+            else if (charmInfo.charmRarity == RARITY.RARE)
             {
                 color = Color.yellow;
             }

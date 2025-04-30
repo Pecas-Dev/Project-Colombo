@@ -55,16 +55,17 @@ namespace ProjectColombo.UI
         {
             PlayerInventory inventory = GameManager.Instance.GetComponent<PlayerInventory>();
 
-            int slot = 0;
-            foreach (GameObject charm in inventory.charms)
+            
+            for (int i = 0; i < inventory.maxCharms; i++)
             {
-                charmButtons[slot].GetComponent<CharmButton>().UpdateInfo(charm);
-                slot++;
+                charmButtons[i].GetComponent<CharmButton>().UpdateInfo(inventory.charms[i]);
             }
         }
 
         public void ActivateScreen(GameObject newCharmObj)
         {
+            active = true;
+            lastSelected = null;
             UpdateFromInventory();
             EventSystem.current.SetSelectedGameObject(charmButtons[0].gameObject);
 
