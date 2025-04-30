@@ -89,7 +89,11 @@ namespace ProjectColombo.Combat
             }
             else if (GetComponentInParent<EntityAttributes>().CompareTag("Enemy"))
             {
-                defaultMinorDamage = defaultMajorDamage = myLevelStats.currentMommottiDamage;
+                myLevelStats.ResetStats();
+                defaultMinorDamage = myLevelStats.currentMommottiDamage;
+                defaultMajorDamage = myLevelStats.currentMommottiDamage;
+                majorDamageMultiplier = 1;
+                minorDamageMultiplier = 1;
             }
         }
 
@@ -190,7 +194,7 @@ namespace ProjectColombo.Combat
             }
             else if (ownerTag == "Enemy" && other.CompareTag("Player"))
             {
-                //Debug.Log("Enemy hit Player");
+                //Debug.Log("Enemy hit Player" + damage);
                 PlayerStateMachine otherStateMachine = other.GetComponent<PlayerStateMachine>();
                 EntityAttributes otherAttributes = other.GetComponent<EntityAttributes>();
                 HealthManager otherHealth = other.GetComponent<HealthManager>();

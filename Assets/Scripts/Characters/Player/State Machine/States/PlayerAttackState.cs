@@ -229,11 +229,11 @@ namespace ProjectColombo.StateMachine.Player
             //turn to target
             Quaternion targetRotation = Quaternion.LookRotation(targetPosition - stateMachine.transform.position);
 
-            // Rotate to fit animation
-            Quaternion offsetRotation = Quaternion.AngleAxis(-35f, Vector3.up);
-            Quaternion finalRotation = offsetRotation * targetRotation;
+            //// Rotate to fit animation
+            //Quaternion offsetRotation = Quaternion.AngleAxis(-35f, Vector3.up);
+            //Quaternion finalRotation = offsetRotation * targetRotation;
 
-            stateMachine.myRigidbody.rotation = finalRotation;
+            stateMachine.myRigidbody.rotation = targetRotation;
 
             // Calculate the direction to the target
             Vector3 directionToTarget = targetPosition - stateMachine.myRigidbody.position;
