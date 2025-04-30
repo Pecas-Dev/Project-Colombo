@@ -141,7 +141,7 @@ namespace ProjectColombo.LevelManagement
         int tilesize = GameGlobals.TILESIZE;
 
         //data
-        int worldHeight = 20;
+        int worldHeight = 25;
         int worldWidth = 0;
         int chamberOffset = 4;
 
