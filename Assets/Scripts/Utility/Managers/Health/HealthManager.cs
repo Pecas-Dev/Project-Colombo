@@ -27,7 +27,18 @@ namespace ProjectColombo.Combat
         {
             CustomEvents.OnLevelChange += SaveCurrentStats;
             myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
-            myLevelStats = GameObject.Find("WorldGeneration").GetComponent<LevelStats>();
+             
+            if (myGlobalStats.currentPlayerHealth == 0)
+            {
+                myGlobalStats.ResetStats();
+            }
+
+            GameObject worldGen = GameObject.Find("WorldGeneration");
+            if (worldGen != null)
+            {
+                myLevelStats = worldGen.GetComponent<LevelStats>();
+            }
+
             GetCurrentStats();
         }
 

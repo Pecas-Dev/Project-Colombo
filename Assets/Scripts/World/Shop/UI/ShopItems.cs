@@ -20,9 +20,9 @@ namespace ProjectColombo.Shop
             GetComponent<RectTransform>().position = position;
             item = itemStruct;
 
-            referenceImage.sprite = item.sprite;
+            referenceImage.sprite = item.sprite; //adjust to basecharm, baseitem
             itemPrice.text = item.price.ToString();
-            nameText.text = item.name;
+            nameText.text = item.name; //adjust to basecharm, baseitem
 
             // Set up the button click listener
             shopButton.onClick.RemoveAllListeners();  // Remove any existing listeners
