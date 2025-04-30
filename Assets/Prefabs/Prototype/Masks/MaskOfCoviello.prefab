@@ -47,8 +47,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maskName: Mask of Coviello
   maskPicture: {fileID: 21300000, guid: b405d449a27db5044951a93a43dee53a, type: 3}
-  maskDescription: Coviello does something cool trust!
+  maskDescription: '+12% Major scale damage (+1.2% flat each 50 missing Health points)
+
+    +12%
+    Minor scale damage (+1.2% flat each 50 missing Health points)
+
+    +12% Received
+    damage from all sources (increases by 0.32% for every 100 Max Health Points)
+
+    Increased
+    damage by failing an opposite scale parry is now increased by 0.125% for every
+    200 Max Health Points
+
+    +100 Max Health Points
+
+'
+  echoDescription: "ECHO OF THE MASK:\nDeal a total of 1250 damage\r\nAwakened Stats:\r\n+12%
+    \u2192 +16% Major scale damage  (+1.2% \u2192 +1.8% flat each 50 missing Health
+    points)\r\n+12% \u2192 +16% Minor scale damage (+1.2% \u2192 +1.8% flat each
+    50 missing Health points)\r\n+100 \u2192 +200 Max Health Points \r"
   maskLore: 
+  echoUnlocked: 0
   abilityAvailable: 0
   currentAbilityCooldown: 0
   timer: 0
@@ -62,6 +81,12 @@ MonoBehaviour:
   extraDamageIncraseMissingParryForPoints: 0.125
   extraMissingParryForHowManyPoints: 200
   extraHealthPoints: 100
+  damageDealtForEcho: 250
+  currentDamageDelt: 0
+  majorScaleDamageIncreasePercentEcho: 16
+  minorScaleDamageIncreasePercentEcho: 16
+  extraDamageForMissingHealthPercentEcho: 1.8
+  extraHealthPointsEcho: 200
   abilityCooldown: 120
   abilityDuration: 6
   extraDamageForStaminaPercent: 5

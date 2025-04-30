@@ -21,7 +21,7 @@ namespace ProjectColombo.Objects.Masks
 
         [Header("Echo Misson")]
         public int damageDealtForEcho = 1250;
-        int currentDamageDelt = 0;
+        [ReadOnlyInspector] public int currentDamageDelt = 0;
 
         [Header("Upgraded Buffs after Echo")]
         public float majorScaleDamageIncreasePercentEcho = 16;

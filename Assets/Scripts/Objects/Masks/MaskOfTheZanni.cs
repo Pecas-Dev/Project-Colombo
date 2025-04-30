@@ -23,7 +23,7 @@ namespace ProjectColombo.Objects.Masks
 
         [Header("Echo Misson")]
         public int enemiesToKillWithMajor = 75;
-        int currentKilledEnemies = 0;
+        [ReadOnlyInspector] public int currentKilledEnemies = 0;
 
         [Header("Upgraded Buffs after Echo")]
         public float majorDamageIncreasePercentEcho = 10f;

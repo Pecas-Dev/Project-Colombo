@@ -67,9 +67,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maskName: Mask of Dosseno
-  maskPicture: {fileID: 0}
-  echoDescription: D
-  maskDescription: 
+  maskPicture: {fileID: 21300000, guid: b405d449a27db5044951a93a43dee53a, type: 3}
+  maskDescription: 'Damaging an enemy makes the player gain a random amount of gold
+    (3-21).
+
+    Killing an enemy increases the gold the player gains +25% gold.
+
+    Successfully
+    parrying an opposite scale attack grants a random amount of money (11-38)
+
+    +Major/Minor
+    scale damage by 0.23% per total held currency
+
+    Player will now lose 2% of
+    total held currency on getting damaged
+
+    Player will now take +1.4% damage
+    based on total held currency
+
+    +200 gold on pickup/selection
+
+'
+  echoDescription: "ECHO OF THE MASK:\r\nCollect 1500 gold\r\nAwakened Stats:\r\nDamaging
+    an enemy makes the player gain a random amount of gold (3-21 \u2192 7-28).\r\nKilling
+    an enemy increases the gold the player gains +25% \u2192 +30% gold.\r\nSuccessfully
+    parrying an opposite scale attack grants a random amount of money (11-38 \u2192
+    18-43)\r\n+Major/Minor scale damage by 0.23% \u2192 0.41% per total held currency\r\n
+    \u2192 +100 gold (just adds 100 gold)\r\n"
   maskLore: 
   echoUnlocked: 0
   abilityAvailable: 0
@@ -83,7 +107,8 @@ MonoBehaviour:
   extraDamagePerCoinPercent: 0.23
   looseCoinsWhenDamagedPercent: 2
   extraDamageReceivePerCoin: 1.4
-  goldToCollect: 1500
+  goldToCollect: 50
+  currentCollectedGold: 0
   minAmountOfCoinsPerDamageEcho: 7
   maxAmountOfCoinsPerDamageEcho: 28
   extraCoinsPercentageEcho: 30

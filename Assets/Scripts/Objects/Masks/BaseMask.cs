@@ -8,8 +8,8 @@ namespace ProjectColombo.Objects.Masks
     {
         public string maskName;
         public Sprite maskPicture;
-        [TextArea] public string echoDescription;
         [TextArea] public string maskDescription;
+        [TextArea] public string echoDescription;
         [TextArea] public string maskLore;
 
         [HideInInspector] public bool echoUnlocked = false;

@@ -24,7 +24,7 @@ namespace ProjectColombo.Objects.Masks
 
         [Header("Echo Misson")]
         public int maxHealthToObtain = 1000;
-        int currentMaxHealthObtained = 0;
+        [ReadOnlyInspector] public int currentMaxHealthObtained = 0;
 
         [Header("Upgraded Buffs after Echo")]
         public int gainHealthPointsPerKillEcho = 30;

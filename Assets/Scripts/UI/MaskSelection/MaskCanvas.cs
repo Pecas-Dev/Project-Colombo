@@ -9,6 +9,7 @@ namespace ProjectColombo.UI
     {
         public TMP_Text maskNameText;
         public TMP_Text maskDescriptionText;
+        public TMP_Text echoDescriptionText;
 
         GameObject lastSelected;
 
@@ -30,6 +31,7 @@ namespace ProjectColombo.UI
             maskNameText.text = mask.maskName;
             //could have lore maskLoreText.text = mask.maskLore;
             maskDescriptionText.text = mask.maskDescription;
+            echoDescriptionText.text = mask.echoDescription;
         }
     }
 }

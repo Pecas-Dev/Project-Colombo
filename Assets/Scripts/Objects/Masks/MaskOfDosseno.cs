@@ -19,7 +19,7 @@ namespace ProjectColombo.Objects.Masks
 
         [Header("Echo Misson")]
         public int goldToCollect = 1500;
-        int currentCollectedGold = 0;
+        [ReadOnlyInspector] public int currentCollectedGold = 0;
 
         [Header("Upgraded Buffs after Echo")]
         public int minAmountOfCoinsPerDamageEcho = 7;
