@@ -22,6 +22,7 @@ namespace ProjectColombo.GameManagement.Events
         public static event Action OnStaminaRegenerated;
         public static event Action OnStaminaUsed;
         public static event Action OnLevelChange;
+        public static event Action<int> OnMaxHealthGained;
 
         public static void DamageDelt(int damage, GameGlobals.MusicScale scale, HealthManager enemyHealthManager)
         {
@@ -101,6 +102,11 @@ namespace ProjectColombo.GameManagement.Events
         public static void LevelChanged()
         {
             OnLevelChange?.Invoke();
+        }
+
+        public static void MaxHealthIncreased(int amount)
+        {
+            OnMaxHealthGained?.Invoke(amount);
         }
     }
 }

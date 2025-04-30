@@ -99,12 +99,22 @@ namespace ProjectColombo.Combat
             int delta = (int)(percentage / 100f * maxHealth);
             maxHealth += delta;
             currentHealth += delta;
+
+            if (tag == "Player")
+            {
+                CustomEvents.MaxHealthIncreased(delta);
+            }
         }
 
         public void AddHealthPoints(int points)
         {
             maxHealth += points;
             currentHealth += points;
+
+            if (tag == "Player")
+            {
+                CustomEvents.MaxHealthIncreased(points);
+            }
         }
 
         void Die()
