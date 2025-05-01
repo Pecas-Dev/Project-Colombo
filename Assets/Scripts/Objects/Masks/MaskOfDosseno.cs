@@ -1,6 +1,7 @@
 using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Inventory;
+using ProjectColombo.Shop;
 using UnityEngine;
 
 namespace ProjectColombo.Objects.Masks
@@ -34,6 +35,7 @@ namespace ProjectColombo.Objects.Masks
 
         [Header("Ability Stats")]
         public int numberOfReducedItems = 2;
+        public float discountOnAbility = 15;
         public int boughtItemsToReset = 4;
         int boughtItemsCounter;
 
@@ -113,9 +115,10 @@ namespace ProjectColombo.Objects.Masks
             CustomEvents.OnItemPurchase += OnItemPurchase;
         }
 
-        private void OnShopOpen()
+        private void OnShopOpen(ShopKeeper shop)
         {
-            //TODO when shop ready
+            shop.GetComponentInChildren<ShopScreen>().SetDiscount(discountOnAbility);
+            Debug.Log("set discount");
         }
 
         private void OnItemPurchase(int obj)

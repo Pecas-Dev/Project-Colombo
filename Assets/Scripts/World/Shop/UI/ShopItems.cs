@@ -1,3 +1,4 @@
+using ProjectColombo.Objects.Charms;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,13 +15,18 @@ namespace ProjectColombo.Shop
         bool isActive;
         Animator myAnimator;
 
-        public void SetUp(ItemToSell itemStruct, Vector3 position)
+        public void SetUp(ItemToSell itemStruct, Vector3 position, float discount)
         {
             myAnimator = GetComponent<Animator>();
             GetComponent<RectTransform>().position = position;
             item = itemStruct;
 
-            referenceImage.sprite = item.sprite; //adjust to basecharm, baseitem
+            float calculatedDiscount = (100f - discount) / 100f;
+            item.price = (int)(item.price * calculatedDiscount);
+
+            BaseCharm charmDetails = item.item.GetComponent<BaseCharm>();
+
+            referenceImage.sprite = charmDetails.charmPicture;
             itemPrice.text = item.price.ToString();
             nameText.text = item.name; //adjust to basecharm, baseitem
 
@@ -45,6 +51,13 @@ namespace ProjectColombo.Shop
                 myAnimator.SetTrigger("Fail");
                 Debug.Log("not enough money");
             }
+        }
+
+        public void AdjustPriceToDiscount(float discount)
+        {
+            float calculatedDiscount = (100f - discount) / 100f;
+            item.price = (int)(item.price * calculatedDiscount);
+            itemPrice.text = item.price.ToString();
         }
 
         public void CheckActive()

@@ -1,4 +1,5 @@
 using ProjectColombo.GameManagement.Events;
+using ProjectColombo.Shop;
 using ProjectColombo.StateMachine.Player;
 using System.Collections;
 using UnityEngine;
@@ -84,9 +85,9 @@ namespace ProjectColombo.Objects.Masks
             myPlayerStateMachine.myHealthManager.TakeDamage(value);
         }
 
-        private void OnShopOpen()
+        private void OnShopOpen(ShopKeeper shop)
         {
-            //TODO discount shop items
+            shop.GetComponentInChildren<ShopScreen>().SetDiscount(shopDiscountPercent);
         }
 
         private void OnCoinsCollected(int obj)

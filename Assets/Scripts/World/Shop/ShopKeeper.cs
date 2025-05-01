@@ -1,5 +1,6 @@
 using ProjectColombo.GameInputSystem;
 using ProjectColombo.GameManagement;
+using ProjectColombo.GameManagement.Events;
 using ProjectColombo.StateMachine.Player;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -37,7 +38,7 @@ namespace ProjectColombo.Shop
                 playerInRange = true;
                 shopIndicator.SetActive(true);
                 other.GetComponent<PlayerStateMachine>().closeShop = this;
-                Debug.Log("player entered shop");
+                //Debug.Log("player entered shop");
             }
         }
 
@@ -48,17 +49,19 @@ namespace ProjectColombo.Shop
                 playerInRange = false;
                 shopIndicator.SetActive(false);
                 other.GetComponent<PlayerStateMachine>().closeShop = null;
-                Debug.Log("player exited shop");
+                //Debug.Log("player exited shop");
             }
         }
 
         public void OpenShop()
         {
             shopScreen.SetActive(true);
+            shopScreen.GetComponentInChildren<ShopScreen>().SetDiscount(0f);
             shopIndicator.SetActive(false);
             gameInput.EnableUIMode();
             GameObject.Find("Player").GetComponent<PlayerStateMachine>().EnterShopState(this.gameObject);
             EventSystem.current.SetSelectedGameObject(firstSelect);
+            CustomEvents.ShopOpen(this);
         }
 
         public void CloseShop()
@@ -67,6 +70,8 @@ namespace ProjectColombo.Shop
             shopIndicator.SetActive(true);
             gameInput.DisableUIMode();
             GameObject.Find("Player").GetComponent<PlayerStateMachine>().ExitShopState();
+            shopScreen.GetComponentInChildren<ShopScreen>().SetDiscount(0f);
+            CustomEvents.ShopClose();
         }
     }
 }

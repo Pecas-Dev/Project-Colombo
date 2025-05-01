@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using ProjectColombo.Combat;
+using ProjectColombo.Shop;
 
 namespace ProjectColombo.GameManagement.Events
 {
@@ -13,7 +14,7 @@ namespace ProjectColombo.GameManagement.Events
         public static event Action<GameGlobals.MusicScale, bool> OnSuccessfullParry;
         public static event Action<int, GameGlobals.MusicScale, HealthManager, bool> OnParryFailed;
         public static event Action<int, GameGlobals.MusicScale, HealthManager> OnDamageBlocked;
-        public static event Action OnShopOpen;
+        public static event Action<ShopKeeper> OnShopOpen;
         public static event Action OnShopClose;
         public static event Action<int> OnItemPurchase;
         public static event Action<int> OnCoinsCollected;
@@ -59,9 +60,9 @@ namespace ProjectColombo.GameManagement.Events
             OnDamageBlocked?.Invoke(damage, scale, playerHealthManager);
         }
 
-        public static void ShopOpen()
+        public static void ShopOpen(ShopKeeper shop)
         {
-            OnShopOpen?.Invoke();
+            OnShopOpen?.Invoke(shop);
         }
 
         public static void ShopClose()

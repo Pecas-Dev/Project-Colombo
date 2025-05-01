@@ -5,6 +5,7 @@ using ProjectColombo.Inventory;
 using ProjectColombo.GameManagement.Events;
 using UnityEditor.Build.Content;
 using ProjectColombo.GameManagement;
+using ProjectColombo.Objects;
 
 
 namespace ProjectColombo.Shop
@@ -14,7 +15,6 @@ namespace ProjectColombo.Shop
     {
         public string name;
         public GameObject item;
-        public Sprite sprite;
         public int price;
     }
 
@@ -23,21 +23,27 @@ namespace ProjectColombo.Shop
         public TMP_Text currentPlayerCurrency;
         PlayerInventory playerInventory;
         public int spacing;
+        public int numbersOfItemsToSell;
         public List<ItemToSell> itemsToSell;
         public GameObject buttonPrefab;
+        public GameObject pickUpPrefab;
         List<ShopItems> itemButtons;
+        List<int> noDuplicates = new();
+        GameObject player;
+        float discount = 0;
 
         private void Start()
         {
             playerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
+            player = GameObject.Find("Player");
             currentPlayerCurrency.text = playerInventory.currencyAmount.ToString();
             itemButtons = new();
 
-            int positionX = 0 - spacing * (itemsToSell.Count-1) / 2;
+            int positionX = 0 - (int)(spacing * (numbersOfItemsToSell-1) / 2f);
 
-            foreach (ItemToSell i in itemsToSell)
+            for (int i = 0; i < numbersOfItemsToSell; i++)
             {
-                Vector3 position = new(positionX, 0, 0);
+                Vector3 position = new(positionX, 50, 0);
 
                 // Instantiate the button prefab
                 GameObject prefab = Instantiate(buttonPrefab, transform);
@@ -46,11 +52,16 @@ namespace ProjectColombo.Shop
                 ShopItems shopItem = prefab.GetComponent<ShopItems>();
                 itemButtons.Add(shopItem);
 
-                // Set up the button (position, item info, etc.)
-                shopItem.SetUp(i, position);
+                int rand = Random.Range(0, itemsToSell.Count);
 
-                // Optionally, you can adjust the position of the button relative to its parent
+                while(noDuplicates.Contains(rand))
+                {
+                    rand = Random.Range(0, itemsToSell.Count);
+                }
+
+                shopItem.SetUp(itemsToSell[rand], position, discount);
                 prefab.GetComponent<RectTransform>().localPosition = position;
+                noDuplicates.Add(rand);
 
                 positionX += spacing;
             }
@@ -71,12 +82,25 @@ namespace ProjectColombo.Shop
             }
         }
 
+        public void SetDiscount(float discount)
+        {
+            this.discount = discount;
+
+            foreach(ShopItems b in itemButtons)
+            {
+                b.AdjustPriceToDiscount(discount);
+            }
+        }
+
         public void BuyItem(ItemToSell item)
         {
             playerInventory.currencyAmount -= item.price;
             CustomEvents.ItemPurchased(item.price);
-            Instantiate(item.item, playerInventory.transform.position, Quaternion.identity); //spawn bought item
-            //Debug.Log("instantiate " + item.item.name + " at " + playerInventory.transform.position);
+
+            GameObject instance = Instantiate(pickUpPrefab, player.transform.position, player.transform.rotation);
+
+            instance.GetComponent<PickUp>().SetCharm(item.item);
+
             currentPlayerCurrency.text = playerInventory.currencyAmount.ToString(); //update text
 
             foreach (ShopItems b in itemButtons)
