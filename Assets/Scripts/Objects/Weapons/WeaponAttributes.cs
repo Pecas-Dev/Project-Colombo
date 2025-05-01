@@ -7,8 +7,6 @@ using ProjectColombo.Camera;
 using ProjectColombo.GameManagement.Stats;
 using ProjectColombo.GameManagement;
 using ProjectColombo.LevelManagement;
-using Autodesk.Fbx;
-using UnityEngine.UI;
 
 namespace ProjectColombo.Combat
 {
