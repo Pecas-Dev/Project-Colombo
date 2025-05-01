@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 5031130115694215955}
   - component: {fileID: 7521384334938264067}
   - component: {fileID: 862747859323613996}
-  - component: {fileID: 7909957924049183061}
+  - component: {fileID: 552900838834251870}
+  - component: {fileID: 6779717394103816008}
   m_Layer: 13
-  m_Name: Vase_LM
+  m_Name: SmallDestroyableVase
   m_TagString: Destroyable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42,7 +43,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1586025342778282877}
-  m_Mesh: {fileID: 5454415452530867960, guid: 711a0a78b8d6c494d82c3c0beaa2d6f8, type: 3}
+  m_Mesh: {fileID: 7025268195821334530, guid: aa3d283d954215d4687a947b4108d751, type: 3}
 --- !u!23 &7521384334938264067
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -66,7 +67,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c3a33cb39a469594ea9e9476a4a83b0b, type: 2}
+  - {fileID: 2100000, guid: 4e4e2071b493bea46bb9e4e96b9381a8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -111,7 +112,7 @@ CapsuleCollider:
   m_Height: 3.54
   m_Direction: 1
   m_Center: {x: 0, y: 1.31, z: 0}
---- !u!114 &7909957924049183061
+--- !u!114 &552900838834251870
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -120,9 +121,37 @@ MonoBehaviour:
   m_GameObject: {fileID: 1586025342778282877}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c52b4fabc8999d64c8c2cf53f61e4555, type: 3}
+  m_Script: {fileID: 11500000, guid: de7e534c6d0c808458b38f233fad212b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listOfObjects:
-  - {fileID: 1586025342778282877, guid: e1d3e7064ad931a41923e3fd17926e39, type: 3}
-  - {fileID: 1586025342778282877, guid: 45e3ad2ed43d24940b999265720b697d, type: 3}
+  currentHealth: 0
+--- !u!114 &6779717394103816008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1586025342778282877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7094f162830e4654fb13c10acba91833, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myVariant: 0
+  commonCharms:
+  - {fileID: 2214152689029009370, guid: 42348f55bc395d144bef4fbaed4dd465, type: 3}
+  - {fileID: 5153099699462930510, guid: 0e2e9f4f450d13445bb81627be9f87bf, type: 3}
+  - {fileID: 8493266293346240001, guid: 7d761aa023c0f3e498eaa7fc64edd995, type: 3}
+  - {fileID: 1353502290456183764, guid: 802913cf77f56a747a5cdaddcfa99390, type: 3}
+  - {fileID: 5734323824044317263, guid: 08a416e269a000e4aa02d270f5588b6d, type: 3}
+  - {fileID: 6503379658991535769, guid: bc0952d1e7e249c4581f17d480891ca2, type: 3}
+  rareCharms:
+  - {fileID: 6301612966450194399, guid: bd2987e78347be749bc940720af3038f, type: 3}
+  - {fileID: 8617957453502818824, guid: 280d34746e666194c9f18d1276824db1, type: 3}
+  - {fileID: 7909642838134526958, guid: 51353da68a4a45e4c9e62348a58ef14e, type: 3}
+  - {fileID: 808636044392298626, guid: 6af26d020a99d6a40a26884a8dcce8d2, type: 3}
+  legendaryCharms:
+  - {fileID: 8441870704141843900, guid: 3c577fdfac3157748ab7f611dfcdae4a, type: 3}
+  - {fileID: 5963334831434130681, guid: 67a1d88dd596e374f99d2af77947b6a2, type: 3}
+  pickup: {fileID: 7109980893497795781, guid: 929b90f19122898449c45a3918bd04c9, type: 3}
+  coins: {fileID: 390289988588442798, guid: b213b2e361262f54482cc88949a43845, type: 3}

@@ -5,13 +5,14 @@ namespace ProjectColombo.Objects
 {
     public class RandomMeshSelection : MonoBehaviour
     {
-        public List<Mesh> listOfMeshes;
+        public List<GameObject> listOfObjects;
 
         private void Start()
         {
-            int rand = Random.Range(0, listOfMeshes.Count);
+            int rand = Random.Range(0, listOfObjects.Count);
 
-            GetComponent<MeshFilter>().mesh = listOfMeshes[rand];
+            Instantiate(listOfObjects[rand], transform.position, transform.rotation, transform.parent);
+            Destroy(this.gameObject);
         }
     }
 }
