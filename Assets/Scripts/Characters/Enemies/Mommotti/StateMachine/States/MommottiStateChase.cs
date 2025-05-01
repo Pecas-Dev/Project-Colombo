@@ -40,6 +40,9 @@ namespace ProjectColombo.StateMachine.Mommotti
             stateMachine.myColorfullSkin.material.color = skinColor;
 
             isPlayerVisable = true; //enters from alert State so player is visible
+
+            stateMachine.myMommottiAttributes.rangeFOVDetection /= 3f;
+
             lastWalkableNode = stateMachine.myPathfindingAlgorythm.GetNode(stateMachine.transform.position);
             targetDirection = stateMachine.myMommottiAttributes.GetPlayerPosition() - stateMachine.transform.position;
             movingDirection = targetDirection;
@@ -143,6 +146,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Exit()
         {
+            stateMachine.myMommottiAttributes.rangeFOVDetection *= 3f;
         }
 
         public void SetTarget(Vector3 newTarget)
