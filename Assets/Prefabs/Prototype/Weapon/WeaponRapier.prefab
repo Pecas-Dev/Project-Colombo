@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 8423931497685055052}
   - component: {fileID: 4320384910998231831}
   - component: {fileID: 1435646896059977278}
-  - component: {fileID: 4439344062815207047}
   - component: {fileID: 2056621055143935407}
   - component: {fileID: 6084750311385965953}
   - component: {fileID: 4213694669202427665}
+  - component: {fileID: 8283751738036941833}
   m_Layer: 10
   m_Name: Rapier
   m_TagString: Weapon
@@ -32,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 0.77, y: -4.94, z: 2.27}
-  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6866123986114022371}
@@ -44,7 +44,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 580435293129980682}
-  m_Mesh: {fileID: -5852345677682593892, guid: 9b4f1a538eae11d4d9e62b8d469fcd54, type: 3}
+  m_Mesh: {fileID: -5852345677682593892, guid: abd827c706c6b564f816c7bc4f77f32c, type: 3}
 --- !u!23 &1435646896059977278
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -90,29 +90,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &4439344062815207047
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 580435293129980682}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.1
-  m_Height: 0.93
-  m_Direction: 2
-  m_Center: {x: 0, y: 0, z: 0.5}
 --- !u!114 &2056621055143935407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -274,7 +251,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.1
+      scalar: 20
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -328,7 +305,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0, g: 1, b: 0, a: 1}
+      maxColor: {r: 0, g: 0, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -392,7 +369,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.01
+      scalar: 0.1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -770,14 +747,14 @@ ParticleSystem:
     serializedVersion: 6
     enabled: 1
     type: 4
-    angle: 25
+    angle: 3.15
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
     radiusThickness: 1
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
-    m_Scale: {x: 0.1, y: 0.1, z: 0.1}
+    m_Scale: {x: 1, y: 1, z: 1}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -4939,6 +4916,29 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!136 &8283751738036941833
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 580435293129980682}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 6.7
+  m_Height: 109.1
+  m_Direction: 2
+  m_Center: {x: 0, y: 0, z: 58.9}
 --- !u!1 &1739228436494150860
 GameObject:
   m_ObjectHideFlags: 0
