@@ -114,6 +114,12 @@ namespace ProjectColombo.Inventory
         
         public void ActivateMask()
         {
+            if (maskSlot.transform.childCount == 0)
+            {
+                Debug.Log("No mask equipped");
+                return;
+            }
+
             maskSlot.transform.GetChild(0).gameObject.GetComponent<BaseMask>().Equip();
         }
 
