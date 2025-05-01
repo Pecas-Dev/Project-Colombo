@@ -77,6 +77,14 @@ namespace ProjectColombo.UI
             newCharmDescriptionText.text = newCharmInfo.charmDescription;
         }
 
+        public void DeactivateScreen()
+        {
+            active = false;
+            gameObject.SetActive(false);
+            newCharm = null;
+            GameManager.Instance.ResumeGame();
+        }
+
         public void AddCharm(GameObject charmToRemove)
         {
             active = false;
