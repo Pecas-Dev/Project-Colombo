@@ -204,7 +204,14 @@ namespace ProjectColombo.LevelManagement
             //connect layers to one another
             for (int i = 0; i < chamberLayers.Count - 1; i++)
             {
-                ConnectLayers(chamberLayers[i], chamberLayers[i + 1]);
+                if (i%2 == 0)
+                {
+                    ConnectLayersIncrease(chamberLayers[i], chamberLayers[i + 1]);
+                }
+                else
+                {
+                    ConnectLayersDecrease(chamberLayers[i], chamberLayers[i + 1]);
+                }
             }
 
             //connect last layer to exit
@@ -224,13 +231,10 @@ namespace ProjectColombo.LevelManagement
             }
         }
 
-        void ConnectLayers(List<GameObject> firstLayer, List<GameObject> secondLayer)
+        void ConnectLayersIncrease(List<GameObject> firstLayer, List<GameObject> secondLayer)
         {
             int currentIndexFirst = 0;
             int currentIndexSecond = 0;
-
-            //Debug.Log("firstlayer: " + firstLayer.Count + ", " + currentIndexFirst);
-            //Debug.Log("firstlayer: " + secondLayer.Count + ", " + currentIndexSecond);
 
             while (currentIndexFirst < firstLayer.Count || currentIndexSecond < secondLayer.Count)
             {
@@ -238,13 +242,28 @@ namespace ProjectColombo.LevelManagement
                 if (currentIndexFirst == firstLayer.Count) currentIndexFirst--;
                 if (currentIndexSecond == secondLayer.Count) currentIndexSecond--;
 
-                //Debug.Log("firstlayer: " + firstLayer.Count + ", " + currentIndexFirst);
-                //Debug.Log("firstlayer: " + secondLayer.Count + ", " + currentIndexSecond);
-
                 paths.Add(CreatePath(firstLayer[currentIndexFirst], secondLayer[currentIndexSecond]));
 
                 currentIndexFirst++;
                 currentIndexSecond++;
+            }
+        }
+
+        void ConnectLayersDecrease(List<GameObject> firstLayer, List<GameObject> secondLayer)
+        {
+            int currentIndexFirst = firstLayer.Count - 1;
+            int currentIndexSecond = secondLayer.Count - 1;
+
+            while (currentIndexFirst >= 0 || currentIndexSecond >= 0)
+            {
+                //adjust if different layer sizes
+                if (currentIndexFirst < 0) currentIndexFirst = 0;
+                if (currentIndexSecond < 0) currentIndexSecond = 0;
+
+                paths.Add(CreatePath(firstLayer[currentIndexFirst], secondLayer[currentIndexSecond]));
+
+                currentIndexFirst--;
+                currentIndexSecond--;
             }
         }
 
