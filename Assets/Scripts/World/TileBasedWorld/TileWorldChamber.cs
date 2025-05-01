@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DG.DemiLib;
 using ProjectColombo.GameManagement;
 using Unity.VisualScripting;
+using ProjectColombo.GameManagement.Events;
 
 namespace ProjectColombo.LevelManagement
 {
@@ -53,6 +54,7 @@ namespace ProjectColombo.LevelManagement
                             exit.GetComponent<BoxCollider>().isTrigger = true;
                         }
 
+                        CustomEvents.ChamberFinished();
                         isActive = false;
                     }
 
@@ -117,6 +119,8 @@ namespace ProjectColombo.LevelManagement
 
         public void ActivateChamber()
         {
+            CustomEvents.ChamberActivated();
+
             foreach (GameObject spawner in spawnPoints)
             {
                 spawner.SetActive(true);

@@ -25,6 +25,8 @@ namespace ProjectColombo.GameManagement.Events
         public static event Action OnLevelChange;
         public static event Action<int> OnMaxHealthGained;
         public static event Action OnEchoUnlocked;
+        public static event Action OnChamberActivated;
+        public static event Action OnChamberFinished;
 
         public static void DamageDelt(int damage, GameGlobals.MusicScale scale, HealthManager enemyHealthManager)
         {
@@ -114,6 +116,14 @@ namespace ProjectColombo.GameManagement.Events
         public static void EchoUnlocked()
         {
             OnEchoUnlocked?.Invoke();
+        }
+        public static void ChamberActivated()
+        {
+            OnChamberActivated?.Invoke();
+        }
+        public static void ChamberFinished()
+        {
+            OnChamberFinished?.Invoke();
         }
     }
 }
