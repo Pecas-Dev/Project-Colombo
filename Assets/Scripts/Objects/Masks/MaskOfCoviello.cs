@@ -185,6 +185,7 @@ namespace ProjectColombo.Objects.Masks
             Remove();
 
             echoUnlocked = true;
+            CustomEvents.EchoUnlocked();
 
             majorScaleDamageIncreasePercent = majorScaleDamageIncreasePercentEcho;
             minorScaleDamageIncreasePercent = minorScaleDamageIncreasePercentEcho;

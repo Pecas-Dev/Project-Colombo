@@ -164,6 +164,8 @@ namespace ProjectColombo.Objects.Masks
             Remove();
 
             echoUnlocked = true;
+            CustomEvents.EchoUnlocked();
+
             majorDamageIncreasePercent = majorDamageIncreasePercentEcho;
             majorDamageIncreasePerLuckPoint = majorDamageIncreasePerLuckPointEcho;
             staminaRegenSpeedIncreasePercent = staminaRegenSpeedIncreasePercentEcho;

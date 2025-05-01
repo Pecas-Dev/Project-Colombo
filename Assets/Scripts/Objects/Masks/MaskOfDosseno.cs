@@ -141,6 +141,7 @@ namespace ProjectColombo.Objects.Masks
             Remove();
 
             echoUnlocked = true;
+            CustomEvents.EchoUnlocked();
 
             minAmountOfCoinsPerDamage = minAmountOfCoinsPerDamageEcho;
             maxAmountOfCoinsPerDamage = maxAmountOfCoinsPerDamageEcho;

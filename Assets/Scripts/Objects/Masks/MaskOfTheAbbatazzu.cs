@@ -164,6 +164,7 @@ namespace ProjectColombo.Objects.Masks
             Remove();
 
             echoUnlocked = true;
+            CustomEvents.EchoUnlocked();
 
             gainHealthPointsPerKill = gainHealthPointsPerKillEcho;
             shopDiscountPercent = shopDiscountPercentEcho;

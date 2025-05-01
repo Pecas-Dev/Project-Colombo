@@ -31,46 +31,46 @@ namespace ProjectColombo.Objects.Charms
         public float moveSpeedDecreaseAbility = 3;
         float moveSpeedDeltaAbility;
         public float incomingDamageIncreasePercentAbility = 8;
-        float timer = 0;
-        bool abilityReady = false;
+        //float timer = 0;
+        //bool abilityReady = false;
         bool abilityActive = false;
         bool firstStepAbility = false;
 
         PlayerStateMachine myPlayerStateMachine;
 
-        private void Update()
-        {
-            if (abilityReady)
-            {
-                if (GameManager.Instance.gameInput.UseItemPressed)
-                {
-                    GameManager.Instance.gameInput.ResetUseItemPressed();
-                    StartCoroutine(Ability());
-                    abilityReady = false;
-                    timer = 0;
-                }
-            }
-            else
-            {
-                timer += Time.deltaTime;
+        //private void Update()
+        //{
+        //    if (abilityReady)
+        //    {
+        //        if (GameManager.Instance.gameInput.UseItemPressed)
+        //        {
+        //            GameManager.Instance.gameInput.ResetUseItemPressed();
+        //            StartCoroutine(Ability());
+        //            abilityReady = false;
+        //            timer = 0;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        timer += Time.deltaTime;
 
-                if (timer >= abilityCooldown)
-                {
-                    Debug.Log("ability ready");
-                    abilityReady = true;
-                }
-            }
+        //        if (timer >= abilityCooldown)
+        //        {
+        //            Debug.Log("ability ready");
+        //            abilityReady = true;
+        //        }
+        //    }
 
-            if (myPlayerStateMachine.gameInputSO.UseItemPressed)
-            {
-                GameManager.Instance.gameInput.ResetUseItemPressed();
-            }
-        }
+        //    if (myPlayerStateMachine.gameInputSO.UseItemPressed)
+        //    {
+        //        GameManager.Instance.gameInput.ResetUseItemPressed();
+        //    }
+        //}
 
         public override void Equip()
         {
             myPlayerStateMachine = GameObject.Find("Player").GetComponent<PlayerStateMachine>();
-            GameManager.Instance.gameInput.EnableInput(GameInputSystem.InputActionType.UseItem);
+            //GameManager.Instance.gameInput.EnableInput(GameInputSystem.InputActionType.UseItem);
 
             CustomEvents.OnDamageDelt += DamageIncrease;
             CustomEvents.OnDamageReceived += IncomingDamageDecrease;
