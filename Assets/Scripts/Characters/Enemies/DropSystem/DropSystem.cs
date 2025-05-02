@@ -15,6 +15,7 @@ namespace ProjectColombo.Enemies.DropSystem
         public Variant myVariant;
         LevelStats myLevelStats;
 
+        float dropChanceCoins;
         int minAmountOfCoins;
         int maxAmountOfCoins;
         float dropChanceCommonCharm;
@@ -40,6 +41,7 @@ namespace ProjectColombo.Enemies.DropSystem
             switch (myVariant)
             {
                 case Variant.VASE:
+                    dropChanceCoins = myLevelStats.dropChanceCoinsVase;
                     minAmountOfCoins = myLevelStats.minAmountOfCoinsVase;
                     maxAmountOfCoins = myLevelStats.maxAmountOfCoinsVase;
                     dropChanceCommonCharm = myLevelStats.dropChanceCommonCharmVase;
@@ -48,6 +50,7 @@ namespace ProjectColombo.Enemies.DropSystem
                     return;
 
                 case Variant.CHEST:
+                    dropChanceCoins = myLevelStats.dropChanceCoinsChest;
                     minAmountOfCoins = myLevelStats.minAmountOfCoinsChest;
                     maxAmountOfCoins = myLevelStats.maxAmountOfCoinsChest;
                     dropChanceCommonCharm = myLevelStats.dropChanceCommonCharmChest;
@@ -56,6 +59,7 @@ namespace ProjectColombo.Enemies.DropSystem
                     return;
 
                 default:
+                    dropChanceCoins = myLevelStats.dropChanceCoinsEnemies;
                     minAmountOfCoins = myLevelStats.minAmountOfCoinsEnemies;
                     maxAmountOfCoins = myLevelStats.maxAmountOfCoinsEnemies;
                     dropChanceCommonCharm = myLevelStats.dropChanceCommonCharmEnemies;
@@ -92,7 +96,7 @@ namespace ProjectColombo.Enemies.DropSystem
                 instance.GetComponent<PickUp>().SetCharm(legendaryCharms[rand]);
 
             }
-            else
+            else if (random <= dropChanceCoins + dropChanceLegendaryCharm + dropChanceRareCharm + dropChanceCommonCharm)
             {
                 int rand = Random.Range(minAmountOfCoins, maxAmountOfCoins+1);
 

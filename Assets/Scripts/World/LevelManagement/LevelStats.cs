@@ -22,6 +22,7 @@ namespace ProjectColombo.LevelManagement
 
         [Header("DropRates")]
         [Header("Vases")]
+        public float dropChanceCoinsVase;
         public int minAmountOfCoinsVase;
         public int maxAmountOfCoinsVase;
         public float dropChanceCommonCharmVase;
@@ -29,6 +30,7 @@ namespace ProjectColombo.LevelManagement
         public float dropChanceLegendaryCharmVase;
 
         [Header("Chest")]
+        public float dropChanceCoinsChest;
         public int minAmountOfCoinsChest;
         public int maxAmountOfCoinsChest;
         public float dropChanceCommonCharmChest;
@@ -36,6 +38,7 @@ namespace ProjectColombo.LevelManagement
         public float dropChanceLegendaryCharmChest;
 
         [Header("Enemies")]
+        public float dropChanceCoinsEnemies;
         public int minAmountOfCoinsEnemies;
         public int maxAmountOfCoinsEnemies;
         public float dropChanceCommonCharmEnemies;
