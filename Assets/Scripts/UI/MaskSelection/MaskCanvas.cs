@@ -13,6 +13,12 @@ namespace ProjectColombo.UI
 
         GameObject lastSelected;
 
+        private void Start()
+        {
+            lastSelected = EventSystem.current.currentSelectedGameObject;
+            UpdateTexts();
+        }
+
         private void Update()
         {
             GameObject current = EventSystem.current.currentSelectedGameObject;
