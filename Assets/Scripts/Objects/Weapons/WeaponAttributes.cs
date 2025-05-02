@@ -276,7 +276,7 @@ namespace ProjectColombo.Combat
 
         private void ScreenShake()
         {
-            FindFirstObjectByType<ScreenShakeManager>().Shake(0.5f);
+            FindFirstObjectByType<ScreenShakeManager>().Shake(0.2f);
         }
 
 
