@@ -508,6 +508,24 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "MoveLeftShoulder",
+                    "type": "Button",
+                    "id": "e109a51d-9866-443d-9356-842108f4df2c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MoveRightShoulder",
+                    "type": "Button",
+                    "id": "f1e42039-8b6a-4e54-b784-6c417907159a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Point",
                     "type": "PassThrough",
                     "id": "8d5c10ac-f10d-473b-af78-7deaf32ffba4",
@@ -515,6 +533,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "ScrollWheel",
+                    "type": "PassThrough",
+                    "id": "f7659d7b-93bd-41c2-bb56-f442a8a86861",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Click",
@@ -535,37 +562,10 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ScrollWheel",
-                    "type": "PassThrough",
-                    "id": "f7659d7b-93bd-41c2-bb56-f442a8a86861",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "MiddleClick",
                     "type": "PassThrough",
                     "id": "e39071b5-5a27-4808-91fa-6caae7d2f8cd",
                     "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "MoveLeft",
-                    "type": "Button",
-                    "id": "e109a51d-9866-443d-9356-842108f4df2c",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "MoveRight",
-                    "type": "Button",
-                    "id": "f1e42039-8b6a-4e54-b784-6c417907159a",
-                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -766,7 +766,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "MoveLeft",
+                    "action": "MoveLeftShoulder",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -777,7 +777,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "MoveLeft",
+                    "action": "MoveLeftShoulder",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -788,7 +788,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "MoveRight",
+                    "action": "MoveRightShoulder",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -799,7 +799,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "MoveRight",
+                    "action": "MoveRightShoulder",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

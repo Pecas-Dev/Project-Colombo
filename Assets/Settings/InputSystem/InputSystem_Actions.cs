@@ -530,6 +530,24 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""MoveLeftShoulder"",
+                    ""type"": ""Button"",
+                    ""id"": ""e109a51d-9866-443d-9356-842108f4df2c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MoveRightShoulder"",
+                    ""type"": ""Button"",
+                    ""id"": ""f1e42039-8b6a-4e54-b784-6c417907159a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Point"",
                     ""type"": ""PassThrough"",
                     ""id"": ""8d5c10ac-f10d-473b-af78-7deaf32ffba4"",
@@ -537,6 +555,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ScrollWheel"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""f7659d7b-93bd-41c2-bb56-f442a8a86861"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 },
                 {
                     ""name"": ""Click"",
@@ -557,37 +584,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""ScrollWheel"",
-                    ""type"": ""PassThrough"",
-                    ""id"": ""f7659d7b-93bd-41c2-bb56-f442a8a86861"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""MiddleClick"",
                     ""type"": ""PassThrough"",
                     ""id"": ""e39071b5-5a27-4808-91fa-6caae7d2f8cd"",
                     ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""MoveLeft"",
-                    ""type"": ""Button"",
-                    ""id"": ""e109a51d-9866-443d-9356-842108f4df2c"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""MoveRight"",
-                    ""type"": ""Button"",
-                    ""id"": ""f1e42039-8b6a-4e54-b784-6c417907159a"",
-                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -788,7 +788,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""MoveLeft"",
+                    ""action"": ""MoveLeftShoulder"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -799,7 +799,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
-                    ""action"": ""MoveLeft"",
+                    ""action"": ""MoveLeftShoulder"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -810,7 +810,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""MoveRight"",
+                    ""action"": ""MoveRightShoulder"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -821,7 +821,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
-                    ""action"": ""MoveRight"",
+                    ""action"": ""MoveRightShoulder"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -912,13 +912,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
         m_UI_Submit = m_UI.FindAction("Submit", throwIfNotFound: true);
         m_UI_Cancel = m_UI.FindAction("Cancel", throwIfNotFound: true);
+        m_UI_MoveLeftShoulder = m_UI.FindAction("MoveLeftShoulder", throwIfNotFound: true);
+        m_UI_MoveRightShoulder = m_UI.FindAction("MoveRightShoulder", throwIfNotFound: true);
         m_UI_Point = m_UI.FindAction("Point", throwIfNotFound: true);
+        m_UI_ScrollWheel = m_UI.FindAction("ScrollWheel", throwIfNotFound: true);
         m_UI_Click = m_UI.FindAction("Click", throwIfNotFound: true);
         m_UI_RightClick = m_UI.FindAction("RightClick", throwIfNotFound: true);
-        m_UI_ScrollWheel = m_UI.FindAction("ScrollWheel", throwIfNotFound: true);
         m_UI_MiddleClick = m_UI.FindAction("MiddleClick", throwIfNotFound: true);
-        m_UI_MoveLeft = m_UI.FindAction("MoveLeft", throwIfNotFound: true);
-        m_UI_MoveRight = m_UI.FindAction("MoveRight", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -1139,13 +1139,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_Navigate;
     private readonly InputAction m_UI_Submit;
     private readonly InputAction m_UI_Cancel;
+    private readonly InputAction m_UI_MoveLeftShoulder;
+    private readonly InputAction m_UI_MoveRightShoulder;
     private readonly InputAction m_UI_Point;
+    private readonly InputAction m_UI_ScrollWheel;
     private readonly InputAction m_UI_Click;
     private readonly InputAction m_UI_RightClick;
-    private readonly InputAction m_UI_ScrollWheel;
     private readonly InputAction m_UI_MiddleClick;
-    private readonly InputAction m_UI_MoveLeft;
-    private readonly InputAction m_UI_MoveRight;
     public struct UIActions
     {
         private @InputSystem_Actions m_Wrapper;
@@ -1153,13 +1153,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         public InputAction @Navigate => m_Wrapper.m_UI_Navigate;
         public InputAction @Submit => m_Wrapper.m_UI_Submit;
         public InputAction @Cancel => m_Wrapper.m_UI_Cancel;
+        public InputAction @MoveLeftShoulder => m_Wrapper.m_UI_MoveLeftShoulder;
+        public InputAction @MoveRightShoulder => m_Wrapper.m_UI_MoveRightShoulder;
         public InputAction @Point => m_Wrapper.m_UI_Point;
+        public InputAction @ScrollWheel => m_Wrapper.m_UI_ScrollWheel;
         public InputAction @Click => m_Wrapper.m_UI_Click;
         public InputAction @RightClick => m_Wrapper.m_UI_RightClick;
-        public InputAction @ScrollWheel => m_Wrapper.m_UI_ScrollWheel;
         public InputAction @MiddleClick => m_Wrapper.m_UI_MiddleClick;
-        public InputAction @MoveLeft => m_Wrapper.m_UI_MoveLeft;
-        public InputAction @MoveRight => m_Wrapper.m_UI_MoveRight;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1178,27 +1178,27 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Cancel.started += instance.OnCancel;
             @Cancel.performed += instance.OnCancel;
             @Cancel.canceled += instance.OnCancel;
+            @MoveLeftShoulder.started += instance.OnMoveLeftShoulder;
+            @MoveLeftShoulder.performed += instance.OnMoveLeftShoulder;
+            @MoveLeftShoulder.canceled += instance.OnMoveLeftShoulder;
+            @MoveRightShoulder.started += instance.OnMoveRightShoulder;
+            @MoveRightShoulder.performed += instance.OnMoveRightShoulder;
+            @MoveRightShoulder.canceled += instance.OnMoveRightShoulder;
             @Point.started += instance.OnPoint;
             @Point.performed += instance.OnPoint;
             @Point.canceled += instance.OnPoint;
+            @ScrollWheel.started += instance.OnScrollWheel;
+            @ScrollWheel.performed += instance.OnScrollWheel;
+            @ScrollWheel.canceled += instance.OnScrollWheel;
             @Click.started += instance.OnClick;
             @Click.performed += instance.OnClick;
             @Click.canceled += instance.OnClick;
             @RightClick.started += instance.OnRightClick;
             @RightClick.performed += instance.OnRightClick;
             @RightClick.canceled += instance.OnRightClick;
-            @ScrollWheel.started += instance.OnScrollWheel;
-            @ScrollWheel.performed += instance.OnScrollWheel;
-            @ScrollWheel.canceled += instance.OnScrollWheel;
             @MiddleClick.started += instance.OnMiddleClick;
             @MiddleClick.performed += instance.OnMiddleClick;
             @MiddleClick.canceled += instance.OnMiddleClick;
-            @MoveLeft.started += instance.OnMoveLeft;
-            @MoveLeft.performed += instance.OnMoveLeft;
-            @MoveLeft.canceled += instance.OnMoveLeft;
-            @MoveRight.started += instance.OnMoveRight;
-            @MoveRight.performed += instance.OnMoveRight;
-            @MoveRight.canceled += instance.OnMoveRight;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -1212,27 +1212,27 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Cancel.started -= instance.OnCancel;
             @Cancel.performed -= instance.OnCancel;
             @Cancel.canceled -= instance.OnCancel;
+            @MoveLeftShoulder.started -= instance.OnMoveLeftShoulder;
+            @MoveLeftShoulder.performed -= instance.OnMoveLeftShoulder;
+            @MoveLeftShoulder.canceled -= instance.OnMoveLeftShoulder;
+            @MoveRightShoulder.started -= instance.OnMoveRightShoulder;
+            @MoveRightShoulder.performed -= instance.OnMoveRightShoulder;
+            @MoveRightShoulder.canceled -= instance.OnMoveRightShoulder;
             @Point.started -= instance.OnPoint;
             @Point.performed -= instance.OnPoint;
             @Point.canceled -= instance.OnPoint;
+            @ScrollWheel.started -= instance.OnScrollWheel;
+            @ScrollWheel.performed -= instance.OnScrollWheel;
+            @ScrollWheel.canceled -= instance.OnScrollWheel;
             @Click.started -= instance.OnClick;
             @Click.performed -= instance.OnClick;
             @Click.canceled -= instance.OnClick;
             @RightClick.started -= instance.OnRightClick;
             @RightClick.performed -= instance.OnRightClick;
             @RightClick.canceled -= instance.OnRightClick;
-            @ScrollWheel.started -= instance.OnScrollWheel;
-            @ScrollWheel.performed -= instance.OnScrollWheel;
-            @ScrollWheel.canceled -= instance.OnScrollWheel;
             @MiddleClick.started -= instance.OnMiddleClick;
             @MiddleClick.performed -= instance.OnMiddleClick;
             @MiddleClick.canceled -= instance.OnMiddleClick;
-            @MoveLeft.started -= instance.OnMoveLeft;
-            @MoveLeft.performed -= instance.OnMoveLeft;
-            @MoveLeft.canceled -= instance.OnMoveLeft;
-            @MoveRight.started -= instance.OnMoveRight;
-            @MoveRight.performed -= instance.OnMoveRight;
-            @MoveRight.canceled -= instance.OnMoveRight;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -1317,12 +1317,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         void OnNavigate(InputAction.CallbackContext context);
         void OnSubmit(InputAction.CallbackContext context);
         void OnCancel(InputAction.CallbackContext context);
+        void OnMoveLeftShoulder(InputAction.CallbackContext context);
+        void OnMoveRightShoulder(InputAction.CallbackContext context);
         void OnPoint(InputAction.CallbackContext context);
+        void OnScrollWheel(InputAction.CallbackContext context);
         void OnClick(InputAction.CallbackContext context);
         void OnRightClick(InputAction.CallbackContext context);
-        void OnScrollWheel(InputAction.CallbackContext context);
         void OnMiddleClick(InputAction.CallbackContext context);
-        void OnMoveLeft(InputAction.CallbackContext context);
-        void OnMoveRight(InputAction.CallbackContext context);
     }
 }

@@ -68,6 +68,13 @@ public class MainMenuController : MenuController
         if (buttons.Length > 0 && buttons[0] != null)
         {
             SelectButton(0);
+            
+            uiInputSwitcher = FindFirstObjectByType<UIInputSwitcher>();
+
+            if (uiInputSwitcher != null)
+            {
+                uiInputSwitcher.SetFirstSelectedButton(buttons[0].gameObject);
+            }
         }
     }
 
@@ -77,6 +84,16 @@ public class MainMenuController : MenuController
         if (currentSelectedIndex >= 0 && currentSelectedIndex < buttons.Length)
         {
             EventSystem.current.SetSelectedGameObject(buttons[currentSelectedIndex].gameObject);
+            
+            if (uiInputSwitcher == null)
+            {
+                uiInputSwitcher = FindFirstObjectByType<UIInputSwitcher>();
+            }
+            
+            if (uiInputSwitcher != null)
+            {
+                uiInputSwitcher.SetFirstSelectedButton(buttons[currentSelectedIndex].gameObject);
+            }
         }
     }
 

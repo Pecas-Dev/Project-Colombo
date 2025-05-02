@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using System.Collections;
 using ProjectColombo.GameInputSystem;
+using UnityEngine.EventSystems;
 
 
 namespace ProjectColombo.UI
@@ -23,6 +24,7 @@ namespace ProjectColombo.UI
 
 
         protected Animator transitionAnimation;
+        protected UIInputSwitcher uiInputSwitcher;
 
 
         public virtual void Show()
@@ -57,6 +59,12 @@ namespace ProjectColombo.UI
                 {
                     Debug.LogWarning("GameObject with tag 'Transition' doesn't have an Animator component.");
                 }
+            }
+
+            if (FindFirstObjectByType<UIInputSwitcher>() == null)
+            {
+                GameObject uiInputSwitcherObject = new GameObject("UIInputSwitcher");
+                uiInputSwitcherObject.AddComponent<UIInputSwitcher>();
             }
         }
 
