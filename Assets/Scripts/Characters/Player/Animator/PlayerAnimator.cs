@@ -111,7 +111,7 @@ namespace ProjectColombo.Control
         // ---------------------------------------------------------
         public void TriggerBlock()
         {
-            //animator.SetTrigger("block");
+            animator.SetTrigger("Block");
         }
 
         // ---------------------------------------------------------
