@@ -127,6 +127,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3205656012161248344, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: defaultStaminaRegenTime
+      value: 1.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3205656012161248344, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: defaultBlockReductionPercent
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 3205656012161248344, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: defaultCorrectAttackScalePercent
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 6657307741488687647, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.0016149879
@@ -264,28 +276,76 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
+      propertyPath: dropChanceCoinsVase
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
+      propertyPath: dropChanceCoinsChest
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
+      propertyPath: maxAmountOfCoinsVase
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
+      propertyPath: minAmountOfCoinsVase
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
+      propertyPath: maxAmountOfCoinsChest
+      value: 105
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
+      propertyPath: minAmountOfCoinsChest
+      value: 65
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
+      propertyPath: dropChanceCoinsEnemies
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
       propertyPath: dropChanceRareCharmVase
-      value: 2.5
+      value: 0.07
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
+      propertyPath: maxAmountOfCoinsEnemies
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
+      propertyPath: minAmountOfCoinsEnemies
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
+      propertyPath: dropChanceRareCharmChest
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
       propertyPath: dropChanceCommonCharmVase
-      value: 5
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
+      propertyPath: dropChanceCommonCharmChest
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
       propertyPath: dropChanceRareCharmEnemies
-      value: 5
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
       propertyPath: dropChanceCommonCharmEnemies
-      value: 15
+      value: 0.9
       objectReference: {fileID: 0}
     - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
       propertyPath: dropChanceLegendaryCharmVase
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
+      propertyPath: dropChanceLegendaryCharmChest
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
       propertyPath: dropChanceLegendaryCharmEnemies
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9159605010880971420, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
       propertyPath: m_LocalPosition.x
