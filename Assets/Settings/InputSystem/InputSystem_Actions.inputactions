@@ -569,6 +569,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "NavigateRadial",
+                    "type": "Value",
+                    "id": "a002aafc-7ca0-406d-82a2-87ad4ad69a05",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "ActivateRadial",
+                    "type": "Button",
+                    "id": "8687234c-65e1-433d-9e82-9e0aae571233",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -800,6 +818,28 @@
                     "processors": "",
                     "groups": ";Gamepad",
                     "action": "MoveRightShoulder",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a6f25b68-6565-416b-bdb8-6c38bd7b018f",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "NavigateRadial",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "13455b8a-579a-4491-99be-fea23fbc9c41",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "ActivateRadial",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

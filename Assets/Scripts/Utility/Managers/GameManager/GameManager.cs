@@ -63,6 +63,13 @@ namespace ProjectColombo.GameManagement
             }
         }
 
+        private void OnDestroy()
+        {
+            Time.timeScale = 1;
+
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             ResumeGame();

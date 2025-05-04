@@ -591,6 +591,24 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""NavigateRadial"",
+                    ""type"": ""Value"",
+                    ""id"": ""a002aafc-7ca0-406d-82a2-87ad4ad69a05"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ActivateRadial"",
+                    ""type"": ""Button"",
+                    ""id"": ""8687234c-65e1-433d-9e82-9e0aae571233"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -824,6 +842,28 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""action"": ""MoveRightShoulder"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a6f25b68-6565-416b-bdb8-6c38bd7b018f"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""NavigateRadial"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""13455b8a-579a-4491-99be-fea23fbc9c41"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""ActivateRadial"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -919,6 +959,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_UI_Click = m_UI.FindAction("Click", throwIfNotFound: true);
         m_UI_RightClick = m_UI.FindAction("RightClick", throwIfNotFound: true);
         m_UI_MiddleClick = m_UI.FindAction("MiddleClick", throwIfNotFound: true);
+        m_UI_NavigateRadial = m_UI.FindAction("NavigateRadial", throwIfNotFound: true);
+        m_UI_ActivateRadial = m_UI.FindAction("ActivateRadial", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -1146,6 +1188,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_Click;
     private readonly InputAction m_UI_RightClick;
     private readonly InputAction m_UI_MiddleClick;
+    private readonly InputAction m_UI_NavigateRadial;
+    private readonly InputAction m_UI_ActivateRadial;
     public struct UIActions
     {
         private @InputSystem_Actions m_Wrapper;
@@ -1160,6 +1204,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         public InputAction @Click => m_Wrapper.m_UI_Click;
         public InputAction @RightClick => m_Wrapper.m_UI_RightClick;
         public InputAction @MiddleClick => m_Wrapper.m_UI_MiddleClick;
+        public InputAction @NavigateRadial => m_Wrapper.m_UI_NavigateRadial;
+        public InputAction @ActivateRadial => m_Wrapper.m_UI_ActivateRadial;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1199,6 +1245,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @MiddleClick.started += instance.OnMiddleClick;
             @MiddleClick.performed += instance.OnMiddleClick;
             @MiddleClick.canceled += instance.OnMiddleClick;
+            @NavigateRadial.started += instance.OnNavigateRadial;
+            @NavigateRadial.performed += instance.OnNavigateRadial;
+            @NavigateRadial.canceled += instance.OnNavigateRadial;
+            @ActivateRadial.started += instance.OnActivateRadial;
+            @ActivateRadial.performed += instance.OnActivateRadial;
+            @ActivateRadial.canceled += instance.OnActivateRadial;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -1233,6 +1285,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @MiddleClick.started -= instance.OnMiddleClick;
             @MiddleClick.performed -= instance.OnMiddleClick;
             @MiddleClick.canceled -= instance.OnMiddleClick;
+            @NavigateRadial.started -= instance.OnNavigateRadial;
+            @NavigateRadial.performed -= instance.OnNavigateRadial;
+            @NavigateRadial.canceled -= instance.OnNavigateRadial;
+            @ActivateRadial.started -= instance.OnActivateRadial;
+            @ActivateRadial.performed -= instance.OnActivateRadial;
+            @ActivateRadial.canceled -= instance.OnActivateRadial;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -1324,5 +1382,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         void OnClick(InputAction.CallbackContext context);
         void OnRightClick(InputAction.CallbackContext context);
         void OnMiddleClick(InputAction.CallbackContext context);
+        void OnNavigateRadial(InputAction.CallbackContext context);
+        void OnActivateRadial(InputAction.CallbackContext context);
     }
 }
