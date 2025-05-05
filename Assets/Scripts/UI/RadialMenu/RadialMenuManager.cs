@@ -1,7 +1,10 @@
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using ProjectColombo.UI;
 using ProjectColombo.GameInputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
+using System.Collections;
+using ProjectColombo.UI;
+using UnityEngine;
+
 
 public class RadialMenuManager : MonoBehaviour
 {
@@ -160,6 +163,28 @@ public class RadialMenuManager : MonoBehaviour
         {
             radialMenuController.Show();
 
+            StartCoroutine(WatchForButtonRelease());
+        }
+    }
+
+    IEnumerator WatchForButtonRelease()
+    {
+        yield return null;
+
+        while (isRadialMenuActive)
+        {
+            if (gameInputSO != null && gameInputSO.playerInputActions != null)
+            {
+                var control = gameInputSO.playerInputActions.Player.ActivateRadial.controls[0];
+
+                if (!control.IsPressed())
+                {
+                    DeactivateRadialMenu();
+                    yield break;
+                }
+            }
+
+            yield return null;
         }
     }
 
@@ -180,6 +205,11 @@ public class RadialMenuManager : MonoBehaviour
             }
 
             radialMenuController.Hide();
+            
+            if (gameInputSO != null)
+            {
+                gameInputSO.DisableUIMode();
+            }
         }
     }
 }

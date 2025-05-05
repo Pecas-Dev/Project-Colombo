@@ -243,6 +243,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""f2698f89-cb7c-4c00-91aa-db6554104ea9"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""ActivateRadial"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""a036621e-ce8a-4af1-b4e4-9088f5971b5f"",
                     ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",
