@@ -143,7 +143,7 @@ namespace ProjectColombo.LevelManagement
         //data
         int worldHeight = 25;
         int worldWidth = 0;
-        int chamberOffsetX = 4;
+        int chamberOffsetX = 3;
         int chamberOffsetY = 2;
 
         public List<GameObject> chamberVariants;
@@ -181,8 +181,9 @@ namespace ProjectColombo.LevelManagement
                 List<GameObject> currentLayer = new();
                 int chamberCount = layersOfChambers[layer];
 
-                int posX = chamberOffsetX * layer + chamberOffsetX; //start + currentlayer
-                int posY = (int)(startChamberTilePos.y - (chamberCount / 2f) * chamberOffsetY + 3); //move down to centralize
+                int posX = chamberOffsetX * layer + chamberOffsetX + 1; //start + currentlayer
+                int posY = Mathf.RoundToInt(startChamberTilePos.y - ((chamberCount - 1) / 2f) * chamberOffsetY);
+                //int posY = (int)(startChamberTilePos.y - (chamberCount / 2f) * chamberOffsetY + 3); //move down to centralize
                 
                 //create  layer chambers
                 for (int i = 0; i < chamberCount; i++)
