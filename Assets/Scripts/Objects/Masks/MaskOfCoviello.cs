@@ -65,7 +65,7 @@ namespace ProjectColombo.Objects.Masks
         private void AddFailedParry(int damage, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager, bool sameScale)
         {
             int currentHealth = myPlayerStateMachine.myHealthManager.currentHealth;
-            int extra = (int)(Mathf.FloorToInt(currentHealth / extraMissingParryForHowManyPoints) * extraDamageIncraseMissingParryForPoints);
+            int extra = (int)(Mathf.FloorToInt(currentHealth / extraMissingParryForHowManyPoints) * extraDamageIncraseMissingParryForPoints / 100f);
 
             int value = (int)(damage * extraDamageReceivePercent / 100f);
             Debug.Log("extra failed parry damage: " + (value + extra));
@@ -75,7 +75,7 @@ namespace ProjectColombo.Objects.Masks
         private void AddDamageReceive(int damage, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager)
         {
             int currentHealth = myPlayerStateMachine.myHealthManager.currentHealth;
-            int extra = (int)(Mathf.FloorToInt(currentHealth / extraDamageReceiveForHowManyPoints) * extraDamageReceiveForMissingHealthPercent);
+            int extra = (int)(Mathf.FloorToInt(currentHealth / extraDamageReceiveForHowManyPoints) * extraDamageReceiveForMissingHealthPercent / 100f);
 
             int value = (int)(damage * extraDamageReceivePercent / 100f);
             Debug.Log("extra receive damage: " + (value + extra));
@@ -85,7 +85,7 @@ namespace ProjectColombo.Objects.Masks
         private void AddDamageDelt(int damage, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager)
         {
             int currentMissingHealth = myPlayerStateMachine.myHealthManager.MaxHealth - myPlayerStateMachine.myHealthManager.currentHealth;
-            int extra = (int)(Mathf.FloorToInt(currentMissingHealth / extraDamageForHowManyPoints) * extraDamageForMissingHealthPercent);
+            int extra = (int)(Mathf.FloorToInt(currentMissingHealth / extraDamageForHowManyPoints) * extraDamageForMissingHealthPercent / 100f);
             int value = 0;
 
             int abilityExtra = (int)(abilityExtraDamageCounter * damage * extraDamageForStaminaPercent / 100f);

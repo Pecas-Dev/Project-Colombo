@@ -113,7 +113,7 @@ namespace ProjectColombo.Objects.Masks
                 int value = (int)(damage * majorDamageIncreasePercent / 100f);
                 Debug.Log("increase major damage by: " + value);
 
-                int extra = (int)(damage * myPlayerStateMachine.myPlayerInventory.currentLuck * majorDamageIncreasePerLuckPoint);
+                int extra = (int)(damage * myPlayerStateMachine.myPlayerInventory.currentLuck * majorDamageIncreasePerLuckPoint / 100f);
 
                 healthmanager.TakeDamage(value + extra);
             }

@@ -33,7 +33,7 @@ namespace ProjectColombo.StateMachine.Player
             }
 
             stateMachine.currentComboString += myScale == GameGlobals.MusicScale.MAJOR ? "M" : "m";
-            Debug.Log(stateMachine.currentComboString);
+            //Debug.Log(stateMachine.currentComboString);
             stateMachine.myWeaponAttributes.currentScale = myScale;
             stateMachine.myWeaponAttributes.Telegraphing();
             stateMachine.comboWindowOpen = false;

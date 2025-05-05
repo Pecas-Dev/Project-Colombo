@@ -12,13 +12,14 @@ namespace ProjectColombo.Objects.Charms
         {
             myEntityAttributes = GameObject.Find("Player").GetComponent<EntityAttributes>();
             value = myEntityAttributes.moveSpeed / 100 * movementSpeedIncrease;
-            Debug.Log("increased speed from: " + myEntityAttributes.moveSpeed + ", by: " + value);
             myEntityAttributes.moveSpeed += value;
+            Debug.Log("increased speed by: " + value + ", to: " + myEntityAttributes.moveSpeed);
         }
 
         public override void Remove()
         {
             myEntityAttributes.moveSpeed -= value;
+            Debug.Log("decreased speed by: " + value + ", to: " + myEntityAttributes.moveSpeed);
         }
     }
 }

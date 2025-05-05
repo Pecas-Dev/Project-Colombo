@@ -13,13 +13,14 @@ namespace ProjectColombo.Objects.Charms
         public override void Equip()
         {
             myPlayerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
-            Debug.Log("increased luck from: " + myPlayerInventory.currentLuck + ", by: " + luckIncrease);
             myPlayerInventory.currentLuck += luckIncrease;
+            Debug.Log("increased luck by: " + luckIncrease + ", to: " + myPlayerInventory.currentLuck);
         }
 
         public override void Remove()
         {
             myPlayerInventory.currentLuck -= luckIncrease;
+            Debug.Log("decreased luck by: " + luckIncrease + ", to: " + myPlayerInventory.currentLuck);
         }
     }
 }
