@@ -165,7 +165,7 @@ namespace ProjectColombo.LevelManagement
         private void Start()
         {
             algorythm = GetComponent<TileWorldPathAlgorythm>();
-            worldWidth = 2 * chamberOffsetX + layersOfChambers.Count * chamberOffsetX;
+            worldWidth = 2 * chamberOffsetX + layersOfChambers.Count * chamberOffsetX + 3;
 
             world.CreateTilemap(worldWidth, worldHeight);
 
@@ -173,7 +173,7 @@ namespace ProjectColombo.LevelManagement
             TryToMakeChamber(startChamber, startChamberTilePos, createdChambers);
             createdChambers[0].GetComponent<TileWorldChamber>().ActivateChamber(); //activate start chamber
 
-            Vector2 endChamberTilePos = new(chamberOffsetX + layersOfChambers.Count * chamberOffsetX, Mathf.RoundToInt(worldHeight / 2));
+            Vector2 endChamberTilePos = new(chamberOffsetX + layersOfChambers.Count * chamberOffsetX + (int)(endChamber.GetComponent<TileWorldChamber>().chamberSize.y/2f) + 1, Mathf.RoundToInt(worldHeight / 2));
             TryToMakeChamber(endChamber, endChamberTilePos, createdChambers);
 
             for (int layer = 0; layer < layersOfChambers.Count; layer++)
