@@ -344,6 +344,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: 3x2_Fighting_Chamber_2
       objectReference: {fileID: 0}
+    - target: {fileID: 4556110707230787760, guid: e89a02a4df02a6a43a0b478939ebe313, type: 3}
+      propertyPath: chamberSize.x
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7358459854559858602, guid: e89a02a4df02a6a43a0b478939ebe313, type: 3}
       propertyPath: m_LocalPosition.x
       value: 121.90001
@@ -384,11 +388,41 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6633539531544324272, guid: e89a02a4df02a6a43a0b478939ebe313, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5347251561367766321, guid: e89a02a4df02a6a43a0b478939ebe313, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1962405490}
   m_SourcePrefab: {fileID: 100100000, guid: e89a02a4df02a6a43a0b478939ebe313, type: 3}
+--- !u!1 &1962405489 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5347251561367766321, guid: e89a02a4df02a6a43a0b478939ebe313, type: 3}
+  m_PrefabInstance: {fileID: 1962405488}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &1962405490
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1962405489}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.2613769, y: 1.1802179, z: 5.0201344}
+  m_Center: {x: -0.008378279, y: 1.256497, z: 0.73203766}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
