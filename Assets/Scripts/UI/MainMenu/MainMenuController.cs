@@ -172,6 +172,18 @@ public class MainMenuController : MenuController
         }
     }
 
+    public void OpenOptionsMenu()
+    {
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.ShowOptionsMenu();
+        }
+        else
+        {
+            Debug.LogWarning("UIManagerV2 instance not found!");
+        }
+    }
+
     public void StartGame()
     {
         if (gameInputSO != null)
