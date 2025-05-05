@@ -152,6 +152,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ActivateRadial"",
+                    ""type"": ""Button"",
+                    ""id"": ""e1a2b271-1d6d-4d9e-b2c4-dff1ea0cab47"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -220,6 +229,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7b7d9b1c-459f-4d8c-b20d-a2b686ea1e81"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""ActivateRadial"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
@@ -600,15 +620,6 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""ActivateRadial"",
-                    ""type"": ""Button"",
-                    ""id"": ""8687234c-65e1-433d-9e82-9e0aae571233"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -853,17 +864,6 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""action"": ""NavigateRadial"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""13455b8a-579a-4491-99be-fea23fbc9c41"",
-                    ""path"": ""<Gamepad>/dpad/down"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Gamepad"",
-                    ""action"": ""ActivateRadial"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -947,6 +947,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_ItemSelect = m_Player.FindAction("ItemSelect", throwIfNotFound: true);
         m_Player_AbilitySelect = m_Player.FindAction("AbilitySelect", throwIfNotFound: true);
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
+        m_Player_ActivateRadial = m_Player.FindAction("ActivateRadial", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -960,7 +961,6 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_UI_RightClick = m_UI.FindAction("RightClick", throwIfNotFound: true);
         m_UI_MiddleClick = m_UI.FindAction("MiddleClick", throwIfNotFound: true);
         m_UI_NavigateRadial = m_UI.FindAction("NavigateRadial", throwIfNotFound: true);
-        m_UI_ActivateRadial = m_UI.FindAction("ActivateRadial", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -1042,6 +1042,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_ItemSelect;
     private readonly InputAction m_Player_AbilitySelect;
     private readonly InputAction m_Player_Pause;
+    private readonly InputAction m_Player_ActivateRadial;
     public struct PlayerActions
     {
         private @InputSystem_Actions m_Wrapper;
@@ -1060,6 +1061,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         public InputAction @ItemSelect => m_Wrapper.m_Player_ItemSelect;
         public InputAction @AbilitySelect => m_Wrapper.m_Player_AbilitySelect;
         public InputAction @Pause => m_Wrapper.m_Player_Pause;
+        public InputAction @ActivateRadial => m_Wrapper.m_Player_ActivateRadial;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1111,6 +1113,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Pause.started += instance.OnPause;
             @Pause.performed += instance.OnPause;
             @Pause.canceled += instance.OnPause;
+            @ActivateRadial.started += instance.OnActivateRadial;
+            @ActivateRadial.performed += instance.OnActivateRadial;
+            @ActivateRadial.canceled += instance.OnActivateRadial;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1157,6 +1162,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Pause.started -= instance.OnPause;
             @Pause.performed -= instance.OnPause;
             @Pause.canceled -= instance.OnPause;
+            @ActivateRadial.started -= instance.OnActivateRadial;
+            @ActivateRadial.performed -= instance.OnActivateRadial;
+            @ActivateRadial.canceled -= instance.OnActivateRadial;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1189,7 +1197,6 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_RightClick;
     private readonly InputAction m_UI_MiddleClick;
     private readonly InputAction m_UI_NavigateRadial;
-    private readonly InputAction m_UI_ActivateRadial;
     public struct UIActions
     {
         private @InputSystem_Actions m_Wrapper;
@@ -1205,7 +1212,6 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         public InputAction @RightClick => m_Wrapper.m_UI_RightClick;
         public InputAction @MiddleClick => m_Wrapper.m_UI_MiddleClick;
         public InputAction @NavigateRadial => m_Wrapper.m_UI_NavigateRadial;
-        public InputAction @ActivateRadial => m_Wrapper.m_UI_ActivateRadial;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1248,9 +1254,6 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @NavigateRadial.started += instance.OnNavigateRadial;
             @NavigateRadial.performed += instance.OnNavigateRadial;
             @NavigateRadial.canceled += instance.OnNavigateRadial;
-            @ActivateRadial.started += instance.OnActivateRadial;
-            @ActivateRadial.performed += instance.OnActivateRadial;
-            @ActivateRadial.canceled += instance.OnActivateRadial;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -1288,9 +1291,6 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @NavigateRadial.started -= instance.OnNavigateRadial;
             @NavigateRadial.performed -= instance.OnNavigateRadial;
             @NavigateRadial.canceled -= instance.OnNavigateRadial;
-            @ActivateRadial.started -= instance.OnActivateRadial;
-            @ActivateRadial.performed -= instance.OnActivateRadial;
-            @ActivateRadial.canceled -= instance.OnActivateRadial;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -1369,6 +1369,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         void OnItemSelect(InputAction.CallbackContext context);
         void OnAbilitySelect(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
+        void OnActivateRadial(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
@@ -1383,6 +1384,5 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         void OnRightClick(InputAction.CallbackContext context);
         void OnMiddleClick(InputAction.CallbackContext context);
         void OnNavigateRadial(InputAction.CallbackContext context);
-        void OnActivateRadial(InputAction.CallbackContext context);
     }
 }
