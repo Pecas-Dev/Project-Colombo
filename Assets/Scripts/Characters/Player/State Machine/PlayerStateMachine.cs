@@ -275,7 +275,7 @@ namespace ProjectColombo.StateMachine.Player
             comboWindowOpen = false;
         }
 
-        public void OnCollisionEnter(Collision collision)
+        public void OnCollisionStay(Collision collision)
         {
             if (currentState == PlayerState.Roll)
             {
