@@ -12,7 +12,7 @@ namespace ProjectColombo.LevelManagement
         {
             int rand = Random.Range(0, buildingVariants.Count);
 
-            Instantiate(buildingVariants[rand], transform.position, transform.rotation);
+            Instantiate(buildingVariants[rand], transform.position, transform.rotation, transform.parent);
             Destroy(this.gameObject);
         }
     }

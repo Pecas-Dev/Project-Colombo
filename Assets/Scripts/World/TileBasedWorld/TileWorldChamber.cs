@@ -1,9 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
-using DG.DemiLib;
-using ProjectColombo.GameManagement;
-using Unity.VisualScripting;
 using ProjectColombo.GameManagement.Events;
+using DG.DemiLib;
 
 namespace ProjectColombo.LevelManagement
 {
@@ -52,6 +50,9 @@ namespace ProjectColombo.LevelManagement
                         foreach (GameObject exit in exits)
                         {
                             exit.GetComponent<BoxCollider>().isTrigger = true;
+                            exit.GetComponentInChildren<Animator>().ResetTrigger("Open");
+                            exit.GetComponentInChildren<Animator>().ResetTrigger("Close");
+                            exit.GetComponentInChildren<Animator>().SetTrigger("Open"); //open gate animation
                         }
 
                         CustomEvents.ChamberFinished();
@@ -95,6 +96,9 @@ namespace ProjectColombo.LevelManagement
                 //Debug.Log(entranceDir[0] + ": " + GetEntranceCoord().GetRealPos());
                 entrance.GetComponent<MeshRenderer>().enabled = false ;
                 entrance.GetComponent<BoxCollider>().isTrigger = true;
+                entrance.GetComponentInChildren<Animator>().ResetTrigger("Open");
+                entrance.GetComponentInChildren<Animator>().ResetTrigger("Close");
+                entrance.GetComponentInChildren<Animator>().SetTrigger("Open"); //close gate animation
             }
 
             foreach (GameObject exit in exits)
@@ -114,6 +118,9 @@ namespace ProjectColombo.LevelManagement
                 //Debug.Log(exitDir[0] + ": " + GetExitCoord().GetRealPos());
                 exit.GetComponent<MeshRenderer>().enabled = false;
                 exit.GetComponent<BoxCollider>().isTrigger = false; //all exits are locked from the get go
+                exit.GetComponentInChildren<Animator>().ResetTrigger("Open");
+                exit.GetComponentInChildren<Animator>().ResetTrigger("Close");
+                exit.GetComponentInChildren<Animator>().SetTrigger("Close"); //close gate animation
             }
         }
 
@@ -129,11 +136,17 @@ namespace ProjectColombo.LevelManagement
             foreach (GameObject entrance in entrances)
             {
                 entrance.GetComponent<BoxCollider>().isTrigger = false;
+                entrance.GetComponentInChildren<Animator>().ResetTrigger("Open");
+                entrance.GetComponentInChildren<Animator>().ResetTrigger("Close");
+                entrance.GetComponentInChildren<Animator>().SetTrigger("Close"); //close gate animation
             }
 
             foreach (GameObject exit in exits)
             {
                 exit.GetComponent<BoxCollider>().isTrigger = false;
+                exit.GetComponentInChildren<Animator>().ResetTrigger("Open");
+                exit.GetComponentInChildren<Animator>().ResetTrigger("Close");
+                exit.GetComponentInChildren<Animator>().SetTrigger("Close"); //close gate animation
             }
 
             isActive = true;

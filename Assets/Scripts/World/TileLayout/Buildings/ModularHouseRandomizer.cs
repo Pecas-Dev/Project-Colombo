@@ -38,7 +38,7 @@ namespace ProjectColombo.LevelManagement
         {
             int rand = Random.Range(0, list.Count);
 
-            GameObject module = Instantiate(list[rand]);
+            GameObject module = Instantiate(list[rand], transform);
             module.transform.SetParent(transform, false); // false keeps local transform intact
             module.transform.localPosition = new Vector3(0, currentHeightOffset, 0);
             module.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
