@@ -76,7 +76,6 @@ namespace ProjectColombo.GameManagement
 
             transition.Play("Open");
 
-            // Reset input system properly on new scene load
             gameInput.Uninitialize();
             gameInput.Initialize();
             gameInput.EnableAllInputs();

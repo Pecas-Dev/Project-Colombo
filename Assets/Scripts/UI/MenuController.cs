@@ -1,8 +1,10 @@
 using TMPro;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using ProjectColombo.GameInputSystem;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 
 namespace ProjectColombo.UI
@@ -22,9 +24,17 @@ namespace ProjectColombo.UI
         [SerializeField] protected float defaultMaxFontSize = 100f;
         [SerializeField] protected float animationDuration = 0.3f;
 
+        [Header("Button Click Animation Settings")]
+        [SerializeField] protected float clickShrinkScale = 0.8f;
+        [SerializeField] protected float clickShrinkDuration = 0.1f;
+        [SerializeField] protected float clickBounceDuration = 0.2f;
+        [SerializeField] protected AnimationCurve clickBounceCurve;
+
 
         protected Animator transitionAnimation;
         protected UIInputSwitcher uiInputSwitcher;
+
+        protected Dictionary<RectTransform, Vector3> originalButtonScales = new Dictionary<RectTransform, Vector3>();
 
 
         public virtual void Show()
@@ -66,10 +76,147 @@ namespace ProjectColombo.UI
                 GameObject uiInputSwitcherObject = new GameObject("UIInputSwitcher");
                 uiInputSwitcherObject.AddComponent<UIInputSwitcher>();
             }
+
+            if (clickBounceCurve == null || clickBounceCurve.keys.Length == 0)
+            {
+                Keyframe[] keys = new Keyframe[3];
+                keys[0] = new Keyframe(0f, 0f, 0f, 2f);
+                keys[1] = new Keyframe(0.5f, 1.1f, 0f, 0f);
+                keys[2] = new Keyframe(1f, 1f, -1f, 0f);
+                clickBounceCurve = new AnimationCurve(keys);
+            }
+
+            SetupButtonClickHandlers();
         }
 
         public virtual void HandleInput()
         {
+        }
+
+        protected virtual void SetupButtonClickHandlers()
+        {
+            if (menuContainer == null) return;
+
+            Button[] buttons = menuContainer.GetComponentsInChildren<Button>(true);
+
+            foreach (Button button in buttons)
+            {
+                RectTransform rectTransform = button.GetComponent<RectTransform>();
+
+                if (rectTransform != null && !originalButtonScales.ContainsKey(rectTransform))
+                {
+                    originalButtonScales[rectTransform] = rectTransform.localScale;
+                }
+
+                button.onClick.AddListener(() => PlayButtonClickAnimation(rectTransform));
+
+                EventTrigger eventTrigger = button.GetComponent<EventTrigger>();
+
+                if (eventTrigger == null)
+                {
+                    eventTrigger = button.gameObject.AddComponent<EventTrigger>();
+                }
+
+                bool hasSubmitTrigger = false;
+
+                if (eventTrigger.triggers != null)
+                {
+                    foreach (EventTrigger.Entry entry in eventTrigger.triggers)
+                    {
+                        if (entry.eventID == EventTriggerType.Submit)
+                        {
+                            hasSubmitTrigger = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!hasSubmitTrigger)
+                {
+                    EventTrigger.Entry entry = new EventTrigger.Entry();
+                    entry.eventID = EventTriggerType.Submit;
+                    entry.callback.AddListener((data) => PlayButtonClickAnimation(rectTransform));
+                    eventTrigger.triggers.Add(entry);
+                }
+            }
+        }
+
+        protected void PlayButtonClickAnimation(RectTransform rectTransform)
+        {
+            if (rectTransform == null) return;
+
+            Vector3 originalScale = Vector3.one;
+
+            if (originalButtonScales.ContainsKey(rectTransform))
+            {
+                originalScale = originalButtonScales[rectTransform];
+            }
+            else
+            {
+                originalScale = rectTransform.localScale;
+                originalButtonScales[rectTransform] = originalScale;
+            }
+
+            rectTransform.localScale = originalScale * clickShrinkScale;
+            
+            try
+            {
+                StartCoroutine(ShrinkAndBounceAnimation(rectTransform, originalScale));
+            }
+            catch (System.Exception)
+            {
+                UnityEngine.Application.onBeforeRender += () => ResetButtonScale(rectTransform, originalScale);
+            }
+        }
+        
+        private void ResetButtonScale(RectTransform rectTransform, Vector3 originalScale)
+        {
+            if (rectTransform != null)
+            {
+                rectTransform.localScale = originalScale;
+            }
+            
+            UnityEngine.Application.onBeforeRender -= () => ResetButtonScale(rectTransform, originalScale);
+        }
+
+        protected IEnumerator ShrinkAndBounceAnimation(RectTransform rectTransform, Vector3 originalScale)
+        {
+            if (rectTransform == null) yield break;
+            
+            Vector3 targetScale = originalScale * clickShrinkScale;
+            
+            rectTransform.localScale = targetScale;
+            
+            yield return new WaitForEndOfFrame();
+            
+            if (!gameObject.activeInHierarchy || rectTransform == null) 
+            {
+                yield break;
+            }
+            
+            float elapsedTime = 0f;
+            
+            while (elapsedTime < clickBounceDuration && gameObject.activeInHierarchy && rectTransform != null)
+            {
+                float t = elapsedTime / clickBounceDuration;
+                float curveValue = clickBounceCurve.Evaluate(t);
+                
+                Vector3 currentScale = Vector3.Lerp(targetScale, originalScale, curveValue);
+                rectTransform.localScale = currentScale;
+                
+                elapsedTime += Time.deltaTime;
+                yield return null;
+                
+                if (!gameObject.activeInHierarchy || rectTransform == null)
+                {
+                    yield break;
+                }
+            }
+            
+            if (gameObject.activeInHierarchy && rectTransform != null)
+            {
+                rectTransform.localScale = originalScale;
+            }
         }
 
         protected IEnumerator AnimateTextSize(TextMeshProUGUI text, float startMin, float startMax, float endMin, float endMax, float duration)

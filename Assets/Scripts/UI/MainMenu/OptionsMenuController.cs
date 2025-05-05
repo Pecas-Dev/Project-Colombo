@@ -11,11 +11,13 @@ namespace ProjectColombo.UI
         [Header("Tab Navigation")]
         [SerializeField] GameObject[] tabScreens;
         [SerializeField] GameObject[] tabSelectionIndicators;
-        [SerializeField] TextMeshProUGUI[] tabTitles;
-    
-    [Header("Tab Colors")]
-    [SerializeField] Color tabOriginalColor = Color.black;
-    [SerializeField] Color tabHoverColor = new Color(0.4415095f, 0f, 0.4200771f);
+        [SerializeField] Button[] tabButtons;
+
+        private TextMeshProUGUI[] tabTexts;
+
+        [Header("Tab Colors")]
+        [SerializeField] Color tabOriginalColor = Color.black;
+        [SerializeField] Color tabHoverColor = new Color(0.4415095f, 0f, 0.4200771f);
 
 
         int currentTabIndex = 0;
@@ -26,7 +28,8 @@ namespace ProjectColombo.UI
         {
             base.Initialize();
 
-            textAnimationCoroutines = new Coroutine[tabTitles.Length];
+            tabTexts = new TextMeshProUGUI[tabButtons.Length];
+            textAnimationCoroutines = new Coroutine[tabButtons.Length];
 
             for (int i = 0; i < tabScreens.Length; i++)
             {
@@ -35,55 +38,46 @@ namespace ProjectColombo.UI
                 {
                     tabSelectionIndicators[i].SetActive(false);
                 }
+            }
 
-                if (tabTitles != null && i < tabTitles.Length)
+            for (int i = 0; i < tabButtons.Length; i++)
+            {
+                if (tabButtons[i] != null)
                 {
-                    SetTextToDefaultSize(tabTitles[i]);
-                    
-                    // Set initial color
-                    tabTitles[i].color = tabOriginalColor;
-                    
-                    // Add event handlers for mouse hover and click
-                    int index = i; // Capture the index for event handlers
-                    
-                    // Make sure the tab title is clickable
-                    Button tabButton;
-                    if (!tabTitles[i].gameObject.TryGetComponent<Button>(out tabButton))
+                    tabTexts[i] = tabButtons[i].GetComponentInChildren<TextMeshProUGUI>();
+
+                    if (tabTexts[i] != null)
                     {
-                        tabButton = tabTitles[i].gameObject.AddComponent<Button>();
-                        ColorBlock colors = tabButton.colors;
-                        colors.disabledColor = tabOriginalColor;
-                        colors.normalColor = tabOriginalColor;
-                        colors.highlightedColor = tabOriginalColor; // We'll handle this with our own logic
-                        colors.pressedColor = tabOriginalColor;
-                        colors.selectedColor = tabOriginalColor;
-                        tabButton.colors = colors;
-                        
-                        // Add a navigation group that includes all tabs
-                        tabButton.navigation = new Navigation { mode = Navigation.Mode.Explicit };
+                        SetTextToDefaultSize(tabTexts[i]);
+                        tabTexts[i].color = tabOriginalColor;
                     }
-                    
-                    // Add click handler to the button
+
                     int buttonIndex = i;
-                    tabButton.onClick.RemoveAllListeners();
-                    tabButton.onClick.AddListener(() => SelectTab(buttonIndex));
-                    
-                    // Add EventTrigger if it doesn't exist
-                    EventTrigger eventTrigger = tabTitles[i].gameObject.GetComponent<EventTrigger>();
+
+                    tabButtons[i].onClick.RemoveAllListeners();
+                    tabButtons[i].onClick.AddListener(() => SelectTab(buttonIndex));
+
+                    ColorBlock colors = tabButtons[i].colors;
+                    colors.colorMultiplier = 1f;
+                    colors.disabledColor = Color.white;
+                    colors.normalColor = Color.white;
+                    colors.highlightedColor = Color.white;
+                    colors.pressedColor = Color.white;
+                    colors.selectedColor = Color.white;
+                    tabButtons[i].colors = colors;
+
+                    EventTrigger eventTrigger = tabButtons[i].gameObject.GetComponent<EventTrigger>();
+
                     if (eventTrigger == null)
                     {
-                        eventTrigger = tabTitles[i].gameObject.AddComponent<EventTrigger>();
+                        eventTrigger = tabButtons[i].gameObject.AddComponent<EventTrigger>();
                     }
-                    
-                    // Clear existing triggers to avoid duplicates
+
                     eventTrigger.triggers.Clear();
-                    
-                    // Add hover events
+
+                    int index = i;
                     AddEventTriggerEntry(eventTrigger, EventTriggerType.PointerEnter, (data) => OnTabHoverEnter(index));
                     AddEventTriggerEntry(eventTrigger, EventTriggerType.PointerExit, (data) => OnTabHoverExit(index));
-                    
-                    // Add click event
-                    AddEventTriggerEntry(eventTrigger, EventTriggerType.PointerClick, (data) => SelectTab(index));
                 }
             }
 
@@ -92,6 +86,7 @@ namespace ProjectColombo.UI
             if (tabScreens.Length > 0 && currentTabIndex >= 0 && currentTabIndex < tabScreens.Length)
             {
                 Button firstButton = tabScreens[currentTabIndex].GetComponentInChildren<Button>();
+
                 if (firstButton != null)
                 {
                     uiInputSwitcher = FindFirstObjectByType<UIInputSwitcher>();
@@ -115,6 +110,7 @@ namespace ProjectColombo.UI
             if (tabScreens.Length > 0 && currentTabIndex >= 0 && currentTabIndex < tabScreens.Length)
             {
                 Button firstButton = tabScreens[currentTabIndex].GetComponentInChildren<Button>();
+
                 if (firstButton != null)
                 {
                     EventSystem.current.SetSelectedGameObject(firstButton.gameObject);
@@ -170,42 +166,40 @@ namespace ProjectColombo.UI
 
             SelectTab(newIndex);
         }
-        
+
         void AddEventTriggerEntry(EventTrigger trigger, EventTriggerType type, UnityEngine.Events.UnityAction<BaseEventData> action)
         {
             EventTrigger.Entry entry = new EventTrigger.Entry();
+
             entry.eventID = type;
             entry.callback.AddListener((data) => { action((BaseEventData)data); });
+
             trigger.triggers.Add(entry);
         }
-        
+
         void OnTabHoverEnter(int index)
         {
-            // Don't change color if this is the selected tab
             if (index == currentTabIndex)
             {
                 return;
             }
-            
-            // Change color on hover
-            if (tabTitles != null && index < tabTitles.Length)
+
+            if (tabTexts != null && index < tabTexts.Length && tabTexts[index] != null)
             {
-                tabTitles[index].color = tabHoverColor;
+                tabTexts[index].color = tabHoverColor;
             }
         }
-        
+
         void OnTabHoverExit(int index)
         {
-            // Don't change color if this is the selected tab
             if (index == currentTabIndex)
             {
                 return;
             }
-            
-            // Reset color when mouse leaves
-            if (tabTitles != null && index < tabTitles.Length)
+
+            if (tabTexts != null && index < tabTexts.Length && tabTexts[index] != null)
             {
-                tabTitles[index].color = tabOriginalColor;
+                tabTexts[index].color = tabOriginalColor;
             }
         }
 
@@ -225,7 +219,7 @@ namespace ProjectColombo.UI
                     tabSelectionIndicators[currentTabIndex].SetActive(false);
                 }
 
-                if (tabTitles != null && currentTabIndex < tabTitles.Length)
+                if (tabTexts != null && currentTabIndex < tabTexts.Length && tabTexts[currentTabIndex] != null)
                 {
                     if (textAnimationCoroutines[currentTabIndex] != null)
                     {
@@ -233,10 +227,9 @@ namespace ProjectColombo.UI
                     }
 
                     textAnimationCoroutines[currentTabIndex] = StartCoroutine(
-                        AnimateTextSize(tabTitles[currentTabIndex], selectedMinFontSize, selectedMaxFontSize, defaultMinFontSize, defaultMaxFontSize, animationDuration));
-                    
-                    // Reset color of previous tab
-                    tabTitles[currentTabIndex].color = tabOriginalColor;
+                    AnimateTextSize(tabTexts[currentTabIndex], selectedMinFontSize, selectedMaxFontSize, defaultMinFontSize, defaultMaxFontSize, animationDuration));
+
+                    tabTexts[currentTabIndex].color = tabOriginalColor;
                 }
             }
 
@@ -248,17 +241,16 @@ namespace ProjectColombo.UI
                 tabSelectionIndicators[currentTabIndex].SetActive(true);
             }
 
-            if (tabTitles != null && currentTabIndex < tabTitles.Length)
+            if (tabTexts != null && currentTabIndex < tabTexts.Length && tabTexts[currentTabIndex] != null)
             {
                 if (textAnimationCoroutines[currentTabIndex] != null)
                 {
                     StopCoroutine(textAnimationCoroutines[currentTabIndex]);
                 }
 
-                textAnimationCoroutines[currentTabIndex] = StartCoroutine(AnimateTextSize(tabTitles[currentTabIndex], defaultMinFontSize, defaultMaxFontSize, selectedMinFontSize, selectedMaxFontSize, animationDuration));
-                
-                // Set selected tab color
-                tabTitles[currentTabIndex].color = tabOriginalColor;
+                textAnimationCoroutines[currentTabIndex] = StartCoroutine(AnimateTextSize(tabTexts[currentTabIndex], defaultMinFontSize, defaultMaxFontSize, selectedMinFontSize, selectedMaxFontSize, animationDuration));
+
+                tabTexts[currentTabIndex].color = tabOriginalColor;
             }
 
             Button firstButton = tabScreens[currentTabIndex].GetComponentInChildren<Button>();
