@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-1589414791780785702
+--- !u!114 &-7095861923632685783
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shortstack2
-  m_Shader: {fileID: -6465566751694194690, guid: 36a5049708463004987ee47237115943, type: 3}
+  m_Name: Shortstack3_Blend
+  m_Shader: {fileID: -6465566751694194690, guid: d13fed5196b28224fb75fd19fbd35af7, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -39,6 +39,10 @@ Material:
     m_TexEnvs:
     - _BaseMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BerlinNoise:
+        m_Texture: {fileID: 2800000, guid: 60b042c0b3f31284c861135e51c28785, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -78,15 +82,27 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PrimaryBaseMap:
-        m_Texture: {fileID: 2800000, guid: 0b7ba51bac814fa4191d0ba0bf362383, type: 3}
+        m_Texture: {fileID: 2800000, guid: 7c6217329f7a3794ea30234e4d893677, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PrimaryMetallicMap:
-        m_Texture: {fileID: 2800000, guid: 4c9efe520a3d03f46aae99780d57ec18, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2c24e3d807fb5a44084818d8321bfb42, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PrmaryNormalMap:
-        m_Texture: {fileID: 2800000, guid: fbd66fafa57b9cc498b3d71ed5b14d36, type: 3}
+        m_Texture: {fileID: 2800000, guid: 15d3b45d904acc043a72cec91d590236, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SecondaryBaseMap:
+        m_Texture: {fileID: 2800000, guid: 32f898745faebec48a75ba5775f78315, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SecondaryMetallicMap:
+        m_Texture: {fileID: 2800000, guid: 4a215fea78fb7214c988ee237edd2fda, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SecondaryNormalMap:
+        m_Texture: {fileID: 2800000, guid: 16da8d060242a75468fe025c1e68a092, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -110,6 +126,8 @@ Material:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
+    - _BerlinNoiseBlend: 1
+    - _BerlinNoiseTile: 0.05
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
