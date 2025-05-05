@@ -143,7 +143,8 @@ namespace ProjectColombo.LevelManagement
         //data
         int worldHeight = 25;
         int worldWidth = 0;
-        int chamberOffset = 4;
+        int chamberOffsetX = 4;
+        int chamberOffsetY = 2;
 
         public List<GameObject> chamberVariants;
         public List<GameObject> ICorridors;
@@ -164,7 +165,7 @@ namespace ProjectColombo.LevelManagement
         private void Start()
         {
             algorythm = GetComponent<TileWorldPathAlgorythm>();
-            worldWidth = 2 * chamberOffset + layersOfChambers.Count * chamberOffset;
+            worldWidth = 2 * chamberOffsetX + layersOfChambers.Count * chamberOffsetX;
 
             world.CreateTilemap(worldWidth, worldHeight);
 
@@ -172,7 +173,7 @@ namespace ProjectColombo.LevelManagement
             TryToMakeChamber(startChamber, startChamberTilePos, createdChambers);
             createdChambers[0].GetComponent<TileWorldChamber>().ActivateChamber(); //activate start chamber
 
-            Vector2 endChamberTilePos = new(chamberOffset + layersOfChambers.Count * chamberOffset, Mathf.RoundToInt(worldHeight / 2));
+            Vector2 endChamberTilePos = new(chamberOffsetX + layersOfChambers.Count * chamberOffsetX, Mathf.RoundToInt(worldHeight / 2));
             TryToMakeChamber(endChamber, endChamberTilePos, createdChambers);
 
             for (int layer = 0; layer < layersOfChambers.Count; layer++)
@@ -180,8 +181,8 @@ namespace ProjectColombo.LevelManagement
                 List<GameObject> currentLayer = new();
                 int chamberCount = layersOfChambers[layer];
 
-                int posX = chamberOffset * layer + chamberOffset; //start + currentlayer
-                int posY = (int)(startChamberTilePos.y - (chamberCount / 2f) * chamberOffset + 3); //move down to centralize
+                int posX = chamberOffsetX * layer + chamberOffsetX; //start + currentlayer
+                int posY = (int)(startChamberTilePos.y - (chamberCount / 2f) * chamberOffsetY + 3); //move down to centralize
                 
                 //create  layer chambers
                 for (int i = 0; i < chamberCount; i++)
@@ -189,7 +190,7 @@ namespace ProjectColombo.LevelManagement
                     Vector2 position = new(posX, posY);
                     int index = Random.Range(0, chamberVariants.Count);
                     TryToMakeChamber(chamberVariants[index], position, currentLayer);
-                    posY += chamberOffset;
+                    posY += chamberOffsetY;
                 }
 
                 chamberLayers.Add(currentLayer);
