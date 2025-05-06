@@ -1,9 +1,7 @@
-using ProjectColombo.Inventory.Collectable;
 using ProjectColombo.LevelManagement;
 using ProjectColombo.Objects;
 using ProjectColombo.Objects.Items;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace ProjectColombo.Enemies.DropSystem
