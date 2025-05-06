@@ -45,7 +45,6 @@ namespace ProjectColombo.Combat
 
         private void Start()
         {
-            CustomEvents.OnLevelChange += SaveCurrentStats;
             myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
             myLevelStats = GameObject.Find("WorldGeneration").GetComponent<LevelStats>();
             myCollider = GetComponent<Collider>();
@@ -57,22 +56,7 @@ namespace ProjectColombo.Combat
             myParticles = GetComponent<ParticleSystem>();
         }
 
-        private void OnDestroy()
-        {
-            CustomEvents.OnLevelChange -= SaveCurrentStats;
-        }
 
-        private void SaveCurrentStats()
-        {
-            if (GetComponentInParent<EntityAttributes>().CompareTag("Player"))
-            {
-                myGlobalStats.currentMajorDamageMultiplyer = majorDamageMultiplier;
-                myGlobalStats.currentMinorDamageMultiplyer = minorDamageMultiplier;
-                myGlobalStats.currentCorrectAttackScalePercent = correctAttackScaleBonusPercentage;
-                myGlobalStats.currentBlockReductionPercent = blockDamageReductionPercentage;
-                myGlobalStats.currentMissedParryPaneltyPercent = missedParryPaneltyPercentage;
-            }
-        }
 
         void GetCurrentStats()
         {

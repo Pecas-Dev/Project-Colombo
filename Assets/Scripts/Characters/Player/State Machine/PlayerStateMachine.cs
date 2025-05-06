@@ -57,6 +57,7 @@ namespace ProjectColombo.StateMachine.Player
         [HideInInspector] public bool comboWindowOpen = false;
         [HideInInspector] public string currentComboString = "";
         [HideInInspector] public ShopKeeper closeShop = null;
+        bool activateCharmsAndMask = false;
 
         void Awake()
         {
@@ -79,8 +80,6 @@ namespace ProjectColombo.StateMachine.Player
 
             //get current selected weapon
             SwapWeapon();
-            myPlayerInventory.ActivateMask();
-            myPlayerInventory.ActivateCharms();
         }
 
         public void ApplyKnockback(Vector3 direction, float knockbackStrength)
@@ -108,6 +107,13 @@ namespace ProjectColombo.StateMachine.Player
 
         private void FixedUpdate()
         {
+            if (!activateCharmsAndMask)
+            {
+                myPlayerInventory.ActivateMask();
+                myPlayerInventory.ActivateCharms();
+                activateCharmsAndMask = true;
+            }
+
             if (myHealthManager.CurrentHealth <= 0 && currentState != PlayerState.Dead)
             {
                 SwitchState(new PlayerDeathState(this));

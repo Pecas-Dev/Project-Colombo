@@ -11,8 +11,8 @@ namespace ProjectColombo
     {
         GlobalStats myGlobalStats;
         LevelStats myLevelStats;
-        [HideInInspector]public float moveSpeed;
-        [HideInInspector]public float attackSpeed;
+        [ReadOnlyInspector]public float moveSpeed;
+        [ReadOnlyInspector]public float attackSpeed;
         
 
         
@@ -26,25 +26,11 @@ namespace ProjectColombo
 
         private void Start()
         {
-            CustomEvents.OnLevelChange += SaveCurrentStats;
             myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
             myLevelStats = GameObject.Find("WorldGeneration").GetComponent<LevelStats>();
             GetCurrentStats();
         }
 
-        private void OnDestroy()
-        {
-            CustomEvents.OnLevelChange -= SaveCurrentStats;
-        }
-
-        private void SaveCurrentStats()
-        {
-            if (gameObject.CompareTag("Player"))
-            {
-                myGlobalStats.currentPlayerSpeed = moveSpeed;
-                myGlobalStats.currentPlayerAttackSpeed = attackSpeed;
-            }
-        }
 
         void GetCurrentStats()
         {
