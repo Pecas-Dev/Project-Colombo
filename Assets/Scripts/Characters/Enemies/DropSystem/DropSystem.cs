@@ -75,14 +75,14 @@ namespace ProjectColombo.Enemies.DropSystem
             {
                 int rand = Random.Range(0, commonCharms.Count);
 
-                GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 1f, transform.position.z), transform.rotation);
+                GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation);
                 instance.GetComponent<PickUp>().SetCharm(commonCharms[rand]);
             }
             else if (random <= dropChanceRareCharm + dropChanceCommonCharm)
             {
                 int rand = Random.Range(0, rareCharms.Count);
 
-                GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 1f, transform.position.z), transform.rotation);
+                GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation);
                 instance.GetComponent<PickUp>().SetCharm(rareCharms[rand]);
 
             }
@@ -90,7 +90,7 @@ namespace ProjectColombo.Enemies.DropSystem
             {
                 int rand = Random.Range(0, legendaryCharms.Count);
 
-                GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 1f, transform.position.z), transform.rotation);
+                GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation);
                 instance.GetComponent<PickUp>().SetCharm(legendaryCharms[rand]);
 
             }
@@ -98,7 +98,7 @@ namespace ProjectColombo.Enemies.DropSystem
             {
                 int rand = Random.Range(minAmountOfCoins, maxAmountOfCoins+1);
 
-                GameObject coininstance = Instantiate(coins, new Vector3(transform.position.x, 1f, transform.position.z), transform.rotation);
+                GameObject coininstance = Instantiate(coins, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation);
                 coininstance.GetComponent<Coins>().amount = rand;
             }
         }
