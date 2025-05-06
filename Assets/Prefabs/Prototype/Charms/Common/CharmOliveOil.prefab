@@ -9,8 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6751126873525922226}
-  - component: {fileID: 409358881547751001}
   - component: {fileID: 1823808844642602053}
+  - component: {fileID: 2728324016488369396}
+  - component: {fileID: 3030737013788142732}
   m_Layer: 0
   m_Name: CharmOliveOil
   m_TagString: Untagged
@@ -33,24 +34,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &409358881547751001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6503379658991535769}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f7c58b56824f9445b95465ac3c766a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  charmName: Olive Oil
-  charmRarity: 0
-  charmPicture: {fileID: 21300000, guid: b405d449a27db5044951a93a43dee53a, type: 3}
-  charmDescription: "+Movement Speed\r"
-  charmLore: 
-  movementSpeedIncrease: 8
 --- !u!65 &1823808844642602053
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -72,3 +55,33 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3, y: 3, z: 3}
   m_Center: {x: 0, y: 1.5, z: 0}
+--- !u!114 &2728324016488369396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6503379658991535769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2dedf96790dd004397372c94ec13fcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  charmName: Olive Oil
+  charmRarity: 0
+  charmPicture: {fileID: 21300000, guid: b405d449a27db5044951a93a43dee53a, type: 3}
+  charmDescription: +Movement Speed
+  charmLore: 
+--- !u!114 &3030737013788142732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6503379658991535769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 521ee173c23e46348a372419f5ba27ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speedIncreasePercentage: 10

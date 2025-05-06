@@ -9,8 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2020883498043372703}
-  - component: {fileID: 6122156394032883385}
   - component: {fileID: 8995584520036607115}
+  - component: {fileID: 3691615917208984281}
+  - component: {fileID: 5344447189916797042}
+  - component: {fileID: 928723013491565994}
+  - component: {fileID: 6842070512382356894}
   m_Layer: 0
   m_Name: CharmSacredRing
   m_TagString: Untagged
@@ -33,30 +36,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6122156394032883385
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 808636044392298626}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65b77f63eb59812488d8e47282dbc3c6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  charmName: Sacred Ring
-  charmRarity: 1
-  charmPicture: {fileID: 21300000, guid: b405d449a27db5044951a93a43dee53a, type: 3}
-  charmDescription: '+Evade Chance
-
-    +Stamina
-
-    +Gold'
-  charmLore: 
-  evadeChance: 20
-  addedStamina: 1
-  doubleGoldChance: 25
 --- !u!65 &8995584520036607115
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -78,3 +57,63 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3, y: 3, z: 3}
   m_Center: {x: 0, y: 1.5, z: 0}
+--- !u!114 &3691615917208984281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808636044392298626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2dedf96790dd004397372c94ec13fcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  charmName: Sacred Ring
+  charmRarity: 1
+  charmPicture: {fileID: 21300000, guid: b405d449a27db5044951a93a43dee53a, type: 3}
+  charmDescription: '+Evade Chance
+
+    +Stamina
+
+    +Gold'
+  charmLore: 
+--- !u!114 &5344447189916797042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808636044392298626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea2e5d014fb7a7d41a93ce3abbdc448d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  evadeChancePercentage: 20
+--- !u!114 &928723013491565994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808636044392298626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44d4836314b3a26448b47cd3240bba4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  addedStaminaPoints: 1
+--- !u!114 &6842070512382356894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808636044392298626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1864ab63a88b169458dd17cdd6cc4699, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  doubleGoldOnPickUpPercentage: 10

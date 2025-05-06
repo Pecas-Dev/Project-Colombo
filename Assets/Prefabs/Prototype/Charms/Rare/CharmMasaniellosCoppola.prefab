@@ -9,8 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2064883132123700729}
-  - component: {fileID: 459160741000255979}
   - component: {fileID: 8526131889834067431}
+  - component: {fileID: 630275083923828812}
+  - component: {fileID: 7467712203850740868}
+  - component: {fileID: 8381323518284641153}
   m_Layer: 0
   m_Name: CharmMasaniellosCoppola
   m_TagString: Untagged
@@ -33,27 +35,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &459160741000255979
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8617957453502818824}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a0859f4b5bfec449b9049bc68218440, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  charmName: Masaniellos Coppola
-  charmRarity: 1
-  charmPicture: {fileID: 21300000, guid: b405d449a27db5044951a93a43dee53a, type: 3}
-  charmDescription: '++Defense
-
-'
-  charmLore: 
-  damageResistancePercentage: 10
-  failedParryBonus: 25
 --- !u!65 &8526131889834067431
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -75,3 +56,48 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3, y: 3, z: 3}
   m_Center: {x: 0, y: 1.5, z: 0}
+--- !u!114 &630275083923828812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8617957453502818824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2dedf96790dd004397372c94ec13fcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  charmName: "Masaniello\u2019s Coppola"
+  charmRarity: 1
+  charmPicture: {fileID: 21300000, guid: b405d449a27db5044951a93a43dee53a, type: 3}
+  charmDescription: ++Defense
+  charmLore: 
+--- !u!114 &7467712203850740868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8617957453502818824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 521362f5fbc274143bcb8c02f8304ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  majorDamagePercentage: 10
+  minorDamagePercentage: 10
+--- !u!114 &8381323518284641153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8617957453502818824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3e7f031a502ec941babd832e159fef9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extraDamageMissedParrySameScalePercentage: -25
+  extraDamageMissedParryDifferentScalePercentage: -25

@@ -1,10 +1,11 @@
 
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProjectColombo.Objects.Charms
 {
     public enum RARITY { COMMON = 0, RARE, LEGENDARY }
-    public abstract class BaseCharm : MonoBehaviour
+    public class BaseCharm : MonoBehaviour
     {
         public string charmName;
         public RARITY charmRarity;
@@ -12,8 +13,25 @@ namespace ProjectColombo.Objects.Charms
         [TextArea] public string charmDescription;
         [TextArea] public string charmLore;
 
+        BaseAttributes[] myAttributes;
 
-        public abstract void Equip();
-        public abstract void Remove();
+
+        public void Equip()
+        {
+            myAttributes = GetComponents<BaseAttributes>();
+
+            foreach (BaseAttributes attrib in myAttributes)
+            {
+                attrib.Enable();
+            }
+        }
+
+        public void Remove()
+        {
+            foreach (BaseAttributes attrib in myAttributes)
+            {
+                attrib.Disable();
+            }
+        }
     }
 }

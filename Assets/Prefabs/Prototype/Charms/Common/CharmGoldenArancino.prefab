@@ -9,8 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5749440442823366365}
-  - component: {fileID: 2704282243232035352}
   - component: {fileID: 5926692631218188637}
+  - component: {fileID: 6626113384889095686}
+  - component: {fileID: 5620306339511942647}
   m_Layer: 0
   m_Name: CharmGoldenArancino
   m_TagString: Untagged
@@ -33,26 +34,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2704282243232035352
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1353502290456183764}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7acf7853c2078bd48af2813370a98309, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  charmName: Golden Arancino
-  charmRarity: 0
-  charmPicture: {fileID: 21300000, guid: b405d449a27db5044951a93a43dee53a, type: 3}
-  charmDescription: '+Max Health
-
-'
-  charmLore: 
-  healthPointsIncrease: 100
 --- !u!65 &5926692631218188637
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -74,3 +55,33 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3, y: 3, z: 3}
   m_Center: {x: 0, y: 1.5, z: 0}
+--- !u!114 &6626113384889095686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1353502290456183764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2dedf96790dd004397372c94ec13fcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  charmName: Golden Arancino
+  charmRarity: 0
+  charmPicture: {fileID: 21300000, guid: b405d449a27db5044951a93a43dee53a, type: 3}
+  charmDescription: +Max Health
+  charmLore: 
+--- !u!114 &5620306339511942647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1353502290456183764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20e89445ad428534bb0b29288a9c1023, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extraHealthPoints: 100
