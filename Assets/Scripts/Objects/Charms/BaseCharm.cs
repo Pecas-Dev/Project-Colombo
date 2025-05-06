@@ -1,6 +1,4 @@
 
-using ProjectColombo.GameManagement.Events;
-using ProjectColombo.Inventory;
 using UnityEngine;
 
 namespace ProjectColombo.Objects.Charms
