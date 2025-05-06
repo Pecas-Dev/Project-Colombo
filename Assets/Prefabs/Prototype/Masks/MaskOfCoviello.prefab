@@ -1,5 +1,247 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1139000407451441167
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3303045779141564828}
+  - component: {fileID: 6654922861408953286}
+  - component: {fileID: 7303512423985624192}
+  - component: {fileID: 1600359345143272207}
+  - component: {fileID: 4049101367167318039}
+  - component: {fileID: 276649431712291718}
+  - component: {fileID: 1266718539226823293}
+  m_Layer: 0
+  m_Name: BeforeEchoAttrib
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3303045779141564828
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1139000407451441167}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2209119404911007971}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6654922861408953286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1139000407451441167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a24b44ebd5ebf24a9a4714e04825db9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  majorDamagePercentage: 12
+  minorDamagePercentage: 12
+--- !u!114 &7303512423985624192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1139000407451441167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8507c39341f7bbe4faf9aa7f0ffe6c55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damagePercentageMissingHealth: 1.2
+  forHowManyMissingHealth: 50
+--- !u!114 &1600359345143272207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1139000407451441167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 521362f5fbc274143bcb8c02f8304ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  majorDamagePercentage: 12
+  minorDamagePercentage: 12
+--- !u!114 &4049101367167318039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1139000407451441167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51323258caef5d3489f14b673e013f50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damgePercentage: 0.32
+  perHowManyMaxHealth: 100
+--- !u!114 &276649431712291718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1139000407451441167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e8a513198664fe478788696ed51f3b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damgePercentageSameScale: 0
+  damgePercentageOppScale: 0.125
+  perHowManyMaxHealth: 200
+--- !u!114 &1266718539226823293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1139000407451441167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20e89445ad428534bb0b29288a9c1023, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extraHealthPoints: 100
+--- !u!1 &6147506623861454732
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8544242797701455544}
+  - component: {fileID: 5227935954060996999}
+  - component: {fileID: 5029487309967558800}
+  - component: {fileID: 161221077718355006}
+  - component: {fileID: 7817691963787159420}
+  - component: {fileID: 3747225413034033066}
+  - component: {fileID: 5295297729534049582}
+  m_Layer: 0
+  m_Name: AfterEchoAttrib
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8544242797701455544
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6147506623861454732}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2209119404911007971}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5227935954060996999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6147506623861454732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a24b44ebd5ebf24a9a4714e04825db9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  majorDamagePercentage: 16
+  minorDamagePercentage: 16
+--- !u!114 &5029487309967558800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6147506623861454732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8507c39341f7bbe4faf9aa7f0ffe6c55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damagePercentageMissingHealth: 1.8
+  forHowManyMissingHealth: 50
+--- !u!114 &161221077718355006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6147506623861454732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 521362f5fbc274143bcb8c02f8304ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  majorDamagePercentage: 12
+  minorDamagePercentage: 12
+--- !u!114 &7817691963787159420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6147506623861454732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51323258caef5d3489f14b673e013f50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damgePercentage: 0.32
+  perHowManyMaxHealth: 100
+--- !u!114 &3747225413034033066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6147506623861454732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e8a513198664fe478788696ed51f3b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damgePercentageSameScale: 0
+  damgePercentageOppScale: 0.125
+  perHowManyMaxHealth: 200
+--- !u!114 &5295297729534049582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6147506623861454732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20e89445ad428534bb0b29288a9c1023, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extraHealthPoints: 200
 --- !u!1 &9007149414703718239
 GameObject:
   m_ObjectHideFlags: 0
@@ -9,8 +251,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2209119404911007971}
-  - component: {fileID: 8560329444748328295}
   - component: {fileID: 1113858872198001597}
+  - component: {fileID: 1041239237587610708}
+  - component: {fileID: 6194003529522892719}
   m_Layer: 0
   m_Name: MaskOfCoviello
   m_TagString: Untagged
@@ -30,58 +273,11 @@ Transform:
   m_LocalPosition: {x: 0.08045741, y: 0.75637674, z: 0.356869}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 3303045779141564828}
+  - {fileID: 8544242797701455544}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8560329444748328295
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9007149414703718239}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b92ef2e2a5292a94492d3f7563ab159e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maskName: Mask of Coviello
-  maskPicture: {fileID: 21300000, guid: b405d449a27db5044951a93a43dee53a, type: 3}
-  maskDescription: '- more damage
-
-    - less defence
-
-    - more health'
-  echoDescription: "ECHO OF THE MASK:\nDeal a total of 1250 damage\n\nGain damage
-    for stamina used for 6 seconds\r\n\r"
-  maskLore: 
-  echoUnlocked: 0
-  abilityAvailable: 0
-  currentAbilityCooldown: 0
-  timer: 0
-  majorScaleDamageIncreasePercent: 12
-  minorScaleDamageIncreasePercent: 12
-  extraDamageForMissingHealthPercent: 1.2
-  extraDamageForHowManyPoints: 50
-  extraDamageReceivePercent: 12
-  extraDamageReceiveForMissingHealthPercent: 0.32
-  extraDamageReceiveForHowManyPoints: 100
-  extraDamageIncraseMissingParryForPoints: 0.125
-  extraMissingParryForHowManyPoints: 200
-  extraHealthPoints: 100
-  damageDealtForEcho: 1250
-  currentDamageDelt: 0
-  majorScaleDamageIncreasePercentEcho: 16
-  minorScaleDamageIncreasePercentEcho: 16
-  extraDamageForMissingHealthPercentEcho: 1.8
-  extraHealthPointsEcho: 200
-  abilityCooldown: 120
-  abilityDuration: 6
-  extraDamageForStaminaPercent: 5
-  extraDamageDuration: 8
-  removeHealthPerAttack: 20
-  attackSpeedIncreasePercent: 10
-  movementSpeedIncreasePercent: 8
 --- !u!65 &1113858872198001597
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -103,3 +299,40 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3, y: 3, z: 3}
   m_Center: {x: 0, y: 1.5, z: 0}
+--- !u!114 &1041239237587610708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9007149414703718239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a494e83223f60ea4184c17b80c611d0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maskName: Mask of Coviello
+  maskPicture: {fileID: 21300000, guid: b405d449a27db5044951a93a43dee53a, type: 3}
+  maskDescription: description missing
+  echoDescription: Deal a total of 1250 damage
+  maskLore: 
+  echoUnlocked: 0
+  abilityAvailable: 0
+  currentAbilityCooldown: 0
+  timer: 0
+  attribBeforeEcho: {fileID: 1139000407451441167}
+  attribAfterEcho: {fileID: 6147506623861454732}
+  echoMission: {fileID: 6194003529522892719}
+--- !u!114 &6194003529522892719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9007149414703718239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afede9e2d95480e4ab596f71e893f525, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageToDeal: 1250

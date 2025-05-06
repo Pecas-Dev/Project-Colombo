@@ -1,5 +1,181 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3010321451754386822
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2553263731348509315}
+  - component: {fileID: 7243078569095042852}
+  - component: {fileID: 8485668120213428148}
+  - component: {fileID: 2092736675050994298}
+  - component: {fileID: 8874726295449789267}
+  - component: {fileID: 4460954737370442995}
+  - component: {fileID: 8824432527257582053}
+  - component: {fileID: 4246842388228380329}
+  - component: {fileID: 6414081879701640990}
+  - component: {fileID: 3474316527689871992}
+  - component: {fileID: 8546503095521453683}
+  m_Layer: 0
+  m_Name: BeforeEchoAttrib
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2553263731348509315
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3010321451754386822}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4375980845764542373}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7243078569095042852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3010321451754386822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33d09692500ad164ea9939789b64ed5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthPointsForKill: 20
+--- !u!114 &8485668120213428148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3010321451754386822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a24b44ebd5ebf24a9a4714e04825db9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  majorDamagePercentage: -12
+  minorDamagePercentage: -12
+--- !u!114 &2092736675050994298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3010321451754386822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e57de4b8f5c8e0e439930bdcb682a693, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damagePercentageMaxHealth: 0.5
+  forHowManyMaxHealth: 1
+--- !u!114 &8874726295449789267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3010321451754386822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75f73ae067f846444b94c9514f81c77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackSpeedPercentage: -16
+--- !u!114 &4460954737370442995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3010321451754386822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39dfe80de21da5243a13ba5ffbc133a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  staminaRegenTimePercentage: -15
+--- !u!114 &8824432527257582053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3010321451754386822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e66389dbcca4af8468a79ef1de122183, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  discountPercentage: 15
+--- !u!114 &4246842388228380329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3010321451754386822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7feb76319bb719944a657aa9ff5db43c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthPointsForItemPricePercentage: -20
+--- !u!114 &6414081879701640990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3010321451754386822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 521362f5fbc274143bcb8c02f8304ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  majorDamagePercentage: -6
+  minorDamagePercentage: -6
+--- !u!114 &3474316527689871992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3010321451754386822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e8a513198664fe478788696ed51f3b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damgePercentageSameScale: 0.32
+  damgePercentageOppScale: 0.32
+  perHowManyMaxHealth: 1
+--- !u!114 &8546503095521453683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3010321451754386822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 874468821b607e641a2be80e5486a96a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthForPickup: 30
 --- !u!1 &4303818640728422693
 GameObject:
   m_ObjectHideFlags: 0
@@ -9,8 +185,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4375980845764542373}
-  - component: {fileID: 398293892535278827}
   - component: {fileID: 7356932743961386352}
+  - component: {fileID: 7450706927502537135}
+  - component: {fileID: 3294291214843192529}
   m_Layer: 0
   m_Name: MaskOfTheAbbatazzu
   m_TagString: Untagged
@@ -30,59 +207,11 @@ Transform:
   m_LocalPosition: {x: 0.08045741, y: 0.75637674, z: 0.356869}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2553263731348509315}
+  - {fileID: 4286987076450940453}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &398293892535278827
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4303818640728422693}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5c0547377d113c46a6f98d2f22803ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maskName: Mask of the Abbatazzu
-  maskPicture: {fileID: 21300000, guid: b405d449a27db5044951a93a43dee53a, type: 3}
-  maskDescription: '- gain health
-
-    - less damage
-
-    - slower speed'
-  echoDescription: 'ECHO OF THE MASK:
-
-    Obtain +1000 Max Health Points
-
-
-    Immune
-    to damage for 3 seconds'
-  maskLore: 
-  echoUnlocked: 0
-  abilityAvailable: 0
-  currentAbilityCooldown: 0
-  timer: 0
-  gainHealthPointsPerKill: 20
-  extraDamageDecreasePercent: 12
-  extraDamageIncreasePerHealthPercent: 0.5
-  attackSpeedDecreasePercent: 16
-  staminaRegenDecreasePercent: 15
-  extraHealthPointsOnPickup: 5
-  damageReceiveDecreasePercent: 6
-  extraDamageReceiveIncreasePerHealth: 0.32
-  shopDiscountPercent: 15
-  healthPunishmentForPurchasePercent: 20
-  maxHealthToObtain: 1000
-  currentMaxHealthObtained: 0
-  gainHealthPointsPerKillEcho: 30
-  shopDiscountPercentEcho: 20
-  damageReceiveDecreasePercentEcho: 9
-  extraDamageReceiveIncreasePerHealthEcho: 0.38
-  healthPointsIncreaseEcho: 150
-  abilityCooldown: 100
-  abilityDuration: 3
 --- !u!65 &7356932743961386352
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -104,3 +233,230 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3, y: 3, z: 3}
   m_Center: {x: 0, y: 1.5, z: 0}
+--- !u!114 &7450706927502537135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4303818640728422693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a494e83223f60ea4184c17b80c611d0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maskName: Mask of the Abbatazzu
+  maskPicture: {fileID: 21300000, guid: b405d449a27db5044951a93a43dee53a, type: 3}
+  maskDescription: description missing
+  echoDescription: Obtain 1000 Max Health Points
+  maskLore: 
+  echoUnlocked: 0
+  abilityAvailable: 0
+  currentAbilityCooldown: 0
+  timer: 0
+  attribBeforeEcho: {fileID: 3010321451754386822}
+  attribAfterEcho: {fileID: 5082400444315058323}
+  echoMission: {fileID: 3294291214843192529}
+--- !u!114 &3294291214843192529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4303818640728422693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc981ce1e29e5c04c803d17d40322d77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealthToCollect: 1000
+--- !u!1 &5082400444315058323
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4286987076450940453}
+  - component: {fileID: 6665915768356925257}
+  - component: {fileID: 3107550828398267164}
+  - component: {fileID: 6652067946164696297}
+  - component: {fileID: 2488881813009111348}
+  - component: {fileID: 6591424045415913797}
+  - component: {fileID: 7370087533988570453}
+  - component: {fileID: 4759203913854737995}
+  - component: {fileID: 5951150437689305600}
+  - component: {fileID: 4754368770046783686}
+  - component: {fileID: 213586028205261992}
+  - component: {fileID: 5997195312644731801}
+  m_Layer: 0
+  m_Name: AfterEchoAttrib
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4286987076450940453
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5082400444315058323}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4375980845764542373}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6665915768356925257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5082400444315058323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33d09692500ad164ea9939789b64ed5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthPointsForKill: 30
+--- !u!114 &3107550828398267164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5082400444315058323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a24b44ebd5ebf24a9a4714e04825db9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  majorDamagePercentage: -12
+  minorDamagePercentage: -12
+--- !u!114 &6652067946164696297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5082400444315058323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e57de4b8f5c8e0e439930bdcb682a693, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damagePercentageMaxHealth: 0.5
+  forHowManyMaxHealth: 1
+--- !u!114 &2488881813009111348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5082400444315058323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75f73ae067f846444b94c9514f81c77b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackSpeedPercentage: -16
+--- !u!114 &6591424045415913797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5082400444315058323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39dfe80de21da5243a13ba5ffbc133a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  staminaRegenTimePercentage: -15
+--- !u!114 &7370087533988570453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5082400444315058323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e66389dbcca4af8468a79ef1de122183, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  discountPercentage: 20
+--- !u!114 &4759203913854737995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5082400444315058323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7feb76319bb719944a657aa9ff5db43c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthPointsForItemPricePercentage: -20
+--- !u!114 &5951150437689305600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5082400444315058323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 521362f5fbc274143bcb8c02f8304ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  majorDamagePercentage: -9
+  minorDamagePercentage: -9
+--- !u!114 &4754368770046783686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5082400444315058323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e8a513198664fe478788696ed51f3b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damgePercentageSameScale: 0.38
+  damgePercentageOppScale: 0.38
+  perHowManyMaxHealth: 1
+--- !u!114 &213586028205261992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5082400444315058323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 874468821b607e641a2be80e5486a96a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthForPickup: 30
+--- !u!114 &5997195312644731801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5082400444315058323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20e89445ad428534bb0b29288a9c1023, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extraHealthPoints: 150

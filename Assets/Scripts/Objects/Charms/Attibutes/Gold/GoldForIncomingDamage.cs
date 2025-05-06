@@ -8,8 +8,7 @@ namespace ProjectColombo.Objects.Charms
 {
     public class GoldForIncomingDamage : BaseAttributes
     {
-        public int minAmountOfGold;
-        public int maxAmountOfGold;
+        public float damageForGoldPercentage;
 
         PlayerInventory myPlayerInventory;
 
@@ -21,9 +20,9 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnDamageReceive(int arg1, GameGlobals.MusicScale arg2, Combat.HealthManager arg3)
         {
-            int rand = Random.Range(minAmountOfGold, maxAmountOfGold + 1);
-            Debug.Log("extra gold for getting hit: " + rand);
-            myPlayerInventory.currencyAmount += rand;
+            int value = (int)(myPlayerInventory.currencyAmount * damageForGoldPercentage / 100f);
+            Debug.Log("extra gold for getting hit: " + value);
+            myPlayerInventory.currencyAmount += value;
         }
 
         public override void Disable()

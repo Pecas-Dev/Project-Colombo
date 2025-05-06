@@ -1,5 +1,4 @@
-
-using System.Collections.Generic;
+using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Objects.Charms;
 using UnityEngine;
 
@@ -18,24 +17,36 @@ namespace ProjectColombo.Objects.Masks
         [HideInInspector] public float currentAbilityCooldown = 0;
         [HideInInspector] public float timer = 0;
 
-        public List<BaseAttributes> attribBeforeEcho;
-        public List<BaseAttributes> attribAfterEcho;
+        public GameObject attribBeforeEcho;
+        public GameObject attribAfterEcho;
+        BaseAttributes[] attribBeforeEchoList;
+        BaseAttributes[] attribAfterEchoList;
+
+        public BaseEchoMissions echoMission;
 
         public void Equip()
         {
+            attribBeforeEchoList = attribBeforeEcho.GetComponents<BaseAttributes>();
+            attribAfterEchoList = attribAfterEcho.GetComponents<BaseAttributes>();
+
             if (!echoUnlocked)
             {
-                foreach (BaseAttributes attrib in attribBeforeEcho)
+                foreach (BaseAttributes attrib in attribBeforeEchoList)
                 {
                     attrib.Enable();
                 }
             }
             else
             {
-                foreach (BaseAttributes attrib in attribAfterEcho)
+                foreach (BaseAttributes attrib in attribAfterEchoList)
                 {
                     attrib.Enable();
                 }
+            }
+
+            if (!echoUnlocked)
+            {
+                echoMission.Enable();
             }
         }
 
@@ -46,12 +57,16 @@ namespace ProjectColombo.Objects.Masks
 
         public void UnlockEcho()
         {
-            foreach (BaseAttributes attrib in attribBeforeEcho)
+            echoUnlocked = true;
+            echoMission.Disable();
+            CustomEvents.EchoUnlocked();
+
+            foreach (BaseAttributes attrib in attribBeforeEchoList)
             {
                 attrib.Disable();
             }
 
-            foreach (BaseAttributes attrib in attribAfterEcho)
+            foreach (BaseAttributes attrib in attribAfterEchoList)
             {
                 attrib.Enable();
             }
@@ -59,15 +74,17 @@ namespace ProjectColombo.Objects.Masks
 
         public void Remove()
         {
-            foreach (BaseAttributes attrib in attribBeforeEcho)
+            foreach (BaseAttributes attrib in attribBeforeEchoList)
             {
                 attrib.Disable();
             }
 
-            foreach (BaseAttributes attrib in attribAfterEcho)
+            foreach (BaseAttributes attrib in attribAfterEchoList)
             {
                 attrib.Disable();
             }
+
+            echoMission.Disable();
         }
     }
 }

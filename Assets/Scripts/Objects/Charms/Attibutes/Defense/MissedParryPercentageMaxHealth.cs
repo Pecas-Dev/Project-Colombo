@@ -6,7 +6,8 @@ namespace ProjectColombo.Objects.Charms
 {
     public class MissedParryPercentageMaxHealth : BaseAttributes
     {
-        public float damgePercentage;
+        public float damgePercentageSameScale;
+        public float damgePercentageOppScale;
         public int perHowManyMaxHealth;
 
         public override void Enable()
@@ -16,10 +17,21 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnParryFailed(int amount, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager, bool sameScale)
         {
-            int multiplyer = Mathf.FloorToInt(healthmanager.MaxHealth / perHowManyMaxHealth);
-            int value = (int)(multiplyer * damgePercentage / 100f);
-            Debug.Log("extra failed parry damage: " + value + " for max health: " + healthmanager.MaxHealth);
-            healthmanager.TakeDamage(value);
+            if (sameScale)
+            {
+                int multiplyer = Mathf.FloorToInt(healthmanager.MaxHealth / perHowManyMaxHealth);
+                int value = (int)(multiplyer * damgePercentageSameScale / 100f);
+                Debug.Log("extra same scale failed parry damage: " + value + " for max health: " + healthmanager.MaxHealth);
+                healthmanager.TakeDamage(value);
+            }
+            else
+            {
+                int multiplyer = Mathf.FloorToInt(healthmanager.MaxHealth / perHowManyMaxHealth);
+                int value = (int)(multiplyer * damgePercentageOppScale / 100f);
+                Debug.Log("extra opposite scale failed parry damage: " + value + " for max health: " + healthmanager.MaxHealth);
+                healthmanager.TakeDamage(value);
+            }
+
         }
 
         public override void Disable()
