@@ -222,7 +222,7 @@ namespace ProjectColombo.StateMachine.Player
             }
             else
             {
-                return;
+                targetPosition = stateMachine.transform.position + stateMachine.transform.forward * activationDistance;
             }
 
             targetPosition.y = stateMachine.transform.position.y;

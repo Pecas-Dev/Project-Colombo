@@ -36,9 +36,11 @@ namespace ProjectColombo.Combat
         [HideInInspector] public bool onCooldown;
         [HideInInspector] public bool isAttacking;
         [HideInInspector] public GameGlobals.MusicScale currentScale = GameGlobals.MusicScale.NONE;
+
+        bool doHitstop = true;
+
         ParticleSystem myParticles;
         Collider myCollider;
-
         GlobalStats myGlobalStats;
         LevelStats myLevelStats;
 
@@ -98,6 +100,7 @@ namespace ProjectColombo.Combat
         public void EnableWeaponHitbox()
         {
             myCollider.enabled = true;
+            doHitstop = true;
         }
 
         public void DisableWeaponHitbox()
@@ -156,8 +159,12 @@ namespace ProjectColombo.Combat
 
                 if (otherStateMachine != null && otherHealth != null && otherHealth.CurrentHealth > 0)
                 {
-                    StopTime();
-                    ScreenShake();
+                    if (doHitstop)
+                    {
+                        StopTime();
+                        ScreenShake();
+                        doHitstop = false;
+                    }
 
                     if (currentScale != otherAttributes.currentScale)
                     {
@@ -183,8 +190,12 @@ namespace ProjectColombo.Combat
 
                 if (otherStateMachine != null && otherHealth != null && otherHealth.CurrentHealth > 0)
                 {
-                    StopTime();
-                    ScreenShake();
+                    if (doHitstop)
+                    {
+                        StopTime();
+                        ScreenShake();
+                        doHitstop = false;
+                    }
 
                     if (otherStateMachine.isBlocking)
                     {
