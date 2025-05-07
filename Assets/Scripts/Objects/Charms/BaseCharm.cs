@@ -13,6 +13,8 @@ namespace ProjectColombo.Objects.Charms
         [TextArea] public string charmDescription;
         [TextArea] public string charmLore;
 
+        public GameObject abilityObject;
+
         BaseAttributes[] myAttributes;
 
 
@@ -24,6 +26,11 @@ namespace ProjectColombo.Objects.Charms
             {
                 attrib.Enable();
             }
+        }
+
+        public GameObject GetAbility()
+        {
+            return abilityObject;
         }
 
         public void Remove()

@@ -13,9 +13,6 @@ namespace ProjectColombo.Objects.Masks
         [TextArea] public string maskLore;
 
         [ReadOnlyInspector] public bool echoUnlocked = false;
-        [ReadOnlyInspector] public bool abilityAvailable = false;
-        [HideInInspector] public float currentAbilityCooldown = 0;
-        [HideInInspector] public float timer = 0;
 
         public GameObject attribBeforeEcho;
         public GameObject attribAfterEcho;
@@ -23,6 +20,7 @@ namespace ProjectColombo.Objects.Masks
         BaseAttributes[] attribAfterEchoList;
 
         public BaseEchoMissions echoMission;
+        public GameObject abilityObject;
 
         public void Equip()
         {
@@ -50,9 +48,9 @@ namespace ProjectColombo.Objects.Masks
             }
         }
 
-        public void UseAbility()
+        public GameObject GetAbility()
         {
-
+            return abilityObject;
         }
 
         public void UnlockEcho()

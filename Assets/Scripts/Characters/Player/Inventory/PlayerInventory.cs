@@ -15,12 +15,19 @@ namespace ProjectColombo.Inventory
         GlobalStats myGlobalStats;
         public int currencyAmount = 0;
         public int currentLuck = 0;
+
         public GameObject maskSlot;
         public GameObject charmSelectScreen;
         public GameObject charmSlot;
+        public GameObject legendaryCharmSlot;
         public List<GameObject> charms;
         public int maxCharms;
         int currentCharmAmount;
+
+        public GameObject maskAbilitySlot;
+        public GameObject potionSlot;
+        public GameObject legendaryCharmAbilitySlot;
+
 
         private void Start()
         {
@@ -31,6 +38,10 @@ namespace ProjectColombo.Inventory
             GetCurrentStats();
             currentCharmAmount = 0;
         }
+
+        //east = mask
+        //arrow left = charm
+        //arrow down = potion
 
         public void Reset()
         {
@@ -92,16 +103,16 @@ namespace ProjectColombo.Inventory
         public void RemoveCharm(GameObject charm)
         {
             charm.GetComponent<BaseCharm>().Remove();
-            Destroy(charm);
             charms.Remove(charm);
+            Destroy(charm);
         }
 
 
         public void ReplaceCharm(GameObject charmToRemove, GameObject charmToAdd)
         {
             charmToRemove.GetComponent<BaseCharm>().Remove();
-            Destroy(charmToRemove);
             charms.Remove(charmToRemove);
+            Destroy(charmToRemove);
             charms.Add(charmToAdd);
             charmToAdd.GetComponent<BaseCharm>().Equip();
         }
