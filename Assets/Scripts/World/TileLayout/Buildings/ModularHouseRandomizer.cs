@@ -14,9 +14,12 @@ namespace ProjectColombo.LevelManagement
         public int minNumberOfMiddleModules = 0;
         public int maxNumberOfMiddleModules = 3;
         float currentHeightOffset = 0;
+        float randf = 0;
 
         private void Start()
         {
+            randf = Random.Range(0f, 1f);
+
             foreach (Transform child in transform)
             {
                 Destroy(child.gameObject);
@@ -44,8 +47,27 @@ namespace ProjectColombo.LevelManagement
             module.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
             module.AddComponent<BoxCollider>();
             module.layer = 6;
+            MakeColorFull(module);
 
             currentHeightOffset += heightOffset;
         }
+
+        void MakeColorFull(GameObject obj)
+        {
+            Renderer renderer = obj.GetComponent<Renderer>();
+            if (renderer == null) return;
+
+            foreach (Material m in renderer.materials)
+            {
+                if (m.HasFloat("_PlasterColor")) ;
+                {
+                    m.SetFloat("_PlasterColor", randf);
+                }
+            }
+        }
     }
 }
+
+
+
+//_GradientPick
