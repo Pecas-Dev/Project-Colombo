@@ -29,6 +29,8 @@ namespace ProjectColombo.Inventory
         public GameObject potionSlot;
         public GameObject legendaryCharmAbilitySlot;
 
+        public GameObject pickup;
+
 
         private void Start()
         {
@@ -94,7 +96,7 @@ namespace ProjectColombo.Inventory
             RARITY newCharmRarity = charmComponent.charmRarity;
 
             // Case 1: Max charm count reached
-            if (currentCharmAmount >= maxCharms)
+            if (currentCharmAmount > maxCharms)
             {
                 OpenCharmSelectScreen(charmobj);
                 return;
@@ -105,9 +107,7 @@ namespace ProjectColombo.Inventory
             {
                 if (legendaryCharmSlot.transform.childCount > 0)
                 {
-                    // Slot already occupied (by any charm)
-                    OpenCharmSelectScreen(charmobj);
-                    return;
+                    RemoveCharm(legendaryCharmSlot.transform.GetChild(0).gameObject);
                 }
 
                 //add ability

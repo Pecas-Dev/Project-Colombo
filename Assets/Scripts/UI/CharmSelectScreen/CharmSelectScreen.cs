@@ -55,10 +55,16 @@ namespace ProjectColombo.UI
         {
             PlayerInventory inventory = GameManager.Instance.GetComponent<PlayerInventory>();
 
-            
-            for (int i = 0; i < inventory.maxCharms; i++)
+            int i = 0;
+            for (; i < inventory.charms.Count; i++)
             {
                 charmButtons[i].GetComponent<CharmButton>().UpdateInfo(inventory.charms[i]);
+            }
+
+            while (i < charmButtons.Count)
+            {
+                charmButtons[i].GetComponent<Button>().enabled = false;
+                i++;
             }
         }
 
