@@ -92,33 +92,71 @@ namespace ProjectColombo.Inventory
 
         public void AddCharm(GameObject charm)
         {
-            GameObject charmobj = Instantiate(charm, charmSlot.transform);
+            GameObject charmobj = Instantiate(charm);
+            BaseCharm charmComponent = charmobj.GetComponent<BaseCharm>();
+            RARITY newCharmRarity = charmComponent.charmRarity;
 
-            //add ability if there is one
-            if (charmobj.GetComponent<BaseCharm>().GetAbility() != null)
+            // Case 1: Max charm count reached
+            if (currentCharmAmount >= maxCharms)
             {
-                charmobj.GetComponent<BaseCharm>().abilityObject = Instantiate(charmobj.GetComponent<BaseCharm>().GetAbility(), legendaryCharmAbilitySlot.transform);
+                OpenCharmSelectScreen(charmobj);
+                return;
             }
 
-            if (currentCharmAmount < maxCharms)
+            // Case 2: Legendary charm rules
+            if (newCharmRarity == RARITY.LEGENDARY)
             {
-                charms.Add(charmobj);
-                charmobj.GetComponent<BaseCharm>().Equip();
-                currentCharmAmount++;
+                if (legendaryCharmSlot.transform.childCount > 0)
+                {
+                    // Slot already occupied (by any charm)
+                    OpenCharmSelectScreen(charmobj);
+                    return;
+                }
+
+                //add ability
+                if (charmComponent.GetAbility() != null)
+                {
+                    charmComponent.abilityObject = Instantiate(charmComponent.GetAbility(),legendaryCharmAbilitySlot.transform);
+                }
+
+                // Add legendary directly
+                charmobj.transform.SetParent(legendaryCharmSlot.transform);
             }
             else
             {
-                OpenCharmSelectScreen(charmobj);
+                // Case 3: Common or rare charm
+                if (legendaryCharmSlot.transform.childCount == 0)
+                {
+                    // Use empty legendary slot
+                    charmobj.transform.SetParent(legendaryCharmSlot.transform);
+                }
+                else
+                {
+                    charmobj.transform.SetParent(charmSlot.transform);
+                }
             }
+
+            charmComponent.Equip();
+            currentCharmAmount++;
+            charms.Add(charmobj);
         }
+
 
 
         public void RemoveCharm(GameObject charm)
         {
             charm.GetComponent<BaseCharm>().Remove();
             charms.Remove(charm);
-            Destroy(charm);
             currencyAmount--;
+
+
+            //remove ability
+            if (charm.GetComponent<BaseCharm>().GetAbility() != null)
+            {
+                Destroy(charm.GetComponent<BaseCharm>().GetAbility());
+            }
+
+            Destroy(charm);
         }
 
 
@@ -184,12 +222,19 @@ namespace ProjectColombo.Inventory
 
         public void UseCharmAbility()
         {
-            legendaryCharmAbilitySlot.GetComponentInChildren<BaseAbility>().Activate();
+            if (legendaryCharmAbilitySlot.transform.childCount > 0)
+            {
+                legendaryCharmAbilitySlot.GetComponentInChildren<BaseAbility>().Activate();
+            }
+
         }
 
         public void UseMaskAbility()
         {
-            maskAbilitySlot.GetComponentInChildren<BaseAbility>().Activate();
+            if (maskAbilitySlot.transform.childCount > 0)
+            {
+                maskAbilitySlot.GetComponentInChildren<BaseAbility>().Activate();
+            }
         }
     }
 }
