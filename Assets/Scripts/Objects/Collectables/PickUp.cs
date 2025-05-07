@@ -46,7 +46,7 @@ namespace ProjectColombo.Objects
 
         private void Update()
         {
-            if (active && GameManager.Instance.gameInput.UseItemPressed)
+            if (active && GameManager.Instance.gameInput.InteractPressed)
             {
                 GameManager.Instance.gameInput.ResetUseItemPressed();
 

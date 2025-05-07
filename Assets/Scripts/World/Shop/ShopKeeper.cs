@@ -25,7 +25,7 @@ namespace ProjectColombo.Shop
 
         private void Update()
         {
-            if (playerInRange && gameInput.UseItemPressed)
+            if (playerInRange && gameInput.InteractPressed)
             {
                 OpenShop();
             }

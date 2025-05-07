@@ -61,7 +61,6 @@ namespace ProjectColombo.StateMachine.Player
 
         void Awake()
         {
-
             myRigidbody = GetComponent<Rigidbody>();
             myStamina = GetComponent<Stamina>();
             myPlayerAnimator = GetComponent<PlayerAnimator>();
@@ -117,6 +116,24 @@ namespace ProjectColombo.StateMachine.Player
             if (myHealthManager.CurrentHealth <= 0 && currentState != PlayerState.Dead)
             {
                 SwitchState(new PlayerDeathState(this));
+            }
+
+            if (gameInputSO.UsePotionPressed)
+            {
+                gameInputSO.ResetUsePotion();
+                myPlayerInventory.UsePotion();
+            }
+
+            if (gameInputSO.UseCharmAbilityPressed)
+            {
+                gameInputSO.ResetUseCharmAbility();
+                myPlayerInventory.UseCharmAbility();
+            }
+
+            if (gameInputSO.UseSpecialAbilityPressed)
+            {
+                gameInputSO.ResetUseSpecialAbilityPressed();
+                myPlayerInventory.UseMaskAbility();
             }
         }
 
@@ -302,11 +319,13 @@ namespace ProjectColombo.StateMachine.Player
 
         private void LateUpdate()
         {
-            if (gameInputSO.UseItemPressed)
+            if (gameInputSO.InteractPressed)
             {
                 GameManager.Instance.gameInput.ResetUseItemPressed();
             }
         }
+
+
     }
 }
 

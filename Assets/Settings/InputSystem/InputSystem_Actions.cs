@@ -64,7 +64,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""UseItem"",
+                    ""name"": ""Interact"",
                     ""type"": ""Button"",
                     ""id"": ""088cbc0c-22e8-488b-8910-baf1d20d57d9"",
                     ""expectedControlType"": """",
@@ -127,24 +127,6 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""ItemSelect"",
-                    ""type"": ""Value"",
-                    ""id"": ""8bab9f2e-e33a-4fcb-ba61-025a9e3c05e3"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""AbilitySelect"",
-                    ""type"": ""Value"",
-                    ""id"": ""e2c76d4c-59a5-497b-92c0-ca5aa25c43cd"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
                     ""name"": ""Pause"",
                     ""type"": ""Button"",
                     ""id"": ""f9aaf943-34f4-421c-b478-8a61389d5f47"",
@@ -157,6 +139,24 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""name"": ""ActivateRadial"",
                     ""type"": ""Button"",
                     ""id"": ""e1a2b271-1d6d-4d9e-b2c4-dff1ea0cab47"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UsePotion"",
+                    ""type"": ""Button"",
+                    ""id"": ""721fe855-1163-4356-a094-b65ea492be6b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UseCharmAbility"",
+                    ""type"": ""Button"",
+                    ""id"": ""3025cd1c-438a-4533-af7c-80f8c0b6a4e0"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -435,7 +435,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""UseItem"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -446,75 +446,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""UseItem"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""2D Vector"",
-                    ""id"": ""34796ba0-760f-4cab-b96e-180b570f89b1"",
-                    ""path"": ""2DVector"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ItemSelect"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""left"",
-                    ""id"": ""1b407f0a-e150-424d-a24f-0c070ee393bf"",
-                    ""path"": ""<Gamepad>/dpad/left"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ItemSelect"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""right"",
-                    ""id"": ""8876a1c2-723b-41ed-a119-d9de34ed3b49"",
-                    ""path"": ""<Gamepad>/dpad/right"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ItemSelect"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""2D Vector"",
-                    ""id"": ""960dd623-b6eb-4a18-94d1-435e171a2ef4"",
-                    ""path"": ""2DVector"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""AbilitySelect"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""6254fff5-3b3d-4100-b769-f1a6711e4687"",
-                    ""path"": ""<Gamepad>/dpad/up"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""AbilitySelect"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""fe4c83dc-8df2-4b87-b0d6-48ce24ece6bd"",
-                    ""path"": ""<Gamepad>/dpad/down"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""AbilitySelect"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": """",
@@ -524,6 +458,28 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cb475d7c-cdbc-4675-a50d-1e124a239da9"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UsePotion"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1b9c0bea-dc61-44ee-9b31-e8d2a0b4ac3b"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UseCharmAbility"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -948,17 +904,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_MajorAttack = m_Player.FindAction("MajorAttack", throwIfNotFound: true);
         m_Player_MinorAttack = m_Player.FindAction("MinorAttack", throwIfNotFound: true);
         m_Player_UseSpecialAbility = m_Player.FindAction("UseSpecialAbility", throwIfNotFound: true);
-        m_Player_UseItem = m_Player.FindAction("UseItem", throwIfNotFound: true);
+        m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Roll = m_Player.FindAction("Roll", throwIfNotFound: true);
         m_Player_Block = m_Player.FindAction("Block", throwIfNotFound: true);
         m_Player_MinorParry = m_Player.FindAction("MinorParry", throwIfNotFound: true);
         m_Player_MajorParry = m_Player.FindAction("MajorParry", throwIfNotFound: true);
         m_Player_Target = m_Player.FindAction("Target", throwIfNotFound: true);
         m_Player_TargetPoint = m_Player.FindAction("TargetPoint", throwIfNotFound: true);
-        m_Player_ItemSelect = m_Player.FindAction("ItemSelect", throwIfNotFound: true);
-        m_Player_AbilitySelect = m_Player.FindAction("AbilitySelect", throwIfNotFound: true);
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
         m_Player_ActivateRadial = m_Player.FindAction("ActivateRadial", throwIfNotFound: true);
+        m_Player_UsePotion = m_Player.FindAction("UsePotion", throwIfNotFound: true);
+        m_Player_UseCharmAbility = m_Player.FindAction("UseCharmAbility", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1043,17 +999,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_MajorAttack;
     private readonly InputAction m_Player_MinorAttack;
     private readonly InputAction m_Player_UseSpecialAbility;
-    private readonly InputAction m_Player_UseItem;
+    private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Roll;
     private readonly InputAction m_Player_Block;
     private readonly InputAction m_Player_MinorParry;
     private readonly InputAction m_Player_MajorParry;
     private readonly InputAction m_Player_Target;
     private readonly InputAction m_Player_TargetPoint;
-    private readonly InputAction m_Player_ItemSelect;
-    private readonly InputAction m_Player_AbilitySelect;
     private readonly InputAction m_Player_Pause;
     private readonly InputAction m_Player_ActivateRadial;
+    private readonly InputAction m_Player_UsePotion;
+    private readonly InputAction m_Player_UseCharmAbility;
     public struct PlayerActions
     {
         private @InputSystem_Actions m_Wrapper;
@@ -1062,17 +1018,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         public InputAction @MajorAttack => m_Wrapper.m_Player_MajorAttack;
         public InputAction @MinorAttack => m_Wrapper.m_Player_MinorAttack;
         public InputAction @UseSpecialAbility => m_Wrapper.m_Player_UseSpecialAbility;
-        public InputAction @UseItem => m_Wrapper.m_Player_UseItem;
+        public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputAction @Roll => m_Wrapper.m_Player_Roll;
         public InputAction @Block => m_Wrapper.m_Player_Block;
         public InputAction @MinorParry => m_Wrapper.m_Player_MinorParry;
         public InputAction @MajorParry => m_Wrapper.m_Player_MajorParry;
         public InputAction @Target => m_Wrapper.m_Player_Target;
         public InputAction @TargetPoint => m_Wrapper.m_Player_TargetPoint;
-        public InputAction @ItemSelect => m_Wrapper.m_Player_ItemSelect;
-        public InputAction @AbilitySelect => m_Wrapper.m_Player_AbilitySelect;
         public InputAction @Pause => m_Wrapper.m_Player_Pause;
         public InputAction @ActivateRadial => m_Wrapper.m_Player_ActivateRadial;
+        public InputAction @UsePotion => m_Wrapper.m_Player_UsePotion;
+        public InputAction @UseCharmAbility => m_Wrapper.m_Player_UseCharmAbility;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1094,9 +1050,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @UseSpecialAbility.started += instance.OnUseSpecialAbility;
             @UseSpecialAbility.performed += instance.OnUseSpecialAbility;
             @UseSpecialAbility.canceled += instance.OnUseSpecialAbility;
-            @UseItem.started += instance.OnUseItem;
-            @UseItem.performed += instance.OnUseItem;
-            @UseItem.canceled += instance.OnUseItem;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
             @Roll.started += instance.OnRoll;
             @Roll.performed += instance.OnRoll;
             @Roll.canceled += instance.OnRoll;
@@ -1115,18 +1071,18 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @TargetPoint.started += instance.OnTargetPoint;
             @TargetPoint.performed += instance.OnTargetPoint;
             @TargetPoint.canceled += instance.OnTargetPoint;
-            @ItemSelect.started += instance.OnItemSelect;
-            @ItemSelect.performed += instance.OnItemSelect;
-            @ItemSelect.canceled += instance.OnItemSelect;
-            @AbilitySelect.started += instance.OnAbilitySelect;
-            @AbilitySelect.performed += instance.OnAbilitySelect;
-            @AbilitySelect.canceled += instance.OnAbilitySelect;
             @Pause.started += instance.OnPause;
             @Pause.performed += instance.OnPause;
             @Pause.canceled += instance.OnPause;
             @ActivateRadial.started += instance.OnActivateRadial;
             @ActivateRadial.performed += instance.OnActivateRadial;
             @ActivateRadial.canceled += instance.OnActivateRadial;
+            @UsePotion.started += instance.OnUsePotion;
+            @UsePotion.performed += instance.OnUsePotion;
+            @UsePotion.canceled += instance.OnUsePotion;
+            @UseCharmAbility.started += instance.OnUseCharmAbility;
+            @UseCharmAbility.performed += instance.OnUseCharmAbility;
+            @UseCharmAbility.canceled += instance.OnUseCharmAbility;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1143,9 +1099,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @UseSpecialAbility.started -= instance.OnUseSpecialAbility;
             @UseSpecialAbility.performed -= instance.OnUseSpecialAbility;
             @UseSpecialAbility.canceled -= instance.OnUseSpecialAbility;
-            @UseItem.started -= instance.OnUseItem;
-            @UseItem.performed -= instance.OnUseItem;
-            @UseItem.canceled -= instance.OnUseItem;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
             @Roll.started -= instance.OnRoll;
             @Roll.performed -= instance.OnRoll;
             @Roll.canceled -= instance.OnRoll;
@@ -1164,18 +1120,18 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @TargetPoint.started -= instance.OnTargetPoint;
             @TargetPoint.performed -= instance.OnTargetPoint;
             @TargetPoint.canceled -= instance.OnTargetPoint;
-            @ItemSelect.started -= instance.OnItemSelect;
-            @ItemSelect.performed -= instance.OnItemSelect;
-            @ItemSelect.canceled -= instance.OnItemSelect;
-            @AbilitySelect.started -= instance.OnAbilitySelect;
-            @AbilitySelect.performed -= instance.OnAbilitySelect;
-            @AbilitySelect.canceled -= instance.OnAbilitySelect;
             @Pause.started -= instance.OnPause;
             @Pause.performed -= instance.OnPause;
             @Pause.canceled -= instance.OnPause;
             @ActivateRadial.started -= instance.OnActivateRadial;
             @ActivateRadial.performed -= instance.OnActivateRadial;
             @ActivateRadial.canceled -= instance.OnActivateRadial;
+            @UsePotion.started -= instance.OnUsePotion;
+            @UsePotion.performed -= instance.OnUsePotion;
+            @UsePotion.canceled -= instance.OnUsePotion;
+            @UseCharmAbility.started -= instance.OnUseCharmAbility;
+            @UseCharmAbility.performed -= instance.OnUseCharmAbility;
+            @UseCharmAbility.canceled -= instance.OnUseCharmAbility;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1370,17 +1326,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         void OnMajorAttack(InputAction.CallbackContext context);
         void OnMinorAttack(InputAction.CallbackContext context);
         void OnUseSpecialAbility(InputAction.CallbackContext context);
-        void OnUseItem(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
         void OnRoll(InputAction.CallbackContext context);
         void OnBlock(InputAction.CallbackContext context);
         void OnMinorParry(InputAction.CallbackContext context);
         void OnMajorParry(InputAction.CallbackContext context);
         void OnTarget(InputAction.CallbackContext context);
         void OnTargetPoint(InputAction.CallbackContext context);
-        void OnItemSelect(InputAction.CallbackContext context);
-        void OnAbilitySelect(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
         void OnActivateRadial(InputAction.CallbackContext context);
+        void OnUsePotion(InputAction.CallbackContext context);
+        void OnUseCharmAbility(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

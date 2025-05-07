@@ -25,6 +25,7 @@ namespace ProjectColombo.Inventory
         int currentCharmAmount;
 
         public GameObject maskAbilitySlot;
+        public int numberOfPotions = 0;
         public GameObject potionSlot;
         public GameObject legendaryCharmAbilitySlot;
 
@@ -33,10 +34,17 @@ namespace ProjectColombo.Inventory
         {
             CustomEvents.OnCharmCollected += AddCharm;
             CustomEvents.OnLevelChange += LevelChange;
+            CustomEvents.OnEchoUnlocked += EnableMaskAbility;
             myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
             charmSelectScreen.SetActive(false);
             GetCurrentStats();
             currentCharmAmount = 0;
+        }
+
+        private void EnableMaskAbility()
+        {
+            GameObject mask = maskSlot.transform.GetChild(0).gameObject;
+            mask.GetComponent<BaseMask>().abilityObject = Instantiate(mask.GetComponent<BaseMask>().GetAbility(), maskAbilitySlot.transform);
         }
 
         //east = mask
@@ -86,6 +94,12 @@ namespace ProjectColombo.Inventory
         {
             GameObject charmobj = Instantiate(charm, charmSlot.transform);
 
+            //add ability if there is one
+            if (charmobj.GetComponent<BaseCharm>().GetAbility() != null)
+            {
+                charmobj.GetComponent<BaseCharm>().abilityObject = Instantiate(charmobj.GetComponent<BaseCharm>().GetAbility(), legendaryCharmAbilitySlot.transform);
+            }
+
             if (currentCharmAmount < maxCharms)
             {
                 charms.Add(charmobj);
@@ -95,7 +109,6 @@ namespace ProjectColombo.Inventory
             else
             {
                 OpenCharmSelectScreen(charmobj);
-                GameManager.Instance.PauseGame(false);
             }
         }
 
@@ -105,20 +118,19 @@ namespace ProjectColombo.Inventory
             charm.GetComponent<BaseCharm>().Remove();
             charms.Remove(charm);
             Destroy(charm);
+            currencyAmount--;
         }
 
 
         public void ReplaceCharm(GameObject charmToRemove, GameObject charmToAdd)
         {
-            charmToRemove.GetComponent<BaseCharm>().Remove();
-            charms.Remove(charmToRemove);
-            Destroy(charmToRemove);
-            charms.Add(charmToAdd);
-            charmToAdd.GetComponent<BaseCharm>().Equip();
+            RemoveCharm(charmToRemove);
+            AddCharm(charmToAdd);
         }
 
         public void OpenCharmSelectScreen(GameObject charm)
         {
+            GameManager.Instance.PauseGame(false);
             charmSelectScreen.SetActive(true);
             charmSelectScreen.GetComponent<CharmSelectScreen>().ActivateScreen(charm);
         }
@@ -159,6 +171,25 @@ namespace ProjectColombo.Inventory
             {
                 charm.GetComponent<BaseCharm>().Remove();
             }
+        }
+
+        public void UsePotion()
+        {
+            if (numberOfPotions >= 0)
+            {
+                numberOfPotions--;
+                potionSlot.GetComponentInChildren<BaseAbility>().Activate();
+            }
+        }
+
+        public void UseCharmAbility()
+        {
+            legendaryCharmAbilitySlot.GetComponentInChildren<BaseAbility>().Activate();
+        }
+
+        public void UseMaskAbility()
+        {
+            maskAbilitySlot.GetComponentInChildren<BaseAbility>().Activate();
         }
     }
 }

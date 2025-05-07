@@ -42,7 +42,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "UseItem",
+                    "name": "Interact",
                     "type": "Button",
                     "id": "088cbc0c-22e8-488b-8910-baf1d20d57d9",
                     "expectedControlType": "",
@@ -105,24 +105,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "ItemSelect",
-                    "type": "Value",
-                    "id": "8bab9f2e-e33a-4fcb-ba61-025a9e3c05e3",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "AbilitySelect",
-                    "type": "Value",
-                    "id": "e2c76d4c-59a5-497b-92c0-ca5aa25c43cd",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
                     "name": "Pause",
                     "type": "Button",
                     "id": "f9aaf943-34f4-421c-b478-8a61389d5f47",
@@ -135,6 +117,24 @@
                     "name": "ActivateRadial",
                     "type": "Button",
                     "id": "e1a2b271-1d6d-4d9e-b2c4-dff1ea0cab47",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "UsePotion",
+                    "type": "Button",
+                    "id": "721fe855-1163-4356-a094-b65ea492be6b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "UseCharmAbility",
+                    "type": "Button",
+                    "id": "3025cd1c-438a-4533-af7c-80f8c0b6a4e0",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -413,7 +413,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "UseItem",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -424,75 +424,9 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "UseItem",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "2D Vector",
-                    "id": "34796ba0-760f-4cab-b96e-180b570f89b1",
-                    "path": "2DVector",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ItemSelect",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "left",
-                    "id": "1b407f0a-e150-424d-a24f-0c070ee393bf",
-                    "path": "<Gamepad>/dpad/left",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ItemSelect",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "right",
-                    "id": "8876a1c2-723b-41ed-a119-d9de34ed3b49",
-                    "path": "<Gamepad>/dpad/right",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ItemSelect",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "2D Vector",
-                    "id": "960dd623-b6eb-4a18-94d1-435e171a2ef4",
-                    "path": "2DVector",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "AbilitySelect",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "up",
-                    "id": "6254fff5-3b3d-4100-b769-f1a6711e4687",
-                    "path": "<Gamepad>/dpad/up",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "AbilitySelect",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "down",
-                    "id": "fe4c83dc-8df2-4b87-b0d6-48ce24ece6bd",
-                    "path": "<Gamepad>/dpad/down",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "AbilitySelect",
-                    "isComposite": false,
-                    "isPartOfComposite": true
                 },
                 {
                     "name": "",
@@ -502,6 +436,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cb475d7c-cdbc-4675-a50d-1e124a239da9",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UsePotion",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1b9c0bea-dc61-44ee-9b31-e8d2a0b4ac3b",
+                    "path": "<Gamepad>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UseCharmAbility",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

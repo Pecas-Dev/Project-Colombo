@@ -21,8 +21,8 @@ namespace ProjectColombo.GameInputSystem
         MajorParry = 1 << 8,
         Target = 1 << 9,
         TargetPoint = 1 << 10,
-        ItemSelect = 1 << 11,
-        AbilitySelect = 1 << 12,
+        UsePotion = 1 << 11,
+        UseCharmAbility = 1 << 12,
         Pause = 1 << 13,
         All = ~0
     }
@@ -35,7 +35,7 @@ namespace ProjectColombo.GameInputSystem
         public bool MajorAttackPressed { get; private set; } = false;
         public bool MinorAttackPressed { get; private set; } = false;
         public bool UseSpecialAbilityPressed { get; private set; } = false;
-        public bool UseItemPressed { get; private set; } = false;
+        public bool InteractPressed { get; private set; } = false;
         public bool RollPressed { get; private set; } = false;
         //public bool BlockPressed { get; private set; } = false;
         public bool BlockPressed => playerInputActions.Player.Block.IsPressed();
@@ -44,8 +44,8 @@ namespace ProjectColombo.GameInputSystem
         public bool MajorParryPressed { get; private set; } = false;
         public bool TargetPressed { get; private set; } = false;
         public Vector2 TargetPointInput { get; private set; } = Vector2.zero;
-        public Vector2 ItemSelectInput { get; private set; } = Vector2.zero;
-        public Vector2 AbilitySelectInput { get; private set; } = Vector2.zero;
+        public bool UsePotionPressed { get; private set; } = false;
+        public bool UseCharmAbilityPressed { get; private set; } = false;
         public bool PausePressed { get; private set; } = false;
 
         InputActionType allowedInputs = InputActionType.All;
@@ -69,7 +69,7 @@ namespace ProjectColombo.GameInputSystem
             playerInputActions.Player.MajorAttack.performed += OnMajorAttackPerformed;
             playerInputActions.Player.MinorAttack.performed += OnMinorAttackPerformed;
             playerInputActions.Player.UseSpecialAbility.performed += OnUseSpecialAbilityPerformed;
-            playerInputActions.Player.UseItem.performed += OnUseItemPerformed;
+            playerInputActions.Player.Interact.performed += OnInteractPerformed;
 
             playerInputActions.Player.Roll.performed += OnRollPerformed;
             playerInputActions.Player.MajorParry.performed += OnMajorParryPerformed;
@@ -79,10 +79,8 @@ namespace ProjectColombo.GameInputSystem
             playerInputActions.Player.TargetPoint.performed += OnTargetPointPerformed;
             playerInputActions.Player.TargetPoint.canceled += OnTargetPointCanceled;
 
-            playerInputActions.Player.ItemSelect.performed += OnItemSelctPerformed;
-            playerInputActions.Player.ItemSelect.canceled += OnItemSelectCanceled;
-            playerInputActions.Player.AbilitySelect.performed += OnAbilitySelctPerformed;
-            playerInputActions.Player.AbilitySelect.canceled += OnAbilitySelectCanceled;
+            playerInputActions.Player.UsePotion.performed += OnUsePotionPerformed;
+            playerInputActions.Player.UseCharmAbility.performed += OnUseCharmAbilityPerformed;
 
             playerInputActions.Player.Pause.performed += OnPausePerformed;
         }
@@ -108,7 +106,7 @@ namespace ProjectColombo.GameInputSystem
             playerInputActions.Player.MajorAttack.performed -= OnMajorAttackPerformed;
             playerInputActions.Player.MinorAttack.performed -= OnMinorAttackPerformed;
             playerInputActions.Player.UseSpecialAbility.performed -= OnUseSpecialAbilityPerformed;
-            playerInputActions.Player.UseItem.performed -= OnUseItemPerformed;
+            playerInputActions.Player.Interact.performed -= OnInteractPerformed;
 
             playerInputActions.Player.Roll.performed -= OnRollPerformed;
             playerInputActions.Player.MajorParry.performed -= OnMajorParryPerformed;
@@ -118,10 +116,8 @@ namespace ProjectColombo.GameInputSystem
             playerInputActions.Player.TargetPoint.performed -= OnTargetPointPerformed;
             playerInputActions.Player.TargetPoint.canceled -= OnTargetPointCanceled;
 
-            playerInputActions.Player.ItemSelect.performed -= OnItemSelctPerformed;
-            playerInputActions.Player.ItemSelect.canceled -= OnItemSelectCanceled;
-            playerInputActions.Player.AbilitySelect.performed -= OnAbilitySelctPerformed;
-            playerInputActions.Player.AbilitySelect.canceled -= OnAbilitySelectCanceled;
+            playerInputActions.Player.UsePotion.performed -= OnUsePotionPerformed;
+            playerInputActions.Player.UseCharmAbility.performed -= OnUseCharmAbilityPerformed;
 
             playerInputActions.Player.Pause.performed -= OnPausePerformed;
 
@@ -169,19 +165,19 @@ namespace ProjectColombo.GameInputSystem
 
         void ResetAllInputs()
         {
-            MovementInput               = Vector2.zero;
+            //MovementInput               = Vector2.zero;
             MajorAttackPressed          = false;
             MinorAttackPressed          = false;
             UseSpecialAbilityPressed    = false;
-            UseItemPressed              = false;
+            InteractPressed              = false;
             RollPressed                 = false;
             //BlockPressed                = false;
             MinorParryPressed           = false;
             MajorParryPressed           = false;
             TargetPressed               = false;
             TargetPointInput            = Vector2.zero;
-            ItemSelectInput             = Vector2.zero;
-            AbilitySelectInput          = Vector2.zero;
+            UsePotionPressed             = false;
+            UseCharmAbilityPressed      = false;
             PausePressed                = false;
         }
 
@@ -197,15 +193,15 @@ namespace ProjectColombo.GameInputSystem
                 MajorAttackPressed ||
                 MinorAttackPressed ||
                 UseSpecialAbilityPressed ||
-                UseItemPressed ||
+                InteractPressed ||
                 RollPressed ||
                 BlockPressed ||
                 MinorParryPressed ||
                 MajorParryPressed ||
                 TargetPressed ||
                 TargetPointInput.sqrMagnitude > 0.01f ||
-                ItemSelectInput.sqrMagnitude > 0.01f ||
-                AbilitySelectInput.sqrMagnitude > 0.01f ||
+                UsePotionPressed ||
+                UseCharmAbilityPressed ||
                 PausePressed ||
                 IsKeyboardInput();
         }
@@ -282,16 +278,16 @@ namespace ProjectColombo.GameInputSystem
             UseSpecialAbilityPressed = false;
         }
 
-        void OnUseItemPerformed(InputAction.CallbackContext context)
+        void OnInteractPerformed(InputAction.CallbackContext context)
         {
             if (!IsInputEnabled(InputActionType.UseItem)) return;
 
-            UseItemPressed = true;
+            InteractPressed = true;
         }
 
         public void ResetUseItemPressed()
         {
-            UseItemPressed = false;
+            InteractPressed = false;
         }
         // ########################################################
 
@@ -384,34 +380,34 @@ namespace ProjectColombo.GameInputSystem
         //---------------------------------------------------------
 
 
-        // ##################### Ability/ Item Selection ###########################
+        // ##################### Ability/ Item ###########################
 
-        void OnItemSelctPerformed(InputAction.CallbackContext context)
+        void OnUsePotionPerformed(InputAction.CallbackContext context)
         {
-            if (!IsInputEnabled(InputActionType.ItemSelect)) return;
+            if (!IsInputEnabled(InputActionType.UsePotion)) return;
 
-            ItemSelectInput = context.ReadValue<Vector2>();
+            UsePotionPressed = true;
         }
 
-        void OnItemSelectCanceled(InputAction.CallbackContext context)
+        public void ResetUsePotion()
         {
-            if (!IsInputEnabled(InputActionType.ItemSelect)) return;
-
-            ItemSelectInput = Vector2.zero;
-        }
-        void OnAbilitySelctPerformed(InputAction.CallbackContext context)
-        {
-            if (!IsInputEnabled(InputActionType.AbilitySelect)) return;
-
-            ItemSelectInput = context.ReadValue<Vector2>();
+            UsePotionPressed = false;
         }
 
-        void OnAbilitySelectCanceled(InputAction.CallbackContext context)
-        {
-            if (!IsInputEnabled(InputActionType.AbilitySelect)) return;
 
-            ItemSelectInput = Vector2.zero;
+        void OnUseCharmAbilityPerformed(InputAction.CallbackContext context)
+        {
+            if (!IsInputEnabled(InputActionType.UseCharmAbility)) return;
+
+            UseCharmAbilityPressed = true;
         }
+
+        public void ResetUseCharmAbility()
+        {
+            UseCharmAbilityPressed = false;
+        }
+
+
 
         // ########################################################
 

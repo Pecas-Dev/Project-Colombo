@@ -21,7 +21,7 @@ namespace ProjectColombo.Objects.Items
         private void Update()
         {
 
-            if (GameManager.Instance.gameInput.UseItemPressed)
+            if (GameManager.Instance.gameInput.InteractPressed)
             {
                 GameManager.Instance.gameInput.ResetUseItemPressed();
 
