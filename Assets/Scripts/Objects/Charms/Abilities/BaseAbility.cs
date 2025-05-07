@@ -1,16 +1,9 @@
 using UnityEngine;
 
-public class BaseAbility : MonoBehaviour
+namespace ProjectColombo.Objects.Masks
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public abstract class BaseAbility : MonoBehaviour
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public abstract void Activate();
     }
 }

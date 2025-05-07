@@ -11,15 +11,11 @@ namespace ProjectColombo.Objects
         public GameObject indicator;
         public bool active = false;
         public TMP_Text pickUpText;
-        ParticleSystem myParticles;
         [HideInInspector] public GameObject myCharm;
 
         private void Start()
         {
-            myParticles = GetComponent<ParticleSystem>();
             indicator.SetActive(false);
-
-            SetParticleColor();
         }
 
         public void SetCharm(GameObject charm)
@@ -59,30 +55,6 @@ namespace ProjectColombo.Objects
                 Destroy(this.gameObject);
                 return;
             }
-        }
-
-        void SetParticleColor()
-        {
-            BaseCharm charmInfo = myCharm.GetComponent<BaseCharm>();
-
-            Color color;
-            if (charmInfo.charmRarity == RARITY.COMMON)
-            {
-                color = Color.cyan;
-            }
-            else if (charmInfo.charmRarity == RARITY.RARE)
-            {
-                color = Color.yellow;
-            }
-            else
-            {
-                color = Color.magenta;
-            }
-
-            myParticles.Stop();
-            var mainModule = myParticles.main;
-            mainModule.startColor = color;
-            myParticles.Play();
         }
     }
 }

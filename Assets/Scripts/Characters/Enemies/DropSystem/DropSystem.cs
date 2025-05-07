@@ -23,6 +23,9 @@ namespace ProjectColombo.Enemies.DropSystem
         public List<GameObject> commonCharms;
         public List<GameObject> rareCharms;
         public List<GameObject> legendaryCharms;
+        public GameObject commonCharmVFX;
+        public GameObject rareCharmVFX;
+        public GameObject legendaryCharmVFX;
         public GameObject pickup;
         public GameObject coins;
 
@@ -77,6 +80,7 @@ namespace ProjectColombo.Enemies.DropSystem
 
                 GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation);
                 instance.GetComponent<PickUp>().SetCharm(commonCharms[rand]);
+                Instantiate(commonCharmVFX, instance.transform);
             }
             else if (random <= dropChanceRareCharm + dropChanceCommonCharm)
             {
@@ -84,7 +88,7 @@ namespace ProjectColombo.Enemies.DropSystem
 
                 GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation);
                 instance.GetComponent<PickUp>().SetCharm(rareCharms[rand]);
-
+                Instantiate(rareCharmVFX, instance.transform);
             }
             else if (random <= dropChanceLegendaryCharm + dropChanceRareCharm + dropChanceCommonCharm)
             {
@@ -92,7 +96,7 @@ namespace ProjectColombo.Enemies.DropSystem
 
                 GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation);
                 instance.GetComponent<PickUp>().SetCharm(legendaryCharms[rand]);
-
+                Instantiate(legendaryCharmVFX, instance.transform);
             }
             else if (random <= dropChanceCoins + dropChanceLegendaryCharm + dropChanceRareCharm + dropChanceCommonCharm)
             {
