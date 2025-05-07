@@ -18,6 +18,7 @@ namespace ProjectColombo.Objects.Charms
 
         public override void Disable()
         {
+            myHealthManager = GameObject.Find("Player").GetComponent<HealthManager>();
             Debug.Log("removed extra health of: " + extraHealthPoints);
             myHealthManager.AddHealthPoints(-extraHealthPoints);
         }

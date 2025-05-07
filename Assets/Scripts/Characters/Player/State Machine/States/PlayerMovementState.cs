@@ -32,6 +32,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Exit()
         {
+            stateMachine.gameInputSO.ResetMovementInput();
             stateMachine.gameInputSO.EnableAllInputs();
         }
 

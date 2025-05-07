@@ -32,7 +32,11 @@ namespace ProjectColombo.UI
 
         void UpdateTexts()
         {
-            BaseMask mask = lastSelected.GetComponent<MaskButton>().maskPrefab.GetComponent<BaseMask>();
+            if (lastSelected == null) return;
+            MaskButton button = lastSelected.GetComponent<MaskButton>();
+            if (button == null) return;
+
+            BaseMask mask = button.maskPrefab.GetComponent<BaseMask>();
 
             maskNameText.text = mask.maskName;
             //could have lore maskLoreText.text = mask.maskLore;

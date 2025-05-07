@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -163,7 +164,12 @@ namespace ProjectColombo.GameInputSystem
             return (allowedInputs & inputAction) != 0;
         }
 
-        void ResetAllInputs()
+        public void ResetMovementInput()
+        {
+            MovementInput = Vector2.zero;
+        }
+
+        public void ResetAllInputs()
         {
             //MovementInput               = Vector2.zero;
             MajorAttackPressed          = false;

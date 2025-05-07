@@ -120,21 +120,20 @@ namespace ProjectColombo.StateMachine.Player
 
             if (gameInputSO.UsePotionPressed)
             {
-                gameInputSO.ResetUsePotion();
                 myPlayerInventory.UsePotion();
             }
 
             if (gameInputSO.UseCharmAbilityPressed)
             {
-                gameInputSO.ResetUseCharmAbility();
                 myPlayerInventory.UseCharmAbility();
             }
 
             if (gameInputSO.UseSpecialAbilityPressed)
             {
-                gameInputSO.ResetUseSpecialAbilityPressed();
                 myPlayerInventory.UseMaskAbility();
             }
+
+            gameInputSO.ResetAllInputs();
         }
 
         void LogMissingReferenceErrors()

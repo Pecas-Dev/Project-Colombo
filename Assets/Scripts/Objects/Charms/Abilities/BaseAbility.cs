@@ -1,6 +1,8 @@
+using ProjectColombo.GameManagement.Events;
 using ProjectColombo.StateMachine.Player;
 using System.Net.NetworkInformation;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace ProjectColombo.Objects.Masks
 {
@@ -23,7 +25,22 @@ namespace ProjectColombo.Objects.Masks
 
         private void Start()
         {
-            myPlayerStateMachine = GameObject.Find("Player").GetComponent<PlayerStateMachine>();
+            SceneManager.activeSceneChanged += SetStateMachine;
+        }
+
+        private void SetStateMachine(Scene arg0, Scene arg1)
+        {
+            GameObject player = GameObject.Find("Player");
+
+            if (player != null)
+            {
+                myPlayerStateMachine = player.GetComponent<PlayerStateMachine>();
+            }
+        }
+
+        private void OnDestroy()
+        {
+            SceneManager.activeSceneChanged -= SetStateMachine;
         }
 
         public bool Activate()

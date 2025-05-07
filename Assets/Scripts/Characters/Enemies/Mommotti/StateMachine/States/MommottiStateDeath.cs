@@ -44,7 +44,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             materialInstance.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent; // Set proper render order
 
             stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.DEAD);
-            Debug.Log("Mommotti entered Death State");
+            //Debug.Log("Mommotti entered Death State");
         }
 
         public override void Tick(float deltaTime)

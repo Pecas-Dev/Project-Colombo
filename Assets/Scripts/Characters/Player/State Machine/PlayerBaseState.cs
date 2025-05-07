@@ -18,7 +18,6 @@ namespace ProjectColombo.StateMachine.Player
             //set attack states
             if (stateMachine.gameInputSO.MajorAttackPressed && stateMachine.currentState != PlayerStateMachine.PlayerState.Attack)
             {
-                stateMachine.gameInputSO.ResetMajorAttackPressed();
 
                 if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToAttack)) return;
 
@@ -28,7 +27,6 @@ namespace ProjectColombo.StateMachine.Player
 
             if (stateMachine.gameInputSO.MinorAttackPressed && stateMachine.currentState != PlayerStateMachine.PlayerState.Attack)
             {
-                stateMachine.gameInputSO.ResetMinorAttackPressed();
 
                 if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToAttack)) return;
 
@@ -39,7 +37,6 @@ namespace ProjectColombo.StateMachine.Player
             //set defense states
             if (stateMachine.gameInputSO.RollPressed)
             {
-                stateMachine.gameInputSO.ResetRollPressed();
 
                 if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToRoll)) return;
 
@@ -56,14 +53,12 @@ namespace ProjectColombo.StateMachine.Player
             //set parry states
             if (stateMachine.gameInputSO.MajorParryPressed)
             {
-                stateMachine.gameInputSO.ResetMajorParryPressed();
                 stateMachine.SwitchState(new PlayerParryState(stateMachine, GameGlobals.MusicScale.MAJOR));
                 return;
             }
 
             if (stateMachine.gameInputSO.MinorParryPressed)
             {
-                stateMachine.gameInputSO.ResetMinorParryPressed();
                 stateMachine.SwitchState(new PlayerParryState(stateMachine, GameGlobals.MusicScale.MINOR));
                 return;
             }

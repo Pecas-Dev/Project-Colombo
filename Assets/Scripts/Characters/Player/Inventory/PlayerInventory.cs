@@ -47,9 +47,6 @@ namespace ProjectColombo.Inventory
             mask.GetComponent<BaseMask>().abilityObject = Instantiate(mask.GetComponent<BaseMask>().GetAbility(), maskAbilitySlot.transform);
         }
 
-        //east = mask
-        //arrow left = charm
-        //arrow down = potion
 
         public void Reset()
         {
