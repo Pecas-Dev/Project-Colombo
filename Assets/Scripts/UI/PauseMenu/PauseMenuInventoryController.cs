@@ -2,6 +2,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
+using System.Collections;
 
 
 namespace ProjectColombo.UI.Pausescreen
@@ -13,7 +15,12 @@ namespace ProjectColombo.UI.Pausescreen
         [SerializeField] GameObject[] tabPanels;
         [SerializeField] TextMeshProUGUI[] tabTexts;
         [SerializeField] GameObject[] tabSelectionIndicators;
-        [SerializeField] GameObject[] firstSelectedButtonForEachTab;
+        [SerializeField] GameObject[] firstSelectedButton;
+
+        [Header("Tab Colors")]
+        [SerializeField] Color tabSelectedColor = Color.white;
+        [SerializeField] Color tabUnselectedColor = Color.gray;
+        [SerializeField] Color tabHoverColor = new Color(0.4415095f, 0f, 0.4200771f);
 
         [Header("Inventory Pentagram System")]
         [SerializeField] GameObject weaponPentagram;
@@ -25,10 +32,24 @@ namespace ProjectColombo.UI.Pausescreen
         [SerializeField] Button[] inventorySlotButtons;
         [SerializeField] GameObject[] inventorySlotSelectors;
 
-        [Header("Tab Colors")]
-        [SerializeField] Color tabSelectedColor = Color.white;
-        [SerializeField] Color tabUnselectedColor = Color.gray;
-        [SerializeField] Color tabHoverColor = new Color(0.4415095f, 0f, 0.4200771f);
+        [Header("Inventory Slot Animation")]
+        [SerializeField] float selectorFlickerMinAlpha = 0.5f;
+        [SerializeField] float selectorFlickerMaxAlpha = 1.0f;
+        [SerializeField] float selectorFlickerSpeed = 2.0f;
+
+        [SerializeField] float selectorBouncingMinScale = 0.95f;
+        [SerializeField] float selectorBouncingMaxScale = 1.05f;
+        [SerializeField] float selectorBouncingSpeed = 1.5f;
+
+        [Header("Slot Hover Animation")]
+        [SerializeField] float slotHoverScaleIncrease = 0.1f;
+        [SerializeField] float slotHoverAlphaIncrease = 0.2f;
+        //[SerializeField] float slotHoverAnimationSpeed = 5.0f;
+
+        [Header("Slot Submit Animation")]
+        [SerializeField] float slotSubmitShrinkScale = 0.8f;
+        [SerializeField] float slotSubmitShrinkDuration = 0.1f;
+        [SerializeField] float slotSubmitBounceDuration = 0.2f;
 
 
         int currentInventorySlotIndex = -1;
@@ -41,6 +62,18 @@ namespace ProjectColombo.UI.Pausescreen
         Coroutine[] textAnimationCoroutines;
 
         Button currentSelectedInventoryButton;
+
+
+        Dictionary<RectTransform, Vector3> slotOriginalScales = new Dictionary<RectTransform, Vector3>();
+        Dictionary<Image, Vector3> slotImageOriginalScales = new Dictionary<Image, Vector3>();
+        Dictionary<Image, float> slotImageOriginalAlpha = new Dictionary<Image, float>();
+
+        Dictionary<int, bool> slotIsHovering = new Dictionary<int, bool>();
+
+        Coroutine selectorAnimationCoroutine;
+
+        Dictionary<int, Coroutine> slotHoverCoroutines = new Dictionary<int, Coroutine>();
+        Dictionary<int, Coroutine> slotSubmitCoroutines = new Dictionary<int, Coroutine>();
 
 
         public override void Initialize()
@@ -89,9 +122,33 @@ namespace ProjectColombo.UI.Pausescreen
                 {
                     if (inventorySlotButtons[i] != null)
                     {
-                        int slotIndex = i;
-                        inventorySlotButtons[i].onClick.AddListener(() => SelectInventorySlot(slotIndex));
+                        RectTransform buttonRect = inventorySlotButtons[i].GetComponent<RectTransform>();
 
+                        if (buttonRect != null)
+                        {
+                            slotOriginalScales[buttonRect] = buttonRect.localScale;
+                        }
+
+                        Image buttonImage = inventorySlotButtons[i].GetComponent<Image>();
+                        if (buttonImage != null)
+                        {
+                            slotImageOriginalScales[buttonImage] = buttonImage.rectTransform.localScale;
+                            slotImageOriginalAlpha[buttonImage] = buttonImage.color.a;
+                        }
+
+                        Image[] childImages = inventorySlotButtons[i].GetComponentsInChildren<Image>();
+
+                        foreach (Image childImage in childImages)
+                        {
+                            if (childImage != buttonImage)
+                            {
+                                slotImageOriginalScales[childImage] = childImage.rectTransform.localScale;
+                            }
+                        }
+
+                        slotIsHovering[i] = false;
+
+                        int slotIndex = i;
                         EventTrigger eventTrigger = inventorySlotButtons[i].GetComponent<EventTrigger>();
 
                         if (eventTrigger == null)
@@ -99,7 +156,14 @@ namespace ProjectColombo.UI.Pausescreen
                             eventTrigger = inventorySlotButtons[i].gameObject.AddComponent<EventTrigger>();
                         }
 
-                        AddEventTriggerEntry(eventTrigger, EventTriggerType.Select, (data) => OnInventorySlotSelected(slotIndex));
+
+                        AddEventTriggerEntry(eventTrigger, EventTriggerType.PointerEnter, (data) => OnInventorySlotHoverEnter(slotIndex));
+                        AddEventTriggerEntry(eventTrigger, EventTriggerType.PointerExit, (data) => OnInventorySlotHoverExit(slotIndex));
+
+                        AddEventTriggerEntry(eventTrigger, EventTriggerType.Submit, (data) => OnInventorySlotSubmit(slotIndex));
+
+                        inventorySlotButtons[i].onClick.RemoveAllListeners();
+                        inventorySlotButtons[i].onClick.AddListener(() => { OnInventorySlotClick(slotIndex); SelectInventorySlot(slotIndex); });
                     }
                 }
             }
@@ -185,6 +249,20 @@ namespace ProjectColombo.UI.Pausescreen
                 {
                     NavigateRight();
                 }
+
+                if (currentTabIndex == 1)
+                {
+                    Vector2 navDirection = gameInputSO.playerInputActions.UI.Navigate.ReadValue<Vector2>();
+
+                    if (navDirection.sqrMagnitude > 0.5f)
+                    {
+                    }
+
+                    if (gameInputSO.playerInputActions.UI.Submit.WasPressedThisFrame() && currentInventorySlotIndex >= 0 && currentInventorySlotIndex < inventorySlotButtons.Length)
+                    {
+                        OnInventorySlotSubmit(currentInventorySlotIndex);
+                    }
+                }
             }
         }
 
@@ -195,6 +273,27 @@ namespace ProjectColombo.UI.Pausescreen
                 if (textAnimationCoroutines[i] != null)
                 {
                     StopCoroutine(textAnimationCoroutines[i]);
+                }
+            }
+
+            if (selectorAnimationCoroutine != null)
+            {
+                StopCoroutine(selectorAnimationCoroutine);
+            }
+
+            foreach (var coroutine in slotHoverCoroutines.Values)
+            {
+                if (coroutine != null)
+                {
+                    StopCoroutine(coroutine);
+                }
+            }
+
+            foreach (var coroutine in slotSubmitCoroutines.Values)
+            {
+                if (coroutine != null)
+                {
+                    StopCoroutine(coroutine);
                 }
             }
         }
@@ -223,9 +322,9 @@ namespace ProjectColombo.UI.Pausescreen
             {
                 GameObject buttonToSelect = lastSelectedButton;
 
-                if (buttonToSelect == null && currentTabIndex < firstSelectedButtonForEachTab.Length)
+                if (buttonToSelect == null && currentTabIndex < firstSelectedButton.Length)
                 {
-                    buttonToSelect = firstSelectedButtonForEachTab[currentTabIndex];
+                    buttonToSelect = firstSelectedButton[currentTabIndex];
                 }
 
                 if (buttonToSelect != null)
@@ -341,9 +440,9 @@ namespace ProjectColombo.UI.Pausescreen
                 }
             }
 
-            if (firstSelectedButtonForEachTab != null && currentTabIndex < firstSelectedButtonForEachTab.Length && firstSelectedButtonForEachTab[currentTabIndex] != null)
+            if (firstSelectedButton != null && currentTabIndex < firstSelectedButton.Length && firstSelectedButton[currentTabIndex] != null)
             {
-                GameObject buttonToSelect = firstSelectedButtonForEachTab[currentTabIndex];
+                GameObject buttonToSelect = firstSelectedButton[currentTabIndex];
 
                 EventSystem.current.SetSelectedGameObject(buttonToSelect);
 
@@ -392,6 +491,14 @@ namespace ProjectColombo.UI.Pausescreen
                 if (inventorySlotSelectors[currentInventorySlotIndex] != null)
                 {
                     inventorySlotSelectors[currentInventorySlotIndex].SetActive(false);
+
+                    if (selectorAnimationCoroutine != null)
+                    {
+                        StopCoroutine(selectorAnimationCoroutine);
+                        selectorAnimationCoroutine = null;
+                    }
+
+                    slotIsHovering[currentInventorySlotIndex] = false;
                 }
             }
 
@@ -400,6 +507,12 @@ namespace ProjectColombo.UI.Pausescreen
             if (inventorySlotSelectors[currentInventorySlotIndex] != null)
             {
                 inventorySlotSelectors[currentInventorySlotIndex].SetActive(true);
+
+                // FLICKER ANIMATION
+                selectorAnimationCoroutine = StartCoroutine(AnimateSelectorFlicker(inventorySlotSelectors[currentInventorySlotIndex]));
+
+                // BOUNCE ANIMATION
+                // selectorAnimationCoroutine = StartCoroutine(AnimateSelectorBounce(inventorySlotSelectors[currentInventorySlotIndex]));
             }
 
             if (inventorySlotButtons[currentInventorySlotIndex] != null)
@@ -473,6 +586,344 @@ namespace ProjectColombo.UI.Pausescreen
             }
 
             return false;
+        }
+
+        void OnInventorySlotHoverEnter(int slotIndex)
+        {
+            if (slotIndex == currentInventorySlotIndex)
+            {
+                return;
+            }
+
+            slotIsHovering[slotIndex] = true;
+
+            Button slotButton = inventorySlotButtons[slotIndex];
+
+            if (slotButton == null)
+            {
+                return;
+            }
+
+            RectTransform buttonRect = slotButton.GetComponent<RectTransform>();
+
+            if (buttonRect == null)
+            {
+                return;
+            }
+
+            Image buttonImage = slotButton.GetComponent<Image>();
+            Image[] childImages = slotButton.GetComponentsInChildren<Image>();
+
+            if (slotHoverCoroutines.ContainsKey(slotIndex) && slotHoverCoroutines[slotIndex] != null)
+            {
+                StopCoroutine(slotHoverCoroutines[slotIndex]);
+            }
+
+            slotHoverCoroutines[slotIndex] = StartCoroutine(AnimateSlotHover(slotIndex, buttonRect, buttonImage, childImages, true));
+        }
+
+        void OnInventorySlotHoverExit(int slotIndex)
+        {
+            slotIsHovering[slotIndex] = false;
+
+            Button slotButton = inventorySlotButtons[slotIndex];
+
+            if (slotButton == null)
+            {
+                return;
+            }
+
+            RectTransform buttonRect = slotButton.GetComponent<RectTransform>();
+
+            if (buttonRect == null)
+            {
+                return;
+            }
+
+            Image buttonImage = slotButton.GetComponent<Image>();
+            Image[] childImages = slotButton.GetComponentsInChildren<Image>();
+
+            if (slotHoverCoroutines.ContainsKey(slotIndex) && slotHoverCoroutines[slotIndex] != null)
+            {
+                StopCoroutine(slotHoverCoroutines[slotIndex]);
+            }
+
+            slotHoverCoroutines[slotIndex] = StartCoroutine(AnimateSlotHover(slotIndex, buttonRect, buttonImage, childImages, false));
+        }
+
+        void OnInventorySlotSubmit(int slotIndex)
+        {
+            Button slotButton = inventorySlotButtons[slotIndex];
+
+            if (slotButton == null)
+            {
+                return;
+            }
+
+            RectTransform buttonRect = slotButton.GetComponent<RectTransform>();
+
+            if (buttonRect == null)
+            {
+                return;
+            }
+
+            PlaySlotSubmitAnimation(slotIndex, buttonRect);
+        }
+
+        void OnInventorySlotClick(int slotIndex)
+        {
+            OnInventorySlotSubmit(slotIndex);
+        }
+
+        void PlaySlotSubmitAnimation(int slotIndex, RectTransform rectTransform)
+        {
+            if (rectTransform == null)
+            {
+                return;
+            }
+
+            Vector3 originalScale = Vector3.one;
+
+            if (slotOriginalScales.ContainsKey(rectTransform))
+            {
+                originalScale = slotOriginalScales[rectTransform];
+            }
+            else
+            {
+                originalScale = rectTransform.localScale;
+                slotOriginalScales[rectTransform] = originalScale;
+            }
+
+            rectTransform.localScale = originalScale * slotSubmitShrinkScale;
+
+            if (slotSubmitCoroutines.ContainsKey(slotIndex) && slotSubmitCoroutines[slotIndex] != null)
+            {
+                StopCoroutine(slotSubmitCoroutines[slotIndex]);
+            }
+
+            slotSubmitCoroutines[slotIndex] = StartCoroutine(SlotShrinkAndBounceAnimation(slotIndex, rectTransform, originalScale));
+        }
+
+        IEnumerator AnimateSelectorFlicker(GameObject selector)
+        {
+            if (selector == null) 
+            {
+                yield break;
+            }
+
+            Image selectorImage = selector.GetComponent<Image>();
+
+            if (selectorImage == null)
+            {
+                yield break;
+            }
+
+            Color originalColor = selectorImage.color;
+
+            float time = 0f;
+
+            while (true) 
+            {
+                float alpha = Mathf.Lerp(selectorFlickerMinAlpha, selectorFlickerMaxAlpha, (Mathf.Sin(time * selectorFlickerSpeed) + 1f) * 0.5f);
+
+                Color newColor = originalColor;
+                newColor.a = alpha;
+                selectorImage.color = newColor;
+
+                time += Time.deltaTime;
+                yield return null;
+            }
+        }
+
+        IEnumerator AnimateSelectorBounce(GameObject selector)
+        {
+            if (selector == null)
+            {
+                yield break;
+            }
+
+            RectTransform selectorRect = selector.GetComponent<RectTransform>();
+
+            if (selectorRect == null)
+            {
+                yield break;
+            }
+
+            Vector3 originalScale = selectorRect.localScale;
+
+            float time = 0f;
+
+            while (true) 
+            {
+                float scale = Mathf.Lerp(selectorBouncingMinScale, selectorBouncingMaxScale, (Mathf.Sin(time * selectorBouncingSpeed) + 1f) * 0.5f);
+
+                selectorRect.localScale = originalScale * scale;
+
+                time += Time.deltaTime;
+                yield return null;
+            }
+        }
+
+        IEnumerator AnimateSlotHover(int slotIndex, RectTransform buttonRect, Image buttonImage, Image[] childImages, bool hoverIn)
+        {
+            if (buttonRect == null)
+            {
+                yield break;
+            }
+
+            Vector3 buttonOriginalScale = Vector3.one;
+
+            if (slotOriginalScales.ContainsKey(buttonRect))
+            {
+                buttonOriginalScale = slotOriginalScales[buttonRect];
+            }
+            else
+            {
+                buttonOriginalScale = buttonRect.localScale;
+                slotOriginalScales[buttonRect] = buttonOriginalScale;
+            }
+
+            Vector3 targetButtonScale = hoverIn ?  buttonOriginalScale * (1f + slotHoverScaleIncrease) : buttonOriginalScale;
+
+            float targetAlpha = 1f;
+
+            if (buttonImage != null)
+            {
+                float originalAlpha = 1f;
+
+                if (slotImageOriginalAlpha.ContainsKey(buttonImage))
+                {
+                    originalAlpha = slotImageOriginalAlpha[buttonImage];
+                }
+                else
+                {
+                    originalAlpha = buttonImage.color.a;
+                    slotImageOriginalAlpha[buttonImage] = originalAlpha;
+                }
+
+                targetAlpha = hoverIn ? Mathf.Clamp01(originalAlpha + slotHoverAlphaIncrease) :  originalAlpha;
+            }
+
+            float duration = 0.2f; 
+            float elapsedTime = 0f;
+
+            Vector3 startButtonScale = buttonRect.localScale;
+
+            float startAlpha = buttonImage != null ? buttonImage.color.a : 1f;
+
+            Dictionary<Image, Vector3> startChildScales = new Dictionary<Image, Vector3>();
+
+            foreach (Image childImage in childImages)
+            {
+                if (childImage != buttonImage) 
+                {
+                    startChildScales[childImage] = childImage.rectTransform.localScale;
+                }
+            }
+
+            while (elapsedTime < duration)
+            {
+                if (hoverIn != slotIsHovering[slotIndex])
+                {
+                    yield break;
+                }
+
+                float time = elapsedTime / duration;
+                float smoothT = Mathf.SmoothStep(0f, 1f, time);
+
+                buttonRect.localScale = Vector3.Lerp(startButtonScale, targetButtonScale, smoothT);
+
+                if (buttonImage != null)
+                {
+                    Color color = buttonImage.color;
+                    color.a = Mathf.Lerp(startAlpha, targetAlpha, smoothT);
+                    buttonImage.color = color;
+                }
+
+                foreach (Image childImage in childImages)
+                {
+                    if (childImage != buttonImage)
+                    {
+                        Vector3 childOriginalScale = Vector3.one;
+
+                        if (slotImageOriginalScales.ContainsKey(childImage))
+                        {
+                            childOriginalScale = slotImageOriginalScales[childImage];
+                        }
+                        else
+                        {
+                            childOriginalScale = childImage.rectTransform.localScale;
+                            slotImageOriginalScales[childImage] = childOriginalScale;
+                        }
+
+                        Vector3 childStartScale = startChildScales[childImage];
+                        Vector3 childTargetScale = hoverIn ? childOriginalScale * (1f + slotHoverScaleIncrease) : childOriginalScale;
+
+                        childImage.rectTransform.localScale = Vector3.Lerp(childStartScale, childTargetScale, smoothT);
+                    }
+                }
+
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            buttonRect.localScale = targetButtonScale;
+
+            if (buttonImage != null)
+            {
+                Color color = buttonImage.color;
+                color.a = targetAlpha;
+                buttonImage.color = color;
+            }
+
+            foreach (Image childImage in childImages)
+            {
+                if (childImage != buttonImage)
+                {
+                    Vector3 childOriginalScale = Vector3.one;
+
+                    if (slotImageOriginalScales.ContainsKey(childImage))
+                    {
+                        childOriginalScale = slotImageOriginalScales[childImage];
+                    }
+
+                    childImage.rectTransform.localScale = hoverIn ? childOriginalScale * (1f + slotHoverScaleIncrease) :  childOriginalScale;
+                }
+            }
+
+            slotHoverCoroutines[slotIndex] = null;
+        }
+
+        IEnumerator SlotShrinkAndBounceAnimation(int slotIndex, RectTransform rectTransform, Vector3 originalScale)
+        {
+            if (rectTransform == null)
+            {
+                yield break;
+            }
+
+            Vector3 targetScale = originalScale * slotSubmitShrinkScale;
+
+            rectTransform.localScale = targetScale;
+
+            yield return new WaitForSecondsRealtime(slotSubmitShrinkDuration);
+
+            float elapsedTime = 0f;
+
+            while (elapsedTime < slotSubmitBounceDuration)
+            {
+                float t = elapsedTime / slotSubmitBounceDuration;
+                float curveValue = clickBounceCurve.Evaluate(t);
+
+                Vector3 currentScale = Vector3.Lerp(targetScale, originalScale, curveValue);
+                rectTransform.localScale = currentScale;
+
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            rectTransform.localScale = originalScale;
+
+            slotSubmitCoroutines[slotIndex] = null;
         }
     }
 }
