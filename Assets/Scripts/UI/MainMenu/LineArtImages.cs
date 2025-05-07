@@ -24,7 +24,8 @@ public class LineArtImages : MonoBehaviour
     [SerializeField] Vector2 targetSize = new Vector2(1050f, 1050f);
 
     int currentIndex = 0;
-    private bool isTransitioning = false;
+
+    bool isTransitioning = false;
 
     Image targetImage;
     RectTransform imageRectTransform;

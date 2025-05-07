@@ -33,6 +33,7 @@ public class RadialMenuManager : MonoBehaviour
     bool isActivating = false;
     bool isRadialMenuActive = false;
     bool wasButtonPressed = false;
+
     float holdStartTime;
 
     void Awake()
@@ -192,7 +193,7 @@ public class RadialMenuManager : MonoBehaviour
     {
         isRadialMenuActive = false;
         isActivating = false;
-        wasButtonPressed = false; // Reset this to ensure we can detect the next press
+        wasButtonPressed = false; 
 
         if (radialMenuController != null)
         {
@@ -207,28 +208,24 @@ public class RadialMenuManager : MonoBehaviour
             }
 
             radialMenuController.Hide();
-            
+
             if (gameInputSO != null)
             {
                 gameInputSO.DisableUIMode();
             }
         }
 
-        // Add a small delay before we can activate again to prevent accidental reactivation
         StartCoroutine(ResetButtonStateAfterDelay(0.1f));
     }
 
     IEnumerator ResetButtonStateAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        
-        // If the button is still being held down after our delay, 
-        // we need to wait until it's fully released before allowing reactivation
+
         if (gameInputSO != null && gameInputSO.playerInputActions != null)
         {
             var control = gameInputSO.playerInputActions.Player.ActivateRadial.controls[0];
-            
-            // Wait until the button is fully released
+
             while (control.IsPressed())
             {
                 yield return null;

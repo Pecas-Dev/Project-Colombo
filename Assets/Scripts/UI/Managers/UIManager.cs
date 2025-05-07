@@ -3,6 +3,7 @@ using ProjectColombo.UI;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using ProjectColombo.GameInputSystem;
+using ProjectColombo.UI.Pausescreen;
 
 public class UIManager : MonoBehaviour
 {
@@ -146,7 +147,7 @@ public class UIManager : MonoBehaviour
 
     public void ShowOptionsMenu()
     {
-        MenuController menu = GetMenu<OptionsMenuController>();
+        MenuController menu = GetMenu<PauseMenuInventoryController>();
         if (menu != null)
         {
             ShowMenu(menu);

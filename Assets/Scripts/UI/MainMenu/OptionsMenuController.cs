@@ -13,7 +13,7 @@ namespace ProjectColombo.UI
         [SerializeField] GameObject[] tabSelectionIndicators;
         [SerializeField] Button[] tabButtons;
 
-        private TextMeshProUGUI[] tabTexts;
+        TextMeshProUGUI[] tabTexts;
 
         [Header("Tab Colors")]
         [SerializeField] Color tabOriginalColor = Color.black;

@@ -12,7 +12,7 @@ namespace ProjectColombo.UI
         {
             InitializeUIManager();
         }
-
+        
         void InitializeUIManager()
         {
             if (UIManager.Instance == null)

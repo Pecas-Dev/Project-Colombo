@@ -180,7 +180,7 @@ public class MainMenuController : MenuController
         }
         else
         {
-            Debug.LogWarning("UIManagerV2 instance not found!");
+            Debug.LogWarning("UIManager instance not found!");
         }
     }
 

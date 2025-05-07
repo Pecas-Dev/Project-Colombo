@@ -1,10 +1,10 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using ProjectColombo.GameInputSystem;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 
 namespace ProjectColombo.UI
@@ -158,7 +158,7 @@ namespace ProjectColombo.UI
             }
 
             rectTransform.localScale = originalScale * clickShrinkScale;
-            
+
             try
             {
                 StartCoroutine(ShrinkAndBounceAnimation(rectTransform, originalScale));
@@ -168,51 +168,51 @@ namespace ProjectColombo.UI
                 UnityEngine.Application.onBeforeRender += () => ResetButtonScale(rectTransform, originalScale);
             }
         }
-        
-        private void ResetButtonScale(RectTransform rectTransform, Vector3 originalScale)
+
+        void ResetButtonScale(RectTransform rectTransform, Vector3 originalScale)
         {
             if (rectTransform != null)
             {
                 rectTransform.localScale = originalScale;
             }
-            
+
             UnityEngine.Application.onBeforeRender -= () => ResetButtonScale(rectTransform, originalScale);
         }
 
         protected IEnumerator ShrinkAndBounceAnimation(RectTransform rectTransform, Vector3 originalScale)
         {
             if (rectTransform == null) yield break;
-            
+
             Vector3 targetScale = originalScale * clickShrinkScale;
-            
+
             rectTransform.localScale = targetScale;
-            
+
             yield return new WaitForEndOfFrame();
-            
-            if (!gameObject.activeInHierarchy || rectTransform == null) 
+
+            if (!gameObject.activeInHierarchy || rectTransform == null)
             {
                 yield break;
             }
-            
+
             float elapsedTime = 0f;
-            
+
             while (elapsedTime < clickBounceDuration && gameObject.activeInHierarchy && rectTransform != null)
             {
                 float t = elapsedTime / clickBounceDuration;
                 float curveValue = clickBounceCurve.Evaluate(t);
-                
+
                 Vector3 currentScale = Vector3.Lerp(targetScale, originalScale, curveValue);
                 rectTransform.localScale = currentScale;
-                
+
                 elapsedTime += Time.deltaTime;
                 yield return null;
-                
+
                 if (!gameObject.activeInHierarchy || rectTransform == null)
                 {
                     yield break;
                 }
             }
-            
+
             if (gameObject.activeInHierarchy && rectTransform != null)
             {
                 rectTransform.localScale = originalScale;
