@@ -1,9 +1,70 @@
+using ProjectColombo.StateMachine.Player;
+using System.Net.NetworkInformation;
 using UnityEngine;
 
 namespace ProjectColombo.Objects.Masks
 {
     public abstract class BaseAbility : MonoBehaviour
     {
-        public abstract void Activate();
+        public Sprite abilitySprite;
+        public string abilityName;
+        [TextArea] public string abilityDescription;
+
+        public float cooldownInSeconds;
+        [ReadOnlyInspector] public float timer = 0;
+        [ReadOnlyInspector] public bool available = true;
+
+        public float abilityDuration;
+        [ReadOnlyInspector] public float abilityTimer = 0;
+        [ReadOnlyInspector] public bool active;
+
+
+        [HideInInspector] public PlayerStateMachine myPlayerStateMachine;
+
+        private void Start()
+        {
+            myPlayerStateMachine = GameObject.Find("Player").GetComponent<PlayerStateMachine>();
+        }
+
+        public bool Activate()
+        {
+            if (available)
+            {
+                UseAbility();
+                available = false;
+                active = true;
+                return true;
+            }
+
+            return false;
+        }
+
+        private void Update()
+        {
+            if (!available)
+            {
+                timer += Time.deltaTime;
+
+                if (timer > cooldownInSeconds)
+                {
+                    timer = 0;
+                    available = true;
+                }
+            }
+
+            if (active)
+            {
+                abilityTimer += Time.deltaTime;
+
+                if (abilityTimer > abilityDuration)
+                {
+                    EndAbility();
+                    abilityTimer = 0;
+                    active = false;
+                }
+            }
+        }
+        public abstract void UseAbility();
+        public abstract void EndAbility();
     }
 }

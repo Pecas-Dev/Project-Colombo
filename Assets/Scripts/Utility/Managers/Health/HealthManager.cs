@@ -15,7 +15,7 @@ namespace ProjectColombo.Combat
         int maxHealth = 100;
 
         [ReadOnlyInspector] public int currentHealth;
-
+        [ReadOnlyInspector] public bool ignoreDamage = false;
 
         public int CurrentHealth => currentHealth;
         public int MaxHealth => maxHealth;
@@ -39,6 +39,7 @@ namespace ProjectColombo.Combat
                 myLevelStats = worldGen.GetComponent<LevelStats>();
             }
 
+            ignoreDamage = false;
             GetCurrentStats();
         }
 
@@ -72,6 +73,11 @@ namespace ProjectColombo.Combat
             {
                 maxHealth = currentHealth = 1;
             }
+        }
+
+        public bool GetIgnoreDamage()
+        {
+            return ignoreDamage;
         }
 
         public void TakeDamage(int damageAmount)

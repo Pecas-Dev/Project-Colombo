@@ -157,6 +157,8 @@ namespace ProjectColombo.Combat
                 EntityAttributes otherAttributes = other.GetComponent<EntityAttributes>();
                 HealthManager otherHealth = other.GetComponent<HealthManager>();
 
+                if (otherHealth.GetIgnoreDamage()) return;
+
                 if (otherStateMachine != null && otherHealth != null && otherHealth.CurrentHealth > 0)
                 {
                     if (doHitstop)
@@ -187,6 +189,8 @@ namespace ProjectColombo.Combat
                 PlayerStateMachine otherStateMachine = other.GetComponent<PlayerStateMachine>();
                 EntityAttributes otherAttributes = other.GetComponent<EntityAttributes>();
                 HealthManager otherHealth = other.GetComponent<HealthManager>();
+
+                if (otherHealth.GetIgnoreDamage()) return;
 
                 if (otherStateMachine != null && otherHealth != null && otherHealth.CurrentHealth > 0)
                 {
