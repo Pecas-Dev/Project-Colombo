@@ -4,6 +4,7 @@ using ProjectColombo.GameManagement.Stats;
 using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.LevelManagement;
+using ProjectColombo.Objects.VFX;
 
 
 namespace ProjectColombo.Combat
@@ -139,6 +140,11 @@ namespace ProjectColombo.Combat
             if (TryGetComponent<DropSystem>(out _))
             {
                 GetComponent<DropSystem>().DropItem();
+            }
+
+            if (TryGetComponent<SpawnVFXOnDestroy>(out _))
+            {
+                GetComponent<SpawnVFXOnDestroy>().SpawnVFX();
             }
 
             if (gameObject.CompareTag("Destroyable"))

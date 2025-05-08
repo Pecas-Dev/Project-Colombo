@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 862747859323613996}
   - component: {fileID: 552900838834251870}
   - component: {fileID: 6779717394103816008}
+  - component: {fileID: -844914337474921586}
   m_Layer: 13
   m_Name: SmallDestroyableVase
   m_TagString: Destroyable
@@ -125,6 +126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentHealth: 0
+  ignoreDamage: 0
 --- !u!114 &6779717394103816008
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,23 +140,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myVariant: 0
-  commonCharms:
-  - {fileID: 2214152689029009370, guid: 42348f55bc395d144bef4fbaed4dd465, type: 3}
-  - {fileID: 5153099699462930510, guid: 0e2e9f4f450d13445bb81627be9f87bf, type: 3}
-  - {fileID: 8493266293346240001, guid: 7d761aa023c0f3e498eaa7fc64edd995, type: 3}
-  - {fileID: 1353502290456183764, guid: 802913cf77f56a747a5cdaddcfa99390, type: 3}
-  - {fileID: 5734323824044317263, guid: 08a416e269a000e4aa02d270f5588b6d, type: 3}
-  - {fileID: 6503379658991535769, guid: bc0952d1e7e249c4581f17d480891ca2, type: 3}
-  rareCharms:
-  - {fileID: 6301612966450194399, guid: bd2987e78347be749bc940720af3038f, type: 3}
-  - {fileID: 8617957453502818824, guid: 280d34746e666194c9f18d1276824db1, type: 3}
-  - {fileID: 7909642838134526958, guid: 51353da68a4a45e4c9e62348a58ef14e, type: 3}
-  - {fileID: 808636044392298626, guid: 6af26d020a99d6a40a26884a8dcce8d2, type: 3}
-  legendaryCharms:
-  - {fileID: 8441870704141843900, guid: 3c577fdfac3157748ab7f611dfcdae4a, type: 3}
-  - {fileID: 5963334831434130681, guid: 67a1d88dd596e374f99d2af77947b6a2, type: 3}
-  commonCharmVFX: {fileID: 5087879324207771018, guid: fe6e92f4c69777044bf7c499b80680be, type: 3}
-  rareCharmVFX: {fileID: 7374665690017427085, guid: b096cfeaf2bd55048ae6ad7513da756e, type: 3}
-  legendaryCharmVFX: {fileID: 8432849472055086706, guid: 8c350150259b57949b4f8dfe6755fd04, type: 3}
-  pickup: {fileID: 7109980893497795781, guid: 929b90f19122898449c45a3918bd04c9, type: 3}
-  coins: {fileID: 390289988588442798, guid: b213b2e361262f54482cc88949a43845, type: 3}
+--- !u!114 &-844914337474921586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1586025342778282877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44a79ebf72aef234daf9388e6da15d2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  VFX: {fileID: 8390697356205592922, guid: de9c0ab3d49644d4b8586c23d3b24218, type: 3}
