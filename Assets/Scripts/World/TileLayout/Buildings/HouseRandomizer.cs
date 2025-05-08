@@ -35,7 +35,7 @@ namespace ProjectColombo.LevelManagement
 
             foreach (Material m in renderer.materials)
             {
-                if (m.HasFloat("_PlasterColor"));
+                if (m.HasFloat("_PlasterColor"))
                 {
                     m.SetFloat("_PlasterColor", rand);
                 }

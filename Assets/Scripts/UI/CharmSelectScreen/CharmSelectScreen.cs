@@ -13,6 +13,7 @@ namespace ProjectColombo.UI
     {
         public GameObject newCharm;
         public List<GameObject> charmButtons;
+        public GameObject legendaryCharmButton;
 
         public Image newCharmImage;
         public TMP_Text newCharmNameText;
@@ -65,6 +66,11 @@ namespace ProjectColombo.UI
             {
                 charmButtons[i].GetComponent<Button>().enabled = false;
                 i++;
+            }
+
+            if (inventory.legendaryCharms.Count != 0)
+            {
+                    legendaryCharmButton.GetComponent<CharmButton>().UpdateInfo(inventory.legendaryCharms[0]);
             }
         }
 

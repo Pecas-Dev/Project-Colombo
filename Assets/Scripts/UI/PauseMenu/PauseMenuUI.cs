@@ -13,6 +13,7 @@ namespace ProjectColombo.UI.Pausescreen
     public class PauseMenuUI : MonoBehaviour
     {
         public List<GameObject> charmButtons;
+        public GameObject legendaryCharmButton;
         public TMP_Text charmNameText;
         public TMP_Text charmDescriptionText;
 
@@ -58,6 +59,8 @@ namespace ProjectColombo.UI.Pausescreen
                 b.GetComponent<Button>().interactable = false;
             }
 
+            legendaryCharmButton.GetComponent<Button>().interactable = false;
+
             PlayerInventory inventory = GameManager.Instance.GetComponent<PlayerInventory>();
 
             int slot = 0;
@@ -71,6 +74,16 @@ namespace ProjectColombo.UI.Pausescreen
             for (int i = slot; i < charmButtons.Count; i++)
             {
                 charmButtons[i].GetComponent<CharmButton>().UpdateInfo(null);
+            }
+
+            if (inventory.legendaryCharms.Count != 0)
+            {
+                legendaryCharmButton.GetComponent<Button>().interactable = true;
+                legendaryCharmButton.GetComponent<CharmButton>().UpdateInfo(inventory.legendaryCharms[0]);
+            }
+            else
+            {
+                legendaryCharmButton.GetComponent<CharmButton>().UpdateInfo(null);
             }
         }
     }

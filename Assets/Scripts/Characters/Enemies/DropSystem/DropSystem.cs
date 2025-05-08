@@ -1,7 +1,5 @@
+using ProjectColombo.GameManagement;
 using ProjectColombo.LevelManagement;
-using ProjectColombo.Objects;
-using ProjectColombo.Objects.Items;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProjectColombo.Enemies.DropSystem
@@ -19,16 +17,6 @@ namespace ProjectColombo.Enemies.DropSystem
         float dropChanceCommonCharm;
         float dropChanceRareCharm;
         float dropChanceLegendaryCharm;
-
-        public List<GameObject> commonCharms;
-        public List<GameObject> rareCharms;
-        public List<GameObject> legendaryCharms;
-        public GameObject commonCharmVFX;
-        public GameObject rareCharmVFX;
-        public GameObject legendaryCharmVFX;
-        public GameObject pickup;
-        public GameObject coins;
-
 
 
         private void Start()
@@ -73,37 +61,29 @@ namespace ProjectColombo.Enemies.DropSystem
         public void DropItem()
         {
             float random = Random.Range(0, 100);
+            DropManager manager = GameManager.Instance.GetComponent<DropManager>();
 
             if (random <= dropChanceCommonCharm)
             {
-                int rand = Random.Range(0, commonCharms.Count);
-
-                GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation);
-                instance.GetComponent<PickUp>().SetCharm(commonCharms[rand]);
-                Instantiate(commonCharmVFX, instance.transform);
+                Vector3 position = new Vector3(transform.position.x, 0f, transform.position.z);
+                manager.DropRandomCommonCharm(position);
             }
             else if (random <= dropChanceRareCharm + dropChanceCommonCharm)
             {
-                int rand = Random.Range(0, rareCharms.Count);
-
-                GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation);
-                instance.GetComponent<PickUp>().SetCharm(rareCharms[rand]);
-                Instantiate(rareCharmVFX, instance.transform);
+                Vector3 position = new Vector3(transform.position.x, 0f, transform.position.z);
+                manager.DropRandomRareCharm(position);
             }
             else if (random <= dropChanceLegendaryCharm + dropChanceRareCharm + dropChanceCommonCharm)
             {
-                int rand = Random.Range(0, legendaryCharms.Count);
-
-                GameObject instance = Instantiate(pickup, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation);
-                instance.GetComponent<PickUp>().SetCharm(legendaryCharms[rand]);
-                Instantiate(legendaryCharmVFX, instance.transform);
+                Vector3 position = new Vector3(transform.position.x, 0f, transform.position.z);
+                manager.DropRandomLegendaryCharm(position);
             }
             else if (random <= dropChanceCoins + dropChanceLegendaryCharm + dropChanceRareCharm + dropChanceCommonCharm)
             {
                 int rand = Random.Range(minAmountOfCoins, maxAmountOfCoins+1);
 
-                GameObject coininstance = Instantiate(coins, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation);
-                coininstance.GetComponent<Coins>().amount = rand;
+                Vector3 position = new Vector3(transform.position.x, 0f, transform.position.z);
+                manager.DropCoins(rand, position);
             }
         }
     }
