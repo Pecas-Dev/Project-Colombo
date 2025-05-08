@@ -50,6 +50,9 @@ namespace ProjectColombo.UI.Pausescreen
         [SerializeField] float slotSubmitShrinkScale = 0.8f;
         [SerializeField] float slotSubmitShrinkDuration = 0.1f;
         [SerializeField] float slotSubmitBounceDuration = 0.2f;
+        
+        [Header("Debug Settings")]
+        [SerializeField] bool enableDebugLogs = true;
 
 
         int currentInventorySlotIndex = -1;
@@ -79,6 +82,8 @@ namespace ProjectColombo.UI.Pausescreen
         public override void Initialize()
         {
             base.Initialize();
+
+            LogDebug("PauseMenuInventoryController Initialize called");
 
             textAnimationCoroutines = new Coroutine[tabButtons.Length];
 
@@ -231,6 +236,7 @@ namespace ProjectColombo.UI.Pausescreen
         public override void Show()
         {
             base.Show();
+            LogDebug("PauseMenuInventoryController Show called");
 
             SelectTab(currentTabIndex);
         }
@@ -386,6 +392,8 @@ namespace ProjectColombo.UI.Pausescreen
                 return;
             }
 
+            LogDebug($"Selecting tab {tabIndex}");
+
             if (currentTabIndex >= 0 && currentTabIndex < tabPanels.Length)
             {
                 tabPanels[currentTabIndex].SetActive(false);
@@ -439,6 +447,7 @@ namespace ProjectColombo.UI.Pausescreen
                     SelectInventorySlot(0);
                 }
             }
+
 
             if (firstSelectedButton != null && currentTabIndex < firstSelectedButton.Length && firstSelectedButton[currentTabIndex] != null)
             {
@@ -706,7 +715,7 @@ namespace ProjectColombo.UI.Pausescreen
 
         IEnumerator AnimateSelectorFlicker(GameObject selector)
         {
-            if (selector == null) 
+            if (selector == null)
             {
                 yield break;
             }
@@ -722,7 +731,7 @@ namespace ProjectColombo.UI.Pausescreen
 
             float time = 0f;
 
-            while (true) 
+            while (true)
             {
                 float alpha = Mathf.Lerp(selectorFlickerMinAlpha, selectorFlickerMaxAlpha, (Mathf.Sin(time * selectorFlickerSpeed) + 1f) * 0.5f);
 
@@ -753,7 +762,7 @@ namespace ProjectColombo.UI.Pausescreen
 
             float time = 0f;
 
-            while (true) 
+            while (true)
             {
                 float scale = Mathf.Lerp(selectorBouncingMinScale, selectorBouncingMaxScale, (Mathf.Sin(time * selectorBouncingSpeed) + 1f) * 0.5f);
 
@@ -783,7 +792,7 @@ namespace ProjectColombo.UI.Pausescreen
                 slotOriginalScales[buttonRect] = buttonOriginalScale;
             }
 
-            Vector3 targetButtonScale = hoverIn ?  buttonOriginalScale * (1f + slotHoverScaleIncrease) : buttonOriginalScale;
+            Vector3 targetButtonScale = hoverIn ? buttonOriginalScale * (1f + slotHoverScaleIncrease) : buttonOriginalScale;
 
             float targetAlpha = 1f;
 
@@ -801,10 +810,10 @@ namespace ProjectColombo.UI.Pausescreen
                     slotImageOriginalAlpha[buttonImage] = originalAlpha;
                 }
 
-                targetAlpha = hoverIn ? Mathf.Clamp01(originalAlpha + slotHoverAlphaIncrease) :  originalAlpha;
+                targetAlpha = hoverIn ? Mathf.Clamp01(originalAlpha + slotHoverAlphaIncrease) : originalAlpha;
             }
 
-            float duration = 0.2f; 
+            float duration = 0.2f;
             float elapsedTime = 0f;
 
             Vector3 startButtonScale = buttonRect.localScale;
@@ -815,7 +824,7 @@ namespace ProjectColombo.UI.Pausescreen
 
             foreach (Image childImage in childImages)
             {
-                if (childImage != buttonImage) 
+                if (childImage != buttonImage)
                 {
                     startChildScales[childImage] = childImage.rectTransform.localScale;
                 }
@@ -887,7 +896,7 @@ namespace ProjectColombo.UI.Pausescreen
                         childOriginalScale = slotImageOriginalScales[childImage];
                     }
 
-                    childImage.rectTransform.localScale = hoverIn ? childOriginalScale * (1f + slotHoverScaleIncrease) :  childOriginalScale;
+                    childImage.rectTransform.localScale = hoverIn ? childOriginalScale * (1f + slotHoverScaleIncrease) : childOriginalScale;
                 }
             }
 
@@ -924,6 +933,15 @@ namespace ProjectColombo.UI.Pausescreen
             rectTransform.localScale = originalScale;
 
             slotSubmitCoroutines[slotIndex] = null;
+        }
+        
+        // Debug logging method
+        void LogDebug(string message)
+        {
+            if (enableDebugLogs)
+            {
+                Debug.Log($"<color=#00AAFF>[PauseMenuInventory] {message}</color>");
+            }
         }
     }
 }

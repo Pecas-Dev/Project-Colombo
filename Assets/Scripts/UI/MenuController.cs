@@ -93,6 +93,18 @@ namespace ProjectColombo.UI
         {
         }
 
+        public virtual void Reinitialize()
+        {
+            GameObject transitionObject = GameObject.FindGameObjectWithTag("Transition");
+
+            if (transitionObject != null)
+            {
+                transitionAnimation = transitionObject.GetComponent<Animator>();
+            }
+
+            SetupButtonClickHandlers();
+        }
+
         protected virtual void SetupButtonClickHandlers()
         {
             if (menuContainer == null) return;

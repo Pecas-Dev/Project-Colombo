@@ -1,37 +1,44 @@
-using ProjectColombo.GameInputSystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.EventSystems;
-using ProjectColombo.GameManagement.Stats;
 using ProjectColombo.UI.Pausescreen;
-using ProjectColombo.Inventory;
+using ProjectColombo.GameInputSystem;
+using ProjectColombo.GameManagement.Stats;
+
+
 namespace ProjectColombo.GameManagement
 {
-
     public class GameManager : MonoBehaviour
     {
         public static GameManager Instance;
 
-
         public GameInputSO gameInput;
+
+        [Header("Pause Menu System")]
+        [Tooltip("Toggle between old and new pause menu systems")]
+        [SerializeField] bool useNewPauseMenu = false;
+
+        [Tooltip("Old pause menu reference")]
         public GameObject pauseMenuUI;
-        public GameObject firstSelectedButton;
+
+        [Tooltip("New pause menu reference (should be the PauseInventoryCanvas)")]
+        [SerializeField] GameObject newPauseMenuCanvas;
+
         public bool gameIsPaused = false;
 
+        [Header("Debug Settings")]
+        [SerializeField] bool enableDebugLogs = true;
+
         // SCENE NAMES
-
         static string MAIN_MENU = "00_MainMenu";
-
-        //------------
 
         [Header("Transition")]
         [SerializeField] Animator transition;
 
-        private void Awake()
-        {
-            //Cursor.visible = false;            // Hide the cursor
-            //Cursor.lockState = CursorLockMode.Locked; // Lock the cursor to the center of the screen (optional)
+        protected GameObject directPauseMenuReference;
+        protected PauseMenuInventoryController pauseMenuController;
 
+        void Awake()
+        {
             gameInput.Initialize();
 
             if (Instance != null && Instance != this)
@@ -46,9 +53,80 @@ namespace ProjectColombo.GameManagement
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
-        private void Update()
+        void Start()
         {
-            if (gameInput.PausePressed && SceneManager.GetActiveScene().buildIndex != 0)
+            if (useNewPauseMenu)
+            {
+                FindPauseMenuController();
+
+                if (pauseMenuUI != null)
+                {
+                    pauseMenuUI.SetActive(false);
+                }
+            }
+        }
+
+        void FindPauseMenuController()
+        {
+            if (!useNewPauseMenu)
+            {
+                return;
+            }
+
+            LogDebug("Searching for PauseMenuInventoryController...");
+
+            if (newPauseMenuCanvas != null)
+            {
+                directPauseMenuReference = newPauseMenuCanvas;
+                pauseMenuController = newPauseMenuCanvas.GetComponentInChildren<PauseMenuInventoryController>(true);
+
+                if (pauseMenuController != null)
+                {
+                    LogDebug("Found PauseMenuInventoryController via direct reference");
+                    return;
+                }
+            }
+
+            GameObject pauseCanvas = GameObject.Find("PauseInventoryCanvas");
+
+            if (pauseCanvas != null)
+            {
+                pauseMenuController = pauseCanvas.GetComponentInChildren<PauseMenuInventoryController>(true);
+                if (pauseMenuController != null)
+                {
+                    directPauseMenuReference = pauseCanvas;
+                    LogDebug("Found PauseMenuInventoryController via GameObject.Find");
+                    return;
+                }
+            }
+
+            pauseMenuController = FindFirstObjectByType<PauseMenuInventoryController>(FindObjectsInactive.Include);
+
+            if (pauseMenuController != null)
+            {
+                directPauseMenuReference = pauseMenuController.transform.parent.gameObject;
+                LogDebug("Found PauseMenuInventoryController via FindFirstObjectByType");
+                return;
+            }
+
+            if (UIManager.Instance != null)
+            {
+                var controller = UIManager.Instance.GetMenu<PauseMenuInventoryController>();
+                if (controller != null)
+                {
+                    pauseMenuController = controller;
+                    directPauseMenuReference = controller.transform.parent.gameObject;
+                    LogDebug("Found PauseMenuInventoryController via UIManager");
+                    return;
+                }
+            }
+
+            LogDebug("PauseMenuInventoryController not found - will use old pause menu system");
+        }
+
+        void Update()
+        {
+            if (gameInput.PausePressed)
             {
                 if (gameIsPaused)
                 {
@@ -63,14 +141,13 @@ namespace ProjectColombo.GameManagement
             }
         }
 
-        private void OnDestroy()
+        void OnDestroy()
         {
             Time.timeScale = 1;
-
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             ResumeGame();
 
@@ -82,30 +159,96 @@ namespace ProjectColombo.GameManagement
 
             if (SceneManager.GetActiveScene().buildIndex == 0)
             {
-                //reset stats to default when in main menu
                 GetComponent<GlobalStats>().ResetStats();
+            }
+
+            if (useNewPauseMenu)
+            {
+                directPauseMenuReference = null;
+                pauseMenuController = null;
+                Invoke("FindPauseMenuController", 0.1f);
             }
         }
 
+        public void RegisterPauseMenu(GameObject pauseMenu, PauseMenuInventoryController controller)
+        {
+            if (!useNewPauseMenu)
+                return;
 
+            directPauseMenuReference = pauseMenu;
+            pauseMenuController = controller;
+            LogDebug("Pause menu directly registered");
+        }
 
         public void PauseGame(bool showPause = true)
         {
+            LogDebug("PauseGame called");
+
             gameInput.EnableUIMode();
             Time.timeScale = 0;
+            gameIsPaused = true;
 
             if (showPause)
             {
-                pauseMenuUI.SetActive(true);
-                pauseMenuUI.GetComponent<PauseMenuUI>().UpdateCharms();
-                EventSystem.current.SetSelectedGameObject(firstSelectedButton);
+                if (useNewPauseMenu)
+                {
+                    HandleNewPauseMenuActivation();
+                }
+                else
+                {
+                    HandleOldPauseMenuActivation();
+                }
+            }
+        }
+
+        private void HandleNewPauseMenuActivation()
+        {
+            if (pauseMenuController == null)
+            {
+                FindPauseMenuController();
             }
 
-            gameIsPaused = true;
+            if (pauseMenuController != null)
+            {
+                LogDebug("Using new pause menu system");
+
+                if (directPauseMenuReference != null)
+                {
+                    directPauseMenuReference.SetActive(true);
+                }
+
+                pauseMenuController.Show();
+
+                if (UIManager.Instance != null)
+                {
+                    UIManager.Instance.ShowMenuByType<PauseMenuInventoryController>();
+                }
+            }
+            else
+            {
+                LogDebug("New pause menu not found, falling back to old system");
+                HandleOldPauseMenuActivation();
+            }
+        }
+
+        private void HandleOldPauseMenuActivation()
+        {
+            if (pauseMenuUI != null)
+            {
+                LogDebug("Using old pause menu system");
+                pauseMenuUI.SetActive(true);
+                pauseMenuUI.GetComponent<PauseMenuUI>().UpdateCharms();
+            }
+            else
+            {
+                LogDebug("No pause menu available!");
+            }
         }
 
         public void ResumeGame()
         {
+            LogDebug("ResumeGame called");
+
             gameInput.DisableUIMode();
             gameInput.EnableAllInputs();
 
@@ -115,8 +258,51 @@ namespace ProjectColombo.GameManagement
             }
 
             Time.timeScale = 1;
-            pauseMenuUI.SetActive(false);
             gameIsPaused = false;
+
+            if (useNewPauseMenu && pauseMenuController != null)
+            {
+                LogDebug("Hiding new pause menu");
+                pauseMenuController.Hide();
+
+                if (directPauseMenuReference != null)
+                {
+                    directPauseMenuReference.SetActive(false);
+                }
+            }
+            else if (pauseMenuUI != null)
+            {
+                LogDebug("Hiding old pause menu");
+                pauseMenuUI.SetActive(false);
+            }
+        }
+
+        public void TogglePauseMenuSystem(bool useNew)
+        {
+            if (gameIsPaused)
+            {
+                ResumeGame();
+            }
+
+            useNewPauseMenu = useNew;
+
+            if (useNewPauseMenu)
+            {
+                LogDebug("Switched to NEW pause menu system");
+                FindPauseMenuController();
+            }
+            else
+            {
+                LogDebug("Switched to OLD pause menu system");
+            }
+        }
+
+        void LogDebug(string message)
+        {
+            if (enableDebugLogs)
+            {
+                Debug.Log($"<color=#00FF00>[GameManager] {message}</color>");
+            }
         }
     }
 }

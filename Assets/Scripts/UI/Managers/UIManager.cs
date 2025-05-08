@@ -106,6 +106,36 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void RegisterPauseMenu(GameObject pauseMenuObject)
+    {
+        if (pauseMenuObject == null)
+        {
+            return;
+        }
+
+        PauseMenuInventoryController pauseController = pauseMenuObject.GetComponentInChildren<PauseMenuInventoryController>(true);
+
+        if (pauseController != null)
+        {
+            string menuType = pauseController.GetType().Name;
+            menuCache[menuType] = pauseController;
+            pauseController.Initialize();
+            pauseController.Hide();
+
+            if (enableDebugLogs)
+            {
+                Debug.Log($"[UIManager] Successfully registered pause menu from specified GameObject");
+            }
+        }
+        else
+        {
+            if (enableDebugLogs)
+            {
+                Debug.LogWarning("[UIManager] Failed to find PauseMenuInventoryController in the specified GameObject");
+            }
+        }
+    }
+
     public void ShowMenu(MenuController menuToShow)
     {
         if (menuToShow == null)
@@ -195,6 +225,29 @@ public class UIManager : MonoBehaviour
         {
             Debug.LogWarning($"[UIManager] Menu of type {typeof(T).Name} not found in the current scene.");
         }
+    }
+
+    public void ReinitializeMenus()
+    {
+        Dictionary<string, MenuController> persistentMenus = new Dictionary<string, MenuController>();
+
+        foreach (var entry in menuCache)
+        {
+            if (entry.Value != null && entry.Value.gameObject.scene.name == "DontDestroyOnLoad")
+            {
+                persistentMenus.Add(entry.Key, entry.Value);
+                entry.Value.Reinitialize();
+            }
+        }
+
+        menuCache.Clear();
+
+        foreach (var entry in persistentMenus)
+        {
+            menuCache.Add(entry.Key, entry.Value);
+        }
+
+        FindAndInitializeMenus();
     }
 
     public MenuController GetCurrentMenu()
