@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.InputSystem;
 
 
 namespace ProjectColombo.UI.Pausescreen
@@ -50,7 +51,7 @@ namespace ProjectColombo.UI.Pausescreen
         [SerializeField] float slotSubmitShrinkScale = 0.8f;
         [SerializeField] float slotSubmitShrinkDuration = 0.1f;
         [SerializeField] float slotSubmitBounceDuration = 0.2f;
-        
+
         [Header("Debug Settings")]
         [SerializeField] bool enableDebugLogs = true;
 
@@ -338,6 +339,15 @@ namespace ProjectColombo.UI.Pausescreen
                     EventSystem.current.SetSelectedGameObject(buttonToSelect);
                 }
             }
+
+#if UNITY_EDITOR   
+            if (Gamepad.current != null)
+            {
+                Vector2 navVec = Gamepad.current.dpad.ReadValue();
+                if (navVec != Vector2.zero)
+                    Debug.Log($"<color=#00FFAA>[D-Pad] {navVec}</color>");
+            }
+#endif
         }
 
         void NavigateLeft()
@@ -934,7 +944,7 @@ namespace ProjectColombo.UI.Pausescreen
 
             slotSubmitCoroutines[slotIndex] = null;
         }
-        
+
         // Debug logging method
         void LogDebug(string message)
         {

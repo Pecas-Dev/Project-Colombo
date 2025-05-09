@@ -13,26 +13,30 @@ namespace ProjectColombo.GameManagement
 
         public GameInputSO gameInput;
 
-        [Header("Pause Menu System")]
-        [Tooltip("Toggle between old and new pause menu systems")]
-        [SerializeField] bool useNewPauseMenu = false;
-
         [Tooltip("Old pause menu reference")]
         public GameObject pauseMenuUI;
 
         [Tooltip("New pause menu reference (should be the PauseInventoryCanvas)")]
         [SerializeField] GameObject newPauseMenuCanvas;
 
-        public bool gameIsPaused = false;
-
         [Header("Debug Settings")]
         [SerializeField] bool enableDebugLogs = true;
+        [SerializeField] bool enableInputActionMapLogs = false;
+
+        [Header("Pause Menu System")]
+        [Tooltip("Toggle between old and new pause menu systems")]
+        [SerializeField] bool useNewPauseMenu = false;
+
+        [Header("Transition")]
+        [SerializeField] Animator transition;
+
+
+        public bool gameIsPaused = false;
+
 
         // SCENE NAMES
         static string MAIN_MENU = "00_MainMenu";
 
-        [Header("Transition")]
-        [SerializeField] Animator transition;
 
         protected GameObject directPauseMenuReference;
         protected PauseMenuInventoryController pauseMenuController;
@@ -139,6 +143,19 @@ namespace ProjectColombo.GameManagement
 
                 gameInput.ResetPausePressed();
             }
+
+            if (gameInput.playerInputActions.Player.enabled == true && enableInputActionMapLogs == true)
+            {
+                Debug.Log("PLAYERRRRRRRRRR!");
+            }
+            if (gameInput.playerInputActions.UI.enabled == true && enableInputActionMapLogs == true)
+            {
+                Debug.Log("UIIIIIIIIIIIIIIIII!");
+            }
+
+            float time = Time.timeScale;
+
+            Debug.Log(time);
         }
 
         void OnDestroy()

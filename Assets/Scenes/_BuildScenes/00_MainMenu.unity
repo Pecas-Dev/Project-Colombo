@@ -131,6 +131,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PauseInventoryCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 1092413801362953887, guid: 739519c09d8adfd4bbc58ff5348018b7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7440151288597562827, guid: 739519c09d8adfd4bbc58ff5348018b7, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -337,11 +341,6 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
---- !u!1 &674477922 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1092413801362953887, guid: 739519c09d8adfd4bbc58ff5348018b7, type: 3}
-  m_PrefabInstance: {fileID: 26709052}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &928555173
 GameObject:
   m_ObjectHideFlags: 0
@@ -671,11 +670,11 @@ PrefabInstance:
     - target: {fileID: 1170428604619267753, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
       propertyPath: newPauseMenuCanvas
       value: 
-      objectReference: {fileID: 674477922}
+      objectReference: {fileID: 1092413801337100963}
     - target: {fileID: 1170428604619267753, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
       propertyPath: pauseInventoryCanvas
       value: 
-      objectReference: {fileID: 674477922}
+      objectReference: {fileID: 1092413801337100963}
     - target: {fileID: 1208582025880207931, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
       propertyPath: uiManagerPrefab
       value: 
@@ -736,6 +735,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
+    - target: {fileID: 6775568680766651447, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -782,6 +785,11 @@ Transform:
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8084277336415371378, guid: ed051648ce89f44458d63d3ce1e66d41, type: 3}
   m_PrefabInstance: {fileID: 6047477122939290617}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1092413801337100963 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1092413801362953887, guid: 739519c09d8adfd4bbc58ff5348018b7, type: 3}
+  m_PrefabInstance: {fileID: 26709052}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6047477122939290617
 PrefabInstance:
@@ -931,6 +939,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 579232428250552811, guid: 3da7459d13a93074691673657fdac7a4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -4.081543
+      objectReference: {fileID: 0}
     - target: {fileID: 1265687667118155447, guid: 3da7459d13a93074691673657fdac7a4, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: 
@@ -1018,6 +1030,10 @@ PrefabInstance:
     - target: {fileID: 6075872424616550264, guid: 3da7459d13a93074691673657fdac7a4, type: 3}
       propertyPath: m_Name
       value: MainMenuCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 7494794788740286636, guid: 3da7459d13a93074691673657fdac7a4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -4.081543
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

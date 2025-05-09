@@ -2,246 +2,184 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using ProjectColombo.GameManagement;
+
 
 namespace ProjectColombo.UI.Pausescreen
 {
+
     public class PauseMenuSettingsController : MenuController
     {
-        [Header("Settings UI Elements")]
+        [Header("Settings Menu Elements")]
+        [SerializeField] Button[] buttons;
+        [SerializeField] TextMeshProUGUI[] buttonTexts;
         [SerializeField] Image[] clefImages;
-        [SerializeField] Button[] settingsButtons;
-        [SerializeField] TextMeshProUGUI[] settingsButtonTexts;
-        [SerializeField] GameObject settingsPanel;
 
+        [Header("Debug")]
+        [SerializeField] bool enableDebugLogs = false;
 
-        int currentSelectedIndex = -1;
+        int currentIndex = -1;
 
-        Coroutine[] sizeAnimationCoroutines;
+        Coroutine[] sizeCoroutines;
+
+        bool initialised;
 
         public override void Initialize()
         {
             base.Initialize();
 
-            if (settingsButtons.Length != clefImages.Length)
+            if (buttons == null || buttons.Length == 0)
             {
-                Debug.LogWarning("Number of settings buttons does not match number of clef images.");
+                return;
             }
 
-            if (settingsButtons.Length != settingsButtonTexts.Length)
-            {
-                Debug.LogWarning("Number of settings buttons does not match number of text components.");
-            }
+            sizeCoroutines = new Coroutine[buttons.Length];
 
-            sizeAnimationCoroutines = new Coroutine[settingsButtonTexts.Length];
-
-            for (int i = 0; i < settingsButtons.Length; i++)
+            for (int i = 0; i < buttons.Length; i++)
             {
-                if (settingsButtons[i] != null)
+                int idx = i;
+
+                if (!buttons[i])
                 {
-                    int index = i;
+                    continue;
+                }
 
-                    settingsButtons[i].onClick.AddListener(() => SelectButton(index));
+                buttons[i].onClick.AddListener(() => SelectButton(idx));
 
-                    EventTrigger eventTrigger = settingsButtons[i].gameObject.GetComponent<EventTrigger>();
+                EventTrigger trigger = buttons[i].GetComponent<EventTrigger>() ?? buttons[i].gameObject.AddComponent<EventTrigger>();
 
-                    if (eventTrigger == null)
+                AddTrigger(trigger, EventTriggerType.Select, (d) => SelectButton(idx));
+                AddTrigger(trigger, EventTriggerType.PointerEnter, (d) => SelectButton(idx));
+
+                if (idx < buttonTexts.Length && buttonTexts[idx])
+                {
+                    SetTextToDefaultSize(buttonTexts[idx]);
+                }
+            }
+
+            if (clefImages != null)
+            {
+                foreach (var images in clefImages)
+                {
+                    if (images)
                     {
-                        eventTrigger = settingsButtons[i].gameObject.AddComponent<EventTrigger>();
+                        images.gameObject.SetActive(false);
                     }
-
-                    AddEventTriggerEntry(eventTrigger, EventTriggerType.Select, (data) => { SelectButton(index); });
-                    AddEventTriggerEntry(eventTrigger, EventTriggerType.PointerEnter, (data) => { SelectButton(index); });
                 }
             }
 
-            for (int i = 0; i < settingsButtonTexts.Length; i++)
-            {
-                if (settingsButtonTexts[i] != null)
-                {
-                    SetTextToDefaultSize(settingsButtonTexts[i]);
-                }
-            }
 
-            DeactivateAllClefImages();
 
             uiInputSwitcher = FindFirstObjectByType<UIInputSwitcher>();
 
-            if (settingsButtons.Length > 0 && settingsButtons[0] != null)
+            if (buttons[0])
             {
                 SelectButton(0);
-
-                if (uiInputSwitcher != null)
-                {
-                    uiInputSwitcher.SetFirstSelectedButton(settingsButtons[0].gameObject);
-                }
             }
+
+            initialised = true;
         }
 
         public override void Show()
         {
             base.Show();
-
-            if (settingsPanel != null)
-            {
-                settingsPanel.SetActive(true);
-            }
-
-            if (currentSelectedIndex >= 0 && currentSelectedIndex < settingsButtons.Length)
-            {
-                EventSystem.current.SetSelectedGameObject(settingsButtons[currentSelectedIndex].gameObject);
-
-                if (uiInputSwitcher == null)
-                {
-                    uiInputSwitcher = FindFirstObjectByType<UIInputSwitcher>();
-                }
-
-                if (uiInputSwitcher != null)
-                {
-                    uiInputSwitcher.SetFirstSelectedButton(settingsButtons[currentSelectedIndex].gameObject);
-                }
-            }
+            EnsureSelection();
         }
 
-        public override void Hide()
+        void OnEnable()
         {
-            base.Hide();
-
-            if (settingsPanel != null)
-            {
-                settingsPanel.SetActive(false);
-            }
-        }
-
-        void AddEventTriggerEntry(EventTrigger trigger, EventTriggerType type, UnityEngine.Events.UnityAction<BaseEventData> action)
-        {
-            EventTrigger.Entry entry = new EventTrigger.Entry();
-            entry.eventID = type;
-            entry.callback.AddListener((data) => { action((BaseEventData)data); });
-            trigger.triggers.Add(entry);
-        }
-
-        void SelectButton(int index)
-        {
-            if (currentSelectedIndex == index)
+            if (!initialised)
             {
                 return;
             }
 
-            if (currentSelectedIndex >= 0)
+            EnsureSelection();
+        }
+
+        void EnsureSelection()
+        {
+            if (buttons == null || buttons.Length == 0 || !buttons[0])
             {
-                if (currentSelectedIndex < clefImages.Length && clefImages[currentSelectedIndex] != null)
+                return;
+            }
+
+            if (EventSystem.current)
+            {
+                EventSystem.current.SetSelectedGameObject(buttons[0].gameObject);
+            }
+
+            if (uiInputSwitcher)
+            {
+                uiInputSwitcher.SetFirstSelectedButton(buttons[0].gameObject);
+            }
+        }
+
+        void AddTrigger(EventTrigger _trigger, EventTriggerType type, UnityEngine.Events.UnityAction<BaseEventData> action)
+        {
+            var entry = new EventTrigger.Entry { eventID = type };
+            entry.callback.AddListener(action);
+            _trigger.triggers.Add(entry);
+        }
+
+        void SelectButton(int idx)
+        {
+            if (currentIndex == idx)
+            {
+                return;
+            }
+
+            if (currentIndex >= 0)
+            {
+                if (currentIndex < clefImages?.Length && clefImages[currentIndex])
                 {
-                    clefImages[currentSelectedIndex].gameObject.SetActive(false);
+                    clefImages[currentIndex].gameObject.SetActive(false);
                 }
 
-                if (currentSelectedIndex < settingsButtonTexts.Length && settingsButtonTexts[currentSelectedIndex] != null)
+                if (currentIndex < buttonTexts?.Length && buttonTexts[currentIndex])
                 {
-                    if (sizeAnimationCoroutines[currentSelectedIndex] != null)
+                    if (sizeCoroutines[currentIndex] != null)
                     {
-                        StopCoroutine(sizeAnimationCoroutines[currentSelectedIndex]);
+                        StopCoroutine(sizeCoroutines[currentIndex]);
                     }
 
-                    sizeAnimationCoroutines[currentSelectedIndex] = StartCoroutine(AnimateTextSize(settingsButtonTexts[currentSelectedIndex], selectedMinFontSize, selectedMaxFontSize, defaultMinFontSize, defaultMaxFontSize, animationDuration));
+                    sizeCoroutines[currentIndex] = StartCoroutine(AnimateTextSize(buttonTexts[currentIndex], selectedMinFontSize, selectedMaxFontSize, defaultMinFontSize, defaultMaxFontSize, animationDuration));
                 }
             }
 
-            currentSelectedIndex = index;
+            currentIndex = idx;
 
-            if (index < clefImages.Length && clefImages[index] != null)
+            if (idx < clefImages?.Length && clefImages[idx])
             {
-                clefImages[index].gameObject.SetActive(true);
+                clefImages[idx].gameObject.SetActive(true);
             }
 
-            if (index < settingsButtonTexts.Length && settingsButtonTexts[index] != null)
+            if (idx < buttonTexts?.Length && buttonTexts[idx])
             {
-                if (sizeAnimationCoroutines[index] != null)
+                if (sizeCoroutines[idx] != null)
                 {
-                    StopCoroutine(sizeAnimationCoroutines[index]);
+                    StopCoroutine(sizeCoroutines[idx]);
                 }
 
-                sizeAnimationCoroutines[index] = StartCoroutine(AnimateTextSize(settingsButtonTexts[index], defaultMinFontSize, defaultMaxFontSize, selectedMinFontSize, selectedMaxFontSize, animationDuration));
+                sizeCoroutines[idx] = StartCoroutine(AnimateTextSize(buttonTexts[idx], defaultMinFontSize, defaultMaxFontSize, selectedMinFontSize, selectedMaxFontSize, animationDuration));
             }
 
-            if (settingsButtons[index] != null)
+            if (EventSystem.current && !EventSystem.current.alreadySelecting && EventSystem.current.currentSelectedGameObject != buttons[idx].gameObject)
             {
-                RectTransform rectTransform = settingsButtons[index].GetComponent<RectTransform>();
-
-                if (rectTransform != null)
-                {
-                    PlayButtonClickAnimation(rectTransform);
-                }
+                EventSystem.current.SetSelectedGameObject(buttons[idx].gameObject);
             }
+
+            if (uiInputSwitcher)
+            {
+                uiInputSwitcher.SetFirstSelectedButton(buttons[idx].gameObject);
+            }
+
+            Log($"Selected settings button {idx}");
         }
 
-        void DeactivateAllClefImages()
+        void Log(string msg)
         {
-            foreach (Image image in clefImages)
+            if (enableDebugLogs)
             {
-                if (image != null)
-                {
-                    image.gameObject.SetActive(false);
-                }
-            }
-        }
-
-        public void SelectButtonByIndex(int index)
-        {
-            if (index >= 0 && index < settingsButtons.Length)
-            {
-                SelectButton(index);
-
-                if (settingsButtons[index] != null)
-                {
-                    EventSystem.current.SetSelectedGameObject(settingsButtons[index].gameObject);
-                }
-            }
-        }
-
-        public override void HandleInput()
-        {
-            base.HandleInput();
-
-            if (gameInputSO != null && gameInputSO.playerInputActions != null)
-            {
-                Vector2 navInput = gameInputSO.playerInputActions.UI.Navigate.ReadValue<Vector2>();
-
-                if (navInput.y < -0.5f && lastNavDirection.y >= -0.5f)
-                {
-                    NavigateDown();
-                }
-                else if (navInput.y > 0.5f && lastNavDirection.y <= 0.5f)
-                {
-                    NavigateUp();
-                }
-
-                lastNavDirection = navInput;
-            }
-        }
-
-        Vector2 lastNavDirection = Vector2.zero;
-
-        void NavigateUp()
-        {
-            if (currentSelectedIndex > 0)
-            {
-                SelectButtonByIndex(currentSelectedIndex - 1);
-            }
-            else
-            {
-                SelectButtonByIndex(settingsButtons.Length - 1);
-            }
-        }
-
-        void NavigateDown()
-        {
-            if (currentSelectedIndex < settingsButtons.Length - 1)
-            {
-                SelectButtonByIndex(currentSelectedIndex + 1);
-            }
-            else
-            {
-                SelectButtonByIndex(0);
+                Debug.Log($"<color=#00AAFF>[PauseMenuSettings] {msg}</color>");
             }
         }
     }
