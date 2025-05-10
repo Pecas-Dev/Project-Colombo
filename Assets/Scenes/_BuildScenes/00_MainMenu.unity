@@ -607,58 +607,6 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!1 &1215838146
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1215838148}
-  - component: {fileID: 1215838149}
-  m_Layer: 0
-  m_Name: RadialMenuManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1215838148
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1215838146}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1215838149
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1215838146}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5f4594d0bc941148a6932168b6f7495, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  activeScenes:
-  - 02_LevelOne
-  - 03_LevelTwo
-  - 04_LevelThree
-  - 05_Church
-  radialMenuCanvasPrefab: {fileID: 998993216051914476, guid: a737867fa20b3564f964aa1280f0fadb, type: 3}
-  holdTimeToActivate: 0.5
-  gameInputSO: {fileID: 11400000, guid: 4cbc555f8dd252548884cda6a4b53710, type: 2}
 --- !u!1001 &1337991114
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1050,6 +998,5 @@ SceneRoots:
   - {fileID: 1337991114}
   - {fileID: 26709052}
   - {fileID: 6047477122939290617}
-  - {fileID: 1215838148}
   - {fileID: 7425249925225075205}
   - {fileID: 1725613696}
