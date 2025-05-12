@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5205237191500970340
+--- !u!114 &-1754562682806146196
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: WindowMat
-  m_Shader: {fileID: -6465566751694194690, guid: b66cd7210dca7a742bd0154eec1859f5, type: 3}
+  m_Name: Bench
+  m_Shader: {fileID: -6465566751694194690, guid: 9d77f82dc77f94247b4ac155f344d57b, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -37,12 +37,16 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _AO:
-        m_Texture: {fileID: 2800000, guid: 8edb636fc53f792408b2e34d9829e960, type: 3}
+    - _Ambient:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _BC:
-        m_Texture: {fileID: 2800000, guid: a671be6dac708cb4fa0ccf4e266646c6, type: 3}
+    - _AmbientRoughnessMetallic:
+        m_Texture: {fileID: 2800000, guid: e9b59f00cdbe0ad499cebe927082fae1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BaseColor:
+        m_Texture: {fileID: 2800000, guid: adde6c09c59dfa84cb55b7133bfdfb8a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
@@ -73,48 +77,28 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Metallic:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Norm:
-        m_Texture: {fileID: 2800000, guid: c1a13f37754785047924c2aabfd6ba6e, type: 3}
+    - _Normal:
+        m_Texture: {fileID: 2800000, guid: 881367e791e00e544bc85f1c95bdbcc9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Opacity:
-        m_Texture: {fileID: 2800000, guid: f2870008e682d5d4f9cc7e4bbe532aff, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Rough:
-        m_Texture: {fileID: 2800000, guid: e44c403d2f1ade24d86c2df5fbdf677a, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_57b0e72f73624d7f9d24f6dc35e3c10d_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: 8edb636fc53f792408b2e34d9829e960, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_620a45c265fd469aa13898c03abbd2e6_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: a671be6dac708cb4fa0ccf4e266646c6, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_62ee3398232b4bca9769505e8ce5e808_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: f2870008e682d5d4f9cc7e4bbe532aff, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_e84fecc8b75b48e7b19929379e54e0a1_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: e44c403d2f1ade24d86c2df5fbdf677a, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_f565ebee7f514df38cb31395977c293e_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: c1a13f37754785047924c2aabfd6ba6e, type: 3}
+    - _Roughness:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -153,6 +137,7 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _Invert_Roughness: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -166,6 +151,7 @@ Material:
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _Transparency: 1
+    - _Unique_Maps: 1
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
