@@ -72,14 +72,19 @@ namespace ProjectColombo.Objects.Masks
 
         public void Remove()
         {
-            foreach (BaseAttributes attrib in attribBeforeEchoList)
+            if (!echoUnlocked)
             {
-                attrib.Disable();
+                foreach (BaseAttributes attrib in attribBeforeEchoList)
+                {
+                    attrib.Disable();
+                }
             }
-
-            foreach (BaseAttributes attrib in attribAfterEchoList)
+            else
             {
-                attrib.Disable();
+                foreach (BaseAttributes attrib in attribAfterEchoList)
+                {
+                    attrib.Disable();
+                }
             }
 
             echoMission.Disable();

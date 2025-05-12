@@ -1,6 +1,4 @@
-using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
-using ProjectColombo.UI.Pausescreen;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,6 +17,7 @@ namespace ProjectColombo.LevelManagement
 
         private IEnumerator LoadNextSceneDelayed()
         {
+            yield return new WaitForEndOfFrame(); // even one frame might help
             CustomEvents.LevelChanged(); //set event
 
             yield return new WaitForSeconds(0.2f); //let events handle first and then load next

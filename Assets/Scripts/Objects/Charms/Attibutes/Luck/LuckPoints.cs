@@ -20,6 +20,12 @@ namespace ProjectColombo.Objects.Charms
         public override void Disable()
         {
             Debug.Log("extra Luck removed: " + extraLuck);
+            if (myPlayerInventory == null)
+            {
+                Debug.Log("no inventory in luck");
+                return;
+            }
+
             myPlayerInventory.currentLuck -= extraLuck;
         }
     }
