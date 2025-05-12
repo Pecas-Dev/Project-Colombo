@@ -411,10 +411,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   staminaData: {fileID: 7491679260943247387}
-  indicatorPrefab: {fileID: 2490341317724420299}
-  radius: 50
-  startAngle: -90
-  angleStep: 15
+  firstIndicator: {fileID: 2490341317724420299}
+  offsetX: 0.05
+  useCurvature: 0
+  curveRadius: 0.3
 --- !u!1 &2314841976809647158
 GameObject:
   m_ObjectHideFlags: 0
@@ -586,7 +586,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 33101f33d37587d4f961c93b590a3d71, type: 3}
-  m_Type: 0
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -7387,6 +7387,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1090405288437610688}
     m_Modifications:
+    - target: {fileID: 5866666021909216657, guid: 82511c8861221f34683303f7d98c90a6, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e7e2c15356e92b24f96c1a5d7be0fabd, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -7430,10 +7434,6 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: e7e2c15356e92b24f96c1a5d7be0fabd, type: 3}
       propertyPath: m_Name
       value: SK_Musician_UV
-      objectReference: {fileID: 0}
-    - target: {fileID: 5866666021909216657, guid: 82511c8861221f34683303f7d98c90a6, type: 3}
-      propertyPath: m_ApplyRootMotion
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
