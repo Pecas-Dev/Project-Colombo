@@ -33,6 +33,7 @@ namespace ProjectColombo.StateMachine.Player
             stateMachine.myEntityAttributes.SetScale(GameGlobals.MusicScale.NONE);
             stateMachine.gameInputSO.EnableAllInputs();
             stateMachine.ParryFrameStop();
+            stateMachine.ParryPanaltyStop();
         }
     }
 }

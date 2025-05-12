@@ -51,7 +51,8 @@ namespace ProjectColombo.StateMachine.Player
 
         [HideInInspector] public bool isBlocking = false;
         [HideInInspector] public bool isInvunerable = false;
-        [HideInInspector] public bool isParrying = false;
+        //[HideInInspector] 
+        public bool isParrying = false;
         [HideInInspector] public bool tryParrying = false;
         [HideInInspector] public bool isInRoll = false;
         [HideInInspector] public bool comboWindowOpen = false;

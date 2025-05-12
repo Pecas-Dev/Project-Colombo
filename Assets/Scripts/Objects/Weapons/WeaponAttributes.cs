@@ -78,6 +78,10 @@ namespace ProjectColombo.Combat
                 defaultMajorDamage = myLevelStats.currentMommottiDamage;
                 majorDamageMultiplier = 1;
                 minorDamageMultiplier = 1;
+
+
+                blockDamageReductionPercentage = myGlobalStats.currentBlockReductionPercent;
+                missedParryPaneltyPercentage = myGlobalStats.currentMissedParryPaneltyPercent;
             }
         }
 
@@ -171,7 +175,7 @@ namespace ProjectColombo.Combat
                     if (currentScale != otherAttributes.currentScale)
                     {
                         //Debug.Log("..with the opposite scale");
-                        AddTemporaryDamagePercentage(damage, correctAttackScaleBonusPercentage);
+                        damage = AddTemporaryDamagePercentage(damage, correctAttackScaleBonusPercentage);
                     }
                     else
                     {
@@ -203,9 +207,8 @@ namespace ProjectColombo.Combat
 
                     if (otherStateMachine.isBlocking)
                     {
-                        //Debug.Log("Player blocked incoming attack");
-
-                        AddTemporaryDamagePercentage(damage, -blockDamageReductionPercentage);
+                        Debug.Log("Player blocked incoming attack");
+                        damage = AddTemporaryDamagePercentage(damage, -blockDamageReductionPercentage);
                         CustomEvents.DamageBlocked(damage, currentScale, otherHealth);
                     }
                     else if (otherStateMachine.isParrying)
@@ -235,7 +238,7 @@ namespace ProjectColombo.Combat
                         if (currentScale != otherAttributes.currentScale)
                         {
                             //Debug.Log("..with opposite scale -> extra damage");
-                            AddTemporaryDamagePercentage(damage, missedParryPaneltyPercentage);
+                            damage = AddTemporaryDamagePercentage(damage, missedParryPaneltyPercentage);
                             sameScale = false;
                         }
 
@@ -268,9 +271,9 @@ namespace ProjectColombo.Combat
             }
         }
 
-        private void AddTemporaryDamagePercentage(int damage, float percentage)
+        private int AddTemporaryDamagePercentage(int damage, float percentage)
         {
-            damage += (int)(percentage / 100 * damage);
+            return damage + (int)(percentage / 100 * damage);
         }
 
         private void ScreenShake()
