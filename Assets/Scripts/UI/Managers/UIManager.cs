@@ -99,9 +99,27 @@ public class UIManager : MonoBehaviour
 
         if (gameInputSO != null && gameInputSO.playerInputActions != null && gameInputSO.playerInputActions.UI.Cancel.WasPressedThisFrame())
         {
-            if (currentActiveMenu != null && currentActiveMenu.GetType().Name != "MainMenuController")
+            if (currentActiveMenu != null)
             {
-                ShowMainMenu();
+                if (currentActiveMenu is PauseMenuInventoryController pauseMenuController)
+                {
+                    pauseMenuController.Hide();
+
+                    pauseMenuController.HideGlobalElements();
+
+                    Time.timeScale = 1.0f;
+
+                    currentActiveMenu = null;
+
+                    if (enableDebugLogs)
+                    {
+                        Debug.Log("[UIManager] Closing pause menu on cancel input and resuming game time");
+                    }
+                }
+                else if (currentActiveMenu.GetType().Name != "MainMenuController")
+                {
+                    ShowMainMenu();
+                }
             }
         }
     }
@@ -177,7 +195,7 @@ public class UIManager : MonoBehaviour
 
     public void ShowOptionsMenu()
     {
-        MenuController menu = GetMenu<PauseMenuInventoryController>();
+        MenuController menu = GetMenu<OptionsMenuController>();
         if (menu != null)
         {
             ShowMenu(menu);

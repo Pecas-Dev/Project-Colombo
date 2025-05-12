@@ -11,6 +11,10 @@ namespace ProjectColombo.UI.Pausescreen
 {
     public class PauseMenuInventoryController : MenuController
     {
+        [Header("Global Pause Menu Elements")]
+        [SerializeField] GameObject[] globalElements;
+        [SerializeField] bool enableGlobalElementsLogging = false;
+
         [Header("Tab Navigation")]
         [SerializeField] Button[] tabButtons;
         [SerializeField] GameObject[] tabPanels;
@@ -237,8 +241,8 @@ namespace ProjectColombo.UI.Pausescreen
         public override void Show()
         {
             base.Show();
+            ShowGlobalElements();
             LogDebug("PauseMenuInventoryController Show called");
-
             SelectTab(currentTabIndex);
         }
 
@@ -943,6 +947,44 @@ namespace ProjectColombo.UI.Pausescreen
             rectTransform.localScale = originalScale;
 
             slotSubmitCoroutines[slotIndex] = null;
+        }
+
+        public void HideGlobalElements()
+        {
+            if (globalElements != null)
+            {
+                foreach (GameObject element in globalElements)
+                {
+                    if (element != null)
+                    {
+                        element.SetActive(false);
+
+                        if (enableGlobalElementsLogging)
+                        {
+                            Debug.Log($"[PauseMenuInventory] Disabled global element: {element.name}");
+                        }
+                    }
+                }
+            }
+        }
+
+        public void ShowGlobalElements()
+        {
+            if (globalElements != null)
+            {
+                foreach (GameObject element in globalElements)
+                {
+                    if (element != null)
+                    {
+                        element.SetActive(true);
+
+                        if (enableGlobalElementsLogging)
+                        {
+                            Debug.Log($"[PauseMenuInventory] Enabled global element: {element.name}");
+                        }
+                    }
+                }
+            }
         }
 
         // Debug logging method
