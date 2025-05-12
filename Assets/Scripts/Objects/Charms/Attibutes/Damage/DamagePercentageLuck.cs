@@ -19,7 +19,7 @@ namespace ProjectColombo.Objects.Charms
             myPlayerInventroy = GameManager.Instance.GetComponent<PlayerInventory>();
         }
 
-        private void OnDamageDelt(int amount, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager)
+        private void OnDamageDelt(int amount, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager, int comboLength)
         {
             int multiplyer = Mathf.FloorToInt(myPlayerInventroy.currentLuck / forHowManyLuck);
             int value = (int)(multiplyer * damagePercentageLuck / 100f);

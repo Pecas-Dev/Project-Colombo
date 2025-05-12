@@ -12,7 +12,7 @@ namespace ProjectColombo.Objects.Masks
             CustomEvents.OnDamageDelt += OnDamageDelt;
         }
 
-        private void OnDamageDelt(int value, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager)
+        private void OnDamageDelt(int value, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager, int comboLength)
         {
             currentCollected += value;
 

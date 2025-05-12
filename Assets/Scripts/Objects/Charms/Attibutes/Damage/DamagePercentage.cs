@@ -13,7 +13,7 @@ namespace ProjectColombo.Objects.Charms
             CustomEvents.OnDamageDelt += OnDamageDelt;
         }
 
-        private void OnDamageDelt(int amount, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager)
+        private void OnDamageDelt(int amount, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager, int comboLength)
         {
             if (scale == GameGlobals.MusicScale.MAJOR)
             {

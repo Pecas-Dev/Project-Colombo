@@ -16,7 +16,7 @@ namespace ProjectColombo.Objects.Charms
             myHealthmanager = GameObject.Find("Player").GetComponent<HealthManager>();
         }
 
-        private void OnDamageDelt(int amount, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager)
+        private void OnDamageDelt(int amount, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager, int comboLength)
         {
             int value = (int)(amount * healDamagePercentage / 100f);
             Debug.Log("healed: " + value + "of this damage: " + amount);
