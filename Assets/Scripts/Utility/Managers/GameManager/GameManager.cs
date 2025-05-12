@@ -33,6 +33,10 @@ namespace ProjectColombo.GameManagement
 
         public bool gameIsPaused = false;
 
+        bool isResettingInputs = false;
+
+        float inputResetDelay = 0.1f;
+
 
         // SCENE NAMES
         static string MAIN_MENU = "00_MainMenu";
@@ -152,10 +156,6 @@ namespace ProjectColombo.GameManagement
             {
                 Debug.Log("UIIIIIIIIIIIIIIIII!");
             }
-
-            float time = Time.timeScale;
-
-            //Debug.Log(time);
         }
 
         void OnDestroy()
@@ -218,7 +218,7 @@ namespace ProjectColombo.GameManagement
             }
         }
 
-        private void HandleNewPauseMenuActivation()
+        void HandleNewPauseMenuActivation()
         {
             if (pauseMenuController == null)
             {
@@ -229,9 +229,16 @@ namespace ProjectColombo.GameManagement
             {
                 LogDebug("Using new pause menu system");
 
+                pauseMenuController.gameObject.SetActive(true);
+
                 if (directPauseMenuReference != null)
                 {
-                    directPauseMenuReference.SetActive(true);
+                    PauseCanvasManager canvasManager = directPauseMenuReference.GetComponent<PauseCanvasManager>();
+                    if (canvasManager != null)
+                    {
+                        canvasManager.ShowGlobalElements();
+                        LogDebug("Showing global elements via PauseCanvasManager");
+                    }
                 }
 
                 pauseMenuController.Show();
@@ -248,7 +255,7 @@ namespace ProjectColombo.GameManagement
             }
         }
 
-        private void HandleOldPauseMenuActivation()
+         void HandleOldPauseMenuActivation()
         {
             if (pauseMenuUI != null)
             {
@@ -266,13 +273,7 @@ namespace ProjectColombo.GameManagement
         {
             LogDebug("ResumeGame called");
 
-            gameInput.DisableUIMode();
-            gameInput.EnableAllInputs();
-
-            if (SceneManager.GetActiveScene().name == MAIN_MENU)
-            {
-                gameInput.EnableUIMode();
-            }
+            StartInputResetSequence();
 
             Time.timeScale = 1;
             gameIsPaused = false;
@@ -284,7 +285,28 @@ namespace ProjectColombo.GameManagement
 
                 if (directPauseMenuReference != null)
                 {
-                    directPauseMenuReference.SetActive(false);
+                    PauseCanvasManager canvasManager = directPauseMenuReference.GetComponent<PauseCanvasManager>();
+                    
+                    if (canvasManager != null)
+                    {
+                        canvasManager.HideGlobalElements();
+
+                        canvasManager.HideAllTabs();
+
+                        LogDebug("Hiding global elements and all tabs via PauseCanvasManager");
+                    }
+                    else
+                    {
+                        pauseMenuController.gameObject.SetActive(false);
+
+                        PauseMenuSettingsController settingsController = directPauseMenuReference.GetComponentInChildren<PauseMenuSettingsController>(true);
+                       
+                        if (settingsController != null)
+                        {
+                            settingsController.gameObject.SetActive(false);
+                            LogDebug("Manually deactivated settings controller");
+                        }
+                    }
                 }
             }
             else if (pauseMenuUI != null)
@@ -292,6 +314,70 @@ namespace ProjectColombo.GameManagement
                 LogDebug("Hiding old pause menu");
                 pauseMenuUI.SetActive(false);
             }
+        }
+
+        void StartInputResetSequence()
+        {
+            if (isResettingInputs) return;
+
+            isResettingInputs = true;
+
+            if (gameInput != null)
+            {
+                gameInput.ResetPausePressed();
+            }
+
+            DisableAllInputs();
+
+            Invoke("FinishInputReset", inputResetDelay);
+
+            LogDebug("Started input reset sequence");
+        }
+
+        void DisableAllInputs()
+        {
+            if (gameInput != null && gameInput.playerInputActions != null)
+            {
+                gameInput.DisableInput(ProjectColombo.GameInputSystem.InputActionType.Pause);
+
+                if (gameInput.playerInputActions.Player.enabled)
+                {
+                    gameInput.playerInputActions.Player.Disable();
+                }
+
+                if (gameInput.playerInputActions.UI.enabled)
+                {
+                    gameInput.playerInputActions.UI.Disable();
+                }
+
+                LogDebug("Temporarily disabled all inputs for reset");
+            }
+        }
+
+        void FinishInputReset()
+        {
+            if (gameInput != null && gameInput.playerInputActions != null)
+            {
+                gameInput.playerInputActions.Player.Enable();
+
+                gameInput.EnableInput(ProjectColombo.GameInputSystem.InputActionType.Pause);
+
+                gameInput.ResetPausePressed();
+
+                if (SceneManager.GetActiveScene().name == MAIN_MENU)
+                {
+                    gameInput.EnableUIMode();
+                }
+                else
+                {
+                    gameInput.DisableUIMode();
+                    gameInput.EnableAllInputs();
+                }
+
+                LogDebug("Finished input reset sequence");
+            }
+
+            isResettingInputs = false;
         }
 
         public void TogglePauseMenuSystem(bool useNew)

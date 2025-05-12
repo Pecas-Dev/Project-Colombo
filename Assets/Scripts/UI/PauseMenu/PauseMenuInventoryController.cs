@@ -11,10 +11,6 @@ namespace ProjectColombo.UI.Pausescreen
 {
     public class PauseMenuInventoryController : MenuController
     {
-        [Header("Global Pause Menu Elements")]
-        [SerializeField] GameObject[] globalElements;
-        [SerializeField] bool enableGlobalElementsLogging = false;
-
         [Header("Tab Navigation")]
         [SerializeField] Button[] tabButtons;
         [SerializeField] GameObject[] tabPanels;
@@ -241,9 +237,23 @@ namespace ProjectColombo.UI.Pausescreen
         public override void Show()
         {
             base.Show();
-            ShowGlobalElements();
+
+            if (transform.parent != null)
+            {
+                transform.parent.gameObject.SetActive(true);
+            }
+
+            Time.timeScale = 0.0f;
+
             LogDebug("PauseMenuInventoryController Show called");
             SelectTab(currentTabIndex);
+        }
+
+        public override void Hide()
+        {
+            base.Hide();
+
+            LogDebug("PauseMenuInventoryController Hide called (including global elements)");
         }
 
         public override void HandleInput()
@@ -753,7 +763,7 @@ namespace ProjectColombo.UI.Pausescreen
                 newColor.a = alpha;
                 selectorImage.color = newColor;
 
-                time += Time.deltaTime;
+                time += Time.unscaledDeltaTime;
                 yield return null;
             }
         }
@@ -782,7 +792,7 @@ namespace ProjectColombo.UI.Pausescreen
 
                 selectorRect.localScale = originalScale * scale;
 
-                time += Time.deltaTime;
+                time += Time.unscaledDeltaTime;
                 yield return null;
             }
         }
@@ -886,7 +896,7 @@ namespace ProjectColombo.UI.Pausescreen
                     }
                 }
 
-                elapsedTime += Time.deltaTime;
+                elapsedTime += Time.unscaledDeltaTime;
                 yield return null;
             }
 
@@ -940,51 +950,13 @@ namespace ProjectColombo.UI.Pausescreen
                 Vector3 currentScale = Vector3.Lerp(targetScale, originalScale, curveValue);
                 rectTransform.localScale = currentScale;
 
-                elapsedTime += Time.deltaTime;
+                elapsedTime += Time.unscaledDeltaTime;
                 yield return null;
             }
 
             rectTransform.localScale = originalScale;
 
             slotSubmitCoroutines[slotIndex] = null;
-        }
-
-        public void HideGlobalElements()
-        {
-            if (globalElements != null)
-            {
-                foreach (GameObject element in globalElements)
-                {
-                    if (element != null)
-                    {
-                        element.SetActive(false);
-
-                        if (enableGlobalElementsLogging)
-                        {
-                            Debug.Log($"[PauseMenuInventory] Disabled global element: {element.name}");
-                        }
-                    }
-                }
-            }
-        }
-
-        public void ShowGlobalElements()
-        {
-            if (globalElements != null)
-            {
-                foreach (GameObject element in globalElements)
-                {
-                    if (element != null)
-                    {
-                        element.SetActive(true);
-
-                        if (enableGlobalElementsLogging)
-                        {
-                            Debug.Log($"[PauseMenuInventory] Enabled global element: {element.name}");
-                        }
-                    }
-                }
-            }
         }
 
         // Debug logging method

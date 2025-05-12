@@ -452,6 +452,7 @@ GameObject:
   - component: {fileID: 1450737975819853424}
   - component: {fileID: 8605216589757941737}
   - component: {fileID: 2284090241307161761}
+  - component: {fileID: 4431461107807568475}
   m_Layer: 5
   m_Name: PauseInventoryCanvas
   m_TagString: Untagged
@@ -581,6 +582,24 @@ MonoBehaviour:
   legendaryCharmButton: {fileID: 6842687126115048400}
   charmNameText: {fileID: 8552462957093072140}
   charmDescriptionText: {fileID: 2150116248902449084}
+--- !u!114 &4431461107807568475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1092413801362953887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f274b5bd943dfd4c9912d3737c54c18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalElements:
+  - {fileID: 2300111033184670608}
+  - {fileID: 6012836683753419898}
+  - {fileID: 287216267999824498}
+  - {fileID: 2308505396028485997}
+  enableDebugLogs: 0
 --- !u!1 &1101041176148417019
 GameObject:
   m_ObjectHideFlags: 0
@@ -6977,8 +6996,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  globalElements: []
-  enableGlobalElementsLogging: 0
   tabButtons:
   - {fileID: 7835872832183201280}
   - {fileID: 3462873012552966447}

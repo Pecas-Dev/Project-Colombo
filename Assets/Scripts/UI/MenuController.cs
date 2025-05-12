@@ -193,7 +193,10 @@ namespace ProjectColombo.UI
 
         protected IEnumerator ShrinkAndBounceAnimation(RectTransform rectTransform, Vector3 originalScale)
         {
-            if (rectTransform == null) yield break;
+            if (rectTransform == null) 
+            {
+                yield break;
+            }
 
             Vector3 targetScale = originalScale * clickShrinkScale;
 
@@ -216,7 +219,7 @@ namespace ProjectColombo.UI
                 Vector3 currentScale = Vector3.Lerp(targetScale, originalScale, curveValue);
                 rectTransform.localScale = currentScale;
 
-                elapsedTime += Time.deltaTime;
+                elapsedTime += Time.unscaledDeltaTime;
                 yield return null;
 
                 if (!gameObject.activeInHierarchy || rectTransform == null)
@@ -246,7 +249,7 @@ namespace ProjectColombo.UI
                 text.fontSizeMin = currentMin;
                 text.fontSizeMax = currentMax;
 
-                elapsedTime += Time.deltaTime;
+                elapsedTime += Time.unscaledDeltaTime;
                 yield return null;
             }
 

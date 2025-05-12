@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using ProjectColombo.GameInputSystem;
 using ProjectColombo.UI.Pausescreen;
+using System.Collections;
+using ProjectColombo.GameManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -18,6 +20,9 @@ public class UIManager : MonoBehaviour
     Dictionary<string, MenuController> menuCache = new Dictionary<string, MenuController>();
 
     bool hasInitializedScene = false;
+
+    bool isProcessingInputChange = false;
+    bool isClosingPauseMenu = false;
 
     void Awake()
     {
@@ -44,6 +49,7 @@ public class UIManager : MonoBehaviour
         currentActiveMenu = null;
         menuCache.Clear();
         FindAndInitializeMenus();
+        StartCoroutine(ScheduleMenuSearches());
     }
 
     void Start()
@@ -58,11 +64,23 @@ public class UIManager : MonoBehaviour
             return;
         }
 
-        MenuController[] allMenus = FindObjectsByType<MenuController>(FindObjectsSortMode.None);
+        MenuController[] allMenus = FindObjectsByType<MenuController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
         if (enableDebugLogs)
         {
-            Debug.Log($"[UIManager] Found {allMenus.Length} menu controllers in scene {SceneManager.GetActiveScene().name}");
+            System.Text.StringBuilder menusList = new System.Text.StringBuilder();
+            menusList.AppendLine($"[UIManager] Found {allMenus.Length} menu controllers in scene {SceneManager.GetActiveScene().name}:");
+
+            foreach (MenuController menu in allMenus)
+            {
+                if (menu != null)
+                {
+                    string menuPath = GetGameObjectPath(menu.gameObject);
+                    menusList.AppendLine($"- {menu.GetType().Name} at {menuPath}");
+                }
+            }
+
+            Debug.Log(menusList.ToString());
         }
 
         foreach (MenuController menu in allMenus)
@@ -90,6 +108,52 @@ public class UIManager : MonoBehaviour
         hasInitializedScene = true;
     }
 
+    void SearchForMenusAgain()
+    {
+        if (enableDebugLogs)
+        {
+            Debug.Log("[UIManager] Performing scheduled search for menu controllers...");
+        }
+
+        MenuController[] allMenus = FindObjectsByType<MenuController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        List<MenuController> newMenus = new List<MenuController>();
+
+        foreach (MenuController menu in allMenus)
+        {
+            if (menu != null)
+            {
+                string menuType = menu.GetType().Name;
+
+                if (!menuCache.ContainsKey(menuType))
+                {
+                    newMenus.Add(menu);
+                    menuCache[menuType] = menu;
+                    menu.Initialize();
+                    menu.Hide();
+                }
+            }
+        }
+
+        if (enableDebugLogs && newMenus.Count > 0)
+        {
+            System.Text.StringBuilder newMenusLog = new System.Text.StringBuilder();
+            newMenusLog.AppendLine($"[UIManager] Found {newMenus.Count} new menu controllers:");
+
+            foreach (MenuController menu in newMenus)
+            {
+                string menuPath = GetGameObjectPath(menu.gameObject);
+                newMenusLog.AppendLine($"- {menu.GetType().Name} at {menuPath}");
+            }
+
+            Debug.Log(newMenusLog.ToString());
+        }
+        else if (enableDebugLogs)
+        {
+            Debug.Log("[UIManager] No new menu controllers found in additional search.");
+        }
+    }
+
+
     void Update()
     {
         if (currentActiveMenu != null)
@@ -97,29 +161,59 @@ public class UIManager : MonoBehaviour
             currentActiveMenu.HandleInput();
         }
 
+        if (isProcessingInputChange || isClosingPauseMenu)
+        {
+            return;
+        }
+
         if (gameInputSO != null && gameInputSO.playerInputActions != null && gameInputSO.playerInputActions.UI.Cancel.WasPressedThisFrame())
         {
             if (currentActiveMenu != null)
             {
-                if (currentActiveMenu is PauseMenuInventoryController pauseMenuController)
+                if (currentActiveMenu is PauseMenuInventoryController pauseMenuController || currentActiveMenu is PauseMenuSettingsController settingsController)
                 {
-                    pauseMenuController.Hide();
-
-                    pauseMenuController.HideGlobalElements();
-
-                    Time.timeScale = 1.0f;
-
-                    currentActiveMenu = null;
+                    if (GameManager.Instance != null)
+                    {
+                        GameManager.Instance.ResumeGame();
+                    }
 
                     if (enableDebugLogs)
                     {
                         Debug.Log("[UIManager] Closing pause menu on cancel input and resuming game time");
                     }
+
+                    currentActiveMenu = null;
                 }
                 else if (currentActiveMenu.GetType().Name != "MainMenuController")
                 {
                     ShowMainMenu();
                 }
+            }
+        }
+    }
+
+    IEnumerator ScheduleMenuSearches()
+    {
+        yield return new WaitForSeconds(5f);
+        SearchForMenusAgain();
+
+        yield return new WaitForSeconds(5f);
+        SearchForMenusAgain();
+
+        yield return new WaitForSeconds(5f);
+        SearchForMenusAgain();
+    }
+
+    void EnablePauseInput()
+    {
+        if (gameInputSO != null)
+        {
+            gameInputSO.EnableInput(ProjectColombo.GameInputSystem.InputActionType.Pause);
+            gameInputSO.ResetPausePressed();
+
+            if (enableDebugLogs)
+            {
+                Debug.Log("[UIManager] Re-enabled pause input after delay");
             }
         }
     }
@@ -276,5 +370,19 @@ public class UIManager : MonoBehaviour
     public bool HasMenu<T>() where T : MenuController
     {
         return GetMenu<T>() != null;
+    }
+
+    string GetGameObjectPath(GameObject obj)
+    {
+        string path = obj.name;
+        Transform parent = obj.transform.parent;
+
+        while (parent != null)
+        {
+            path = parent.name + "/" + path;
+            parent = parent.parent;
+        }
+
+        return path;
     }
 }

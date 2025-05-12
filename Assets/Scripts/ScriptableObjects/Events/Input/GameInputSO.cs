@@ -95,7 +95,7 @@ namespace ProjectColombo.GameInputSystem
             {
                 playerInputActions.UI.Disable();
             }
-        
+
             if (playerInputActions.Player.enabled)
             {
                 playerInputActions.Player.Disable();
@@ -172,19 +172,19 @@ namespace ProjectColombo.GameInputSystem
         public void ResetAllInputs()
         {
             //MovementInput               = Vector2.zero;
-            MajorAttackPressed          = false;
-            MinorAttackPressed          = false;
-            UseSpecialAbilityPressed    = false;
-            InteractPressed              = false;
-            RollPressed                 = false;
+            MajorAttackPressed = false;
+            MinorAttackPressed = false;
+            UseSpecialAbilityPressed = false;
+            InteractPressed = false;
+            RollPressed = false;
             //BlockPressed                = false;
-            MinorParryPressed           = false;
-            MajorParryPressed           = false;
-            TargetPressed               = false;
-            TargetPointInput            = Vector2.zero;
-            UsePotionPressed             = false;
-            UseCharmAbilityPressed      = false;
-            PausePressed                = false;
+            MinorParryPressed = false;
+            MajorParryPressed = false;
+            TargetPressed = false;
+            TargetPointInput = Vector2.zero;
+            UsePotionPressed = false;
+            UseCharmAbilityPressed = false;
+            PausePressed = false;
         }
 
         public bool IsKeyboardInput()
@@ -433,7 +433,20 @@ namespace ProjectColombo.GameInputSystem
         public void ResetPausePressed()
         {
             PausePressed = false;
+
+            if (playerInputActions != null && playerInputActions.Player.Pause.triggered)
+            {
+                Debug.Log("Force-resetting pause input state");
+                if (playerInputActions.Player.enabled)
+                {
+                    var wasEnabled = playerInputActions.Player.enabled;
+                    playerInputActions.Player.Disable();
+                    playerInputActions.Player.Enable();
+
+                }
+            }
         }
+
 
         // ########################################################
 
@@ -451,7 +464,7 @@ namespace ProjectColombo.GameInputSystem
                 {
                     playerInputActions.Player.Disable(); // Disable player controls
                 }
-                
+
                 if (!playerInputActions.UI.enabled)
                 {
                     playerInputActions.UI.Enable(); // Enable UI navigation
@@ -469,7 +482,7 @@ namespace ProjectColombo.GameInputSystem
                     {
                         playerInputActions.Player.Disable();
                     }
-                    
+
                     if (!playerInputActions.UI.enabled)
                     {
                         playerInputActions.UI.Enable();
@@ -486,12 +499,12 @@ namespace ProjectColombo.GameInputSystem
                 {
                     playerInputActions.UI.Disable(); // Disable UI input
                 }
-                
+
                 if (!playerInputActions.Player.enabled)
                 {
                     playerInputActions.Player.Enable(); // Re-enable player controls
                 }
-                
+
                 EnableInput(InputActionType.Movement); // Allow movement again
             }
         }
