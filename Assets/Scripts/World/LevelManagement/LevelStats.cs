@@ -6,6 +6,7 @@ namespace ProjectColombo.LevelManagement
     {
         [Header("Level Management")]
         public int nextSceneNumber;
+        public bool showSigns = true;
 
         [Header("Mommotti Default Stats")]
         [Header("EntityAttributes")]
