@@ -155,7 +155,7 @@ namespace ProjectColombo.GameManagement
 
             float time = Time.timeScale;
 
-            Debug.Log(time);
+            //Debug.Log(time);
         }
 
         void OnDestroy()
