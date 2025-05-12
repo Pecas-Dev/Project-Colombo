@@ -47,16 +47,7 @@ namespace ProjectColombo.LevelManagement
 
                     if (enemies.Length <= 0)
                     {
-                        foreach (GameObject exit in exits)
-                        {
-                            exit.GetComponent<BoxCollider>().isTrigger = true;
-                            exit.GetComponentInChildren<Animator>().ResetTrigger("Open");
-                            exit.GetComponentInChildren<Animator>().ResetTrigger("Close");
-                            exit.GetComponentInChildren<Animator>().SetTrigger("Open"); //open gate animation
-                        }
-
-                        CustomEvents.ChamberFinished();
-                        isActive = false;
+                        DeactivateChamber();
                     }
 
                     timer = 0;
@@ -150,6 +141,20 @@ namespace ProjectColombo.LevelManagement
             }
 
             isActive = true;
+        }
+
+        public void DeactivateChamber()
+        {
+            foreach (GameObject exit in exits)
+            {
+                exit.GetComponent<BoxCollider>().isTrigger = true;
+                exit.GetComponentInChildren<Animator>().ResetTrigger("Open");
+                exit.GetComponentInChildren<Animator>().ResetTrigger("Close");
+                exit.GetComponentInChildren<Animator>().SetTrigger("Open"); //open gate animation
+            }
+
+            CustomEvents.ChamberFinished();
+            isActive = false;
         }
 
         Vector2 LocalToWorldCoord(Vector2 local)

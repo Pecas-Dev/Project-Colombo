@@ -172,6 +172,7 @@ namespace ProjectColombo.LevelManagement
             Vector2 startChamberTilePos = new(1, Mathf.RoundToInt(worldHeight / 2));
             TryToMakeChamber(startChamber, startChamberTilePos, createdChambers);
             createdChambers[0].GetComponent<TileWorldChamber>().ActivateChamber(); //activate start chamber
+            createdChambers[0].GetComponent<TileWorldChamber>().DeactivateChamber(); //deactivate start chamber
 
             Vector2 endChamberTilePos = new(chamberOffsetX + layersOfChambers.Count * chamberOffsetX + (int)(endChamber.GetComponent<TileWorldChamber>().chamberSize.y/2f) + 1, Mathf.RoundToInt(worldHeight / 2));
             TryToMakeChamber(endChamber, endChamberTilePos, createdChambers);
