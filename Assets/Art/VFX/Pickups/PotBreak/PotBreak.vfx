@@ -7070,9 +7070,13 @@ MonoBehaviour:
       data:
         shaderGraph: {fileID: 4333940904281232215, guid: 5be74cf348e08ac40b3ff95c30327b13, type: 3}
         materialSettings:
-          m_PropertyNames: []
-          m_PropertyValues: []
-          renderQueue: -1
+          m_PropertyNames:
+          - _Blend
+          - _DstBlend
+          m_PropertyValues:
+          - 0
+          - 10
+          renderQueue: 3000
 --- !u!114 &8926484042661615747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7183,7 +7187,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Color, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"r":5.214363098144531,"g":4.197519779205322,"b":2.2874326705932619,"a":1.0}'
+      m_SerializableObject: '{"r":0.7264150977134705,"g":0.3650302290916443,"b":0.33579567074775698,"a":1.0}'
     m_Space: -1
   m_Property:
     name: _Color
@@ -8339,7 +8343,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 0.3
+      m_SerializableObject: 0.2
     m_Space: -1
   m_Property:
     name: A
@@ -8373,7 +8377,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 1
+      m_SerializableObject: 0.7
     m_Space: -1
   m_Property:
     name: B
