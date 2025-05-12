@@ -5,6 +5,9 @@ using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.InputSystem;
+using ProjectColombo.GameManagement;
+using ProjectColombo.Inventory;
+using ProjectColombo.Objects.Charms;
 
 
 namespace ProjectColombo.UI.Pausescreen
@@ -52,6 +55,16 @@ namespace ProjectColombo.UI.Pausescreen
         [SerializeField] float slotSubmitShrinkDuration = 0.1f;
         [SerializeField] float slotSubmitBounceDuration = 0.2f;
 
+        [Header("Charm System")]
+        [SerializeField] Button[] charmSlotButtons;
+        [SerializeField] Button legendaryCharmButton;
+        [SerializeField] TextMeshProUGUI charmNameText;
+        [SerializeField] TextMeshProUGUI charmDescriptionText;
+
+        [Header("Empty Slot Images")]
+        [SerializeField] Sprite emptyCharmSlotSprite; 
+        [SerializeField] Sprite emptyLegendaryCharmSlotSprite; 
+
         [Header("Debug Settings")]
         [SerializeField] bool enableDebugLogs = true;
 
@@ -83,6 +96,63 @@ namespace ProjectColombo.UI.Pausescreen
         public override void Initialize()
         {
             base.Initialize();
+
+            ProjectColombo.GameManagement.Events.CustomEvents.OnCharmCollected += OnCharmCollected;
+
+            if (emptyCharmSlotSprite != null)
+            {
+                foreach (Button button in charmSlotButtons)
+                {
+                    if (button != null)
+                    {
+                        CharmButton charmButton = button.GetComponent<CharmButton>();
+
+                        if (charmButton != null && charmButton.imageSlot != null)
+                        {
+                            charmButton.imageSlot.sprite = emptyCharmSlotSprite;
+                        }
+                        else
+                        {
+                            Image[] images = button.GetComponentsInChildren<Image>();
+
+                            foreach (Image img in images)
+                            {
+                                if (img.gameObject != button.gameObject)
+                                {
+                                    img.sprite = emptyCharmSlotSprite;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (legendaryCharmButton != null)
+            {
+                Sprite emptySprite = emptyLegendaryCharmSlotSprite != null ? emptyLegendaryCharmSlotSprite : emptyCharmSlotSprite;
+
+                if (emptySprite != null)
+                {
+                    CharmButton charmButton = legendaryCharmButton.GetComponent<CharmButton>();
+                    if (charmButton != null && charmButton.imageSlot != null)
+                    {
+                        charmButton.imageSlot.sprite = emptySprite;
+                    }
+                    else
+                    {
+                        Image[] images = legendaryCharmButton.GetComponentsInChildren<Image>();
+                        foreach (Image img in images)
+                        {
+                            if (img.gameObject != legendaryCharmButton.gameObject)
+                            {
+                                img.sprite = emptySprite;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
 
             LogDebug("PauseMenuInventoryController Initialize called");
 
@@ -238,6 +308,8 @@ namespace ProjectColombo.UI.Pausescreen
         {
             base.Show();
 
+            UpdateCharms();
+
             if (transform.parent != null)
             {
                 transform.parent.gameObject.SetActive(true);
@@ -254,6 +326,11 @@ namespace ProjectColombo.UI.Pausescreen
             base.Hide();
 
             LogDebug("PauseMenuInventoryController Hide called (including global elements)");
+        }
+
+        void OnCharmCollected(GameObject charm)
+        {
+            UpdateCharms();
         }
 
         public override void HandleInput()
@@ -289,6 +366,8 @@ namespace ProjectColombo.UI.Pausescreen
 
         void OnDestroy()
         {
+            ProjectColombo.GameManagement.Events.CustomEvents.OnCharmCollected -= OnCharmCollected;
+
             for (int i = 0; i < textAnimationCoroutines.Length; i++)
             {
                 if (textAnimationCoroutines[i] != null)
@@ -602,6 +681,199 @@ namespace ProjectColombo.UI.Pausescreen
                 }
             }
         }
+
+        public void UpdateCharms()
+        {
+            // Guard against missing references
+            if (charmSlotButtons == null || charmSlotButtons.Length == 0)
+            {
+                LogDebug("No charm buttons assigned! Cannot update charms display.");
+                return;
+            }
+
+            // Get player inventory
+            PlayerInventory inventory = GameManager.Instance.GetComponent<PlayerInventory>();
+
+            // Reset all charm buttons first
+            foreach (Button button in charmSlotButtons)
+            {
+                if (button != null)
+                {
+                    // Keep the button visible but non-interactable when empty
+                    button.interactable = false;
+
+                    // Find the child image and set it to the empty slot sprite
+                    Image[] images = button.GetComponentsInChildren<Image>();
+                    foreach (Image img in images)
+                    {
+                        if (img.gameObject != button.gameObject) // This is the child image
+                        {
+                            // Use the empty slot sprite we specified
+                            if (emptyCharmSlotSprite != null)
+                            {
+                                img.sprite = emptyCharmSlotSprite;
+                            }
+                            img.color = new Color(1, 1, 1, 1); // Keep fully visible
+                            break;
+                        }
+                    }
+
+                    // Clear charm data
+                    CharmButton charmButtonComponent = button.GetComponent<CharmButton>();
+                    if (charmButtonComponent != null)
+                    {
+                        charmButtonComponent.charmObject = null;
+
+                        // If CharmButton has an imageSlot field, set that directly
+                        if (charmButtonComponent.imageSlot != null)
+                        {
+                            charmButtonComponent.imageSlot.sprite = emptyCharmSlotSprite;
+                        }
+                    }
+
+                    button.onClick.RemoveAllListeners();
+                }
+            }
+
+            // Reset legendary charm button
+            if (legendaryCharmButton != null)
+            {
+                legendaryCharmButton.interactable = false;
+
+                // Find the child image and set it to the empty legendary slot sprite
+                Image[] images = legendaryCharmButton.GetComponentsInChildren<Image>();
+                foreach (Image img in images)
+                {
+                    if (img.gameObject != legendaryCharmButton.gameObject)
+                    {
+                        // Use the empty legendary slot sprite we specified
+                        if (emptyLegendaryCharmSlotSprite != null)
+                        {
+                            img.sprite = emptyLegendaryCharmSlotSprite;
+                        }
+                        else if (emptyCharmSlotSprite != null)
+                        {
+                            img.sprite = emptyCharmSlotSprite; // Fall back to regular empty slot sprite
+                        }
+                        img.color = new Color(1, 1, 1, 1); // Keep fully visible
+                        break;
+                    }
+                }
+
+                // Clear charm data
+                CharmButton charmButtonComponent = legendaryCharmButton.GetComponent<CharmButton>();
+                if (charmButtonComponent != null)
+                {
+                    charmButtonComponent.charmObject = null;
+
+                    // If CharmButton has an imageSlot field, set that directly
+                    if (charmButtonComponent.imageSlot != null)
+                    {
+                        charmButtonComponent.imageSlot.sprite = emptyLegendaryCharmSlotSprite != null ?
+                            emptyLegendaryCharmSlotSprite : emptyCharmSlotSprite;
+                    }
+                }
+
+                legendaryCharmButton.onClick.RemoveAllListeners();
+            }
+
+            // Update regular charm buttons with actual charms
+            for (int i = 0; i < Mathf.Min(inventory.charms.Count, charmSlotButtons.Length); i++)
+            {
+                GameObject charm = inventory.charms[i];
+                if (charm != null)
+                {
+                    BaseCharm charmComponent = charm.GetComponent<BaseCharm>();
+                    Button button = charmSlotButtons[i];
+
+                    if (charmComponent != null && button != null)
+                    {
+                        // Enable the button
+                        button.interactable = true;
+
+                        // Find and update the image
+                        Image[] images = button.GetComponentsInChildren<Image>();
+                        foreach (Image img in images)
+                        {
+                            if (img.gameObject != button.gameObject)
+                            {
+                                img.sprite = charmComponent.charmPicture;
+                                img.color = new Color(1, 1, 1, 1); // Make fully visible
+                                break;
+                            }
+                        }
+
+                        // Store charm reference in the button
+                        CharmButton charmButtonComponent = button.GetComponent<CharmButton>();
+                        if (charmButtonComponent != null)
+                        {
+                            charmButtonComponent.UpdateInfo(charm);
+                        }
+                        else
+                        {
+                            // Using onClick event
+                            button.onClick.AddListener(() => {
+                                // Show charm details
+                                if (charmNameText != null)
+                                    charmNameText.text = charmComponent.charmName;
+
+                                if (charmDescriptionText != null)
+                                    charmDescriptionText.text = charmComponent.charmDescription;
+                            });
+                        }
+                    }
+                }
+            }
+
+            // Update legendary charm button
+            if (legendaryCharmButton != null && inventory.legendaryCharms.Count > 0)
+            {
+                GameObject legCharm = inventory.legendaryCharms[0];
+                if (legCharm != null)
+                {
+                    BaseCharm legCharmComponent = legCharm.GetComponent<BaseCharm>();
+
+                    if (legCharmComponent != null)
+                    {
+                        // Enable the button
+                        legendaryCharmButton.interactable = true;
+
+                        // Find and update the image
+                        Image[] images = legendaryCharmButton.GetComponentsInChildren<Image>();
+                        foreach (Image img in images)
+                        {
+                            if (img.gameObject != legendaryCharmButton.gameObject)
+                            {
+                                img.sprite = legCharmComponent.charmPicture;
+                                img.color = new Color(1, 1, 1, 1);
+                                break;
+                            }
+                        }
+
+                        // Store charm reference in the button
+                        CharmButton charmButtonComponent = legendaryCharmButton.GetComponent<CharmButton>();
+                        if (charmButtonComponent != null)
+                        {
+                            charmButtonComponent.UpdateInfo(legCharm);
+                        }
+                        else
+                        {
+                            // Using onClick event
+                            legendaryCharmButton.onClick.AddListener(() => {
+                                if (charmNameText != null)
+                                    charmNameText.text = legCharmComponent.charmName;
+
+                                if (charmDescriptionText != null)
+                                    charmDescriptionText.text = legCharmComponent.charmDescription;
+                            });
+                        }
+                    }
+                }
+            }
+
+            LogDebug("Charm display updated in pause menu");
+        }
+
 
         bool IsChildOfGameObject(GameObject child, GameObject parent)
         {
