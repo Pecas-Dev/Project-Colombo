@@ -5,6 +5,7 @@ using ProjectColombo.Inventory;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.GameManagement;
 using ProjectColombo.Objects;
+using UnityEngine.UI;
 
 
 namespace ProjectColombo.Shop
@@ -30,15 +31,17 @@ namespace ProjectColombo.Shop
         List<int> noDuplicates = new();
         GameObject player;
         float discount = 0;
+        public Button potionButton;
 
         private void Start()
         {
+            potionButton.interactable = true;
             playerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
             player = GameObject.Find("Player");
             currentPlayerCurrency.text = playerInventory.currencyAmount.ToString();
             itemButtons = new();
 
-            int positionX = 0 - (int)(spacing * (numbersOfItemsToSell-1) / 2f);
+            int positionX = 0;// - (int)(spacing * (numbersOfItemsToSell-1) / 2f);
 
             for (int i = 0; i < numbersOfItemsToSell; i++)
             {
