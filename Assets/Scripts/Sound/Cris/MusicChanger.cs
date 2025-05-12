@@ -128,6 +128,9 @@ public class AudioManager : MonoBehaviour
 
     private void PlayMenuMusic()
     {
+        if (explorationMusic.clip == menuMusicClip && explorationMusic.isPlaying)
+            return;
+
         StopAllMusic();
 
         if (menuMusicClip == null) return;
@@ -139,6 +142,9 @@ public class AudioManager : MonoBehaviour
 
     private void PlayGameplayMusic(AudioClip explorationClip, AudioClip[] battleClips)
     {
+        if (explorationMusic.clip == explorationClip && explorationMusic.isPlaying)
+            return;
+
         StopAllMusic();
 
         if (explorationClip == null || battleClips.Length < 4) return;
@@ -154,6 +160,7 @@ public class AudioManager : MonoBehaviour
             battleMusicLayers[i].Play();
         }
     }
+
 
     private void StopAllMusic()
     {
