@@ -15,8 +15,13 @@ namespace ProjectColombo.Objects.Items
             {
                 CustomEvents.CoinsCollected(amount);
                 GameManager.Instance.GetComponent<PlayerInventory>().currencyAmount += amount;
-                Destroy(this.gameObject);
+                GetComponent<Animator>().SetTrigger("PickUp");
             }
+        }
+
+        public void Destroy()
+        {
+            Destroy(this.gameObject);
         }
     }
 }
