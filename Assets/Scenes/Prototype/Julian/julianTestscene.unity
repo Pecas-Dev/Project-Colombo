@@ -655,6 +655,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2851703763989410279, guid: b213b2e361262f54482cc88949a43845, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9165202340525964455, guid: b213b2e361262f54482cc88949a43845, type: 3}
       propertyPath: amount
       value: 1000
@@ -988,7 +992,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1660996035
 Transform:
   m_ObjectHideFlags: 0
@@ -1280,7 +1284,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2057011018
 Transform:
   m_ObjectHideFlags: 0
@@ -1587,12 +1591,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
+      propertyPath: dropChanceCoinsVase
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
       propertyPath: dropChanceCoinsChest
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
       propertyPath: dropChanceRareCharmVase
-      value: 0.07
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
+      propertyPath: dropChanceCommonCharmVase
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
       propertyPath: dropChanceCommonCharmChest
@@ -1600,7 +1612,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
       propertyPath: dropChanceLegendaryCharmVase
-      value: 0
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 9159605010880971420, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
       propertyPath: m_LocalPosition.x

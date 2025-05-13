@@ -9,7 +9,8 @@ namespace ProjectColombo.UI
     {
         public TMP_Text maskNameText;
         public TMP_Text maskDescriptionText;
-        public TMP_Text echoDescriptionText;
+        public TMP_Text echoNameText;
+        public TMP_Text echoAbilityText;
 
         GameObject lastSelected;
 
@@ -41,7 +42,8 @@ namespace ProjectColombo.UI
             maskNameText.text = mask.maskName;
             //could have lore maskLoreText.text = mask.maskLore;
             maskDescriptionText.text = mask.maskDescription;
-            echoDescriptionText.text = mask.echoDescription;
+            echoNameText.text = mask.echoDescription;
+            echoAbilityText.text = mask.abilityObject.GetComponent<BaseAbility>().abilityDescription;
         }
     }
 }
