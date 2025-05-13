@@ -188,6 +188,10 @@ namespace ProjectColombo.StateMachine.Mommotti
             myEntityAttributes.currentScale = scale;
             myWeaponAttributes.currentScale = scale;
 
+            Color color = scale == GameGlobals.MusicScale.MAJOR ? Color.green : Color.blue;
+
+            myColorfullSkin.material.SetColor("_Major_MinorColor", color);
+
             var main = scaleParticles.main;
 
             if (scale == GameGlobals.MusicScale.MINOR)

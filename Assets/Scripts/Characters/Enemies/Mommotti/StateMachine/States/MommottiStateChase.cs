@@ -1,64 +1,60 @@
 using ProjectColombo.Enemies.Mommotti;
 using ProjectColombo.Enemies.Pathfinding;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProjectColombo.StateMachine.Mommotti
 {
     public class MommottiStateChase : MommottiBaseState
     {
-        Vector3 targetDirection; //direction directly to player
+        private Vector3 targetDirection;
+        private Vector3 movingDirection;
 
-        //pathfinding
-        bool isPlayerVisable;
-        Node lastWalkableNode;
-        List<Node> currentPath;
-        int pathIndex = 0;
-        Vector3 movingDirection; //direction to next Node
+        private bool isPlayerVisible;
 
-        //check for path just every once in a while
-        float checkIntervall = 0.5f;
-        float timer;
+        private float checkInterval = 0.5f;
+        private float timer;
 
-        //randomize circle speed and dircetion for variety
-        float closestEnemyDistance;
-        Vector3 closestEnemyPosition;
-        float randomSpeedFactor;
+        private float closestEnemyDistance;
+        private Vector3 closestEnemyPosition;
+        private float randomSpeedFactor;
 
-        //check if should switch to attacking
-        float attackCheckTimer = 0;
-        float intervallToCheckIfAttacking = .5f;
+        private float attackCheckTimer = 0;
+        private float intervalToCheckIfAttacking = 0.5f;
 
-        public MommottiStateChase(MommottiStateMachine stateMachine) : base(stateMachine)
-        {
-        }
+        public MommottiStateChase(MommottiStateMachine stateMachine) : base(stateMachine) { }
 
         public override void Enter()
         {
-            Color skinColor = new(1, .5f, 0);
-            stateMachine.myColorfullSkin.material.color = skinColor;
+            stateMachine.myColorfullSkin.material.color = new Color(1f, 0.5f, 0f);
 
-            isPlayerVisable = true; //enters from alert State so player is visible
-
+            isPlayerVisible = true;
             stateMachine.myMommottiAttributes.rangeFOVDetection /= 3f;
 
             lastWalkableNode = stateMachine.myPathfindingAlgorythm.GetNode(stateMachine.transform.position);
+
             targetDirection = stateMachine.myMommottiAttributes.GetPlayerPosition() - stateMachine.transform.position;
             movingDirection = targetDirection;
+
             stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.CHASE);
+
             randomSpeedFactor = Random.Range(0.3f, 0.7f);
+
             CheckClosestEnemy();
         }
 
         public override void Tick(float deltaTime)
         {
             timer += deltaTime;
-            targetDirection = stateMachine.myMommottiAttributes.GetPlayerPosition() - stateMachine.transform.position;
+            attackCheckTimer += deltaTime;
+
+            Vector3 playerPosition = stateMachine.myMommottiAttributes.GetPlayerPosition();
+            targetDirection = playerPosition - stateMachine.transform.position;
             targetDirection.y = 0;
 
-            if (timer > checkIntervall)
+            // Pathfinding and visibility update
+            if (timer >= checkInterval)
             {
-                timer = 0;
+                timer = 0f;
 
                 Node currentNode = stateMachine.myPathfindingAlgorythm.GetNode(stateMachine.transform.position);
                 if (currentNode.walkable)
@@ -66,78 +62,80 @@ namespace ProjectColombo.StateMachine.Mommotti
                     lastWalkableNode = currentNode;
                 }
 
-                isPlayerVisable = stateMachine.myMommottiAttributes.FieldOfViewCheck();
+                isPlayerVisible = stateMachine.myMommottiAttributes.FieldOfViewCheck();
 
-                if (!isPlayerVisable)
+                if (!isPlayerVisible)
                 {
-                    SetTarget(stateMachine.myMommottiAttributes.GetPlayerPosition());
+                    SetTarget(playerPosition);
                 }
 
                 CheckClosestEnemy();
             }
 
-
-            attackCheckTimer += deltaTime;
-
-            if (attackCheckTimer >= intervallToCheckIfAttacking)
+            // Attacking decisions
+            if (attackCheckTimer >= intervalToCheckIfAttacking)
             {
-                attackCheckTimer = 0;
+                attackCheckTimer = 0f;
 
                 if (targetDirection.magnitude < stateMachine.myMommottiAttributes.circleDistance + 1f)
-                { 
-                    CheckIfShouldAttack(); 
+                {
+                    CheckIfShouldAttack();
                 }
             }
 
             if (targetDirection.magnitude < stateMachine.myWeaponAttributes.reach)
             {
                 stateMachine.SwitchState(new MommottiStateAttack(stateMachine));
+                return;
             }
 
-            movingDirection = targetDirection;
-
-            //adjust speed depending on distance -> fast when far away, slow when close
-            float speedFactor = 1 + targetDirection.magnitude / stateMachine.myMommottiAttributes.circleDistance;
+            // Speed adaptation based on distance
+            float speedFactor = Mathf.Min(1 + targetDirection.magnitude / stateMachine.myMommottiAttributes.circleDistance, 2.5f);
             float currentSpeed = stateMachine.myEntityAttributes.moveSpeed * speedFactor;
 
-            if (!isPlayerVisable && currentPath != null && pathIndex < currentPath.Count) 
+            // Update movement direction
+            if (!isPlayerVisible)
             {
-                if (movingDirection.magnitude < currentSpeed * deltaTime)
+                if (!FollowPath(deltaTime, currentSpeed))
                 {
-                    pathIndex++;
+                    SetTarget(playerPosition); // Recalculate if stuck
                 }
 
-                movingDirection = (currentPath[pathIndex].worldPosition - stateMachine.transform.position);
+                if (pathIndex < currentPath.Count)
+                {
+                    movingDirection = (currentPath[pathIndex].worldPosition - stateMachine.transform.position).normalized;
+                }
+            }
+            else
+            {
+                movingDirection = targetDirection.normalized;
             }
 
-            //rotate towards player
-            RotateTowardsTarget(stateMachine.myMommottiAttributes.GetPlayerPosition(), deltaTime, stateMachine.myEntityAttributes.rotationSpeedPlayer);
+            // Rotation always faces player
+            RotateTowardsTarget(playerPosition, deltaTime, stateMachine.myEntityAttributes.rotationSpeedPlayer);
 
-
+            // Behavior within circle
             Vector3 relativeMovementDirection = stateMachine.transform.forward;
 
-            //move away if too close
-            if (targetDirection.magnitude < stateMachine.myMommottiAttributes.circleDistance) 
+            if (targetDirection.magnitude < stateMachine.myMommottiAttributes.circleDistance)
             {
-                relativeMovementDirection = -stateMachine.transform.forward; 
+                relativeMovementDirection = -stateMachine.transform.forward;
             }
-            //if withing circle area circle
-            else if (targetDirection.magnitude < stateMachine.myMommottiAttributes.circleDistance + stateMachine.myMommottiAttributes.circleTolerance) //if in tolerance zone circle
+            else if (targetDirection.magnitude < stateMachine.myMommottiAttributes.circleDistance + stateMachine.myMommottiAttributes.circleTolerance)
             {
-                //spread out if to close to other
                 if (closestEnemyDistance < stateMachine.myMommottiAttributes.circleDistance / 2)
                 {
                     Vector3 spreadDirection = (stateMachine.transform.position - closestEnemyPosition).normalized;
                     relativeMovementDirection = spreadDirection;
                     currentSpeed = stateMachine.myEntityAttributes.moveSpeed * randomSpeedFactor;
                 }
-                //stand and wait
                 else
                 {
                     currentSpeed = 0f;
                 }
             }
 
+            // Final move step
             Vector3 targetPosition = stateMachine.transform.position + relativeMovementDirection;
             MoveToTarget(targetPosition, deltaTime, currentSpeed);
         }
@@ -147,19 +145,6 @@ namespace ProjectColombo.StateMachine.Mommotti
             stateMachine.myMommottiAttributes.rangeFOVDetection *= 3f;
         }
 
-        public void SetTarget(Vector3 newTarget)
-        {
-            currentPath = stateMachine.myPathfindingAlgorythm.FindPath(stateMachine.transform.position, newTarget);
-            
-            if (currentPath == null) //returns null if not walkable
-            {
-                currentPath = new List<Node>(); // Initialize the list
-                currentPath.Add(lastWalkableNode);
-            }
-
-            pathIndex = 0;
-        }
-
         private void CheckClosestEnemy()
         {
             GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -167,18 +152,15 @@ namespace ProjectColombo.StateMachine.Mommotti
 
             foreach (GameObject m in enemies)
             {
-                MommottiStateMachine otherStateMachine = m.GetComponent<MommottiStateMachine>();
-
-                //check other is mommotti
-                if (otherStateMachine == null) continue;
                 if (m == stateMachine.gameObject) continue;
-                if (otherStateMachine.currentState == MommottiStateMachine.MommottiState.ATTACK) continue;
 
-                float distance = (m.transform.position - stateMachine.transform.position).magnitude;
-                
-                if (distance < closestEnemyDistance)
+                MommottiStateMachine otherSM = m.GetComponent<MommottiStateMachine>();
+                if (otherSM == null || otherSM.currentState == MommottiStateMachine.MommottiState.ATTACK) continue;
+
+                float dist = Vector3.Distance(stateMachine.transform.position, m.transform.position);
+                if (dist < closestEnemyDistance)
                 {
-                    closestEnemyDistance = distance;
+                    closestEnemyDistance = dist;
                     closestEnemyPosition = m.transform.position;
                 }
             }
@@ -187,46 +169,31 @@ namespace ProjectColombo.StateMachine.Mommotti
         private void CheckIfShouldAttack()
         {
             GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-            float currentDistanceToPlayer = (stateMachine.myMommottiAttributes.GetPlayerPosition() - stateMachine.transform.position).magnitude;
             int currentAttackers = 0;
 
-            if (currentDistanceToPlayer >= stateMachine.myMommottiAttributes.circleDistance + 1f)
-            {
-                return;
-            }
+            float myDist = Vector3.Distance(stateMachine.myMommottiAttributes.GetPlayerPosition(), stateMachine.transform.position);
+            if (myDist > stateMachine.myMommottiAttributes.circleDistance + 1f) return;
 
             foreach (GameObject m in enemies)
             {
-                MommottiAttributes otherAttributes = m.GetComponent<MommottiAttributes>();
-
-                //check other is mommotti
-                if (otherAttributes == null) continue;
-
-                //check if they are attacking currently
+                if (m.GetComponent<MommottiAttributes>() == null) continue;
                 if (m.GetComponent<MommottiStateMachine>().currentState == MommottiStateMachine.MommottiState.ATTACK)
                 {
                     currentAttackers++;
                 }
             }
 
-            //check limit of attackers
-            if (currentAttackers >= stateMachine.myMommottiAttributes.attackersAtTheSameTime)
-            {
-                return;
-            }
+            if (currentAttackers >= stateMachine.myMommottiAttributes.attackersAtTheSameTime) return;
 
             foreach (GameObject m in enemies)
             {
-                MommottiAttributes otherAttributes = m.GetComponent<MommottiAttributes>();
+                MommottiAttributes otherAttr = m.GetComponent<MommottiAttributes>();
+                if (otherAttr == null) continue;
 
-                //check other is mommotti and attacking
-                if (otherAttributes == null) continue;
-                if (m.GetComponent<MommottiStateMachine>().currentState == MommottiStateMachine.MommottiState.ATTACK) continue;
+                float theirDist = Vector3.Distance(otherAttr.playerPosition.position, m.transform.position);
 
-                //check if they are closer to player
-                if (currentDistanceToPlayer <= (otherAttributes.playerPosition.position - m.transform.position).magnitude)
+                if (myDist <= theirDist)
                 {
-                    //switch to attacking
                     stateMachine.SwitchState(new MommottiStateAttack(stateMachine));
                     return;
                 }

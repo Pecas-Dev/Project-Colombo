@@ -1,18 +1,10 @@
 using ProjectColombo.Enemies.Pathfinding;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace ProjectColombo.StateMachine.Mommotti
 {
     public class MommottiStatePatrol : MommottiBaseState
     {
-        //pathfinding
-        List<Node> currentPath;
-        int pathIndex = 0;
-        Node lastWalkableNode; //in for now if we need it
-        Vector3 movingDirection;
-
         //player detection
         float checkInterval = 0.5f;
         float timer;
@@ -78,37 +70,12 @@ namespace ProjectColombo.StateMachine.Mommotti
 
                 timer = 0;
             }
-            
-            if (currentPath != null && pathIndex < currentPath.Count)
+
+            if (!FollowPath(deltaTime, patrolSpeed))
             {
-                lastWalkableNode = currentPath[pathIndex];
-                movingDirection = currentPath[pathIndex].worldPosition - stateMachine.transform.position;
-
-                float nodeReachThreshold = 0.1f; // Or 0.2f if your nodes are spaced wider
-
-                if (movingDirection.magnitude <= nodeReachThreshold)
-                { 
-                    pathIndex++;
-
-                    if (pathIndex >= currentPath.Count)
-                    {
-                        currentPath = null;
-                        pathIndex = 0;
-                        SetTarget(GetNextPatrolPoint());
-                    }
-                }
-                else
-                {
-                    RotateTowardsTarget(currentPath[pathIndex].worldPosition, deltaTime, rotationSpeed);
-                    MoveToTarget(currentPath[pathIndex].worldPosition, deltaTime, patrolSpeed);
-                }
-            }
-            else
-            {
-                currentPath = null;
-                pathIndex = 0;
                 SetTarget(GetNextPatrolPoint());
             }
+
         }
 
         public override void Exit()
@@ -142,19 +109,6 @@ namespace ProjectColombo.StateMachine.Mommotti
                 onSpawnPoint = true;
                 return stateMachine.myMommottiAttributes.spawnPointLocation;
             }
-        }
-
-        public void SetTarget(Vector3 newTarget)
-        {
-            currentPath = stateMachine.myPathfindingAlgorythm.FindPath(stateMachine.transform.position, newTarget);
-
-            if (currentPath == null) //returns null if not walkable
-            {
-                currentPath = new List<Node>(); // Initialize the list
-                currentPath.Add(lastWalkableNode);
-            }
-
-            pathIndex = 0;
         }
     }
 }

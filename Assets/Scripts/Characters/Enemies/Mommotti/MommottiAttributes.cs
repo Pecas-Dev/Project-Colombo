@@ -66,17 +66,20 @@ namespace ProjectColombo.Enemies.Mommotti
         {
             if (currentDistanceToPlayer <= rangeFOVDetection)
             {
-                Vector3 directionToPlayer = (playerPosition.position - transform.position).normalized;
+                Vector3 directionToPlayer = playerPosition.position - transform.position;
                 directionToPlayer.y = 0;
+                directionToPlayer = directionToPlayer.normalized;
 
                 float anglePlayer = Vector3.Angle(transform.forward, directionToPlayer);
 
                 if (anglePlayer <= angleFOVDetection / 2)
                 {
                     RaycastHit hit;
-                    float capsuleRadius = 0.1f;  
-                    Vector3 top = transform.position + Vector3.up * capsuleRadius;
-                    Vector3 bottom = transform.position - Vector3.up * capsuleRadius;
+                    float capsuleRadius = 0.1f;
+                    float enemyHeight = 2f;
+                    Vector3 top = transform.position + Vector3.up * (enemyHeight * 0.9f);
+                    Vector3 bottom = transform.position;
+
 
                     if (Physics.CapsuleCast(top, bottom, capsuleRadius, directionToPlayer, out hit, rangeFOVDetection))
                     {
