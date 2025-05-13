@@ -27,6 +27,7 @@ namespace ProjectColombo.GameManagement.Events
         public static event Action OnEchoUnlocked;
         public static event Action OnChamberActivated;
         public static event Action OnChamberFinished;
+        public static event Action<string> OnAbilityUsed;
 
         public static void DamageDelt(int damage, GameGlobals.MusicScale scale, HealthManager enemyHealthManager, int comboLength)
         {
@@ -124,6 +125,11 @@ namespace ProjectColombo.GameManagement.Events
         public static void ChamberFinished()
         {
             OnChamberFinished?.Invoke();
+        }
+
+        public static void AbilityUsed(string audioName)
+        {
+            OnAbilityUsed?.Invoke(audioName);
         }
     }
 }

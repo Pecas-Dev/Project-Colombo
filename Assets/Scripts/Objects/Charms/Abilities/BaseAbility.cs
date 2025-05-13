@@ -20,6 +20,8 @@ namespace ProjectColombo.Objects.Masks
         [ReadOnlyInspector] public float abilityTimer = 0;
         [ReadOnlyInspector] public bool active;
 
+        public string abilitySoundName;
+
 
         [HideInInspector] public PlayerStateMachine myPlayerStateMachine;
 
@@ -50,6 +52,7 @@ namespace ProjectColombo.Objects.Masks
                 UseAbility();
                 available = false;
                 active = true;
+                CustomEvents.AbilityUsed(abilitySoundName);
                 return true;
             }
 
