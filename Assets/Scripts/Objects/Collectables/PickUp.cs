@@ -51,7 +51,6 @@ namespace ProjectColombo.Objects
                 GameManager.Instance.gameInput.ResetUseItemPressed();
 
                 CustomEvents.CharmCollected(myCharm);
-                Debug.Log("collected charm");
                 Destroy(this.gameObject);
                 return;
             }
