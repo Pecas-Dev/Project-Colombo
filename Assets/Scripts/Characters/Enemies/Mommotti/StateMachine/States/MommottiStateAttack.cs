@@ -9,7 +9,7 @@ namespace ProjectColombo.StateMachine.Mommotti
     {
         Vector3 targetDirection;
         float attackCheckTimer = 0;
-        float intervallToCheckAttack = 1f;
+        float intervallToCheckAttack = 2f;
 
         public MommottiStateAttack(MommottiStateMachine stateMachine) : base(stateMachine)
         {
@@ -31,10 +31,11 @@ namespace ProjectColombo.StateMachine.Mommotti
             if (attackCheckTimer >= intervallToCheckAttack)
             {
                 attackCheckTimer = 0;
-                CheckIfShouldStillAttack();
+                //CheckIfShouldStillAttack();
             }
 
-            
+            stateMachine.canAttack = !stateMachine.myWeaponAttributes.onCooldown;
+
 
             targetDirection = stateMachine.myMommottiAttributes.GetPlayerPosition() - stateMachine.transform.position;
             targetDirection.y = 0;
@@ -61,8 +62,8 @@ namespace ProjectColombo.StateMachine.Mommotti
             //step back if cannot attack
             if (!stateMachine.canAttack && distanceToPlayer < 0.25 * stateMachine.myMommottiAttributes.circleDistance && !stateMachine.myWeaponAttributes.isAttacking)
             {
-                float currentSpeed = stateMachine.myEntityAttributes.moveSpeed;
-                Vector3 targetPosition = stateMachine.transform.position - stateMachine.transform.forward; ;
+                float currentSpeed = stateMachine.myEntityAttributes.moveSpeed / 30f;
+                Vector3 targetPosition = stateMachine.transform.position - stateMachine.transform.forward;
 
                 MoveToTarget(targetPosition, deltaTime, currentSpeed);
             }
@@ -79,6 +80,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             stateMachine.myWeaponAttributes.onCooldown = true;
             stateMachine.myWeaponAttributes.isAttacking = true;
             stateMachine.canAttack = false;
+            CheckIfShouldStillAttack();
         }
 
         private void CheckIfShouldStillAttack()

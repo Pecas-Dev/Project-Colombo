@@ -14,6 +14,8 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Enter()
         {
+            stateMachine.ParryFrameStop();
+            stateMachine.ParryPanaltyStop();
             stateMachine.currentComboString = "";
             stateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Movement);
             stateMachine.myPlayerAnimator.PlayMovementAnimation();

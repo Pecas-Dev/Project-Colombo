@@ -33,6 +33,8 @@ namespace ProjectColombo.Combat
         public float maxDistanceAfterImpulse = 1f;              // furthest away
         public float minDistanceAfterImpulse = .5f;             // closest
 
+        public float stunArea = 2f;
+
         [SerializeField, ReadOnlyInspector] string ownerTag;
         [HideInInspector] public bool onCooldown;
         [HideInInspector] public bool isAttacking;
@@ -241,7 +243,7 @@ namespace ProjectColombo.Combat
                         if (currentScale != otherAttributes.currentScale)
                         {
                             //Debug.Log("..with opposite scale -> stagger enemy");
-                            GetComponentInParent<MommottiStateMachine>().SetStaggered();
+                            StunEnemiesInArea();
                             sameScale = false;
                         }
                         else
@@ -316,6 +318,19 @@ namespace ProjectColombo.Combat
             Time.timeScale = 0.1f; // Slow down time instead of freezing completely
             yield return new WaitForSecondsRealtime(pauseDuration);
             Time.timeScale = 1f; // Resume normal time
+        }
+
+        private void StunEnemiesInArea()
+        {
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+            foreach (GameObject e in enemies)
+            {
+                if (Vector3.Magnitude(transform.position - e.transform.position) < stunArea)
+                {
+                    e.GetComponent<MommottiStateMachine>().SetStaggered();
+                }
+            }
         }
     }
 

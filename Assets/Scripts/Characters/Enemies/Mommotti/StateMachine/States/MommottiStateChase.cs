@@ -23,12 +23,11 @@ namespace ProjectColombo.StateMachine.Mommotti
         //randomize circle speed and dircetion for variety
         float closestEnemyDistance;
         Vector3 closestEnemyPosition;
-        int rotationDirection;
         float randomSpeedFactor;
 
         //check if should switch to attacking
         float attackCheckTimer = 0;
-        float intervallToCheckIfAttacking = 1f;
+        float intervallToCheckIfAttacking = .5f;
 
         public MommottiStateChase(MommottiStateMachine stateMachine) : base(stateMachine)
         {
@@ -47,7 +46,6 @@ namespace ProjectColombo.StateMachine.Mommotti
             targetDirection = stateMachine.myMommottiAttributes.GetPlayerPosition() - stateMachine.transform.position;
             movingDirection = targetDirection;
             stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.CHASE);
-            rotationDirection = Random.Range(0, 2) == 0 ? -1 : 1;
             randomSpeedFactor = Random.Range(0.3f, 0.7f);
             CheckClosestEnemy();
         }
@@ -230,6 +228,7 @@ namespace ProjectColombo.StateMachine.Mommotti
                 {
                     //switch to attacking
                     stateMachine.SwitchState(new MommottiStateAttack(stateMachine));
+                    return;
                 }
             }
         }

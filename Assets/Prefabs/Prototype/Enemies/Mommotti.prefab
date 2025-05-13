@@ -1031,7 +1031,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 0.2
+      value: 0.35
       mode: 0
       spread: 0
       speed:
@@ -5425,8 +5425,8 @@ MonoBehaviour:
   moveSpeed: 3
   attackSpeed: 0
   rotationSpeedPlayer: 5
-  attackImpulseForce: 5
-  stunnedTime: 1
+  attackImpulseForce: 3
+  stunnedTime: 1.3
   currentScale: 0
 --- !u!114 &2458615397977204604
 MonoBehaviour:
@@ -5445,10 +5445,10 @@ MonoBehaviour:
   myGridManager: {fileID: 0}
   patrolAreaDistance: 0
   alertedBufferTime: 2
-  circleDistance: 3
+  circleDistance: 3.5
   circleTolerance: 1
   areaToAlertOthers: 15
-  attackersAtTheSameTime: 2
+  attackersAtTheSameTime: 1
   rangeFOVDetection: 10
   angleFOVDetection: 120
   rangeSoundDetection: 5
@@ -5465,6 +5465,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentHealth: 0
+  ignoreDamage: 0
 --- !u!114 &5774820696114806963
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5491,26 +5492,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myVariant: 2
-  commonCharms:
-  - {fileID: 2214152689029009370, guid: 42348f55bc395d144bef4fbaed4dd465, type: 3}
-  - {fileID: 5153099699462930510, guid: 0e2e9f4f450d13445bb81627be9f87bf, type: 3}
-  - {fileID: 8493266293346240001, guid: 7d761aa023c0f3e498eaa7fc64edd995, type: 3}
-  - {fileID: 1353502290456183764, guid: 802913cf77f56a747a5cdaddcfa99390, type: 3}
-  - {fileID: 5734323824044317263, guid: 08a416e269a000e4aa02d270f5588b6d, type: 3}
-  - {fileID: 6503379658991535769, guid: bc0952d1e7e249c4581f17d480891ca2, type: 3}
-  rareCharms:
-  - {fileID: 6301612966450194399, guid: bd2987e78347be749bc940720af3038f, type: 3}
-  - {fileID: 8617957453502818824, guid: 280d34746e666194c9f18d1276824db1, type: 3}
-  - {fileID: 7909642838134526958, guid: 51353da68a4a45e4c9e62348a58ef14e, type: 3}
-  - {fileID: 808636044392298626, guid: 6af26d020a99d6a40a26884a8dcce8d2, type: 3}
-  legendaryCharms:
-  - {fileID: 8441870704141843900, guid: 3c577fdfac3157748ab7f611dfcdae4a, type: 3}
-  - {fileID: 5963334831434130681, guid: 67a1d88dd596e374f99d2af77947b6a2, type: 3}
-  commonCharmVFX: {fileID: 5087879324207771018, guid: fe6e92f4c69777044bf7c499b80680be, type: 3}
-  rareCharmVFX: {fileID: 7374665690017427085, guid: b096cfeaf2bd55048ae6ad7513da756e, type: 3}
-  legendaryCharmVFX: {fileID: 8432849472055086706, guid: 8c350150259b57949b4f8dfe6755fd04, type: 3}
-  pickup: {fileID: 7109980893497795781, guid: 929b90f19122898449c45a3918bd04c9, type: 3}
-  coins: {fileID: 390289988588442798, guid: b213b2e361262f54482cc88949a43845, type: 3}
 --- !u!1 &8299448585058173517
 GameObject:
   m_ObjectHideFlags: 0
