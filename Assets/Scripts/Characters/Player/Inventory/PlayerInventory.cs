@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using ProjectColombo.Objects.Masks;
 using ProjectColombo.Objects.Charms;
 using ProjectColombo.Objects;
+using ProjectColombo.Shop;
 
 
 namespace ProjectColombo.Inventory
@@ -31,6 +32,10 @@ namespace ProjectColombo.Inventory
         public GameObject potionSlot;
         public GameObject legendaryCharmAbilitySlot;
 
+        //for when charms in shop
+        [HideInInspector] public bool inShop = false;
+        [HideInInspector] public ShopKeeper currentShopKeeper;
+
         DropManager dropManager;
 
 
@@ -38,12 +43,26 @@ namespace ProjectColombo.Inventory
         {
             CustomEvents.OnCharmCollected += AddCharm;
             CustomEvents.OnLevelChange += LevelChange;
+            CustomEvents.OnShopOpen += ShopOpened;
+            CustomEvents.OnShopClose += ShopClosed;
             CustomEvents.OnEchoUnlocked += EnableMaskAbility;
             dropManager = GameManager.Instance.GetComponent<DropManager>();
             myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
             charmSelectScreen.SetActive(false);
             GetCurrentStats();
             currentCharmAmount = 0;
+        }
+
+        private void ShopClosed()
+        {
+            inShop = false;
+            currentShopKeeper = null;
+        }
+
+        private void ShopOpened(Shop.ShopKeeper shopkeeper)
+        {
+            inShop = true;
+            currentShopKeeper = shopkeeper;
         }
 
         private void EnableMaskAbility()
@@ -205,6 +224,12 @@ namespace ProjectColombo.Inventory
 
         public void OpenCharmSelectScreen(GameObject charm)
         {
+            if (inShop)
+            {
+                currentShopKeeper.CloseShopScreen();
+            }
+
+
             GameManager.Instance.PauseGame(false);
             charmSelectScreen.SetActive(true);
             charmSelectScreen.GetComponent<CharmSelectScreen>().ActivateScreen(charm);

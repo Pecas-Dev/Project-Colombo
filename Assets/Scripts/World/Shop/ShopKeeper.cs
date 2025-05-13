@@ -14,7 +14,6 @@ namespace ProjectColombo.Shop
         public GameObject shopIndicator;
         bool playerInRange;
         private GameInputSO gameInput;
-        public GameObject firstSelect;
 
         private void Start()
         {
@@ -49,29 +48,39 @@ namespace ProjectColombo.Shop
                 playerInRange = false;
                 shopIndicator.SetActive(false);
                 other.GetComponent<PlayerStateMachine>().closeShop = null;
-                //Debug.Log("player exited shop");
             }
         }
 
         public void OpenShop()
         {
+            GameManager.Instance.PauseGame(false);
             shopScreen.SetActive(true);
             shopScreen.GetComponentInChildren<ShopScreen>().SetDiscount(0f);
             shopIndicator.SetActive(false);
-            gameInput.EnableUIMode();
-            GameObject.Find("Player").GetComponent<PlayerStateMachine>().EnterShopState(this.gameObject);
-            EventSystem.current.SetSelectedGameObject(firstSelect);
+            StartCoroutine(shopScreen.GetComponent<ShopScreen>().SetFirstSelected());
             CustomEvents.ShopOpen(this);
         }
 
         public void CloseShop()
         {
+            GameManager.Instance.ResumeGame();
             shopScreen.SetActive(false);
             shopIndicator.SetActive(true);
-            gameInput.DisableUIMode();
-            GameObject.Find("Player").GetComponent<PlayerStateMachine>().ExitShopState();
             shopScreen.GetComponentInChildren<ShopScreen>().SetDiscount(0f);
             CustomEvents.ShopClose();
+        }
+
+
+        public void CloseShopScreen()
+        {
+            shopScreen.SetActive(false);
+        }
+
+        public void OpenShopScreen()
+        {
+            GameManager.Instance.PauseGame(false);
+            shopScreen.SetActive(true);
+            StartCoroutine(shopScreen.GetComponent<ShopScreen>().SetFirstSelected());
         }
     }
 }

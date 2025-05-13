@@ -91,19 +91,24 @@ namespace ProjectColombo.UI
 
         public void DeactivateScreen()
         {
+            GameManager.Instance.ResumeGame();
+
+            PlayerInventory inventory = GameManager.Instance.GetComponent<PlayerInventory>();
+
+            if (inventory.inShop)
+            {
+                inventory.currentShopKeeper.OpenShopScreen();
+            }
+
             active = false;
             gameObject.SetActive(false);
             newCharm = null;
-            GameManager.Instance.ResumeGame();
         }
 
         public void AddCharm(GameObject charmToRemove)
         {
-            active = false;
             GameManager.Instance.GetComponent<PlayerInventory>().ReplaceCharm(charmToRemove, newCharm);
-            gameObject.SetActive(false);
-            newCharm = null;
-            GameManager.Instance.ResumeGame();
+            DeactivateScreen();
         }
     }
 }

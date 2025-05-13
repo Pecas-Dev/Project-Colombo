@@ -62,6 +62,9 @@ namespace ProjectColombo.Shop
 
         public void CheckActive()
         {
+            ShopScreen currentScreen = GetComponentInParent<ShopScreen>();
+            if (currentScreen == null) return;
+
             isActive = item.price <= GetComponentInParent<ShopScreen>().GetCurrency();
 
             referenceImage.color = isActive ? Color.white : Color.red;

@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using ProjectColombo.Inventory;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.GameManagement;
-using ProjectColombo.Objects;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using System.Collections;
 
 
 namespace ProjectColombo.Shop
@@ -29,15 +30,14 @@ namespace ProjectColombo.Shop
         public GameObject pickUpPrefab;
         List<ShopItems> itemButtons;
         List<int> noDuplicates = new();
-        GameObject player;
         float discount = 0;
         public Button potionButton;
+        public GameObject exitShopButton;
 
         private void Start()
         {
             potionButton.interactable = true;
             playerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
-            player = GameObject.Find("Player");
             currentPlayerCurrency.text = playerInventory.currencyAmount.ToString();
             itemButtons = new();
 
@@ -74,6 +74,14 @@ namespace ProjectColombo.Shop
             }
         }
 
+        public IEnumerator SetFirstSelected()
+        {
+            // Wait until the end of the frame to ensure UI is fully active
+            yield return new WaitForEndOfFrame();
+
+            EventSystem.current.SetSelectedGameObject(exitShopButton);
+        }
+
         private void Update()
         {
             currentPlayerCurrency.text = playerInventory.currencyAmount.ToString(); //update text
@@ -99,16 +107,14 @@ namespace ProjectColombo.Shop
             playerInventory.currencyAmount -= item.price;
             CustomEvents.ItemPurchased(item.price);
 
-            GameObject instance = Instantiate(pickUpPrefab, player.transform.position, player.transform.rotation);
-
-            instance.GetComponent<PickUp>().SetCharm(item.item);
-
             currentPlayerCurrency.text = playerInventory.currencyAmount.ToString(); //update text
 
             foreach (ShopItems b in itemButtons)
             {
                 b.CheckActive();
             }
+
+            CustomEvents.CharmCollected(item.item);
         }
 
         public int GetCurrency()
