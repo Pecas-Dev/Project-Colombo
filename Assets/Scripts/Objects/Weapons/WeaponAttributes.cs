@@ -263,14 +263,15 @@ namespace ProjectColombo.Combat
                             sameScale = false;
                         }
 
+                        otherStateMachine.SetStaggered();
                         CustomEvents.FailedParry(damage, currentScale, otherHealth, sameScale);
                     }
                     else
                     {
+                        otherStateMachine.SetStaggered();
                         CustomEvents.DamageReceived(damage, currentScale, otherHealth);
                     }
 
-                    otherStateMachine.SetStaggered();
                     otherHealth.TakeDamage(damage);
                 }
             }
@@ -299,7 +300,7 @@ namespace ProjectColombo.Combat
 
         private void ScreenShake()
         {
-            FindFirstObjectByType<ScreenShakeManager>().Shake(0.2f);
+            FindFirstObjectByType<ScreenShakeManager>().Shake(0.4f);
         }
 
 

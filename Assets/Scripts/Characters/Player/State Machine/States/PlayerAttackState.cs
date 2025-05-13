@@ -17,6 +17,7 @@ namespace ProjectColombo.StateMachine.Player
         GameGlobals.MusicScale nextScale = GameGlobals.MusicScale.NONE;
 
         GameObject currentTarget;
+        Vector3 targetPosition;
         
         public PlayerAttackState(PlayerStateMachine playerStateMachine, GameGlobals.MusicScale scale) : base(playerStateMachine)
         {
@@ -59,6 +60,10 @@ namespace ProjectColombo.StateMachine.Player
             var targeter = stateMachine.myTargeter;
 
             currentTarget = GetClosestTarget();
+            targetPosition = currentTarget?.transform.position ??
+                (stateMachine.transform.position + stateMachine.transform.forward * stateMachine.myWeaponAttributes.distanceToActivateForwardImpulse);
+
+            ApplyAttackImpulse();
         }
 
         public override void Tick(float deltaTime)
@@ -112,8 +117,19 @@ namespace ProjectColombo.StateMachine.Player
                 return;
             }
 
-            FaceLockedTarget(deltaTime);
-            ApplyAttackImpulse();
+            if (currentTarget != null)
+            {
+                targetPosition = currentTarget.transform.position;
+            }
+            else
+            {
+                targetPosition = stateMachine.transform.position + stateMachine.transform.forward;
+            }
+
+            //FaceLockedTarget(deltaTime);
+            TurnToTarget();
+
+            StopImpulseIfCloseEnough();
             HandleStateSwitchFromInput(); //extracted inputs to base state to remove repetition, 
         }
 
@@ -174,93 +190,93 @@ namespace ProjectColombo.StateMachine.Player
 
         GameObject GetClosestTarget()
         {
-            List<GameObject> enemies = new List<GameObject>(GameObject.FindGameObjectsWithTag("Enemy"));
-            enemies.AddRange(GameObject.FindGameObjectsWithTag("Destroyable")); //also lock to vases and stuff
-
-
-            if (enemies.Count == 0)
-            {
-                return null;
-            }
-
             Vector3 myPosition = stateMachine.transform.position;
+            float closestDistance = 5f; // max auto-lock range
             GameObject closestTarget = null;
-            float closestDistance = 5; //adjust this number to make auto lock range
 
-            foreach (GameObject e in enemies)
+            // 1. Check for enemies first
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+            foreach (GameObject enemy in enemies)
             {
-                if ((e.transform.position - myPosition).magnitude < closestDistance)
+                float distance = Vector3.Distance(enemy.transform.position, myPosition);
+                if (distance < closestDistance)
                 {
-                    closestTarget = e;
-                    closestDistance = (e.transform.position - myPosition).magnitude;
+                    closestTarget = enemy;
+                    closestDistance = distance;
                 }
             }
 
+            // 2. If no enemy found in range, check destroyables
+            if (closestTarget == null)
+            {
+                GameObject[] destroyables = GameObject.FindGameObjectsWithTag("Destroyable");
+
+                foreach (GameObject obj in destroyables)
+                {
+                    float distance = Vector3.Distance(obj.transform.position, myPosition);
+                    if (distance < closestDistance)
+                    {
+                        closestTarget = obj;
+                        closestDistance = distance;
+                    }
+                }
+            }
+
+            // 3. Return the closest valid target or null
             return closestTarget;
+        }
+
+
+        void TurnToTarget()
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(targetPosition - stateMachine.transform.position);
+            stateMachine.myRigidbody.transform.rotation = targetRotation;
         }
 
         void ApplyAttackImpulse()
         {
-            Vector3 targetPosition;
-            var targeter = stateMachine.myTargeter;
+            WeaponAttributes playerWeapon = stateMachine.myWeaponAttributes;
+            float maxDistance = playerWeapon.maxDistanceAfterImpulse;
+            float minDistance = playerWeapon.minDistanceAfterImpulse;
 
-            // These could come from weapon attributes
-            WeaponAttributes playerWeapon = stateMachine.GetComponentInChildren<WeaponAttributes>();
-            float activationDistance = playerWeapon.distanceToActivateForwardImpulse;   // player should be close already
-            float maxDistance = playerWeapon.maxDistanceAfterImpulse;                   // furthest away
-            float minDistance = playerWeapon.minDistanceAfterImpulse;                   // closest
-
-            // Check if the player is targeting an enemy
-            if (targeter != null && targeter.isTargetingActive && targeter.currentTarget != null)
-            {
-                targetPosition = targeter.currentTarget.transform.position;
-            }
-            else if (currentTarget != null)
-            {
-                targetPosition = currentTarget.transform.position;
-            }
-            else
-            {
-                targetPosition = stateMachine.transform.position + stateMachine.transform.forward * activationDistance;
-            }
-
-            targetPosition.y = stateMachine.transform.position.y;
-            //turn to target
-            Quaternion targetRotation = Quaternion.LookRotation(targetPosition - stateMachine.transform.position);
-
-            //// Rotate to fit animation
-            //Quaternion offsetRotation = Quaternion.AngleAxis(-35f, Vector3.up);
-            //Quaternion finalRotation = offsetRotation * targetRotation;
-
-            stateMachine.myRigidbody.rotation = targetRotation;
-
-            // Calculate the direction to the target
             Vector3 directionToTarget = targetPosition - stateMachine.myRigidbody.position;
             directionToTarget.y = 0f;
 
             float distanceToTarget = directionToTarget.magnitude;
 
-            // If the player is too far from the target, do nothing
-            if (distanceToTarget > activationDistance) return;
+            float impulseForce = stateMachine.myEntityAttributes.attackImpulseForce;
 
-            // Move towards the target if the distance is greater than the desired target distance
             if (distanceToTarget > maxDistance)
             {
                 directionToTarget.Normalize();
-
-                float speed = stateMachine.myEntityAttributes.attackImpulseForce;
-                stateMachine.myRigidbody.MovePosition(stateMachine.myRigidbody.position + directionToTarget * speed * Time.deltaTime);
+                stateMachine.myRigidbody.AddForce(directionToTarget * impulseForce, ForceMode.Impulse);
             }
-
-            // Move away from the target if the player is too close
             else if (distanceToTarget < minDistance)
             {
-                Vector3 directionAwayFromTarget = -directionToTarget;
-                directionAwayFromTarget.Normalize();
-
-                float retreatSpeed = stateMachine.myEntityAttributes.attackImpulseForce;
-                stateMachine.myRigidbody.MovePosition(stateMachine.myRigidbody.position + directionAwayFromTarget * retreatSpeed * Time.deltaTime);
+                directionToTarget.Normalize();
+                stateMachine.myRigidbody.AddForce(-directionToTarget * impulseForce, ForceMode.Impulse);
             }
         }
+
+        void StopImpulseIfCloseEnough()
+        {
+            if (currentTarget == null) return;
+
+            float minDistance = stateMachine.myWeaponAttributes.minDistanceAfterImpulse;
+            float maxDistance = stateMachine.myWeaponAttributes.maxDistanceAfterImpulse;
+            Vector3 toTarget = currentTarget.transform.position - stateMachine.myRigidbody.position;
+            toTarget.y = 0f;
+
+            if (toTarget.magnitude > minDistance && toTarget.magnitude < maxDistance)
+            {
+                Vector3 velocity = stateMachine.myRigidbody.linearVelocity;
+                velocity.x = 0f;
+                velocity.z = 0f;
+                stateMachine.myRigidbody.linearVelocity = velocity;
+            }
+        }
+
+
     }
 }
