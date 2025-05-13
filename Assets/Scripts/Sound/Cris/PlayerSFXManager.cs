@@ -87,6 +87,14 @@ public class PlayerSFXManager : MonoBehaviour
     public AudioSource audioSource;
     public bool isInChurch = false;
 
+    [Header("Volume Controls")]
+    [Range(0f, 1f)] public float footstepVolume = 1f;
+    [Range(0f, 1f)] public float attackVolume = 1f;
+    [Range(0f, 1f)] public float blockVolume = 1f;
+    [Range(0f, 1f)] public float parryVolume = 1f;
+    [Range(0f, 1f)] public float rollVolume = 1f;
+    [Range(0f, 1f)] public float comboVolume = 1f;
+
     private string ExtractNoteFromClipName(string clipName)
     {
         // If there's an underscore, we expect the note to be after it.
@@ -119,7 +127,7 @@ public class PlayerSFXManager : MonoBehaviour
             churchFootstepSounds[UnityEngine.Random.Range(0, churchFootstepSounds.Length)] :
             footstepSounds[UnityEngine.Random.Range(0, footstepSounds.Length)];
 
-        audioSource.PlayOneShot(selectedClip);
+        audioSource.PlayOneShot(selectedClip, footstepVolume);
     }
 
     public void PlayMinorStab1()
@@ -128,7 +136,7 @@ public class PlayerSFXManager : MonoBehaviour
             churchMinorStab1Sounds[UnityEngine.Random.Range(0, churchMinorStab1Sounds.Length)] :
             minorStab1Sounds[UnityEngine.Random.Range(0, minorStab1Sounds.Length)];
 
-        audioSource.PlayOneShot(selectedClip);
+        audioSource.PlayOneShot(selectedClip, attackVolume);
     }
 
     public void PlayMinorStab2()
@@ -137,7 +145,7 @@ public class PlayerSFXManager : MonoBehaviour
             churchMinorStab2Sounds[UnityEngine.Random.Range(0, churchMinorStab2Sounds.Length)] :
             minorStab2Sounds[UnityEngine.Random.Range(0, minorStab2Sounds.Length)];
 
-        audioSource.PlayOneShot(selectedClip);
+        audioSource.PlayOneShot(selectedClip, attackVolume);
     }
 
     public void PlayMinorStab3()
@@ -146,7 +154,7 @@ public class PlayerSFXManager : MonoBehaviour
             churchMinorStab3Sounds[UnityEngine.Random.Range(0, churchMinorStab3Sounds.Length)] :
             minorStab3Sounds[UnityEngine.Random.Range(0, minorStab3Sounds.Length)];
 
-        audioSource.PlayOneShot(selectedClip);
+        audioSource.PlayOneShot(selectedClip, attackVolume);
     }
 
     public void PlayMajorSlash1()
@@ -155,7 +163,7 @@ public class PlayerSFXManager : MonoBehaviour
             churchMajorSlash1Sounds[UnityEngine.Random.Range(0, churchMajorSlash1Sounds.Length)] :
             majorSlash1Sounds[UnityEngine.Random.Range(0, majorSlash1Sounds.Length)];
 
-        audioSource.PlayOneShot(selectedClip);
+        audioSource.PlayOneShot(selectedClip, attackVolume);
     }
 
     public void PlayMajorSlash2()
@@ -164,7 +172,7 @@ public class PlayerSFXManager : MonoBehaviour
             churchMajorSlash2Sounds[UnityEngine.Random.Range(0, churchMajorSlash2Sounds.Length)] :
             majorSlash2Sounds[UnityEngine.Random.Range(0, majorSlash2Sounds.Length)];
 
-        audioSource.PlayOneShot(selectedClip);
+        audioSource.PlayOneShot(selectedClip, attackVolume);
     }
 
     public void PlayMajorSlash3()
@@ -173,7 +181,7 @@ public class PlayerSFXManager : MonoBehaviour
             churchMajorSlash3Sounds[UnityEngine.Random.Range(0, churchMajorSlash3Sounds.Length)] :
             majorSlash3Sounds[UnityEngine.Random.Range(0, majorSlash3Sounds.Length)];
 
-        audioSource.PlayOneShot(selectedClip);
+        audioSource.PlayOneShot(selectedClip, attackVolume);
     }
 
     public void PlayBlockExecution()
@@ -182,7 +190,7 @@ public class PlayerSFXManager : MonoBehaviour
             churchBlockExecutionSounds[UnityEngine.Random.Range(0, churchBlockExecutionSounds.Length)] :
             blockExecutionSounds[UnityEngine.Random.Range(0, blockExecutionSounds.Length)];
 
-        audioSource.PlayOneShot(selectedClip);
+        audioSource.PlayOneShot(selectedClip, blockVolume);
     }
 
     public void PlayParryExecution()
@@ -191,7 +199,7 @@ public class PlayerSFXManager : MonoBehaviour
             churchParryExecutionSounds[UnityEngine.Random.Range(0, churchParryExecutionSounds.Length)] :
             parryExecutionSounds[UnityEngine.Random.Range(0, parryExecutionSounds.Length)];
 
-        audioSource.PlayOneShot(selectedClip);
+        audioSource.PlayOneShot(selectedClip, parryVolume);
     }
 
     public void PlayRoll()
@@ -200,7 +208,7 @@ public class PlayerSFXManager : MonoBehaviour
             churchRollSounds[UnityEngine.Random.Range(0, churchRollSounds.Length)] :
             rollSounds[UnityEngine.Random.Range(0, rollSounds.Length)];
 
-        audioSource.PlayOneShot(selectedClip);
+        audioSource.PlayOneShot(selectedClip, rollVolume);
     }
 
     public void resetCombo()
@@ -219,7 +227,7 @@ public class PlayerSFXManager : MonoBehaviour
 
         int index = UnityEngine.Random.Range(0, firstAttackClips.Count);
         AudioClip clip = firstAttackClips[index];
-        audioSource.PlayOneShot(clip);
+        audioSource.PlayOneShot(clip, comboVolume);
 
         playedNote = ExtractNoteFromClipName(clip.name); // Extract the note for the next attack
         lastFirstNote = playedNote; // Store for future use
@@ -235,7 +243,7 @@ public class PlayerSFXManager : MonoBehaviour
         {
             int index = UnityEngine.Random.Range(0, match.clips.Count);
             AudioClip clip = match.clips[index];
-            audioSource.PlayOneShot(clip);
+            audioSource.PlayOneShot(clip, comboVolume);
 
             playedNote = ExtractNoteFromClipName(clip.name); // Same as previous code
             lastSecondNote = playedNote;
@@ -296,7 +304,7 @@ public class PlayerSFXManager : MonoBehaviour
     private void PlayRandom(List<AudioClip> clips)
     {
         if (clips == null || clips.Count == 0) return;
-        audioSource.PlayOneShot(clips[UnityEngine.Random.Range(0, clips.Count)]);
+        audioSource.PlayOneShot(clips[UnityEngine.Random.Range(0, clips.Count)], comboVolume);
     }
 
     private void OnEnable()
