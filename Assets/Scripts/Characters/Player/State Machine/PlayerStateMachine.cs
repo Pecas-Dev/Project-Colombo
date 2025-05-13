@@ -325,7 +325,10 @@ namespace ProjectColombo.StateMachine.Player
             }
         }
 
-
+        public void PlayWeaponVFX()
+        {
+            myWeaponAttributes.PlayVFX();
+        }
     }
 }
 

@@ -7,6 +7,7 @@ using ProjectColombo.Camera;
 using ProjectColombo.GameManagement.Stats;
 using ProjectColombo.GameManagement;
 using ProjectColombo.LevelManagement;
+using UnityEngine.VFX;
 
 namespace ProjectColombo.Combat
 {
@@ -43,6 +44,9 @@ namespace ProjectColombo.Combat
         Collider myCollider;
         GlobalStats myGlobalStats;
         LevelStats myLevelStats;
+
+        public VisualEffect majorVFX;
+        public VisualEffect minorVFX;
 
 
         private void Start()
@@ -135,6 +139,22 @@ namespace ProjectColombo.Combat
                 }
 
                     myParticles.Play();
+            }
+        }
+
+        public void PlayVFX()
+        {
+            if (currentScale == GameGlobals.MusicScale.MAJOR)
+            {
+                majorVFX.Play();
+            }
+            else if (currentScale == GameGlobals.MusicScale.MINOR)
+            {
+                minorVFX.Play();
+            }
+            else
+            {
+                Debug.Log("no scale for VFX");
             }
         }
 
