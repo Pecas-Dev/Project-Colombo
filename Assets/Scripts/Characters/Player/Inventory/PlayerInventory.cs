@@ -36,6 +36,8 @@ namespace ProjectColombo.Inventory
         [HideInInspector] public bool inShop = false;
         [HideInInspector] public ShopKeeper currentShopKeeper;
 
+        bool hasInitialized = false;
+
         DropManager dropManager;
 
 
@@ -48,9 +50,15 @@ namespace ProjectColombo.Inventory
             CustomEvents.OnEchoUnlocked += EnableMaskAbility;
             dropManager = GameManager.Instance.GetComponent<DropManager>();
             myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
-            charmSelectScreen.SetActive(false);
+            if (charmSelectScreen != null)
+            {
+                charmSelectScreen.SetActive(false);
+            }
             GetCurrentStats();
             currentCharmAmount = 0;
+
+            hasInitialized = true;
+            CheckSystemPreference();
         }
 
         private void ShopClosed()
@@ -142,7 +150,6 @@ namespace ProjectColombo.Inventory
                     charmComponent.abilityObject = Instantiate(charmComponent.GetAbility(), legendaryCharmAbilitySlot.transform);
                 }
 
-                // Add legendary directly
                 charmobj.transform.SetParent(legendaryCharmSlot.transform);
 
                 charmComponent.Equip();
@@ -194,7 +201,7 @@ namespace ProjectColombo.Inventory
             if (charms.Contains(charm))
             {
                 charms.Remove(charm);
-            }            
+            }
             else if (legendaryCharms.Contains(charm))
             {
                 legendaryCharms.Remove(charm);
@@ -229,12 +236,40 @@ namespace ProjectColombo.Inventory
                 currentShopKeeper.CloseShopScreen();
             }
 
+            GameManager manager = GameManager.Instance;
 
-            GameManager.Instance.PauseGame(false);
-            charmSelectScreen.SetActive(true);
-            charmSelectScreen.GetComponent<CharmSelectScreen>().ActivateScreen(charm);
+            if (manager != null && manager.UseNewCharmSwapUI)
+            {
+                if (manager.CharmSwapMenuCtrl != null)
+                {
+                    GameManager.Instance.PauseGame(false);
+                    manager.CharmSwapMenuCtrl.ActivateScreen(charm);
+                }
+                else
+                {
+                    CharmSwapMenuController swapController = FindFirstObjectByType<CharmSwapMenuController>(FindObjectsInactive.Include);
+
+                    if (swapController != null)
+                    {
+                        GameManager.Instance.PauseGame(false);
+                        swapController.ActivateScreen(charm);
+                    }
+                    else
+                    {
+                        GameManager.Instance.PauseGame(false);
+                        charmSelectScreen.SetActive(true);
+                        charmSelectScreen.GetComponent<CharmSelectScreen>().ActivateScreen(charm);
+                    }
+                }
+            }
+            else
+            {
+                GameManager.Instance.PauseGame(false);
+                charmSelectScreen.SetActive(true);
+                charmSelectScreen.GetComponent<CharmSelectScreen>().ActivateScreen(charm);
+            }
         }
-        
+
         public void ActivateMask()
         {
             if (maskSlot.transform.childCount == 0)
@@ -296,6 +331,29 @@ namespace ProjectColombo.Inventory
             if (maskAbilitySlot.transform.childCount > 0)
             {
                 maskAbilitySlot.GetComponentInChildren<BaseAbility>().Activate();
+            }
+        }
+
+        void CheckSystemPreference()
+        {
+            if (!hasInitialized) 
+            {
+                return;
+            }
+
+            GameManager manager = GameManager.Instance;
+
+            if (manager == null) 
+            {
+                return;
+            }
+
+            if (manager.UseNewCharmSwapUI)
+            {
+                if (charmSelectScreen != null)
+                {
+                    charmSelectScreen.SetActive(false);
+                }
             }
         }
     }

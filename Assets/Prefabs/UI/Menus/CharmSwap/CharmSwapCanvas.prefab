@@ -431,7 +431,7 @@ GameObject:
   - component: {fileID: 4315331495571446852}
   - component: {fileID: 6085957418894725929}
   m_Layer: 5
-  m_Name: Pentagram PotionCharm
+  m_Name: PentagramCharm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -597,8 +597,8 @@ MonoBehaviour:
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnLeft: {fileID: 2882245033418910381}
+    m_SelectOnRight: {fileID: 805391033394825010}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -797,6 +797,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 779830293875478266}
+  - component: {fileID: 2250797695132124593}
   m_Layer: 5
   m_Name: CharmSwapController
   m_TagString: Untagged
@@ -826,6 +827,78 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2250797695132124593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1671343892706661210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb822358a4be22f43b7d258cd0eb8b68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameInputSO: {fileID: 11400000, guid: 4cbc555f8dd252548884cda6a4b53710, type: 2}
+  menuContainer: {fileID: 1671343892706661210}
+  selectedMinFontSize: 75
+  selectedMaxFontSize: 105
+  defaultMinFontSize: 70
+  defaultMaxFontSize: 100
+  animationDuration: 0.3
+  clickShrinkScale: 0.8
+  clickShrinkDuration: 0.1
+  clickBounceDuration: 0.2
+  clickBounceCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  newCharmTitleText: {fileID: 3354028151705457868}
+  newCharmDescriptionText: {fileID: 7347469095210738324}
+  newCharmImage: {fileID: 3117105260880507250}
+  selectedCharmTitleText: {fileID: 1530063461730870017}
+  selectedCharmDescriptionText: {fileID: 547237370520909644}
+  charmButtons:
+  - {fileID: 8175956968783255337}
+  - {fileID: 2882245033418910381}
+  - {fileID: 1791095978316286409}
+  - {fileID: 805391033394825010}
+  - {fileID: 7912971891524546444}
+  charmSelectors:
+  - {fileID: 8781463208411768367}
+  - {fileID: 7184965245385068953}
+  - {fileID: 8513755768341219799}
+  - {fileID: 7211887355410541518}
+  - {fileID: 6044993093524404106}
+  charmClefs:
+  - {fileID: 7697144652365990359}
+  confirmActionDelay: 0.2
+  cancelActionDelay: 0.2
+  selectorFlickerMinAlpha: 0.75
+  selectorFlickerMaxAlpha: 1
+  selectorFlickerSpeed: 10
+  potionsCharmClef: {fileID: 7697144652365990359}
+  enableDebugLogs: 1
 --- !u!1 &2007935845057941134
 GameObject:
   m_ObjectHideFlags: 0
@@ -997,8 +1070,8 @@ MonoBehaviour:
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnLeft: {fileID: 1791095978316286409}
+    m_SelectOnRight: {fileID: 7912971891524546444}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -1497,6 +1570,7 @@ GameObject:
   - component: {fileID: 8124583882261989016}
   - component: {fileID: 5382820403389203261}
   - component: {fileID: 4828117554086090347}
+  - component: {fileID: 3972281648205779861}
   m_Layer: 5
   m_Name: CharmSwapCanvas
   m_TagString: Untagged
@@ -1545,7 +1619,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 9
   m_TargetDisplay: 0
 --- !u!114 &5382820403389203261
 MonoBehaviour:
@@ -1587,6 +1661,20 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &3972281648205779861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3367585697710507178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff21b37e09d9cef4188e0e1bd4d9c42f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 2250797695132124593}
+  enableDebugLogs: 1
 --- !u!1 &3514674510890447976
 GameObject:
   m_ObjectHideFlags: 0
@@ -1948,8 +2036,8 @@ MonoBehaviour:
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnLeft: {fileID: 7912971891524546444}
+    m_SelectOnRight: {fileID: 2882245033418910381}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -2160,8 +2248,8 @@ MonoBehaviour:
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnLeft: {fileID: 805391033394825010}
+    m_SelectOnRight: {fileID: 8175956968783255337}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -2658,8 +2746,8 @@ MonoBehaviour:
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnLeft: {fileID: 8175956968783255337}
+    m_SelectOnRight: {fileID: 1791095978316286409}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}

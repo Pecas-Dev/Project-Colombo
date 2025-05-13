@@ -170,7 +170,7 @@ public class UIManager : MonoBehaviour
         {
             if (currentActiveMenu != null)
             {
-                if (currentActiveMenu is PauseMenuInventoryController pauseMenuController || currentActiveMenu is PauseMenuSettingsController settingsController)
+                if (currentActiveMenu is PauseMenuInventoryController pauseMenuController || currentActiveMenu is PauseMenuSettingsController settingsController || currentActiveMenu is CharmSwapMenuController charmSwapController)
                 {
                     if (GameManager.Instance != null)
                     {
@@ -179,7 +179,7 @@ public class UIManager : MonoBehaviour
 
                     if (enableDebugLogs)
                     {
-                        Debug.Log("[UIManager] Closing pause menu on cancel input and resuming game time");
+                        Debug.Log("[UIManager] Closing menu on cancel input and resuming game time");
                     }
 
                     currentActiveMenu = null;
