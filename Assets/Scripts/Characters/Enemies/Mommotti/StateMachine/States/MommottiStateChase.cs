@@ -73,7 +73,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 
 
             // Speed adaptation based on distance
-            float speedFactor = Mathf.Min(1 + targetDirection.magnitude / stateMachine.myMommottiAttributes.circleDistance, 2.5f);
+            float speedFactor = Mathf.Min(1 + targetDirection.magnitude / stateMachine.myMommottiAttributes.circleDistance, 1.5f);
             float currentSpeed = stateMachine.myEntityAttributes.moveSpeed * speedFactor;
 
             // Update movement direction

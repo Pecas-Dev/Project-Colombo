@@ -18,7 +18,7 @@ namespace ProjectColombo.StateMachine.Mommotti
         public Pathfinding myPathfindingAlgorythm;
         public WeaponAttributes myWeaponAttributes;
         public HealthManager myHealthManager;
-        public SkinnedMeshRenderer myMajorMinorSkin;
+        public MeshRenderer myMajorMinorSkin;
 
         public MommottiState currentState;
         GameGlobals.MusicScale hitByScale;
@@ -54,12 +54,12 @@ namespace ProjectColombo.StateMachine.Mommotti
                 SwitchState(new MommottiStateDeath(this, hitByScale));
             }
 
-            //calculate speed for animator
-            Vector3 movementLastFrame = positionLastFrame - transform.position;
-            movementLastFrame.y = 0; //ignore height difference
-            float currentSpeed = movementLastFrame.magnitude / Time.deltaTime;
-            myAnimator.SetFloat("Speed", currentSpeed);
-            positionLastFrame = transform.position;
+            ////calculate speed for animator
+            //Vector3 movementLastFrame = positionLastFrame - transform.position;
+            //movementLastFrame.y = 0; //ignore height difference
+            //float currentSpeed = movementLastFrame.magnitude / Time.fixedDeltaTime;
+            //myAnimator.SetFloat("Speed", currentSpeed);
+            //positionLastFrame = transform.position;
 
             if (myMommottiAttributes.playerPosition.gameObject.GetComponent<HealthManager>().CurrentHealth <= 0 && currentState != MommottiState.PATROL)
             {

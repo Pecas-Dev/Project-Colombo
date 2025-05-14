@@ -8,6 +8,7 @@ using ProjectColombo.GameManagement.Stats;
 using ProjectColombo.GameManagement;
 using ProjectColombo.LevelManagement;
 using UnityEngine.VFX;
+using System.Collections.Generic;
 
 namespace ProjectColombo.Combat
 {
@@ -41,6 +42,7 @@ namespace ProjectColombo.Combat
         [HideInInspector] public GameGlobals.MusicScale currentScale = GameGlobals.MusicScale.NONE;
 
         bool doHitstop = true;
+        List<GameObject> hitObjects = new();
 
         ParticleSystem myParticles;
         Collider myCollider;
@@ -113,6 +115,7 @@ namespace ProjectColombo.Combat
 
         public void EnableWeaponHitbox()
         {
+            hitObjects.Clear();
             myCollider.enabled = true;
             doHitstop = true;
         }
@@ -144,7 +147,7 @@ namespace ProjectColombo.Combat
                     mainModule.startColor = Color.red;
                 }
 
-                    myParticles.Play();
+                myParticles.Play();
             }
         }
 
@@ -178,6 +181,10 @@ namespace ProjectColombo.Combat
 
         private void OnTriggerEnter(Collider other)
         {
+            if (hitObjects.Contains(other.gameObject)) return;
+            hitObjects.Add(other.gameObject);
+
+
             int damage = currentScale == GameGlobals.MusicScale.MAJOR ? (int)(defaultMajorDamage * majorDamageMultiplier) : (int)(defaultMinorDamage * minorDamageMultiplier);
             Vector3 attackDirection = (other.transform.position - transform.parent.position).normalized; //get direction from user to target
             attackDirection.y = 0.0f; //could be increased to make the hit entity jump a bit
