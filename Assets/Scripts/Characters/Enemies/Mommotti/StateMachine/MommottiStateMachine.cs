@@ -26,9 +26,6 @@ namespace ProjectColombo.StateMachine.Mommotti
         //set speed for animator
         Vector3 positionLastFrame;
 
-        //check for attacking
-        [HideInInspector] public bool canAttack = false;
-
         private void Awake()
         {
             myRigidbody = GetComponent<Rigidbody>();
@@ -84,7 +81,6 @@ namespace ProjectColombo.StateMachine.Mommotti
         public void SetStaggered()
         {
             InterruptAttack();
-            canAttack = true;
             SwitchState(new MommottiStateStagger(this)); //when attacked switch to attacking
         }
 
@@ -190,6 +186,16 @@ namespace ProjectColombo.StateMachine.Mommotti
             Color color = scale == GameGlobals.MusicScale.MAJOR ? GameGlobals.majorColor : GameGlobals.minorColor;
 
             myMajorMinorSkin.material.SetColor("_Major_MinorColor", color);
+        }
+
+        public void SetAttackingState()
+        {
+            SwitchState(new MommottiStateAttack(this));
+        }
+
+        public void SetChaseState()
+        {
+            SwitchState(new MommottiStateChase(this));
         }
     }
 }

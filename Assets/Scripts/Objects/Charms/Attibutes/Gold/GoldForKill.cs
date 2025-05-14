@@ -19,7 +19,7 @@ namespace ProjectColombo.Objects.Charms
             CustomEvents.OnEnemyDeath += OnEnemyDeath;
         }
 
-        private void OnEnemyDeath(GameGlobals.MusicScale arg2)
+        private void OnEnemyDeath(GameGlobals.MusicScale scale, GameObject enemy)
         {
             int rand = Random.Range(minAmountOfGold, maxAmountOfGold + 1);
             Debug.Log("extra gold for kill: " + rand);

@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using ProjectColombo.GameManagement.Events;
 using DG.DemiLib;
+using ProjectColombo.Enemies;
 
 namespace ProjectColombo.LevelManagement
 {
@@ -118,6 +119,8 @@ namespace ProjectColombo.LevelManagement
         public void ActivateChamber()
         {
             CustomEvents.ChamberActivated();
+
+            GetComponent<EnemyAttackPriority>().Activate();
 
             foreach (GameObject spawner in spawnPoints)
             {

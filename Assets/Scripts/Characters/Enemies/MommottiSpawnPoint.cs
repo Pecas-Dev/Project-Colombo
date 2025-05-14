@@ -38,7 +38,7 @@ namespace ProjectColombo.Enemies.Mommotti
             for (int i = 0; i < amountOfEnemies; i++)
             {
                 Vector3 spawnPosition = new Vector3(spaceX + i, 1, transform.position.z);
-                GameObject newEnemy = Instantiate(enemyType, spawnPosition, transform.rotation);
+                GameObject newEnemy = Instantiate(enemyType, spawnPosition, transform.rotation, this.transform);
                 newEnemy.GetComponent<MommottiAttributes>().spawnPointLocation = transform.position;
                 newEnemy.GetComponent<MommottiAttributes>().patrolAreaDistance = patrolAreaDistance;
                 newEnemy.GetComponent<MommottiAttributes>().myGridManager = myGridManager;

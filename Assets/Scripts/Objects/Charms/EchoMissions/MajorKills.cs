@@ -1,4 +1,5 @@
 using ProjectColombo.GameManagement.Events;
+using UnityEngine;
 
 namespace ProjectColombo.Objects.Masks
 {
@@ -12,7 +13,7 @@ namespace ProjectColombo.Objects.Masks
             CustomEvents.OnEnemyDeath += OnEnemyDeath;
         }
 
-        private void OnEnemyDeath(GameGlobals.MusicScale scale)
+        private void OnEnemyDeath(GameGlobals.MusicScale scale, GameObject enemy)
         {
             if (scale == GameGlobals.MusicScale.MAJOR)
             {

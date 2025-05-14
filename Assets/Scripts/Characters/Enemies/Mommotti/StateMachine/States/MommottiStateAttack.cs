@@ -1,5 +1,6 @@
 using ProjectColombo.Combat;
 using ProjectColombo.Enemies.Mommotti;
+using ProjectColombo.GameManagement.Events;
 using ProjectColombo.StateMachine.Player;
 using UnityEngine;
 
@@ -16,7 +17,6 @@ namespace ProjectColombo.StateMachine.Mommotti
         public override void Enter()
         {
             stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.ATTACK);
-            stateMachine.canAttack = false;
         }
 
         public override void Tick(float deltaTime)
@@ -35,7 +35,7 @@ namespace ProjectColombo.StateMachine.Mommotti
                 }
             }
 
-            stateMachine.canAttack = !stateMachine.myWeaponAttributes.onCooldown;
+            //stateMachine.canAttack = !stateMachine.myWeaponAttributes.onCooldown;
 
             targetDirection = stateMachine.myMommottiAttributes.GetPlayerPosition() - stateMachine.transform.position;
             targetDirection.y = 0;  // Prevents vertical movements
@@ -43,7 +43,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             float distanceToPlayer = targetDirection.magnitude;
 
             // Perform attack if in range and can attack
-            if (stateMachine.canAttack && !stateMachine.myWeaponAttributes.onCooldown && distanceToPlayer < stateMachine.myWeaponAttributes.reach)
+            if (!stateMachine.myWeaponAttributes.onCooldown && distanceToPlayer < stateMachine.myWeaponAttributes.reach)
             {
                 Attack();
             }
@@ -52,13 +52,13 @@ namespace ProjectColombo.StateMachine.Mommotti
             RotateTowardsTarget(stateMachine.myMommottiAttributes.GetPlayerPosition(), deltaTime, stateMachine.myEntityAttributes.rotationSpeedPlayer);
 
             // Move closer if too far for the attack
-            if (stateMachine.canAttack && distanceToPlayer > stateMachine.myWeaponAttributes.reach)
+            if (distanceToPlayer > stateMachine.myWeaponAttributes.reach)
             {
                 MoveTowardsPlayer(deltaTime);
             }
 
             // Move backwards if cannot attack and too close
-            if (!stateMachine.canAttack && distanceToPlayer < 0.25f * stateMachine.myMommottiAttributes.circleDistance && !stateMachine.myWeaponAttributes.isAttacking)
+            if (distanceToPlayer < 0.25f * stateMachine.myMommottiAttributes.circleDistance && !stateMachine.myWeaponAttributes.isAttacking)
             {
                 MoveBackwards(deltaTime);
             }
@@ -66,54 +66,19 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Exit()
         {
+            stateMachine.myAnimator.ResetTrigger("Attack");
             stateMachine.myWeaponAttributes.DisableWeaponHitbox();
         }
 
         private void Attack()
         {
+            CustomEvents.EnemyAttacked(stateMachine.gameObject);
             stateMachine.myAnimator.SetTrigger("Attack");
             stateMachine.myWeaponAttributes.onCooldown = true;
             stateMachine.myWeaponAttributes.isAttacking = true;
-            stateMachine.canAttack = false;
-            CheckIfShouldStillAttack();
         }
 
-        private void CheckIfShouldStillAttack()
-        {
-            float currentDistanceToPlayer = (stateMachine.myMommottiAttributes.playerPosition.position - stateMachine.transform.position).magnitude;
 
-            // If the player is far enough away, switch to chase
-            if (currentDistanceToPlayer > stateMachine.myMommottiAttributes.circleDistance + 5f)
-            {
-                stateMachine.SwitchState(new MommottiStateChase(stateMachine));
-                return;
-            }
-
-            // Check for other enemies attacking and update state accordingly
-            foreach (GameObject m in GameObject.FindGameObjectsWithTag("Enemy"))
-            {
-                MommottiAttributes otherAttributes = m.GetComponent<MommottiAttributes>();
-                if (otherAttributes == null) continue;
-
-                MommottiStateMachine otherStateMachine = m.GetComponent<MommottiStateMachine>();
-
-                // Skip enemies that are currently attacking
-                if (otherStateMachine.currentState == MommottiStateMachine.MommottiState.ATTACK)
-                {
-                    if (!otherStateMachine.canAttack && !stateMachine.myWeaponAttributes.onCooldown)
-                    {
-                        stateMachine.canAttack = true;
-                    }
-                    continue;
-                }
-
-                // If they are closer to the player, switch to chase
-                if (currentDistanceToPlayer >= (otherAttributes.playerPosition.position - m.transform.position).magnitude)
-                {
-                    stateMachine.SwitchState(new MommottiStateChase(stateMachine));
-                }
-            }
-        }
 
         private void MoveTowardsPlayer(float deltaTime)
         {
@@ -132,3 +97,42 @@ namespace ProjectColombo.StateMachine.Mommotti
         }
     }
 }
+
+
+
+//private void CheckIfShouldStillAttack()
+//{
+//    float currentDistanceToPlayer = (stateMachine.myMommottiAttributes.playerPosition.position - stateMachine.transform.position).magnitude;
+
+//    // If the player is far enough away, switch to chase
+//    if (currentDistanceToPlayer > stateMachine.myMommottiAttributes.circleDistance + 5f)
+//    {
+//        stateMachine.SwitchState(new MommottiStateChase(stateMachine));
+//        return;
+//    }
+
+//    // Check for other enemies attacking and update state accordingly
+//    foreach (GameObject m in GameObject.FindGameObjectsWithTag("Enemy"))
+//    {
+//        MommottiAttributes otherAttributes = m.GetComponent<MommottiAttributes>();
+//        if (otherAttributes == null) continue;
+
+//        MommottiStateMachine otherStateMachine = m.GetComponent<MommottiStateMachine>();
+
+//        // Skip enemies that are currently attacking
+//        if (otherStateMachine.currentState == MommottiStateMachine.MommottiState.ATTACK)
+//        {
+//            if (!otherStateMachine.canAttack && !stateMachine.myWeaponAttributes.onCooldown)
+//            {
+//                stateMachine.canAttack = true;
+//            }
+//            continue;
+//        }
+
+//        // If they are closer to the player, switch to chase
+//        if (currentDistanceToPlayer >= (otherAttributes.playerPosition.position - m.transform.position).magnitude)
+//        {
+//            stateMachine.SwitchState(new MommottiStateChase(stateMachine));
+//        }
+//    }
+//}

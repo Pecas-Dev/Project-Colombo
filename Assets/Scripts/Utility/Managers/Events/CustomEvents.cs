@@ -9,7 +9,7 @@ namespace ProjectColombo.GameManagement.Events
     {
         public static event Action<int, GameGlobals.MusicScale, HealthManager, int> OnDamageDelt;
         public static event Action<int, GameGlobals.MusicScale, HealthManager> OnDamageReceived;
-        public static event Action<GameGlobals.MusicScale> OnEnemyDeath;
+        public static event Action<GameGlobals.MusicScale, GameObject> OnEnemyDeath;
         public static event Action OnPlayerDeath;
         public static event Action<GameGlobals.MusicScale, bool> OnSuccessfullParry;
         public static event Action<int, GameGlobals.MusicScale, HealthManager, bool> OnParryFailed;
@@ -28,6 +28,7 @@ namespace ProjectColombo.GameManagement.Events
         public static event Action OnChamberActivated;
         public static event Action OnChamberFinished;
         public static event Action<string> OnAbilityUsed;
+        public static event Action<GameObject> OnEnemyAttack;
 
         public static void DamageDelt(int damage, GameGlobals.MusicScale scale, HealthManager enemyHealthManager, int comboLength)
         {
@@ -39,9 +40,9 @@ namespace ProjectColombo.GameManagement.Events
             OnDamageReceived?.Invoke(damage, scale, playerHealthManager);
         }
 
-        public static void EnemyDied(GameGlobals.MusicScale scale)
+        public static void EnemyDied(GameGlobals.MusicScale scale, GameObject enemy)
         {
-            OnEnemyDeath?.Invoke(scale);
+            OnEnemyDeath?.Invoke(scale, enemy);
         }
 
         public static void PlayerDied()
@@ -130,6 +131,11 @@ namespace ProjectColombo.GameManagement.Events
         public static void AbilityUsed(string audioName)
         {
             OnAbilityUsed?.Invoke(audioName);
+        }
+
+        public static void EnemyAttacked(GameObject enemy)
+        {
+            OnEnemyAttack?.Invoke(enemy);
         }
     }
 }

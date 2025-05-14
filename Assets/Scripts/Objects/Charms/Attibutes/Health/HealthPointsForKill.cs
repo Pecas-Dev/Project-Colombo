@@ -17,7 +17,7 @@ namespace ProjectColombo.Objects.Charms
             CustomEvents.OnEnemyDeath += OnEnemyDeath;
         }
 
-        private void OnEnemyDeath(GameGlobals.MusicScale obj)
+        private void OnEnemyDeath(GameGlobals.MusicScale obj, GameObject enemy)
         {
             myHealthManager.Heal(healthPointsForKill);
         }
