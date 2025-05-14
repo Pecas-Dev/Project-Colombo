@@ -1,4 +1,6 @@
+using ProjectColombo.Enemies.Mommotti;
 using ProjectColombo.GameManagement.Events;
+using ProjectColombo.StateMachine.Mommotti;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -21,12 +23,16 @@ namespace ProjectColombo.VFX
         {
             if (healthManager.gameObject == this.gameObject)
             {
+                bool oppositeScale = healthManager.gameObject.GetComponent<EntityAttributes>().currentScale != scale;
+
                 if (scale == GameGlobals.MusicScale.MAJOR)
                 {
+                    onGettingHitMajor.SetBool("CorrectScale", oppositeScale);
                     onGettingHitMajor.Play();
                 }
                 else if (scale == GameGlobals.MusicScale.MINOR)
                 {
+                    onGettingHitMajor.SetBool("CorrectScale", oppositeScale);
                     onGettingHitMinor.Play();
                 }
             }
