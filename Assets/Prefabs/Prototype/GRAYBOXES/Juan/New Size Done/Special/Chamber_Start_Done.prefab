@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2582175356880348674}
   - component: {fileID: 3355389953583459212}
+  - component: {fileID: -6946855049080250486}
   m_Layer: 0
   m_Name: Chamber_Start_Done
   m_TagString: Untagged
@@ -60,6 +61,22 @@ MonoBehaviour:
   chamberTilePosition: {x: 0, y: 0}
   entrancesConnected: 0
   exitsConnected: 0
+--- !u!114 &-6946855049080250486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 202176126554158810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fa9d59818b405443938061e0748bf2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentEnemies: []
+  attackersAtTheSameTime: 0
+  currentAttackerEnemies: []
+  intervall: 3
 --- !u!1 &1417647207345883275
 GameObject:
   m_ObjectHideFlags: 0
