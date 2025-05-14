@@ -8,7 +8,8 @@ namespace ProjectColombo.VFX
     {
         public GameObject rollVFX;
         public GameObject stepVFX;
-        public GameObject stunIndicatorVFX;
+        public GameObject majorStunIndicatorVFX;
+        public GameObject minorStunIndicatorVFX;
 
         private void Start()
         {
@@ -19,7 +20,14 @@ namespace ProjectColombo.VFX
         {
             if (sameScale)
             {
-                stunIndicatorVFX.GetComponent<VisualEffect>().Play();
+                if (scale == GameGlobals.MusicScale.MAJOR)
+                {
+                    majorStunIndicatorVFX.GetComponent<VisualEffect>().Play();
+                }
+                else if (scale == GameGlobals.MusicScale.MINOR)
+                {
+                    minorStunIndicatorVFX.GetComponent<VisualEffect>().Play();
+                }
             }
         }
 

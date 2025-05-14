@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UIElements;
+using UnityEngine.VFX;
 
 namespace ProjectColombo.LevelManagement
 {
@@ -162,8 +163,11 @@ namespace ProjectColombo.LevelManagement
         List<List<Vector2>> paths = new();
         List<GameObject> createdChambers = new();
 
+        public GameObject stopBuggingVFX;
+
         private void Start()
         {
+            Instantiate(stopBuggingVFX);
             algorythm = GetComponent<TileWorldPathAlgorythm>();
             worldWidth = 2 * chamberOffsetX + layersOfChambers.Count * chamberOffsetX + 3;
 
