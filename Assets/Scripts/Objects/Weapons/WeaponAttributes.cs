@@ -129,11 +129,11 @@ namespace ProjectColombo.Combat
 
                 if (currentScale == GameGlobals.MusicScale.MAJOR)
                 {
-                    mainModule.startColor = Color.green;
+                    mainModule.startColor = (Color)(GameGlobals.majorColor);
                 }
                 else if (currentScale == GameGlobals.MusicScale.MINOR)
                 {
-                    mainModule.startColor = Color.blue;
+                    mainModule.startColor = (Color)(GameGlobals.minorColor);
                 }
                 else
                 {

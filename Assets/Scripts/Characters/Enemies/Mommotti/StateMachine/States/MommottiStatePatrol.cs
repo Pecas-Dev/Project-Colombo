@@ -22,9 +22,6 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Enter()
         {
-            Color skinColor = new(0, 1, 0);
-            stateMachine.myColorfullSkin.material.color = skinColor;
-
             timer = 0;
             onSpawnPoint = true;
 

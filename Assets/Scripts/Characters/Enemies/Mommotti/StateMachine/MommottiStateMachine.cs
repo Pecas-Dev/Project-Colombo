@@ -18,8 +18,7 @@ namespace ProjectColombo.StateMachine.Mommotti
         public Pathfinding myPathfindingAlgorythm;
         public WeaponAttributes myWeaponAttributes;
         public HealthManager myHealthManager;
-        public SkinnedMeshRenderer myColorfullSkin;
-        public ParticleSystem scaleParticles;
+        public SkinnedMeshRenderer myMajorMinorSkin;
 
         public MommottiState currentState;
         GameGlobals.MusicScale hitByScale;
@@ -188,26 +187,9 @@ namespace ProjectColombo.StateMachine.Mommotti
             myEntityAttributes.currentScale = scale;
             myWeaponAttributes.currentScale = scale;
 
-            Color color = scale == GameGlobals.MusicScale.MAJOR ? Color.green : Color.blue;
+            Color color = scale == GameGlobals.MusicScale.MAJOR ? GameGlobals.majorColor : GameGlobals.minorColor;
 
-            myColorfullSkin.material.SetColor("_Major_MinorColor", color);
-
-            var main = scaleParticles.main;
-
-            if (scale == GameGlobals.MusicScale.MINOR)
-            {
-                main.startColor = new ParticleSystem.MinMaxGradient(Color.blue);
-                scaleParticles.Play();
-            }
-            else if (scale == GameGlobals.MusicScale.MAJOR)
-            {
-                main.startColor = new ParticleSystem.MinMaxGradient(Color.green);
-                scaleParticles.Play();
-            }
-            else
-            {
-                scaleParticles.Stop();
-            }
+            myMajorMinorSkin.material.SetColor("_Major_MinorColor", color);
         }
     }
 }

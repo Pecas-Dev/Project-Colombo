@@ -15,7 +15,6 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Enter()
         {
-            stateMachine.myColorfullSkin.material.color = new Color(1f, 0f, 0f);
             stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.ATTACK);
             stateMachine.canAttack = false;
         }

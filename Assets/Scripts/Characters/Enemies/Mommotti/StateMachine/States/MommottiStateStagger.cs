@@ -7,7 +7,6 @@ namespace ProjectColombo.StateMachine.Mommotti
 {
     public class MommottiStateStagger : MommottiBaseState
     {
-        Vector3 alertedPosition;
         float timer;
         public MommottiStateStagger(MommottiStateMachine stateMachine) : base(stateMachine)
         {
@@ -15,9 +14,6 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Enter()
         {
-            Color skinColor = new(.3f, .3f, .3f);
-            stateMachine.myColorfullSkin.material.color = skinColor;
-
             stateMachine.myAnimator.SetBool("Impact", true);
         }
 

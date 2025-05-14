@@ -28,11 +28,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             }
 
             // Assign the material instance to the renderer
-            stateMachine.myColorfullSkin.material = materialInstance;
-
-            // Set base color with full alpha
-            Color skinColor = new(0, 0, 0, 1);
-            materialInstance.color = skinColor;
+            stateMachine.myMajorMinorSkin.material = materialInstance;
 
             // Ensure transparency works in URP
             materialInstance.SetFloat("_Surface", 1); // 1 = Transparent, 0 = Opaque
@@ -49,7 +45,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Tick(float deltaTime)
         {
-            Material materialInstance = stateMachine.myColorfullSkin.material;
+            Material materialInstance = stateMachine.myMajorMinorSkin.material;
             Color color = materialInstance.color;
             float alpha = color.a;
 

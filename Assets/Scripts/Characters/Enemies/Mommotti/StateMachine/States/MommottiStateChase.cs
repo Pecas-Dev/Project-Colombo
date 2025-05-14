@@ -25,8 +25,6 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Enter()
         {
-            stateMachine.myColorfullSkin.material.color = new Color(1f, 0.5f, 0f);
-
             isPlayerVisible = true;
             stateMachine.myMommottiAttributes.rangeFOVDetection /= 3f;
 
