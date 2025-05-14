@@ -220,6 +220,7 @@ namespace ProjectColombo.Combat
                         //Debug.Log("..but not the opposite scale");
                     }
 
+                    Debug.Log("Damage delt: " + damage);
                     int comboLength = GetComponentInParent<PlayerStateMachine>().currentComboString.Length;
                     CustomEvents.DamageDelt(damage, currentScale, otherHealth, comboLength);
                     otherHealth.TakeDamage(damage);
