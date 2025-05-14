@@ -49,6 +49,9 @@ namespace ProjectColombo.Combat
 
         public VisualEffect majorVFX;
         public VisualEffect minorVFX;
+        public VisualEffect majorParryVFX;
+        public VisualEffect minorParryVFX;
+        public VisualEffect successfullParryVFX;
 
 
         private void Start()
@@ -141,6 +144,18 @@ namespace ProjectColombo.Combat
                 }
 
                     myParticles.Play();
+            }
+        }
+
+        public void PlayParryVFX()
+        {
+            if (currentScale == GameGlobals.MusicScale.MAJOR)
+            {
+                majorParryVFX.Play();
+            }
+            else if (currentScale == GameGlobals.MusicScale.MINOR)
+            {
+                minorParryVFX.Play();
             }
         }
 
@@ -251,6 +266,7 @@ namespace ProjectColombo.Combat
                             //Debug.Log("..but not the opposite scale");
                         }
 
+                        successfullParryVFX.Play();
                         CustomEvents.SuccessfullParry(currentScale, sameScale);
                     }
                     else if (otherStateMachine.tryParrying)
