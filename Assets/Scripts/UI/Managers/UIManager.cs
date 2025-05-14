@@ -168,9 +168,11 @@ public class UIManager : MonoBehaviour
 
         if (gameInputSO != null && gameInputSO.playerInputActions != null && gameInputSO.playerInputActions.UI.Cancel.WasPressedThisFrame())
         {
+            Debug.Log("CANCELLLLLLLLLLL!!");
+
             if (currentActiveMenu != null)
             {
-                if (currentActiveMenu is PauseMenuInventoryController pauseMenuController || currentActiveMenu is PauseMenuSettingsController settingsController || currentActiveMenu is CharmSwapMenuController charmSwapController)
+                if (currentActiveMenu is PauseMenuInventoryController pauseMenuController || currentActiveMenu is PauseMenuSettingsController settingsController) //|| currentActiveMenu is CharmSwapMenuController chasrmSwapController)
                 {
                     if (GameManager.Instance != null)
                     {
@@ -183,6 +185,18 @@ public class UIManager : MonoBehaviour
                     }
 
                     currentActiveMenu = null;
+                }
+                else if (currentActiveMenu is CharmSwapMenuController charmSwapController)
+                {
+                    charmSwapController.CancelSwap();
+
+                    if (enableDebugLogs)
+                    {
+                        Debug.Log("[UIManager] Started delayed cancel for CharmSwapMenu");
+                    }
+
+                    currentActiveMenu = null;     
+                    return;                        
                 }
                 else if (currentActiveMenu.GetType().Name != "MainMenuController")
                 {

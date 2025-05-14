@@ -14,7 +14,7 @@ namespace ProjectColombo.StateMachine.Player
         {
             stateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Parry);
 
-            stateMachine.gameInputSO.DisableAllInputsExcept(InputActionType.Roll);
+            stateMachine.gameInputSO.DisableAllInputsExcept(InputActionType.Roll, InputActionType.Pause);
             stateMachine.myPlayerAnimator.TriggerParry();
             stateMachine.myWeaponAttributes.Telegraphing();
         }

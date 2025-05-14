@@ -257,7 +257,6 @@ namespace ProjectColombo.GameManagement
             }
         }
 
-
         void Update()
         {
             if (gameInput.PausePressed)
@@ -281,6 +280,10 @@ namespace ProjectColombo.GameManagement
             if (gameInput.playerInputActions.UI.enabled == true && enableInputActionMapLogs == true)
             {
                 Debug.Log("UIIIIIIIIIIIIIIIII!");
+            }
+            if (gameInput.playerInputActions.PauseCharmSwap.enabled == true && enableInputActionMapLogs == true)
+            {
+                Debug.Log("CHARMSWAPPPPPPPPPP!");
             }
         }
 
@@ -470,6 +473,20 @@ namespace ProjectColombo.GameManagement
                 LogDebug("Hiding old pause menu");
                 pauseMenuUI.SetActive(false);
             }
+            else if (useNewCharmSwapUI && charmSwapMenuController != null)
+            {
+                charmSwapMenuController.Hide();
+
+                if (charmSwapMenuController.WasActiveBeforePause)
+                {
+                    charmSwapMenuController.RestoreAfterPause();
+                }
+                else
+                {
+                    charmSwapMenuController.Hide();
+                }
+            }
+
         }
 
         void StartInputResetSequence()
@@ -514,6 +531,10 @@ namespace ProjectColombo.GameManagement
         {
             if (gameInput != null && gameInput.playerInputActions != null)
             {
+                gameInput.ResetAllInputs();
+
+                gameInput.ResetMovementInput();
+
                 gameInput.playerInputActions.Player.Enable();
 
                 gameInput.EnableInput(ProjectColombo.GameInputSystem.InputActionType.Pause);
@@ -530,7 +551,7 @@ namespace ProjectColombo.GameManagement
                     gameInput.EnableAllInputs();
                 }
 
-                LogDebug("Finished input reset sequence");
+                LogDebug("Finished input reset sequence and cleared all input states");
             }
 
             isResettingInputs = false;

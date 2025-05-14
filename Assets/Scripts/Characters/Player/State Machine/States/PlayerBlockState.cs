@@ -24,7 +24,8 @@ namespace ProjectColombo.StateMachine.Player
                 InputActionType.MajorAttack,
                 InputActionType.MinorAttack,
                 InputActionType.MajorParry,
-                InputActionType.MinorParry);
+                InputActionType.MinorParry,
+                InputActionType.Pause);
 
         }
 

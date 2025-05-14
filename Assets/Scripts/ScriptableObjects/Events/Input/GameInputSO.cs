@@ -49,6 +49,10 @@ namespace ProjectColombo.GameInputSystem
         public bool UseCharmAbilityPressed { get; private set; } = false;
         public bool PausePressed { get; private set; } = false;
 
+
+        public bool CharmSwapPausePressed { get; private set; } = false;
+
+
         InputActionType allowedInputs = InputActionType.All;
 
         public InputSystem_Actions playerInputActions;
@@ -63,6 +67,11 @@ namespace ProjectColombo.GameInputSystem
             playerInputActions = new InputSystem_Actions();
 
             playerInputActions.Player.Enable();
+
+
+            playerInputActions.PauseCharmSwap.Enable();
+            playerInputActions.PauseCharmSwap.Pause.performed += OnPauseCharmSwapPerformed;
+
 
             playerInputActions.Player.Movement.performed += OnMovePerformed;
             playerInputActions.Player.Movement.canceled += OnMoveCanceled;
@@ -100,6 +109,13 @@ namespace ProjectColombo.GameInputSystem
             {
                 playerInputActions.Player.Disable();
             }
+
+            if (playerInputActions.PauseCharmSwap.enabled)
+            {
+                playerInputActions.PauseCharmSwap.Disable();
+            }
+
+            playerInputActions.PauseCharmSwap.Pause.performed -= OnPauseCharmSwapPerformed;
 
             playerInputActions.Player.Movement.performed -= OnMovePerformed;
             playerInputActions.Player.Movement.canceled -= OnMoveCanceled;
@@ -413,6 +429,17 @@ namespace ProjectColombo.GameInputSystem
             UseCharmAbilityPressed = false;
         }
 
+        void OnPauseCharmSwapPerformed(InputAction.CallbackContext context)
+        {
+            Debug.Log("CLICKEDDDDDDDDDDDDDD");
+            CharmSwapPausePressed = true;
+        }
+
+        public void ResetCharmSwapPausePressed()
+        {
+            CharmSwapPausePressed = false;
+        }
+
 
 
         // ########################################################
@@ -483,6 +510,7 @@ namespace ProjectColombo.GameInputSystem
                         playerInputActions.Player.Disable();
                     }
 
+
                     if (!playerInputActions.UI.enabled)
                     {
                         playerInputActions.UI.Enable();
@@ -491,21 +519,73 @@ namespace ProjectColombo.GameInputSystem
             }
         }
 
+        public void EnableUIAndPauseCharmSwapMode()
+        {
+            DisableInput(InputActionType.Movement);
+            ResetAllInputs();
+
+            if (playerInputActions != null)
+            {
+                if (playerInputActions.Player.enabled)
+                {
+                    playerInputActions.Player.Disable();
+                }
+
+                if (!playerInputActions.UI.enabled)
+                {
+                    playerInputActions.UI.Enable();
+                }
+
+                if (!playerInputActions.PauseCharmSwap.enabled)
+                {
+                    playerInputActions.PauseCharmSwap.Enable();
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Player input actions not initialized in EnableUIAndPauseCharmSwapMode");
+                Initialize();
+
+                if (playerInputActions != null)
+                {
+                    if (playerInputActions.Player.enabled)
+                    {
+                        playerInputActions.Player.Disable();
+                    }
+
+                    if (!playerInputActions.UI.enabled)
+                    {
+                        playerInputActions.UI.Enable();
+                    }
+
+                    if (!playerInputActions.PauseCharmSwap.enabled)
+                    {
+                        playerInputActions.PauseCharmSwap.Enable();
+                    }
+                }
+            }
+        }
+
         public void DisableUIMode()
         {
-            if (playerInputActions != null) //&& playerInputActions.UI != null)
+            if (playerInputActions != null)
             {
                 if (playerInputActions.UI.enabled)
                 {
-                    playerInputActions.UI.Disable(); // Disable UI input
+                    playerInputActions.UI.Disable();
+                }
+
+                if (playerInputActions.PauseCharmSwap.enabled)
+                {
+                    playerInputActions.PauseCharmSwap.Disable();
                 }
 
                 if (!playerInputActions.Player.enabled)
                 {
-                    playerInputActions.Player.Enable(); // Re-enable player controls
+                    playerInputActions.Player.Enable();
                 }
 
-                EnableInput(InputActionType.Movement); // Allow movement again
+                EnableInput(InputActionType.Movement);
             }
         }
     }
