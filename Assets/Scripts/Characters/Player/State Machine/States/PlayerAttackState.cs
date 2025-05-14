@@ -46,7 +46,8 @@ namespace ProjectColombo.StateMachine.Player
                 InputActionType.MajorParry, 
                 InputActionType.MinorParry,
                 InputActionType.MajorAttack,
-                InputActionType.MinorAttack);
+                InputActionType.MinorAttack, 
+                InputActionType.Pause);
 
             stateMachine.myPlayerAnimator.PlayAttackAnimation(stateMachine.currentComboString, 0.1f, stateMachine.myEntityAttributes.attackSpeed);
 

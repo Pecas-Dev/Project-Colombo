@@ -833,6 +833,76 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""PauseCharmSwap"",
+            ""id"": ""d5f3cea0-479c-488d-a658-68353e25f34c"",
+            ""actions"": [
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""c13a96e8-ab44-4979-bb2c-9e0039aa1de3"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Cancel"",
+                    ""type"": ""Button"",
+                    ""id"": ""e57e2870-00ea-444d-a49e-aa2af36dd683"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""1a8cdd2b-ccac-4008-aca5-e06deda39470"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cc7184db-4284-4dcb-aa89-867d18f5fead"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7f2e27da-7e63-4340-a960-fa1264d53bc7"",
+                    ""path"": ""<Keyboard>/backspace"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""928299b9-280f-4815-8953-1312cea45991"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -928,12 +998,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_UI_RightClick = m_UI.FindAction("RightClick", throwIfNotFound: true);
         m_UI_MiddleClick = m_UI.FindAction("MiddleClick", throwIfNotFound: true);
         m_UI_NavigateRadial = m_UI.FindAction("NavigateRadial", throwIfNotFound: true);
+        // PauseCharmSwap
+        m_PauseCharmSwap = asset.FindActionMap("PauseCharmSwap", throwIfNotFound: true);
+        m_PauseCharmSwap_Pause = m_PauseCharmSwap.FindAction("Pause", throwIfNotFound: true);
+        m_PauseCharmSwap_Cancel = m_PauseCharmSwap.FindAction("Cancel", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
     {
         UnityEngine.Debug.Assert(!m_Player.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Player.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, InputSystem_Actions.UI.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_PauseCharmSwap.enabled, "This will cause a leak and performance issues, InputSystem_Actions.PauseCharmSwap.Disable() has not been called.");
     }
 
     public void Dispose()
@@ -1275,6 +1350,60 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         }
     }
     public UIActions @UI => new UIActions(this);
+
+    // PauseCharmSwap
+    private readonly InputActionMap m_PauseCharmSwap;
+    private List<IPauseCharmSwapActions> m_PauseCharmSwapActionsCallbackInterfaces = new List<IPauseCharmSwapActions>();
+    private readonly InputAction m_PauseCharmSwap_Pause;
+    private readonly InputAction m_PauseCharmSwap_Cancel;
+    public struct PauseCharmSwapActions
+    {
+        private @InputSystem_Actions m_Wrapper;
+        public PauseCharmSwapActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Pause => m_Wrapper.m_PauseCharmSwap_Pause;
+        public InputAction @Cancel => m_Wrapper.m_PauseCharmSwap_Cancel;
+        public InputActionMap Get() { return m_Wrapper.m_PauseCharmSwap; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(PauseCharmSwapActions set) { return set.Get(); }
+        public void AddCallbacks(IPauseCharmSwapActions instance)
+        {
+            if (instance == null || m_Wrapper.m_PauseCharmSwapActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_PauseCharmSwapActionsCallbackInterfaces.Add(instance);
+            @Pause.started += instance.OnPause;
+            @Pause.performed += instance.OnPause;
+            @Pause.canceled += instance.OnPause;
+            @Cancel.started += instance.OnCancel;
+            @Cancel.performed += instance.OnCancel;
+            @Cancel.canceled += instance.OnCancel;
+        }
+
+        private void UnregisterCallbacks(IPauseCharmSwapActions instance)
+        {
+            @Pause.started -= instance.OnPause;
+            @Pause.performed -= instance.OnPause;
+            @Pause.canceled -= instance.OnPause;
+            @Cancel.started -= instance.OnCancel;
+            @Cancel.performed -= instance.OnCancel;
+            @Cancel.canceled -= instance.OnCancel;
+        }
+
+        public void RemoveCallbacks(IPauseCharmSwapActions instance)
+        {
+            if (m_Wrapper.m_PauseCharmSwapActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IPauseCharmSwapActions instance)
+        {
+            foreach (var item in m_Wrapper.m_PauseCharmSwapActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_PauseCharmSwapActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public PauseCharmSwapActions @PauseCharmSwap => new PauseCharmSwapActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     public InputControlScheme KeyboardMouseScheme
     {
@@ -1351,5 +1480,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         void OnRightClick(InputAction.CallbackContext context);
         void OnMiddleClick(InputAction.CallbackContext context);
         void OnNavigateRadial(InputAction.CallbackContext context);
+    }
+    public interface IPauseCharmSwapActions
+    {
+        void OnPause(InputAction.CallbackContext context);
+        void OnCancel(InputAction.CallbackContext context);
     }
 }

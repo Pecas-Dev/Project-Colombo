@@ -19,7 +19,7 @@ namespace ProjectColombo.StateMachine.Player
         {
             stateMachine.currentComboString = "";
             stateMachine.myPlayerAnimator.TriggerStagger();
-            stateMachine.gameInputSO.DisableAllInputs();
+            stateMachine.gameInputSO.DisableAllInputsExcept(InputActionType.Pause);
         }
 
         public override void Tick(float deltaTime)

@@ -23,7 +23,7 @@ namespace ProjectColombo.Objects
             myCharm = charm;
 
             string charmName = myCharm.GetComponent<BaseCharm>().charmName;
-            pickUpText.text = "to pick up " + charmName;
+            pickUpText.text =  charmName;//"to pick up " +
         }
 
         private void OnTriggerEnter(Collider other)

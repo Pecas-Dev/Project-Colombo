@@ -1,5 +1,5 @@
+using ProjectColombo.GameInputSystem;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -51,7 +51,7 @@ namespace ProjectColombo.StateMachine.Player
                 return;
             }
 
-            stateMachine.gameInputSO.DisableAllInputs();
+            stateMachine.gameInputSO.DisableAllInputsExcept(InputActionType.Pause);
             stateMachine.myPlayerAnimator.TriggerRoll();
 
             rollSpeed = rollDistance / rollDuration;

@@ -1,13 +1,14 @@
-using ProjectColombo.GameManagement;
-using ProjectColombo.Inventory;
-using ProjectColombo.Objects.Charms;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
+using ProjectColombo.Inventory;
+using System.Collections.Generic;
+using ProjectColombo.GameManagement;
+using ProjectColombo.Objects.Charms;
+
 
 namespace ProjectColombo.UI
 {
@@ -27,6 +28,9 @@ namespace ProjectColombo.UI
         [SerializeField] GameObject[] charmSelectors;
         [SerializeField] GameObject[] charmClefs;
 
+        [Header("Navigation Settings")]
+        [SerializeField] float navigationDelay = 0.1f;
+
         [Header("Button Animation")]
         [SerializeField] float confirmActionDelay = 0.2f;
         [SerializeField] float cancelActionDelay = 0.2f;
@@ -43,10 +47,19 @@ namespace ProjectColombo.UI
 
         int currentCharmIndex = 0;
 
+        float lastNavigationTime = 0f;
+
         bool isActive = false;
         bool isNavigating = false;
+        bool isExistingCharm = false;
         bool isCancellingMenu = false;
-        bool debugKeyExitEnabled = true;
+        bool wasActiveBeforePause = false;
+        bool shouldDropCharmOnCancel = false;
+
+        public bool WasActiveBeforePause => wasActiveBeforePause;
+
+
+        Vector3 dropPosition;
 
 
         GameObject newCharm;
@@ -56,9 +69,10 @@ namespace ProjectColombo.UI
 
         Dictionary<int, Button> indexToButtonMap = new Dictionary<int, Button>();
 
+        List<int> availableButtonIndices = new List<int>();
+
         PlayerInventory playerInventory;
-
-
+        DropManager dropManager;
 
         public override void Initialize()
         {
@@ -66,7 +80,20 @@ namespace ProjectColombo.UI
 
             LogDebug("Initializing CharmSwapMenuController");
 
-            playerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
+            if (GameManager.Instance != null)
+            {
+                playerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
+                dropManager = GameManager.Instance.GetComponent<DropManager>();
+
+                if (dropManager == null)
+                {
+                    LogDebug("WARNING: DropManager not found. Charm dropping may not work correctly!");
+                }
+            }
+            else
+            {
+                LogDebug("WARNING: GameManager.Instance is null!");
+            }
 
             uiInputSwitcher = FindFirstObjectByType<UIInputSwitcher>();
 
@@ -96,6 +123,8 @@ namespace ProjectColombo.UI
                     clef.SetActive(false);
                 }
             }
+
+            indexToButtonMap.Clear();
 
             for (int i = 0; i < charmButtons.Length; i++)
             {
@@ -144,7 +173,6 @@ namespace ProjectColombo.UI
         void OnEnable()
         {
             EnsureButtonSelection();
-
             isCancellingMenu = false;
         }
 
@@ -153,16 +181,14 @@ namespace ProjectColombo.UI
             if (UIManager.Instance != null)
             {
                 LogDebug("Registering with UIManager");
-
                 UIManager.Instance.RegisterMenu(this);
-
                 Hide();
             }
         }
 
         void Update()
         {
-            if (isCancellingMenu)
+            if (isCancellingMenu || !isActive)
             {
                 return;
             }
@@ -189,9 +215,9 @@ namespace ProjectColombo.UI
             {
                 GameObject buttonToSelect = lastSelectedButton;
 
-                if (buttonToSelect == null && charmButtons.Length > 0)
+                if (buttonToSelect == null && availableButtonIndices.Count > 0)
                 {
-                    buttonToSelect = charmButtons[0].gameObject;
+                    buttonToSelect = charmButtons[availableButtonIndices[0]].gameObject;
                 }
 
                 if (buttonToSelect != null)
@@ -201,7 +227,6 @@ namespace ProjectColombo.UI
                     if (uiInputSwitcher != null)
                     {
                         uiInputSwitcher.SetFirstSelectedButton(buttonToSelect);
-                        LogDebug("Restored selection to: " + buttonToSelect.name);
                     }
                 }
             }
@@ -209,11 +234,10 @@ namespace ProjectColombo.UI
 #if UNITY_EDITOR
             if (Gamepad.current != null)
             {
-                Vector2 navegationVector = Gamepad.current.dpad.ReadValue();
-
-                if (navegationVector != Vector2.zero)
+                Vector2 dpadValue = Gamepad.current.dpad.ReadValue();
+                if (dpadValue.sqrMagnitude > 0.5f)
                 {
-                    Debug.Log($"<color=#FFAA00>[CharmSwap D-Pad] {navegationVector}</color>");
+                    Debug.Log($"<color=#FFAA00>[CharmSwap D-Pad] {dpadValue}</color>");
                 }
             }
 #endif
@@ -221,7 +245,7 @@ namespace ProjectColombo.UI
 
         void EnsureButtonSelection()
         {
-            if (!isActive || charmButtons == null || charmButtons.Length == 0)
+            if (!isActive || availableButtonIndices.Count == 0)
             {
                 return;
             }
@@ -232,13 +256,14 @@ namespace ProjectColombo.UI
             {
                 buttonToSelect = lastSelectedButton;
             }
-            else if (currentCharmIndex >= 0 && currentCharmIndex < charmButtons.Length)
+            else if (currentCharmIndex >= 0 && currentCharmIndex < charmButtons.Length &&
+                    charmButtons[currentCharmIndex] != null && charmButtons[currentCharmIndex].isActiveAndEnabled)
             {
                 buttonToSelect = charmButtons[currentCharmIndex].gameObject;
             }
-            else if (charmButtons.Length > 0)
+            else if (availableButtonIndices.Count > 0)
             {
-                buttonToSelect = charmButtons[0].gameObject;
+                buttonToSelect = charmButtons[availableButtonIndices[0]].gameObject;
             }
 
             if (buttonToSelect != null)
@@ -276,23 +301,28 @@ namespace ProjectColombo.UI
 
             if (gameInputSO != null)
             {
-                gameInputSO.EnableUIMode();
+                gameInputSO.EnableUIAndPauseCharmSwapMode();
             }
 
             SetupButtonNavigation();
 
-            currentCharmIndex = 0;
-            SelectCharm(currentCharmIndex);
+            lastNavigationTime = Time.unscaledTime;
+            isNavigating = false;
+
+            if (availableButtonIndices.Count > 0)
+            {
+                currentCharmIndex = availableButtonIndices[0];
+                SelectCharm(currentCharmIndex);
+            }
+            else
+            {
+                currentCharmIndex = 0;
+                SelectCharm(currentCharmIndex);
+            }
 
             StartCoroutine(SetInitialButtonSelection());
 
-            if (uiInputSwitcher != null && charmButtons.Length > 0 && charmButtons[0] != null)
-            {
-                uiInputSwitcher.SetFirstSelectedButton(charmButtons[0].gameObject);
-                LogDebug("Registered first button with UIInputSwitcher");
-            }
-
-            LogDebug("CharmSwapMenuController shown");
+            LogDebug("CharmSwapMenuController shown - PauseCharmSwap enabled");
         }
 
         public override void Hide()
@@ -324,6 +354,11 @@ namespace ProjectColombo.UI
             isActive = false;
             gameObject.SetActive(false);
 
+            if (gameInputSO != null && gameInputSO.playerInputActions != null && gameInputSO.playerInputActions.PauseCharmSwap.enabled)
+            {
+                gameInputSO.playerInputActions.PauseCharmSwap.Disable();
+            }
+
             LogDebug("CharmSwapMenuController hidden");
         }
 
@@ -342,54 +377,27 @@ namespace ProjectColombo.UI
                 return;
             }
 
-            // NOT WORKING!
-            if (gameInputSO.playerInputActions.UI.Cancel.WasPressedThisFrame())
+            if (gameInputSO.CharmSwapPausePressed)
             {
-                LogDebug("Cancel input detected, closing menu");
-                CancelSwap();
+                LogDebug("CharmSwapPausePressed detected!");
+
+                gameInputSO.ResetCharmSwapPausePressed();
+
+                wasActiveBeforePause = true;
+
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.PauseGame(true);
+                }
+
                 return;
             }
 
-            if (gameInputSO.playerInputActions.UI.Cancel.IsPressed())
-            {
-                LogDebug("Cancel is being pressed but not detected as WasPressedThisFrame");
-            }
-            //-------------------
+            bool canNavigate = Time.unscaledTime - lastNavigationTime >= navigationDelay;
 
-            Vector2 navigationValue = gameInputSO.playerInputActions.UI.Navigate.ReadValue<Vector2>();
-
-            if (navigationValue.magnitude > 0.5f)
+            if (!canNavigate)
             {
-                bool isHorizontalNav = Mathf.Abs(navigationValue.x) > Mathf.Abs(navigationValue.y);
-
-                if (isHorizontalNav && !isNavigating)
-                {
-                    isNavigating = true;
-
-                    if (navigationValue.x > 0.5f)
-                    {
-                        NavigateRight();
-                        StartCoroutine(ResetNavigationFlag(0.2f));
-                    }
-                    else if (navigationValue.x < -0.5f)
-                    {
-                        NavigateLeft();
-                        StartCoroutine(ResetNavigationFlag(0.2f));
-                    }
-                }
-            }
-            else
-            {
-                isNavigating = false;
-            }
-
-            if (gameInputSO.playerInputActions.UI.MoveRightShoulder.WasPressedThisFrame())
-            {
-                NavigateRight();
-            }
-            else if (gameInputSO.playerInputActions.UI.MoveLeftShoulder.WasPressedThisFrame())
-            {
-                NavigateLeft();
+                return;
             }
 
             if (gameInputSO.playerInputActions.UI.Submit.WasPressedThisFrame())
@@ -400,32 +408,50 @@ namespace ProjectColombo.UI
 
         void SetupButtonNavigation()
         {
-            for (int i = 0; i < charmButtons.Length; i++)
+            availableButtonIndices.Clear();
+            int availableButtonCount = Mathf.Min(charmButtons.Length, playerInventory != null ? playerInventory.charms.Count + playerInventory.legendaryCharms.Count : 0);
+
+            for (int i = 0; i < availableButtonCount; i++)
             {
-                if (charmButtons[i] != null)
+                if (charmButtons[i] != null && charmButtons[i].isActiveAndEnabled && charmButtons[i].interactable)
                 {
-                    Navigation navigation = charmButtons[i].navigation;
+                    availableButtonIndices.Add(i);
+                }
+            }
+
+            LogDebug($"Found {availableButtonIndices.Count} available buttons");
+
+            for (int i = 0; i < availableButtonIndices.Count; i++)
+            {
+                int buttonIndex = availableButtonIndices[i];
+                Button button = charmButtons[buttonIndex];
+
+                if (button != null)
+                {
+                    Navigation navigation = button.navigation;
                     navigation.mode = Navigation.Mode.Explicit;
 
                     if (i > 0)
                     {
-                        navigation.selectOnLeft = charmButtons[i - 1];
+                        navigation.selectOnLeft = charmButtons[availableButtonIndices[i - 1]];
                     }
-                    else
+                    else if (availableButtonIndices.Count > 1)
                     {
-                        navigation.selectOnLeft = charmButtons[charmButtons.Length - 1];
+                        navigation.selectOnLeft = charmButtons[availableButtonIndices[availableButtonIndices.Count - 1]];
                     }
 
-                    if (i < charmButtons.Length - 1)
+                    if (i < availableButtonIndices.Count - 1)
                     {
-                        navigation.selectOnRight = charmButtons[i + 1];
+                        navigation.selectOnRight = charmButtons[availableButtonIndices[i + 1]];
                     }
-                    else
+                    else if (availableButtonIndices.Count > 1)
                     {
-                        navigation.selectOnRight = charmButtons[0];
+                        navigation.selectOnRight = charmButtons[availableButtonIndices[0]];
                     }
 
-                    charmButtons[i].navigation = navigation;
+                    button.navigation = navigation;
+
+                    LogDebug($"Setup navigation for button {buttonIndex}: Left={navigation.selectOnLeft?.name}, Right={navigation.selectOnRight?.name}");
                 }
             }
         }
@@ -439,6 +465,16 @@ namespace ProjectColombo.UI
             }
 
             newCharm = charm;
+            isExistingCharm = charm.scene.IsValid();
+
+            if (isExistingCharm)
+            {
+                LogDebug("Received an existing scene charm: " + charm.name);
+            }
+            else
+            {
+                LogDebug("Received a prefab charm: " + charm.name);
+            }
 
             BaseCharm charmInfo = newCharm.GetComponent<BaseCharm>();
 
@@ -451,14 +487,21 @@ namespace ProjectColombo.UI
 
             UpdateCharmButtons();
 
-            Show();
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.ShowMenu(this);
+            }
+            else
+            {
+                Show();
+            }
 
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.PauseGame(false);
             }
 
-            LogDebug("CharmSwapMenuController activated with new charm: " + charmInfo.charmName);
+            LogDebug("CharmSwapMenuController activated with charm: " + charmInfo.charmName);
         }
 
         void UpdateCharmButtons()
@@ -474,23 +517,42 @@ namespace ProjectColombo.UI
                 if (charmButtons[i] != null)
                 {
                     CharmButton charmButton = charmButtons[i].GetComponent<CharmButton>();
-
                     if (charmButton != null)
                     {
                         charmButton.UpdateInfo(playerInventory.charms[i]);
+                        charmButtons[i].interactable = true;
                     }
                 }
             }
 
             if (charmButtons.Length > playerInventory.charms.Count && playerInventory.legendaryCharms.Count > 0)
             {
-                CharmButton legendaryButton = charmButtons[playerInventory.charms.Count].GetComponent<CharmButton>();
-
-                if (legendaryButton != null)
+                int legendaryIndex = playerInventory.charms.Count;
+                if (legendaryIndex < charmButtons.Length)
                 {
-                    legendaryButton.UpdateInfo(playerInventory.legendaryCharms[0]);
+                    CharmButton legendaryButton = charmButtons[legendaryIndex].GetComponent<CharmButton>();
+                    if (legendaryButton != null)
+                    {
+                        legendaryButton.UpdateInfo(playerInventory.legendaryCharms[0]);
+                        charmButtons[legendaryIndex].interactable = true;
+                    }
                 }
             }
+
+            for (int i = playerInventory.charms.Count + playerInventory.legendaryCharms.Count; i < charmButtons.Length; i++)
+            {
+                if (charmButtons[i] != null)
+                {
+                    charmButtons[i].interactable = false;
+                    CharmButton charmButton = charmButtons[i].GetComponent<CharmButton>();
+                    if (charmButton != null)
+                    {
+                        charmButton.UpdateInfo(null);
+                    }
+                }
+            }
+
+            SetupButtonNavigation();
         }
 
         void SelectCharm(int index)
@@ -516,7 +578,6 @@ namespace ProjectColombo.UI
                 {
                     StopCoroutine(selectorAnimationCoroutine);
                 }
-
                 selectorAnimationCoroutine = StartCoroutine(AnimateSelectorFlicker(charmSelectors[currentCharmIndex]));
             }
 
@@ -525,7 +586,6 @@ namespace ProjectColombo.UI
             if (selectedButton != null && selectedButton.charmObject != null)
             {
                 BaseCharm charmInfo = selectedButton.charmObject.GetComponent<BaseCharm>();
-
                 if (charmInfo != null)
                 {
                     selectedCharmTitleText.text = charmInfo.charmName;
@@ -549,35 +609,6 @@ namespace ProjectColombo.UI
             LogDebug("Selected charm " + currentCharmIndex);
         }
 
-        void NavigateLeft()
-        {
-            int newIndex = currentCharmIndex - 1;
-
-            if (newIndex < 0)
-            {
-                newIndex = Mathf.Min(charmButtons.Length, playerInventory.charms.Count + playerInventory.legendaryCharms.Count) - 1;
-            }
-
-            SelectCharm(newIndex);
-
-            if (indexToButtonMap.ContainsKey(newIndex) && indexToButtonMap[newIndex] != null)
-            {
-                EventSystem.current.SetSelectedGameObject(indexToButtonMap[newIndex].gameObject);
-            }
-        }
-
-        void NavigateRight()
-        {
-            int newIndex = (currentCharmIndex + 1) % Mathf.Min(charmButtons.Length, playerInventory.charms.Count + playerInventory.legendaryCharms.Count);
-
-            SelectCharm(newIndex);
-
-            if (indexToButtonMap.ContainsKey(newIndex) && indexToButtonMap[newIndex] != null)
-            {
-                EventSystem.current.SetSelectedGameObject(indexToButtonMap[newIndex].gameObject);
-            }
-        }
-
         void ConfirmSwap()
         {
             CharmButton selectedButton = charmButtons[currentCharmIndex].GetComponent<CharmButton>();
@@ -589,37 +620,45 @@ namespace ProjectColombo.UI
             }
 
             RectTransform buttonRect = selectedButton.GetComponent<RectTransform>();
-
             if (buttonRect != null)
             {
                 PlayButtonClickAnimation(buttonRect);
             }
 
             StartCoroutine(DelayedConfirm(selectedButton.charmObject));
-
             LogDebug("Starting confirm swap with delay");
         }
 
-        void CancelSwap()
+
+        public void RestoreAfterPause()
+        {
+            if (wasActiveBeforePause && newCharm != null)
+            {
+                if (UIManager.Instance != null)
+                {
+                    UIManager.Instance.ShowMenu(this);
+                }
+
+                LogDebug("Restoring CharmSwapMenu after pause");
+
+                gameObject.SetActive(true);
+                isActive = true;
+
+                if (gameInputSO != null)
+                {
+                    gameInputSO.EnableUIAndPauseCharmSwapMode();
+                }
+
+                StartCoroutine(SetInitialButtonSelection());
+
+                wasActiveBeforePause = false;
+            }
+        }
+
+        public void CancelSwap()
         {
             LogDebug("CancelSwap called - closing menu without swap");
-
             isCancellingMenu = true;
-
-            if (currentCharmIndex >= 0 && currentCharmIndex < charmButtons.Length)
-            {
-                Button button = charmButtons[currentCharmIndex];
-                if (button != null)
-                {
-                    RectTransform buttonRect = button.GetComponent<RectTransform>();
-
-                    if (buttonRect != null)
-                    {
-                        PlayButtonClickAnimation(buttonRect);
-                    }
-                }
-            }
-
             StartCoroutine(DelayedCancel());
         }
 
@@ -631,24 +670,20 @@ namespace ProjectColombo.UI
             }
 
             Image selectorImage = selector.GetComponent<Image>();
-
             if (selectorImage == null)
             {
                 yield break;
             }
 
             Color originalColor = selectorImage.color;
-
             float time = 0f;
 
             while (true)
             {
                 float alpha = Mathf.Lerp(selectorFlickerMinAlpha, selectorFlickerMaxAlpha, (Mathf.Sin(time * selectorFlickerSpeed) + 1f) * 0.5f);
-
                 Color newColor = originalColor;
                 newColor.a = alpha;
                 selectorImage.color = newColor;
-
                 time += Time.unscaledDeltaTime;
                 yield return null;
             }
@@ -664,13 +699,18 @@ namespace ProjectColombo.UI
         {
             yield return new WaitForSecondsRealtime(0.05f);
 
-            if (charmButtons.Length > 0 && charmButtons[0] != null)
+            if (availableButtonIndices.Count > 0)
             {
-                EventSystem.current.SetSelectedGameObject(charmButtons[0].gameObject);
-
-                if (uiInputSwitcher != null)
+                int firstIndex = availableButtonIndices[0];
+                if (charmButtons[firstIndex] != null)
                 {
-                    uiInputSwitcher.SetFirstSelectedButton(charmButtons[0].gameObject);
+                    EventSystem.current.SetSelectedGameObject(charmButtons[firstIndex].gameObject);
+                    SelectCharm(firstIndex);
+
+                    if (uiInputSwitcher != null)
+                    {
+                        uiInputSwitcher.SetFirstSelectedButton(charmButtons[firstIndex].gameObject);
+                    }
                 }
             }
         }
@@ -679,7 +719,11 @@ namespace ProjectColombo.UI
         {
             yield return new WaitForSecondsRealtime(confirmActionDelay);
 
-            playerInventory.ReplaceCharm(charmToSwap, newCharm);
+            if (playerInventory != null && newCharm != null)
+            {
+                playerInventory.ReplaceCharm(charmToSwap, newCharm);
+                newCharm = null;
+            }
 
             if (GameManager.Instance != null)
             {
@@ -687,15 +731,62 @@ namespace ProjectColombo.UI
             }
 
             Hide();
-
             LogDebug("Swap confirmed after delay");
         }
 
         IEnumerator DelayedCancel()
         {
             LogDebug("Starting DelayedCancel coroutine");
-
             yield return new WaitForSecondsRealtime(cancelActionDelay);
+
+            if (newCharm != null)
+            {
+                if (isExistingCharm)
+                {
+                    LogDebug("Preserving existing scene charm on cancel: " + newCharm.name);
+                }
+                else
+                {
+                    LogDebug("Creating a world pickup for prefab charm on cancel: " + newCharm.name);
+
+                    Vector3 dropPosition = Vector3.zero;
+                    GameObject player = GameObject.FindWithTag("Player");
+                    if (player != null)
+                    {
+                        dropPosition = new Vector3(player.transform.position.x, 0f, player.transform.position.z);
+                    }
+
+                    if (dropManager != null)
+                    {
+                        BaseCharm charmComponent = newCharm.GetComponent<BaseCharm>();
+                        if (charmComponent != null)
+                        {
+                            LogDebug("Dropping charm via DropManager: " + charmComponent.charmName);
+                            dropManager.DropCharm(charmComponent, dropPosition);
+                        }
+                    }
+                    else
+                    {
+                        dropManager = FindFirstObjectByType<DropManager>();
+
+                        if (dropManager != null)
+                        {
+                            BaseCharm charmComponent = newCharm.GetComponent<BaseCharm>();
+                            if (charmComponent != null)
+                            {
+                                LogDebug("Dropping charm via found DropManager: " + charmComponent.charmName);
+                                dropManager.DropCharm(charmComponent, dropPosition);
+                            }
+                        }
+                        else
+                        {
+                            LogDebug("ERROR: Could not find DropManager! Charm will be lost.");
+                        }
+                    }
+                }
+            }
+
+            newCharm = null;
 
             if (GameManager.Instance != null)
             {
@@ -709,8 +800,6 @@ namespace ProjectColombo.UI
             }
 
             isCancellingMenu = false;
-
-            LogDebug("Hiding charm swap menu");
             Hide();
 
             LogDebug("Swap canceled successfully");
