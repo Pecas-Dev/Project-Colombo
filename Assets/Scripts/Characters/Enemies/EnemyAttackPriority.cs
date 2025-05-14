@@ -9,7 +9,7 @@ namespace ProjectColombo.Enemies
     public class EnemyAttackPriority : MonoBehaviour
     {
         public List<GameObject> currentEnemies = new();
-        public int attackersAtTheSameTime;
+        public int attackersAtTheSameTime = 2;
         public List<GameObject> currentAttackerEnemies = new();
 
         public float intervall = 3f;
@@ -93,6 +93,7 @@ namespace ProjectColombo.Enemies
         {
             // Defensive cleanup
             currentAttackerEnemies.RemoveAll(enemy => enemy == null);
+            currentEnemies.RemoveAll(enemy => enemy == null);
 
 
             if (currentAttackerEnemies.Count < attackersAtTheSameTime && currentEnemies.Count > 0)
