@@ -250,7 +250,24 @@ public class PlayerSFXManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"Second attack clip for note '{prevNote}' not found.");
+            // Fallback: random from all available second attack clips
+            List<AudioClip> allClips = new List<AudioClip>();
+            foreach (var group in secondAttackClips)
+            {
+                allClips.AddRange(group.clips);
+            }
+
+            if (allClips.Count > 0)
+            {
+                AudioClip fallbackClip = allClips[UnityEngine.Random.Range(0, allClips.Count)];
+                audioSource.PlayOneShot(fallbackClip, comboVolume);
+                playedNote = ExtractNoteFromClipName(fallbackClip.name);
+                lastSecondNote = playedNote;
+            }
+            else
+            {
+                Debug.LogWarning("No fallback second attack clips available.");
+            }
         }
     }
 
@@ -258,7 +275,7 @@ public class PlayerSFXManager : MonoBehaviour
     {
         if (string.IsNullOrEmpty(secondNote) || string.IsNullOrEmpty(firstNote))
         {
-            Debug.LogWarning("First or second note missing for third combo.");
+            PlayFallbackThirdAttack();
             return;
         }
 
@@ -288,6 +305,31 @@ public class PlayerSFXManager : MonoBehaviour
         }
 
         PlayRandom(matchingAttack.clips);
+    }
+
+    private void PlayFallbackThirdAttack()
+    {
+        List<AudioClip> allClips = new List<AudioClip>();
+
+        foreach (var group in thirdAttackGroups)
+        {
+            foreach (var attackGroup in group.attackGroups)
+            {
+                foreach (var attack in attackGroup.attacks)
+                {
+                    allClips.AddRange(attack.clips);
+                }
+            }
+        }
+
+        if (allClips.Count > 0)
+        {
+            PlayRandom(allClips);
+        }
+        else
+        {
+            Debug.LogWarning("No fallback third attack clips available.");
+        }
     }
 
     public void ResetCombo()
