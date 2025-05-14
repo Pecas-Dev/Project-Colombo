@@ -76,12 +76,16 @@ public class AudioManager : MonoBehaviour
         float targetExplorationVolume = 1f - battleBlend;
         explorationMusic.volume = Mathf.Lerp(explorationMusic.volume, targetExplorationVolume, Time.deltaTime * fadeSpeed);
 
-        for (int i = 0; i < battleMusicLayers.Length; i++)
-        {
-            float intensityPerLayer = Mathf.Clamp01(musicIntensity - i * 0.25f);
-            float targetVolume = battleBlend * intensityPerLayer;
-            battleMusicLayers[i].volume = Mathf.Lerp(battleMusicLayers[i].volume, targetVolume, Time.deltaTime * fadeSpeed);
-        }
+        // Only normal layer for now
+        float intensityLayer0 = Mathf.Clamp01(musicIntensity);
+        float targetVolume = battleBlend * intensityLayer0;
+        battleMusicLayers[0].volume = Mathf.Lerp(battleMusicLayers[0].volume, targetVolume, Time.deltaTime * fadeSpeed);
+
+        // Other layers are disabled
+        // for (int i = 1; i < battleMusicLayers.Length; i++)
+        // {
+        //     battleMusicLayers[i].volume = 0f;
+        // }
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -147,20 +151,34 @@ public class AudioManager : MonoBehaviour
 
         StopAllMusic();
 
-        if (explorationClip == null || battleClips.Length < 4) return;
+        if (explorationClip == null)
+        {
+            Debug.LogWarning("Exploration clip is null!");
+            return;
+        }
+
+        if (battleClips == null || battleClips.Length == 0 || battleClips[0] == null)
+        {
+            Debug.LogWarning("No battle clip (layer 0) provided!");
+            return;
+        }
 
         explorationMusic.clip = explorationClip;
         explorationMusic.volume = 1f;
         explorationMusic.Play();
 
-        for (int i = 0; i < 4; i++)
-        {
-            battleMusicLayers[i].clip = battleClips[i];
-            battleMusicLayers[i].volume = 0f;
-            battleMusicLayers[i].Play();
-        }
-    }
+        // Only use layer 0
+        battleMusicLayers[0].clip = battleClips[0];
+        battleMusicLayers[0].volume = 0f;
+        battleMusicLayers[0].Play();
 
+        // Commented out remaining layers
+        // for (int i = 1; i < 4; i++)
+        // {
+        //     battleMusicLayers[i].clip = null;
+        //     battleMusicLayers[i].volume = 0f;
+        // }
+    }
 
     private void StopAllMusic()
     {
