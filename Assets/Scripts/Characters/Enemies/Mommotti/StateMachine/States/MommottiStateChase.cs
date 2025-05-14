@@ -94,10 +94,11 @@ namespace ProjectColombo.StateMachine.Mommotti
             if (targetDirection.magnitude < stateMachine.myMommottiAttributes.circleDistance - stateMachine.myMommottiAttributes.circleTolerance)
             {
                 relativeMovementDirection = -stateMachine.transform.forward;
+                currentSpeed /= 2f;
             }
             else if (targetDirection.magnitude < stateMachine.myMommottiAttributes.circleDistance + stateMachine.myMommottiAttributes.circleTolerance)
             {
-                if (closestEnemyDistance < stateMachine.myMommottiAttributes.circleTolerance)
+                if (closestEnemyDistance < stateMachine.myMommottiAttributes.circleTolerance * 2f)
                 {
                     Vector3 spreadDirection = (stateMachine.transform.position - closestEnemyPosition).normalized;
                     relativeMovementDirection = spreadDirection;
