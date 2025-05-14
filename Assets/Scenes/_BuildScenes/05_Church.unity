@@ -8943,6 +8943,7 @@ GameObject:
   - component: {fileID: 890148378}
   - component: {fileID: 890148377}
   - component: {fileID: 890148379}
+  - component: {fileID: 890148380}
   m_Layer: 0
   m_Name: Chamber
   m_TagString: Untagged
@@ -9007,6 +9008,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8041fa602a2248f4da1cc826c040de14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &890148380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 890148376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fa9d59818b405443938061e0748bf2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentEnemies: []
+  attackersAtTheSameTime: 2
+  currentAttackerEnemies: []
+  intervall: 3
 --- !u!4 &890399712 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5424576029222733927, guid: 1947bdc684994ca49a61c089abfe5b44, type: 3}

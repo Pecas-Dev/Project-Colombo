@@ -1,3 +1,4 @@
+using ProjectColombo.Enemies;
 using UnityEngine;
 
 namespace ProjectColombo.LevelManagement
@@ -10,6 +11,7 @@ namespace ProjectColombo.LevelManagement
         {
             myChamber = GetComponent<TileWorldChamber>();
             myChamber.ActivateChamber();
+            GetComponent<EnemyAttackPriority>().Activate();
         }
     }
 }
