@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using ProjectColombo.GameManagement.Events;
 using DG.DemiLib;
 using ProjectColombo.Enemies;
+using ProjectColombo.Enemies.Mommotti;
+using Unity.VisualScripting;
 
 namespace ProjectColombo.LevelManagement
 {
@@ -15,7 +17,7 @@ namespace ProjectColombo.LevelManagement
         public bool isLooting = false;
         public List<GameObject> entrances;
         public List<GameObject> exits;
-        public List<GameObject> spawnPoints;
+        [ReadOnlyInspector] public List<GameObject> spawnPoints = new();
 
         [HideInInspector] public Vector2 chamberTilePosition = new();
         [HideInInspector] public bool entrancesConnected = false;
@@ -64,6 +66,13 @@ namespace ProjectColombo.LevelManagement
             entranceDir = new();
             exitsLocal = new();
             exitDir = new();
+
+            MommottiSpawnPoint[] spawnpoints = GetComponentsInChildren<MommottiSpawnPoint>();
+
+            foreach (var s in spawnpoints)
+            {
+                spawnPoints.Add(s.gameObject);
+            }
 
             foreach (GameObject spawner in spawnPoints)
             {

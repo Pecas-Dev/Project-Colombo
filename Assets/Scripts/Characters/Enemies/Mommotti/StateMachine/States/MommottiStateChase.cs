@@ -28,7 +28,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             stateMachine.GetComponentInParent<EnemyAttackPriority>().AddToEnemies(stateMachine.gameObject);
 
             isPlayerVisible = true;
-            stateMachine.myMommottiAttributes.rangeFOVDetection /= 3f;
+            //stateMachine.myMommottiAttributes.rangeFOVDetection /= 3f;
 
             lastWalkableNode = stateMachine.myPathfindingAlgorythm.GetNode(stateMachine.transform.position);
 
@@ -91,33 +91,55 @@ namespace ProjectColombo.StateMachine.Mommotti
             // Behavior within circle
             Vector3 relativeMovementDirection = stateMachine.transform.forward;
 
-            if (targetDirection.magnitude < stateMachine.myMommottiAttributes.circleDistance - stateMachine.myMommottiAttributes.circleTolerance)
+            float circleDistance = stateMachine.myMommottiAttributes.circleDistance;
+            float tolerance = stateMachine.myMommottiAttributes.circleTolerance;
+
+            Vector3 predictedPosition = stateMachine.transform.position + relativeMovementDirection;
+            float distanceToPlayer = Vector3.Distance(playerPosition, predictedPosition);
+
+            if (distanceToPlayer > circleDistance + tolerance)
             {
-                relativeMovementDirection = -stateMachine.transform.forward;
-                currentSpeed /= 2f;
+                // Move toward the player to enter the circle
+                relativeMovementDirection = targetDirection.normalized;
+                currentSpeed = stateMachine.myEntityAttributes.moveSpeed;
             }
-            else if (targetDirection.magnitude < stateMachine.myMommottiAttributes.circleDistance + stateMachine.myMommottiAttributes.circleTolerance)
+            else if (distanceToPlayer < circleDistance - tolerance)
             {
-                if (closestEnemyDistance < stateMachine.myMommottiAttributes.circleTolerance * 2f)
+                // Move away from the player to stay in the ring
+                relativeMovementDirection = -targetDirection.normalized;
+                currentSpeed = stateMachine.myEntityAttributes.moveSpeed / 2f;
+            }
+            else
+            {
+                //Inside the tolerance zone — move sideways(around the circle)
+                Vector3 right = Vector3.Cross(Vector3.up, targetDirection.normalized);
+
+                if (closestEnemyDistance < tolerance * 2f)
                 {
-                    Vector3 spreadDirection = (stateMachine.transform.position - closestEnemyPosition).normalized;
-                    relativeMovementDirection = spreadDirection;
+                    Vector3 toClosestEnemy = (closestEnemyPosition - stateMachine.transform.position).normalized;
+                    float sideDot = Vector3.Dot(right, toClosestEnemy);
+
+                    // If enemy is on the right, move left. If on the left, move right.
+                    relativeMovementDirection = sideDot > 0 ? -right : right;
+
                     currentSpeed = stateMachine.myEntityAttributes.moveSpeed * randomSpeedFactor;
                 }
                 else
                 {
-                    currentSpeed = 0f;
+                    relativeMovementDirection = right;
+                    currentSpeed = stateMachine.myEntityAttributes.moveSpeed * randomSpeedFactor;
                 }
             }
 
+
             // Final move step
-            Vector3 targetPosition = stateMachine.transform.position + relativeMovementDirection;
+            Vector3 targetPosition = stateMachine.transform.position + relativeMovementDirection * currentSpeed;
             MoveToTarget(targetPosition, deltaTime, currentSpeed);
         }
 
         public override void Exit()
         {
-            stateMachine.myMommottiAttributes.rangeFOVDetection *= 3f;
+            //stateMachine.myMommottiAttributes.rangeFOVDetection *= 3f;
         }
 
         private void CheckClosestEnemy()

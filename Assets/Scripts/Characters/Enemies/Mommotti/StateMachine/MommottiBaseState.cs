@@ -37,7 +37,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 
                 float animSpeed = currentVelocity.magnitude;
                 //stateMachine.myAnimator.SetFloat("Speed", animSpeed);
-                stateMachine.myAnimator.SetFloat("Speed", 1);
+                stateMachine.myAnimator.SetFloat("Speed", speed);
             }
 
             else
