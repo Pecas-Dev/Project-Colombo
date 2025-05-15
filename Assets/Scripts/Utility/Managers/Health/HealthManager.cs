@@ -5,6 +5,7 @@ using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.LevelManagement;
 using ProjectColombo.Objects.VFX;
+using ProjectColombo.Objects.SFX;
 
 
 namespace ProjectColombo.Combat
@@ -145,6 +146,11 @@ namespace ProjectColombo.Combat
             if (TryGetComponent<SpawnVFXOnDestroy>(out _))
             {
                 GetComponent<SpawnVFXOnDestroy>().SpawnVFX();
+            }
+
+            if (TryGetComponent<VaseBreak_SFX>(out _))
+            {
+                GetComponent<VaseBreak_SFX>().PlaySFX();
             }
 
             if (gameObject.CompareTag("Destroyable"))

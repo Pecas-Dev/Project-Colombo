@@ -9,11 +9,14 @@ public class CoinSound : MonoBehaviour
     [Header("Audio Settings")]
     public AudioSource audioSource;
 
+    [Range(0f, 1f)]
+    public float volume = 1f;
+
     void Start()
     {
         if (audioSource != null && spawnSound != null)
         {
-            audioSource.PlayOneShot(spawnSound);
+            audioSource.PlayOneShot(spawnSound, volume);
         }
     }
 
@@ -21,7 +24,7 @@ public class CoinSound : MonoBehaviour
     {
         if (audioSource != null && animationSound != null)
         {
-            audioSource.PlayOneShot(animationSound);
+            audioSource.PlayOneShot(animationSound, volume);
         }
     }
 }
