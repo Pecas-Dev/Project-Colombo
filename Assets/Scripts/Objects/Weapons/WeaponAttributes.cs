@@ -275,14 +275,7 @@ namespace ProjectColombo.Combat
                             //Debug.Log("..but not the opposite scale");
                         }
 
-                        if (currentScale == GameGlobals.MusicScale.MAJOR)
-                        {
-                            successfullMajorParryVFX.Play();
-                        }
-                        else if (currentScale == GameGlobals.MusicScale.MINOR)
-                        {
-                            successfullMinorParryVFX.Play();
-                        }
+                        otherAttributes.GetComponent<PlayerStateMachine>().myWeaponAttributes.PlayStunVFX(otherAttributes.currentScale);
 
                         CustomEvents.SuccessfullParry(currentScale, sameScale);
                     }
@@ -363,6 +356,18 @@ namespace ProjectColombo.Combat
                 {
                     e.GetComponent<MommottiStateMachine>().SetStaggered();
                 }
+            }
+        }
+
+        public void PlayStunVFX(GameGlobals.MusicScale whichScale)
+        {
+            if (whichScale == GameGlobals.MusicScale.MAJOR)
+            {
+                successfullMajorParryVFX.Play();
+            }
+            else if (whichScale == GameGlobals.MusicScale.MINOR)
+            {
+                successfullMinorParryVFX.Play();
             }
         }
     }

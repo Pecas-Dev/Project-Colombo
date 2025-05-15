@@ -18,7 +18,7 @@ namespace ProjectColombo.VFX
 
         private void PlaySuccessfullParryVFX(GameGlobals.MusicScale scale, bool sameScale)
         {
-            if (sameScale)
+            if (!sameScale)
             {
                 if (scale == GameGlobals.MusicScale.MAJOR)
                 {
