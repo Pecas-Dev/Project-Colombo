@@ -12,7 +12,7 @@ namespace ProjectColombo.Enemies
         public int attackersAtTheSameTime = 2;
         public List<GameObject> currentAttackerEnemies = new();
 
-        public float intervall = 3f;
+        float intervall = 3f;
         float timer;
 
         public void Activate() //this will be called externally

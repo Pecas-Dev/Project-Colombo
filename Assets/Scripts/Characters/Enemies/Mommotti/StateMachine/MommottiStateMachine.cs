@@ -47,25 +47,36 @@ namespace ProjectColombo.StateMachine.Mommotti
             myPathfindingAlgorythm.gridManager = myMommottiAttributes.myGridManager;
         }
 
-        private void FixedUpdate() // regular update is used in the state machine
+        private float smoothedSpeed = 0f; // Store smoothed speed
+        public float speedSmoothTime = 0.1f; // Adjustable in inspector
+
+        private void FixedUpdate()
         {
             if (myHealthManager.CurrentHealth <= 0 && currentState != MommottiState.DEAD)
             {
                 SwitchState(new MommottiStateDeath(this, hitByScale));
             }
 
-            ////calculate speed for animator
-            //Vector3 movementLastFrame = positionLastFrame - transform.position;
-            //movementLastFrame.y = 0; //ignore height difference
-            //float currentSpeed = movementLastFrame.magnitude / Time.fixedDeltaTime;
-            //myAnimator.SetFloat("Speed", currentSpeed);
-            //positionLastFrame = transform.position;
+            // Calculate raw speed
+            Vector3 movementLastFrame = positionLastFrame - transform.position;
+            movementLastFrame.y = 0;
+            float currentSpeed = movementLastFrame.magnitude / Time.fixedDeltaTime;
+
+            // Smooth the speed
+            smoothedSpeed = Mathf.Lerp(smoothedSpeed, currentSpeed, speedSmoothTime / Time.fixedDeltaTime);
+
+            // Update animator
+            myAnimator.SetFloat("Speed", smoothedSpeed > 0.1f ? smoothedSpeed : 0f);
+
+            // Update position
+            positionLastFrame = transform.position;
 
             if (myMommottiAttributes.playerPosition.gameObject.GetComponent<HealthManager>().CurrentHealth <= 0 && currentState != MommottiState.PATROL)
             {
                 SwitchState(new MommottiStatePatrol(this));
             }
         }
+
 
         public void ApplyKnockback(Vector3 direction, float knockbackStrength, GameGlobals.MusicScale scale)
         {

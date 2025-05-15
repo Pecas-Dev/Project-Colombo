@@ -34,15 +34,6 @@ namespace ProjectColombo.StateMachine.Mommotti
                     speed,                             // Speed of the movement (max speed)
                     deltaTime                          // DeltaTime for frame-rate independence
                 );
-
-                float animSpeed = currentVelocity.magnitude;
-                //stateMachine.myAnimator.SetFloat("Speed", animSpeed);
-                stateMachine.myAnimator.SetFloat("Speed", speed);
-            }
-
-            else
-            {
-                stateMachine.myAnimator.SetFloat("Speed", 0f);
             }
         }
 
