@@ -49,6 +49,26 @@ namespace ProjectColombo.StateMachine.Mommotti
             {
                 float alpha = Mathf.Lerp(startAlpha, 0f, timer / fadeTime);
                 baseColor.a = alpha;
+
+                if (fadeMaterial == null)
+                {
+                    Debug.Log("fade material was missing");
+
+                    fadeMaterial = stateMachine.myFadeOutSkin.material;
+
+                    // Setup URP Lit material for transparency
+                    fadeMaterial.SetFloat("_Surface", 1); // Transparent
+                    fadeMaterial.SetFloat("_Blend", 0);   // Alpha blending
+                    fadeMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                    fadeMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                    fadeMaterial.SetInt("_ZWrite", 0);
+                    fadeMaterial.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+                    fadeMaterial.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+
+                    baseColor = fadeMaterial.GetColor("_BaseColor");
+                    startAlpha = baseColor.a;
+                }
+
                 fadeMaterial.SetColor("_BaseColor", baseColor);
             }
             else
