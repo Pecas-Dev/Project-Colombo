@@ -62,8 +62,8 @@ namespace ProjectColombo.UI.Pausescreen
         [SerializeField] TextMeshProUGUI charmDescriptionText;
 
         [Header("Empty Slot Images")]
-        [SerializeField] Sprite emptyCharmSlotSprite; 
-        [SerializeField] Sprite emptyLegendaryCharmSlotSprite; 
+        [SerializeField] Sprite emptyCharmSlotSprite;
+        [SerializeField] Sprite emptyLegendaryCharmSlotSprite;
 
         [Header("Debug Settings")]
         [SerializeField] bool enableDebugLogs = true;
