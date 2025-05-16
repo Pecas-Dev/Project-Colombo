@@ -686,6 +686,65 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8084277336415371378, guid: ed051648ce89f44458d63d3ce1e66d41, type: 3}
   m_PrefabInstance: {fileID: 6047477122939290617}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1759743998
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1759744000}
+  - component: {fileID: 1759743999}
+  m_Layer: 0
+  m_Name: UI_DEBUGGER
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1759743999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1759743998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18aeb683dcc042042a7a8118d9e390cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableDebugLogs: 1
+  enableOnScreenDisplay: 1
+  maxLogEntries: 20
+  trackInputStates: 1
+  trackEventSystem: 1
+  trackCanvasStates: 1
+  trackInputActions: 1
+  trackTimeScale: 1
+  trackSceneChanges: 1
+  toggleDisplayKey: 282
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  warningColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  errorColor: {r: 1, g: 0, b: 0, a: 1}
+  actionColor: {r: 0, g: 1, b: 1, a: 1}
+  stateColor: {r: 0, g: 1, b: 0, a: 1}
+--- !u!4 &1759744000
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1759743998}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1092413801337100963 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1092413801362953887, guid: 739519c09d8adfd4bbc58ff5348018b7, type: 3}
@@ -948,3 +1007,4 @@ SceneRoots:
   - {fileID: 6047477122939290617}
   - {fileID: 7425249925225075205}
   - {fileID: 1511429007}
+  - {fileID: 1759744000}

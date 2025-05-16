@@ -55,6 +55,8 @@ namespace ProjectColombo.Objects.Masks
 
         public void UnlockEcho()
         {
+            if (echoUnlocked == true) return;
+
             echoUnlocked = true;
             echoMission.Disable();
             CustomEvents.EchoUnlocked();

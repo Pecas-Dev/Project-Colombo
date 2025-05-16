@@ -54,6 +54,7 @@ namespace ProjectColombo.Inventory
             {
                 charmSelectScreen.SetActive(false);
             }
+
             GetCurrentStats();
             currentCharmAmount = 0;
 
@@ -82,6 +83,9 @@ namespace ProjectColombo.Inventory
 
         public void Reset()
         {
+            DeactivateMask();
+            DeactivateCharms();
+
             foreach (Transform child in maskSlot.transform)
             {
                 Destroy(child.gameObject);
@@ -94,6 +98,8 @@ namespace ProjectColombo.Inventory
 
             charms = new();
             currentCharmAmount = 0;
+
+            GetCurrentStats();
         }
 
         private void LevelChange()

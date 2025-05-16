@@ -18,6 +18,7 @@ namespace ProjectColombo.Combat
 
         [ReadOnlyInspector] public int currentHealth;
         [ReadOnlyInspector] public bool ignoreDamage = false;
+        [ReadOnlyInspector] public bool isDead = false;
 
         public int CurrentHealth => currentHealth;
         public int MaxHealth => maxHealth;
@@ -84,10 +85,7 @@ namespace ProjectColombo.Combat
 
         public void TakeDamage(int damageAmount)
         {
-            if (currentHealth <= 0)
-            {
-                return;
-            }
+            if (isDead) return;
 
             currentHealth -= damageAmount;
             currentHealth = Mathf.Max(currentHealth, 0); 
@@ -138,6 +136,9 @@ namespace ProjectColombo.Combat
 
         void Die()
         {
+            if (isDead) return;
+            isDead = true;
+
             if (TryGetComponent<DropSystem>(out _))
             {
                 GetComponent<DropSystem>().DropItem();

@@ -19,7 +19,7 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnEnemyDeath(GameGlobals.MusicScale obj, GameObject enemy)
         {
-            myHealthManager.Heal(healthPointsForKill);
+            myHealthManager.AddHealthPoints(healthPointsForKill);
         }
 
         public override void Disable()

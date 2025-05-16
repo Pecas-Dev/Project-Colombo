@@ -18,6 +18,9 @@ namespace ProjectColombo.StateMachine.Mommotti
         public Pathfinding myPathfindingAlgorythm;
         public WeaponAttributes myWeaponAttributes;
         public HealthManager myHealthManager;
+
+
+        public SkinnedMeshRenderer myFadeOutSkin;
         public MeshRenderer myMajorMinorSkin;
 
         public MommottiState currentState;

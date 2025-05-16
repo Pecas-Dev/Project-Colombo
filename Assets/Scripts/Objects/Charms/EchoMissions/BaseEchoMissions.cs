@@ -6,7 +6,12 @@ namespace ProjectColombo.Objects.Masks
     {
         public void CompletedMission()
         {
-            GetComponent<BaseMask>().UnlockEcho();
+            BaseMask myMask = GetComponent<BaseMask>();
+
+            if (!myMask.echoUnlocked)
+            {
+                GetComponent<BaseMask>().UnlockEcho();
+            }
             Disable();
         }
 
