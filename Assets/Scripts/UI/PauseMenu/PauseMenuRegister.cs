@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PauseMenuRegister : MonoBehaviour
 {
-    [SerializeField] PauseMenuInventoryController pauseMenuController;
+    /*[SerializeField] PauseMenuInventoryController pauseMenuController;
     [SerializeField] bool enableDebugLogs = true;
 
     private static bool hasRegistered = false;
@@ -82,5 +82,5 @@ public class PauseMenuRegister : MonoBehaviour
         {
             Debug.Log($"<color=#FF5500>[PauseMenuRegistrar] {message}</color>");
         }
-    }
+    }*/
 }

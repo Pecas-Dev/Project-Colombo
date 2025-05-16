@@ -12,7 +12,7 @@ namespace ProjectColombo.UI
 {
     public class UIDebugger : MonoBehaviour
     {
-        public static UIDebugger Instance { get; private set; }
+        /*public static UIDebugger Instance { get; private set; }
 
         [Header("Debug Settings")]
         [SerializeField] bool enableDebugLogs = true;
@@ -434,6 +434,6 @@ namespace ProjectColombo.UI
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
             Application.logMessageReceived -= HandleLog;
-        }
+        }*/
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using ProjectColombo.Combat;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 namespace ProjectColombo.UI.HUD
@@ -43,6 +44,17 @@ namespace ProjectColombo.UI.HUD
         void Start()
         {
             parentTransform = transform.parent;
+
+            string currentSceneName = SceneManager.GetActiveScene().name;
+
+            if (currentSceneName == "05_Church")
+            {
+                positionOffset = new Vector3(-9.4f, 10f, -7f);
+            }
+            else
+            {
+                positionOffset = new Vector3(-14f, 14f, -11.5f);
+            }
 
             if (parentTransform != null)
             {

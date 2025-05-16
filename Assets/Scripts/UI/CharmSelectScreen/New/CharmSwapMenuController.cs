@@ -28,9 +28,6 @@ namespace ProjectColombo.UI
         [SerializeField] GameObject[] charmSelectors;
         [SerializeField] GameObject[] charmClefs;
 
-        [Header("Navigation Settings")]
-        [SerializeField] float navigationDelay = 0.1f;
-
         [Header("Button Animation")]
         [SerializeField] float confirmActionDelay = 0.2f;
         [SerializeField] float cancelActionDelay = 0.2f;
@@ -47,14 +44,10 @@ namespace ProjectColombo.UI
 
         int currentCharmIndex = 0;
 
-        float lastNavigationTime = 0f;
-
         bool isActive = false;
-        bool isNavigating = false;
         bool isExistingCharm = false;
         bool isCancellingMenu = false;
         bool wasActiveBeforePause = false;
-        bool shouldDropCharmOnCancel = false;
 
         public bool WasActiveBeforePause => wasActiveBeforePause;
 
@@ -178,12 +171,12 @@ namespace ProjectColombo.UI
 
         public void RegisterWithUIManager()
         {
-            if (UIManager.Instance != null)
+            /*if (UIManager.Instance != null)
             {
                 LogDebug("Registering with UIManager");
                 UIManager.Instance.RegisterMenu(this);
                 Hide();
-            }
+            }*/
         }
 
         void Update()
@@ -299,15 +292,8 @@ namespace ProjectColombo.UI
             gameObject.SetActive(true);
             isActive = true;
 
-            if (gameInputSO != null)
-            {
-                gameInputSO.EnableUIAndPauseCharmSwapMode();
-            }
-
             SetupButtonNavigation();
 
-            lastNavigationTime = Time.unscaledTime;
-            isNavigating = false;
 
             if (availableButtonIndices.Count > 0)
             {
@@ -353,11 +339,6 @@ namespace ProjectColombo.UI
 
             isActive = false;
             gameObject.SetActive(false);
-
-            if (gameInputSO != null && gameInputSO.playerInputActions != null && gameInputSO.playerInputActions.PauseCharmSwap.enabled)
-            {
-                gameInputSO.playerInputActions.PauseCharmSwap.Disable();
-            }
 
             LogDebug("CharmSwapMenuController hidden");
         }
@@ -487,14 +468,14 @@ namespace ProjectColombo.UI
 
             UpdateCharmButtons();
 
-            if (UIManager.Instance != null)
+            /*if (UIManager.Instance != null)
             {
                 UIManager.Instance.ShowMenu(this);
             }
             else
             {
                 Show();
-            }
+            }*/
 
             if (GameManager.Instance != null)
             {
@@ -634,20 +615,15 @@ namespace ProjectColombo.UI
         {
             if (wasActiveBeforePause && newCharm != null)
             {
-                if (UIManager.Instance != null)
+                /*if (UIManager.Instance != null)
                 {
                     UIManager.Instance.ShowMenu(this);
-                }
+                }*/
 
                 LogDebug("Restoring CharmSwapMenu after pause");
 
                 gameObject.SetActive(true);
                 isActive = true;
-
-                if (gameInputSO != null)
-                {
-                    gameInputSO.EnableUIAndPauseCharmSwapMode();
-                }
 
                 StartCoroutine(SetInitialButtonSelection());
 
@@ -692,7 +668,6 @@ namespace ProjectColombo.UI
         IEnumerator ResetNavigationFlag(float delay)
         {
             yield return new WaitForSecondsRealtime(delay);
-            isNavigating = false;
         }
 
         IEnumerator SetInitialButtonSelection()

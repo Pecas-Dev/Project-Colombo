@@ -15,13 +15,56 @@ public class MainMenuController : MenuController
     public int nextScene;
     [SerializeField] AudioSource[] audioSources;
 
+    [Header("UI Manager Reference")]
+    [SerializeField] private UIManagerV2 uiManagerV2;
+
+    [Header("Debug Settings")]
+    [SerializeField] private bool enableDebugLogs = true;
+
     int currentSelectedIndex = -1;
 
+    static int lastSelectedButtonIndex = 0;
+
+
     Coroutine[] sizeAnimationCoroutines;
+
+    private bool hasBeenInitialized = false;
+
+    private void OnEnable()
+    {
+
+        // This ensures animations run whenever the menu is activated
+        if (hasBeenInitialized)
+        {
+            // Select the last active button instead of always the first one
+            SelectButton(lastSelectedButtonIndex);
+            RefreshAnimations();
+        }
+        else
+        {
+            Initialize();
+            hasBeenInitialized = true;
+        }
+
+        // Force controller mode & button selection
+        UIInputSwitcher inputSwitcher = FindFirstObjectByType<UIInputSwitcher>();
+
+        if (inputSwitcher != null)
+        {
+            // Force button selection in next frame
+            StartCoroutine(ForceButtonSelection(inputSwitcher));
+        }
+    }
 
     public override void Initialize()
     {
         base.Initialize();
+
+        // Find UIManagerV2 if not assigned
+        if (uiManagerV2 == null)
+        {
+            uiManagerV2 = FindFirstObjectByType<UIManagerV2>();
+        }
 
         if (buttons.Length != clefImages.Length)
         {
@@ -68,7 +111,7 @@ public class MainMenuController : MenuController
         if (buttons.Length > 0 && buttons[0] != null)
         {
             SelectButton(0);
-            
+
             uiInputSwitcher = FindFirstObjectByType<UIInputSwitcher>();
 
             if (uiInputSwitcher != null)
@@ -76,23 +119,113 @@ public class MainMenuController : MenuController
                 uiInputSwitcher.SetFirstSelectedButton(buttons[0].gameObject);
             }
         }
+
+        if (enableMenuNavigation)
+        {
+            StartCoroutine(DelayedNavigationSetup());
+        }
+    }
+
+    // Override SetupButtonNavigation to work with our specific buttons array
+    protected override void SetupButtonNavigation()
+    {
+        // Skip base implementation
+        if (buttons == null || buttons.Length == 0) return;
+
+        // Set up explicit navigation between main menu buttons
+        LogDebug("Setting up navigation for " + buttons.Length + " buttons");
+
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            Button button = buttons[i];
+            if (button == null) continue;
+
+            Navigation nav = button.navigation;
+            nav.mode = Navigation.Mode.Explicit;
+
+            // Configure vertical navigation (up and down)
+            if (i > 0)
+            {
+                nav.selectOnUp = buttons[i - 1];
+                LogDebug($"Button {button.name} selectOnUp = {buttons[i - 1].name}");
+            }
+            else if (wrapNavigation)
+            {
+                // Wrap around to the last button
+                nav.selectOnUp = buttons[buttons.Length - 1];
+                LogDebug($"Button {button.name} selectOnUp = {buttons[buttons.Length - 1].name} (wrap)");
+            }
+
+            if (i < buttons.Length - 1)
+            {
+                nav.selectOnDown = buttons[i + 1];
+                LogDebug($"Button {button.name} selectOnDown = {buttons[i + 1].name}");
+            }
+            else if (wrapNavigation)
+            {
+                // Wrap around to the first button
+                nav.selectOnDown = buttons[0];
+                LogDebug($"Button {button.name} selectOnDown = {buttons[0].name} (wrap)");
+            }
+
+            button.navigation = nav;
+        }
+
+        // Set initial button selection if we have buttons
+        if (buttons.Length > 0 && buttons[0] != null)
+        {
+            EventSystem.current.SetSelectedGameObject(buttons[0].gameObject);
+            LogDebug("Set initial selection to " + buttons[0].name);
+        }
     }
 
     public override void Show()
     {
         base.Show();
+
+        // Make sure we're visible
+        if (menuContainer != null)
+        {
+            menuContainer.SetActive(true);
+        }
+
+        RefreshAnimations();
+    }
+
+    private void RefreshAnimations()
+    {
+        // Ensure proper button selection
         if (currentSelectedIndex >= 0 && currentSelectedIndex < buttons.Length)
         {
+            // Force reselection to refresh animations
+            int previousIndex = currentSelectedIndex;
+            currentSelectedIndex = -1;
+            SelectButton(previousIndex);
+
+            // Make sure EventSystem knows which button is selected
             EventSystem.current.SetSelectedGameObject(buttons[currentSelectedIndex].gameObject);
-            
+
             if (uiInputSwitcher == null)
             {
                 uiInputSwitcher = FindFirstObjectByType<UIInputSwitcher>();
             }
-            
+
             if (uiInputSwitcher != null)
             {
                 uiInputSwitcher.SetFirstSelectedButton(buttons[currentSelectedIndex].gameObject);
+            }
+
+            LogDebug("Refreshed animations for button index " + currentSelectedIndex);
+        }
+        else if (buttons.Length > 0)
+        {
+            // Default to first button if no selection
+            SelectButton(0);
+            EventSystem.current.SetSelectedGameObject(buttons[0].gameObject);
+
+            if (uiInputSwitcher != null)
+            {
+                uiInputSwitcher.SetFirstSelectedButton(buttons[0].gameObject);
             }
         }
     }
@@ -131,6 +264,7 @@ public class MainMenuController : MenuController
         }
 
         currentSelectedIndex = index;
+        lastSelectedButtonIndex = index; // Store this selection for next time
 
         if (index < clefImages.Length && clefImages[index] != null)
         {
@@ -146,6 +280,18 @@ public class MainMenuController : MenuController
 
             sizeAnimationCoroutines[index] = StartCoroutine(AnimateTextSize(buttonTexts[index], defaultMinFontSize, defaultMaxFontSize, selectedMinFontSize, selectedMaxFontSize, animationDuration));
         }
+
+        // Visual feedback through button animation
+        if (index < buttons.Length && buttons[index] != null)
+        {
+            RectTransform rectTransform = buttons[index].GetComponent<RectTransform>();
+            if (rectTransform != null)
+            {
+                PlayButtonClickAnimation(rectTransform);
+            }
+        }
+
+        LogDebug("Selected button index " + index);
     }
 
     void DeactivateAllImages()
@@ -163,6 +309,7 @@ public class MainMenuController : MenuController
     {
         if (index >= 0 && index < buttons.Length)
         {
+            LogDebug("SelectButtonByIndex called with index " + index);
             SelectButton(index);
 
             if (buttons[index] != null)
@@ -174,13 +321,29 @@ public class MainMenuController : MenuController
 
     public void OpenOptionsMenu()
     {
-        if (UIManager.Instance != null)
+        // Use UIManagerV2 instead of the old UIManager
+        if (uiManagerV2 != null)
         {
-            UIManager.Instance.ShowOptionsMenu();
+            uiManagerV2.ShowOptionsMenu();
         }
         else
         {
-            Debug.LogWarning("UIManager instance not found!");
+            Debug.LogWarning("UIManagerV2 reference missing!");
+
+            // Try to find and activate the options menu directly as fallback
+            Transform optionsMenu = transform.parent?.Find("OptionsMenu");
+            if (optionsMenu != null)
+            {
+                menuContainer.SetActive(false);
+                optionsMenu.gameObject.SetActive(true);
+
+                // Initialize the options menu if possible
+                OptionsMenuController optionsController = optionsMenu.GetComponent<OptionsMenuController>();
+                if (optionsController != null)
+                {
+                    optionsController.Show();
+                }
+            }
         }
     }
 
@@ -241,5 +404,49 @@ public class MainMenuController : MenuController
         Application.Quit();
 
         Debug.Log("Game is closed!");
+    }
+
+    IEnumerator ForceButtonSelection(UIInputSwitcher inputSwitcher)
+    {
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForSecondsRealtime(0.05f);
+
+        // Refresh the EventSystem reference
+        inputSwitcher.RefreshEventSystemReference();
+
+        // Force select the last selected button instead of always the first one
+        if (buttons.Length > lastSelectedButtonIndex && buttons[lastSelectedButtonIndex] != null)
+        {
+            EventSystem.current.SetSelectedGameObject(buttons[lastSelectedButtonIndex].gameObject);
+            inputSwitcher.SetFirstSelectedButton(buttons[lastSelectedButtonIndex].gameObject);
+            inputSwitcher.ForceSelectButton(buttons[lastSelectedButtonIndex].gameObject);
+        }
+        else if (buttons.Length > 0 && buttons[0] != null) // Fallback to first button if needed
+        {
+            EventSystem.current.SetSelectedGameObject(buttons[0].gameObject);
+            inputSwitcher.SetFirstSelectedButton(buttons[0].gameObject);
+            inputSwitcher.ForceSelectButton(buttons[0].gameObject);
+        }
+    }
+
+    IEnumerator DelayedNavigationSetup()
+    {
+        // Wait for next frame to ensure all components are ready
+        yield return new WaitForEndOfFrame();
+        SetupButtonNavigation();
+
+        // Force select the first button
+        if (buttons.Length > 0 && buttons[0] != null)
+        {
+            EventSystem.current.SetSelectedGameObject(buttons[0].gameObject);
+        }
+    }
+
+    private void LogDebug(string message)
+    {
+        if (enableDebugLogs)
+        {
+            Debug.Log($"<color=#00AAFF>[MainMenuController] {message}</color>");
+        }
     }
 }

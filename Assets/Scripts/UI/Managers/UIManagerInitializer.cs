@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ProjectColombo.UI
 {
-    public class UIManagerInitializer : MonoBehaviour
+    /*public class UIManagerInitializer : MonoBehaviour
     {
         [Header("UI Manager Setup")]
         [SerializeField] GameObject uiManagerPrefab;
@@ -29,5 +29,5 @@ namespace ProjectColombo.UI
                 }
             }
         }
-    }
+    }*/
 }

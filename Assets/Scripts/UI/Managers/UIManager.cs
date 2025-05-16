@@ -9,7 +9,7 @@ using ProjectColombo.GameManagement;
 
 public class UIManager : MonoBehaviour
 {
-    public static UIManager Instance;
+    /*public static UIManager Instance;
 
     [SerializeField] GameInputSO gameInputSO;
 
@@ -398,5 +398,5 @@ public class UIManager : MonoBehaviour
         }
 
         return path;
-    }
+    }*/
 }

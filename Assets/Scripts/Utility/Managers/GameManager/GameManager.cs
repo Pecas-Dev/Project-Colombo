@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 using ProjectColombo.UI.Pausescreen;
 using ProjectColombo.GameInputSystem;
 using ProjectColombo.GameManagement.Stats;
@@ -58,6 +59,9 @@ namespace ProjectColombo.GameManagement
         protected CharmSwapMenuController charmSwapMenuController;
         protected GameObject directCharmSwapMenuReference;
 
+        // New UI Manager v2 reference
+        private UIManagerV2 uiManagerV2;
+
         public CharmSwapMenuController CharmSwapMenuCtrl => charmSwapMenuController;
         public bool UseNewCharmSwapUI => useNewCharmSwapUI;
 
@@ -74,6 +78,14 @@ namespace ProjectColombo.GameManagement
             Instance = this;
             DontDestroyOnLoad(gameObject); // Persist across scenes
 
+            // Initialize UIManagerV2
+            uiManagerV2 = GetComponent<UIManagerV2>();
+            if (uiManagerV2 == null)
+            {
+                uiManagerV2 = gameObject.AddComponent<UIManagerV2>();
+                LogDebug("Added UIManagerV2 component");
+            }
+
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
@@ -81,8 +93,6 @@ namespace ProjectColombo.GameManagement
         {
             if (useNewPauseMenu)
             {
-                FindPauseMenuController();
-
                 if (pauseMenuUI != null)
                 {
                     pauseMenuUI.SetActive(false);
@@ -90,123 +100,12 @@ namespace ProjectColombo.GameManagement
             }
 
             EnsureCorrectCharmSwapSystemActive();
-        }
 
-        void FindPauseMenuController()
-        {
-            if (!useNewPauseMenu)
+            // Initialize UI references
+            if (uiManagerV2 != null)
             {
-                return;
+                uiManagerV2.InitializeReferences();
             }
-
-
-            LogDebug("Searching for PauseMenuInventoryController...");
-
-            if (newPauseMenuCanvas != null)
-            {
-                directPauseMenuReference = newPauseMenuCanvas;
-                pauseMenuController = newPauseMenuCanvas.GetComponentInChildren<PauseMenuInventoryController>(true);
-
-                if (pauseMenuController != null)
-                {
-                    LogDebug("Found PauseMenuInventoryController via direct reference");
-                    return;
-                }
-            }
-
-            GameObject pauseCanvas = GameObject.Find("PauseInventoryCanvas");
-
-            if (pauseCanvas != null)
-            {
-                pauseMenuController = pauseCanvas.GetComponentInChildren<PauseMenuInventoryController>(true);
-                if (pauseMenuController != null)
-                {
-                    directPauseMenuReference = pauseCanvas;
-                    LogDebug("Found PauseMenuInventoryController via GameObject.Find");
-                    return;
-                }
-            }
-
-            pauseMenuController = FindFirstObjectByType<PauseMenuInventoryController>(FindObjectsInactive.Include);
-
-            if (pauseMenuController != null)
-            {
-                directPauseMenuReference = pauseMenuController.transform.parent.gameObject;
-                LogDebug("Found PauseMenuInventoryController via FindFirstObjectByType");
-                return;
-            }
-
-            if (UIManager.Instance != null)
-            {
-                var controller = UIManager.Instance.GetMenu<PauseMenuInventoryController>();
-                if (controller != null)
-                {
-                    pauseMenuController = controller;
-                    directPauseMenuReference = controller.transform.parent.gameObject;
-                    LogDebug("Found PauseMenuInventoryController via UIManager");
-                    return;
-                }
-            }
-
-            LogDebug("PauseMenuInventoryController not found - will use old pause menu system");
-        }
-
-        public void FindCharmSwapMenuController()
-        {
-            if (!useNewCharmSwapUI)
-            {
-                return;
-            }
-
-            LogDebug("Searching for CharmSwapMenuController...");
-
-            if (newCharmSwapCanvas != null)
-            {
-                directCharmSwapMenuReference = newCharmSwapCanvas;
-                charmSwapMenuController = newCharmSwapCanvas.GetComponentInChildren<CharmSwapMenuController>(true);
-
-                if (charmSwapMenuController != null)
-                {
-                    LogDebug("Found CharmSwapMenuController via direct reference");
-                    return;
-                }
-            }
-
-            GameObject charmSwapCanvas = GameObject.Find("CharmSwapCanvas");
-
-            if (charmSwapCanvas != null)
-            {
-                charmSwapMenuController = charmSwapCanvas.GetComponentInChildren<CharmSwapMenuController>(true);
-                if (charmSwapMenuController != null)
-                {
-                    directCharmSwapMenuReference = charmSwapCanvas;
-                    LogDebug("Found CharmSwapMenuController via GameObject.Find");
-                    return;
-                }
-            }
-
-            charmSwapMenuController = FindFirstObjectByType<CharmSwapMenuController>(FindObjectsInactive.Include);
-
-            if (charmSwapMenuController != null)
-            {
-                directCharmSwapMenuReference = charmSwapMenuController.transform.parent.gameObject;
-                LogDebug("Found CharmSwapMenuController via FindFirstObjectByType");
-                return;
-            }
-
-            if (UIManager.Instance != null)
-            {
-                var controller = UIManager.Instance.GetMenu<CharmSwapMenuController>();
-                if (controller != null)
-                {
-                    charmSwapMenuController = controller;
-                    directCharmSwapMenuReference = controller.transform.parent.gameObject;
-                    LogDebug("Found CharmSwapMenuController via UIManager");
-                    return;
-                }
-            }
-
-            LogDebug("CharmSwapMenuController not found - will use old charm swap system");
         }
 
         void EnsureCorrectCharmSwapSystemActive()
@@ -219,11 +118,6 @@ namespace ProjectColombo.GameManagement
                 {
                     oldCharmSwapScreen = FindFirstObjectByType<CharmSelectScreen>(FindObjectsInactive.Include)?.gameObject;
                 }
-            }
-
-            if (directCharmSwapMenuReference == null)
-            {
-                FindCharmSwapMenuController();
             }
 
             if (useNewCharmSwapUI)
@@ -259,18 +153,36 @@ namespace ProjectColombo.GameManagement
 
         void Update()
         {
+            // Check for pause input via UIManagerV2 (raw input)
+            if (uiManagerV2 != null && uiManagerV2.CheckPauseInput())
+            {
+                if (gameIsPaused)
+                {
+                    ResumeGame();
+                }
+                else if (uiManagerV2.CanPauseInCurrentScene())
+                {
+                    PauseGame();
+                }
+            }
+
+            // Check for pause through the input system as a backup
             if (gameInput.PausePressed)
             {
                 if (gameIsPaused)
                 {
                     ResumeGame();
                 }
-                else
+                else if (uiManagerV2 != null && uiManagerV2.CanPauseInCurrentScene())
                 {
                     PauseGame();
                 }
+            }
 
-                gameInput.ResetPausePressed();
+            // Check for UI Cancel action to close pause menu
+            if (gameIsPaused && gameInput.playerInputActions.UI.Cancel.WasPressedThisFrame())
+            {
+                ResumeGame();
             }
 
             if (gameInput.playerInputActions.Player.enabled == true && enableInputActionMapLogs == true)
@@ -280,10 +192,6 @@ namespace ProjectColombo.GameManagement
             if (gameInput.playerInputActions.UI.enabled == true && enableInputActionMapLogs == true)
             {
                 Debug.Log("UIIIIIIIIIIIIIIIII!");
-            }
-            if (gameInput.playerInputActions.PauseCharmSwap.enabled == true && enableInputActionMapLogs == true)
-            {
-                Debug.Log("CHARMSWAPPPPPPPPPP!");
             }
         }
 
@@ -312,48 +220,25 @@ namespace ProjectColombo.GameManagement
             {
                 directPauseMenuReference = null;
                 pauseMenuController = null;
-                Invoke("FindPauseMenuController", 0.1f);
             }
 
             if (useNewPauseMenu)
             {
                 directPauseMenuReference = null;
                 pauseMenuController = null;
-                Invoke("FindPauseMenuController", 0.1f);
             }
 
             if (useNewCharmSwapUI)
             {
                 directCharmSwapMenuReference = null;
                 charmSwapMenuController = null;
-                Invoke("FindCharmSwapMenuController", 0.2f);
             }
 
-            Invoke("EnsureCorrectCharmSwapSystemActive", 0.3f);
-        }
-
-        public void RegisterPauseMenu(GameObject pauseMenu, PauseMenuInventoryController controller)
-        {
-            if (!useNewPauseMenu)
+            // Re-initialize UI references after scene change
+            if (uiManagerV2 != null)
             {
-                return;
+                uiManagerV2.InitializeReferences();
             }
-
-            directPauseMenuReference = pauseMenu;
-            pauseMenuController = controller;
-            LogDebug("Pause menu directly registered");
-        }
-
-        public void RegisterCharmSwapMenu(GameObject charmSwapMenu, CharmSwapMenuController controller)
-        {
-            if (!useNewCharmSwapUI)
-            {
-                return;
-            }
-
-            directCharmSwapMenuReference = charmSwapMenu;
-            charmSwapMenuController = controller;
-            LogDebug("Charm swap menu directly registered");
         }
 
         public void PauseGame(bool showPause = true)
@@ -366,7 +251,12 @@ namespace ProjectColombo.GameManagement
 
             if (showPause)
             {
-                if (useNewPauseMenu)
+                if (uiManagerV2 != null)
+                {
+                    // Use the new UI manager to show the pause menu
+                    uiManagerV2.ShowPauseMenu();
+                }
+                else if (useNewPauseMenu)
                 {
                     HandleNewPauseMenuActivation();
                 }
@@ -379,11 +269,6 @@ namespace ProjectColombo.GameManagement
 
         void HandleNewPauseMenuActivation()
         {
-            if (pauseMenuController == null)
-            {
-                FindPauseMenuController();
-            }
-
             if (pauseMenuController != null)
             {
                 LogDebug("Using new pause menu system");
@@ -402,10 +287,6 @@ namespace ProjectColombo.GameManagement
 
                 pauseMenuController.Show();
 
-                if (UIManager.Instance != null)
-                {
-                    UIManager.Instance.ShowMenuByType<PauseMenuInventoryController>();
-                }
             }
             else
             {
@@ -437,7 +318,12 @@ namespace ProjectColombo.GameManagement
             Time.timeScale = 1;
             gameIsPaused = false;
 
-            if (useNewPauseMenu && pauseMenuController != null)
+            if (uiManagerV2 != null)
+            {
+                // Use the new UI manager to hide the pause menu
+                uiManagerV2.HidePauseMenu();
+            }
+            else if (useNewPauseMenu && pauseMenuController != null)
             {
                 LogDebug("Hiding new pause menu");
                 pauseMenuController.Hide();
@@ -495,11 +381,6 @@ namespace ProjectColombo.GameManagement
 
             isResettingInputs = true;
 
-            if (gameInput != null)
-            {
-                gameInput.ResetPausePressed();
-            }
-
             DisableAllInputs();
 
             Invoke("FinishInputReset", inputResetDelay);
@@ -539,8 +420,6 @@ namespace ProjectColombo.GameManagement
 
                 gameInput.EnableInput(ProjectColombo.GameInputSystem.InputActionType.Pause);
 
-                gameInput.ResetPausePressed();
-
                 if (SceneManager.GetActiveScene().name == MAIN_MENU)
                 {
                     gameInput.EnableUIMode();
@@ -569,7 +448,6 @@ namespace ProjectColombo.GameManagement
             if (useNewPauseMenu)
             {
                 LogDebug("Switched to NEW pause menu system");
-                FindPauseMenuController();
             }
             else
             {
@@ -591,15 +469,9 @@ namespace ProjectColombo.GameManagement
                 }
             }
 
-            if (directCharmSwapMenuReference == null)
-            {
-                FindCharmSwapMenuController();
-            }
-
             if (useNewCharmSwapUI)
             {
                 LogDebug("Switched to NEW charm swap menu system");
-                FindCharmSwapMenuController();
 
                 if (oldCharmSwapScreen != null)
                 {

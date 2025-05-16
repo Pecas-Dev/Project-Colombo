@@ -30,12 +30,28 @@ namespace ProjectColombo.UI
         [SerializeField] protected float clickBounceDuration = 0.2f;
         [SerializeField] protected AnimationCurve clickBounceCurve;
 
+        [Header("Navigation Settings")]
+        [SerializeField] protected float navigationDelay = 0.2f;
+        [SerializeField] protected bool enableMenuNavigation = true;
+        [SerializeField] protected bool wrapNavigation = true;
 
         protected Animator transitionAnimation;
         protected UIInputSwitcher uiInputSwitcher;
 
         protected Dictionary<RectTransform, Vector3> originalButtonScales = new Dictionary<RectTransform, Vector3>();
 
+        // Used for navigation control
+        protected float lastNavigationTime = 0f;
+        protected bool isNavigating = false;
+
+        // Update is used to call HandleInput for all menu controllers
+        protected virtual void Update()
+        {
+            if (gameObject.activeInHierarchy && enabled)
+            {
+                HandleInput();
+            }
+        }
 
         public virtual void Show()
         {
@@ -87,10 +103,18 @@ namespace ProjectColombo.UI
             }
 
             SetupButtonClickHandlers();
+
+            // Initialize navigation for all buttons
+            if (enableMenuNavigation)
+            {
+                SetupButtonNavigation();
+            }
         }
 
         public virtual void HandleInput()
         {
+            // The derived classes will implement specific input handling
+            // This base implementation can handle any common input across menus
         }
 
         public virtual void Reinitialize()
@@ -103,6 +127,11 @@ namespace ProjectColombo.UI
             }
 
             SetupButtonClickHandlers();
+
+            if (enableMenuNavigation)
+            {
+                SetupButtonNavigation();
+            }
         }
 
         protected virtual void SetupButtonClickHandlers()
@@ -153,6 +182,78 @@ namespace ProjectColombo.UI
             }
         }
 
+        // New method for setting up button navigation
+        protected virtual void SetupButtonNavigation()
+        {
+            if (menuContainer == null) return;
+
+            Button[] buttons = menuContainer.GetComponentsInChildren<Button>(true);
+            if (buttons.Length == 0) return;
+
+            // Set up explicit navigation between buttons
+            for (int i = 0; i < buttons.Length; i++)
+            {
+                Button button = buttons[i];
+                Navigation nav = button.navigation;
+                nav.mode = Navigation.Mode.Explicit;
+
+                // Configure vertical navigation (up and down)
+                if (i > 0)
+                {
+                    nav.selectOnUp = buttons[i - 1];
+                }
+                else if (wrapNavigation)
+                {
+                    // Wrap around to the last button
+                    nav.selectOnUp = buttons[buttons.Length - 1];
+                }
+
+                if (i < buttons.Length - 1)
+                {
+                    nav.selectOnDown = buttons[i + 1];
+                }
+                else if (wrapNavigation)
+                {
+                    // Wrap around to the first button
+                    nav.selectOnDown = buttons[0];
+                }
+
+                button.navigation = nav;
+            }
+
+            // Ensure we have a current EventSystem
+            EventSystem eventSystem = EventSystem.current;
+            if (eventSystem == null)
+            {
+                eventSystem = FindFirstObjectByType<EventSystem>();
+            }
+
+            // Set initial button selection if we have a working EventSystem
+            if (eventSystem != null && buttons.Length > 0)
+            {
+                eventSystem.SetSelectedGameObject(buttons[0].gameObject);
+
+                // Update UIInputSwitcher if available
+                UIInputSwitcher inputSwitcher = FindFirstObjectByType<UIInputSwitcher>();
+                if (inputSwitcher != null)
+                {
+                    inputSwitcher.SetFirstSelectedButton(buttons[0].gameObject);
+                }
+            }
+        }
+
+        // Method to handle delay between navigation inputs
+        protected bool CanNavigate()
+        {
+            if (Time.unscaledTime - lastNavigationTime < navigationDelay)
+            {
+                return false;
+            }
+
+            lastNavigationTime = Time.unscaledTime;
+            return true;
+        }
+
         protected void PlayButtonClickAnimation(RectTransform rectTransform)
         {
             if (rectTransform == null) return;
@@ -193,7 +294,7 @@ namespace ProjectColombo.UI
 
         protected IEnumerator ShrinkAndBounceAnimation(RectTransform rectTransform, Vector3 originalScale)
         {
-            if (rectTransform == null) 
+            if (rectTransform == null)
             {
                 yield break;
             }

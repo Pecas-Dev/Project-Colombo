@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class RadialMenuManager : MonoBehaviour
 {
-    [Header("Scenes where RadialMenu is active")]
+    /*[Header("Scenes where RadialMenu is active")]
     [SerializeField]
     string[] activeScenes = new string[]
     {
@@ -231,5 +231,5 @@ public class RadialMenuManager : MonoBehaviour
                 yield return null;
             }
         }
-    }
+    }*/
 }

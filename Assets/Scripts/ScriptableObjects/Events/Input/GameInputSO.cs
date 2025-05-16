@@ -53,6 +53,12 @@ namespace ProjectColombo.GameInputSystem
         public bool CharmSwapPausePressed { get; private set; } = false;
 
 
+
+        private Vector2 uiNavigateValue = Vector2.zero;
+        public Vector2 UINavigateValue => uiNavigateValue;
+
+
+
         InputActionType allowedInputs = InputActionType.All;
 
         public InputSystem_Actions playerInputActions;
@@ -67,11 +73,6 @@ namespace ProjectColombo.GameInputSystem
             playerInputActions = new InputSystem_Actions();
 
             playerInputActions.Player.Enable();
-
-
-            playerInputActions.PauseCharmSwap.Enable();
-            playerInputActions.PauseCharmSwap.Pause.performed += OnPauseCharmSwapPerformed;
-
 
             playerInputActions.Player.Movement.performed += OnMovePerformed;
             playerInputActions.Player.Movement.canceled += OnMoveCanceled;
@@ -92,7 +93,9 @@ namespace ProjectColombo.GameInputSystem
             playerInputActions.Player.UsePotion.performed += OnUsePotionPerformed;
             playerInputActions.Player.UseCharmAbility.performed += OnUseCharmAbilityPerformed;
 
-            playerInputActions.Player.Pause.performed += OnPausePerformed;
+
+            playerInputActions.UI.Navigate.performed += OnNavigatePerformed;
+            playerInputActions.UI.Navigate.canceled += OnNavigateCanceled;
         }
 
         public void Uninitialize()
@@ -109,13 +112,6 @@ namespace ProjectColombo.GameInputSystem
             {
                 playerInputActions.Player.Disable();
             }
-
-            if (playerInputActions.PauseCharmSwap.enabled)
-            {
-                playerInputActions.PauseCharmSwap.Disable();
-            }
-
-            playerInputActions.PauseCharmSwap.Pause.performed -= OnPauseCharmSwapPerformed;
 
             playerInputActions.Player.Movement.performed -= OnMovePerformed;
             playerInputActions.Player.Movement.canceled -= OnMoveCanceled;
@@ -136,7 +132,12 @@ namespace ProjectColombo.GameInputSystem
             playerInputActions.Player.UsePotion.performed -= OnUsePotionPerformed;
             playerInputActions.Player.UseCharmAbility.performed -= OnUseCharmAbilityPerformed;
 
-            playerInputActions.Player.Pause.performed -= OnPausePerformed;
+
+
+            playerInputActions.UI.Navigate.performed -= OnNavigatePerformed;
+            playerInputActions.UI.Navigate.canceled -= OnNavigateCanceled;
+
+
 
             playerInputActions.Player.Disable();
             playerInputActions = null;
@@ -448,30 +449,22 @@ namespace ProjectColombo.GameInputSystem
         //---------------------------------------------------------
 
 
-        // ###################### Defense ############################
+        // ###################### UI ############################
 
-        void OnPausePerformed(InputAction.CallbackContext context)
+
+        void OnNavigatePerformed(InputAction.CallbackContext context)
         {
-            if (!IsInputEnabled(InputActionType.Pause)) return;
+            uiNavigateValue = context.ReadValue<Vector2>();
 
-            PausePressed = true;
+            if (uiNavigateValue.sqrMagnitude > 0.5f)
+            {
+                Debug.Log($"UI Navigation: {uiNavigateValue}");
+            }
         }
 
-        public void ResetPausePressed()
+        void OnNavigateCanceled(InputAction.CallbackContext context)
         {
-            PausePressed = false;
-
-            if (playerInputActions != null && playerInputActions.Player.Pause.triggered)
-            {
-                Debug.Log("Force-resetting pause input state");
-                if (playerInputActions.Player.enabled)
-                {
-                    var wasEnabled = playerInputActions.Player.enabled;
-                    playerInputActions.Player.Disable();
-                    playerInputActions.Player.Enable();
-
-                }
-            }
+            uiNavigateValue = Vector2.zero;
         }
 
 
@@ -519,53 +512,6 @@ namespace ProjectColombo.GameInputSystem
             }
         }
 
-        public void EnableUIAndPauseCharmSwapMode()
-        {
-            DisableInput(InputActionType.Movement);
-            ResetAllInputs();
-
-            if (playerInputActions != null)
-            {
-                if (playerInputActions.Player.enabled)
-                {
-                    playerInputActions.Player.Disable();
-                }
-
-                if (!playerInputActions.UI.enabled)
-                {
-                    playerInputActions.UI.Enable();
-                }
-
-                if (!playerInputActions.PauseCharmSwap.enabled)
-                {
-                    playerInputActions.PauseCharmSwap.Enable();
-                }
-            }
-            else
-            {
-                Debug.LogWarning("Player input actions not initialized in EnableUIAndPauseCharmSwapMode");
-                Initialize();
-
-                if (playerInputActions != null)
-                {
-                    if (playerInputActions.Player.enabled)
-                    {
-                        playerInputActions.Player.Disable();
-                    }
-
-                    if (!playerInputActions.UI.enabled)
-                    {
-                        playerInputActions.UI.Enable();
-                    }
-
-                    if (!playerInputActions.PauseCharmSwap.enabled)
-                    {
-                        playerInputActions.PauseCharmSwap.Enable();
-                    }
-                }
-            }
-        }
-
         public void DisableUIMode()
         {
             if (playerInputActions != null)
@@ -574,12 +520,6 @@ namespace ProjectColombo.GameInputSystem
                 {
                     playerInputActions.UI.Disable();
                 }
-
-                if (playerInputActions.PauseCharmSwap.enabled)
-                {
-                    playerInputActions.PauseCharmSwap.Disable();
-                }
-
                 if (!playerInputActions.Player.enabled)
                 {
                     playerInputActions.Player.Enable();

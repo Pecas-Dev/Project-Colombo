@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CharmSwapMenuRegister : MonoBehaviour
 {
-    [SerializeField] CharmSwapMenuController controller;
+    /*[SerializeField] CharmSwapMenuController controller;
     [SerializeField] bool enableDebugLogs = true;
 
     static bool hasRegistered = false;
@@ -92,5 +92,5 @@ public class CharmSwapMenuRegister : MonoBehaviour
         {
             Debug.Log($"<color=#FFAA00>[CharmSwapMenuRegister] {message}</color>");
         }
-    }
+    }*/
 }

@@ -13,6 +13,12 @@ namespace ProjectColombo.UI
         [SerializeField] GameObject[] tabSelectionIndicators;
         [SerializeField] Button[] tabButtons;
 
+        [Header("UI Manager Reference")]
+        [SerializeField] private UIManagerV2 uiManagerV2;
+
+        [Header("Debug Settings")]
+        [SerializeField] private bool enableDebugLogs = true;
+
         TextMeshProUGUI[] tabTexts;
 
         [Header("Tab Colors")]
@@ -24,9 +30,31 @@ namespace ProjectColombo.UI
 
         Coroutine[] textAnimationCoroutines;
 
+        private bool hasBeenInitialized = false;
+
+        private void OnEnable()
+        {
+            // This ensures animations run whenever the menu is activated
+            if (hasBeenInitialized)
+            {
+                RefreshUI();
+            }
+            else
+            {
+                Initialize();
+                hasBeenInitialized = true;
+            }
+        }
+
         public override void Initialize()
         {
             base.Initialize();
+
+            // Find UIManagerV2 if not assigned
+            if (uiManagerV2 == null)
+            {
+                uiManagerV2 = FindFirstObjectByType<UIManagerV2>();
+            }
 
             tabTexts = new TextMeshProUGUI[tabButtons.Length];
             textAnimationCoroutines = new Coroutine[tabButtons.Length];
@@ -98,15 +126,122 @@ namespace ProjectColombo.UI
             }
         }
 
+        // Override to set up button navigation for tabs
+        protected override void SetupButtonNavigation()
+        {
+            // Setup tab buttons navigation
+            if (tabButtons == null || tabButtons.Length == 0) return;
+
+            LogDebug("Setting up navigation for " + tabButtons.Length + " tab buttons");
+
+            for (int i = 0; i < tabButtons.Length; i++)
+            {
+                Button button = tabButtons[i];
+                if (button == null) continue;
+
+                Navigation nav = button.navigation;
+                nav.mode = Navigation.Mode.Explicit;
+
+                // Configure horizontal navigation (left and right)
+                if (i > 0)
+                {
+                    nav.selectOnLeft = tabButtons[i - 1];
+                    LogDebug($"Tab {button.name} selectOnLeft = {tabButtons[i - 1].name}");
+                }
+                else if (wrapNavigation)
+                {
+                    nav.selectOnLeft = tabButtons[tabButtons.Length - 1];
+                    LogDebug($"Tab {button.name} selectOnLeft = {tabButtons[tabButtons.Length - 1].name} (wrap)");
+                }
+
+                if (i < tabButtons.Length - 1)
+                {
+                    nav.selectOnRight = tabButtons[i + 1];
+                    LogDebug($"Tab {button.name} selectOnRight = {tabButtons[i + 1].name}");
+                }
+                else if (wrapNavigation)
+                {
+                    nav.selectOnRight = tabButtons[0];
+                    LogDebug($"Tab {button.name} selectOnRight = {tabButtons[0].name} (wrap)");
+                }
+
+                button.navigation = nav;
+            }
+
+            // Also set up tab content buttons for each tab screen
+            for (int i = 0; i < tabScreens.Length; i++)
+            {
+                if (tabScreens[i] == null) continue;
+
+                Button[] contentButtons = tabScreens[i].GetComponentsInChildren<Button>(true);
+                if (contentButtons.Length == 0) continue;
+
+                LogDebug($"Setting up {contentButtons.Length} content buttons for tab {i}");
+
+                for (int j = 0; j < contentButtons.Length; j++)
+                {
+                    Button button = contentButtons[j];
+                    Navigation nav = button.navigation;
+                    nav.mode = Navigation.Mode.Explicit;
+
+                    // Vertical navigation
+                    if (j > 0)
+                    {
+                        nav.selectOnUp = contentButtons[j - 1];
+                    }
+                    else if (wrapNavigation)
+                    {
+                        nav.selectOnUp = contentButtons[contentButtons.Length - 1];
+                    }
+
+                    if (j < contentButtons.Length - 1)
+                    {
+                        nav.selectOnDown = contentButtons[j + 1];
+                    }
+                    else if (wrapNavigation)
+                    {
+                        nav.selectOnDown = contentButtons[0];
+                    }
+
+                    button.navigation = nav;
+                }
+            }
+
+            // Set initial tab selection
+            if (tabButtons.Length > 0 && tabButtons[0] != null)
+            {
+                EventSystem.current.SetSelectedGameObject(tabButtons[0].gameObject);
+                LogDebug("Set initial selection to tab " + tabButtons[0].name);
+            }
+        }
+
         public override void Show()
         {
             base.Show();
+
+            // Ensure we're visible
+            if (menuContainer != null)
+            {
+                menuContainer.SetActive(true);
+            }
 
             if (gameInputSO != null)
             {
                 gameInputSO.EnableUIMode();
             }
 
+            RefreshUI();
+        }
+
+        // New method to refresh the UI and ensure animations work
+        private void RefreshUI()
+        {
+            // Reselect current tab to refresh animations
+            int previousIndex = currentTabIndex;
+            currentTabIndex = -1;
+            SelectTab(previousIndex);
+
+            // Ensure button selection
             if (tabScreens.Length > 0 && currentTabIndex >= 0 && currentTabIndex < tabScreens.Length)
             {
                 Button firstButton = tabScreens[currentTabIndex].GetComponentInChildren<Button>();
@@ -131,19 +266,72 @@ namespace ProjectColombo.UI
         public override void Hide()
         {
             base.Hide();
+
+            // Ensure we're hidden
+            if (menuContainer != null)
+            {
+                menuContainer.SetActive(false);
+            }
         }
 
         public override void HandleInput()
         {
-            if (gameInputSO != null)
+            base.HandleInput();
+
+            if (gameInputSO != null && gameInputSO.playerInputActions != null)
             {
-                if (gameInputSO.playerInputActions.UI.MoveLeftShoulder.WasPressedThisFrame())
+                // Use shoulder buttons for tab navigation as in the original
+                if (gameInputSO.playerInputActions.UI.MoveLeftShoulder.WasPressedThisFrame() && CanNavigate())
                 {
                     NavigateLeft();
+                    LogDebug("Left shoulder button pressed - navigating left");
                 }
-                else if (gameInputSO.playerInputActions.UI.MoveRightShoulder.WasPressedThisFrame())
+                else if (gameInputSO.playerInputActions.UI.MoveRightShoulder.WasPressedThisFrame() && CanNavigate())
                 {
                     NavigateRight();
+                    LogDebug("Right shoulder button pressed - navigating right");
+                }
+
+                // Add cancel button support to return to main menu
+                if (gameInputSO.playerInputActions.UI.Cancel.WasPressedThisFrame())
+                {
+                    LogDebug("Cancel button pressed - returning to main menu");
+                    ReturnToMainMenu();
+                }
+            }
+        }
+
+        // Method to return to main menu
+        private void ReturnToMainMenu()
+        {
+            LogDebug("Returning to main menu");
+
+            // Use UIManagerV2 instead of old UIManager
+            if (uiManagerV2 != null)
+            {
+                Hide(); // First hide this menu
+                uiManagerV2.ShowMainMenu();
+            }
+            else
+            {
+                // Direct menu navigation as fallback
+                Hide();
+
+                if (transform.parent != null)
+                {
+                    Transform mainMenuTransform = transform.parent.Find("MainMenu");
+                    if (mainMenuTransform != null)
+                    {
+                        GameObject mainMenu = mainMenuTransform.gameObject;
+                        mainMenu.SetActive(true);
+
+                        // Initialize the main menu controller if available
+                        MainMenuController mainMenuController = mainMenu.GetComponent<MainMenuController>();
+                        if (mainMenuController != null)
+                        {
+                            mainMenuController.Show();
+                        }
+                    }
                 }
             }
         }
@@ -210,6 +398,14 @@ namespace ProjectColombo.UI
                 return;
             }
 
+            // Skip if already on this tab
+            if (currentTabIndex == index)
+            {
+                return;
+            }
+
+            LogDebug("Selecting tab " + index);
+
             if (currentTabIndex >= 0 && currentTabIndex < tabScreens.Length)
             {
                 tabScreens[currentTabIndex].SetActive(false);
@@ -268,6 +464,23 @@ namespace ProjectColombo.UI
                 {
                     uiInputSwitcher.SetFirstSelectedButton(firstButton.gameObject);
                 }
+            }
+
+            if (tabButtons[index] != null)
+            {
+                RectTransform rectTransform = tabButtons[index].GetComponent<RectTransform>();
+                if (rectTransform != null)
+                {
+                    PlayButtonClickAnimation(rectTransform);
+                }
+            }
+        }
+
+        private void LogDebug(string message)
+        {
+            if (enableDebugLogs)
+            {
+                Debug.Log($"<color=#FFAA00>[OptionsMenuController] {message}</color>");
             }
         }
     }

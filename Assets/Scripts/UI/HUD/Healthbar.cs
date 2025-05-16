@@ -9,26 +9,25 @@ namespace ProjectColombo.UI.HUD
     {
         HealthManager playerHealthManager;
         public TMP_Text healthText;
-        public Image maxHealthImage;
+        //public Image maxHealthImage;
         public Image currentHealthImage;
 
-        int maxHealth = 100;
-        int currentHealth = 50;
+        int maxHealth = 0;
+        int currentHealth = 0;
 
         void Start()
         {
             playerHealthManager = GetComponentInParent<HealthManager>();
         }
 
-        // Update is called once per frame
         void Update()
         {
             maxHealth = playerHealthManager.MaxHealth;
             currentHealth = playerHealthManager.CurrentHealth;
 
-            healthText.text = currentHealth + " / " + maxHealth;
-            maxHealthImage.GetComponent<RectTransform>().sizeDelta = new Vector2(maxHealth * 0.5f + 10, 50);
-            currentHealthImage.GetComponent<RectTransform>().sizeDelta = new Vector2(currentHealth * 0.5f, 40);
+            healthText.text = currentHealth + "\n -- \n" + maxHealth;
+            //maxHealthImage.GetComponent<RectTransform>().sizeDelta = new Vector2(maxHealth * 0.5f + 10, 50);
+            currentHealthImage.fillAmount = (float)currentHealth / maxHealth;
         }
     }
 }
