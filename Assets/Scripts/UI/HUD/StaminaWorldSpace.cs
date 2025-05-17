@@ -1,6 +1,6 @@
-using System.Collections.Generic;
-using ProjectColombo.Combat;
 using UnityEngine;
+using ProjectColombo.Combat;
+using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
 
@@ -20,6 +20,10 @@ namespace ProjectColombo.UI.HUD
         [SerializeField, Range(0f, 180f)] float arcAngle = 90f;
         [SerializeField, Range(0.5f, 2f)] float spacingMultiplier = 1f;
 
+        [Header("Stamina Consumption Direction")]
+        [Tooltip("If true, stamina is consumed from first to last indicator. If false, stamina is consumed from last to first indicator.")]
+        [SerializeField] bool consumeFromFirstToLast = true;
+
         [Header("Positioning")]
         [SerializeField] Vector3 positionOffset = new Vector3(0, 0, 0);
 
@@ -32,6 +36,7 @@ namespace ProjectColombo.UI.HUD
         [SerializeField, Range(0f, 1f)] float debugConsumeAmount = 0.5f;
         [SerializeField] bool consumeStamina = false;
         [SerializeField] bool refillStamina = false;
+        [SerializeField] bool toggleConsumptionDirection = false;
 
         readonly List<GameObject> indicators = new();
 
@@ -47,14 +52,14 @@ namespace ProjectColombo.UI.HUD
 
             string currentSceneName = SceneManager.GetActiveScene().name;
 
-            if (currentSceneName == "05_Church")
-            {
-                positionOffset = new Vector3(-9.4f, 10f, -7f);
-            }
-            else
-            {
-                positionOffset = new Vector3(-14f, 14f, -11.5f);
-            }
+            //if (currentSceneName == "05_Church")
+            //{
+            //    positionOffset = new Vector3(-9.4f, 10f, -7f);
+            //}
+            //else
+            //{
+            //    positionOffset = new Vector3(-14f, 14f, -11.5f);
+            //}
 
             if (parentTransform != null)
             {
@@ -96,27 +101,27 @@ namespace ProjectColombo.UI.HUD
             switch (staminaData.currentMaxStamina)
             {
                 case 1:
-                    startAngle = 227f;
+                    startAngle = 223.0f;
                     offsetX = 1.07f;
                     break;
                 case 2:
-                    startAngle = 220.0f;
+                    startAngle = 217.0f;
                     offsetX = 1.07f;
                     break;
                 case 3:
-                    startAngle = 215.0f;
+                    startAngle = 210.0f;
                     offsetX = 1.07f;
                     break;
                 case 4:
-                    startAngle = 209.0f;
+                    startAngle = 205.0f;
                     offsetX = 1.07f;
                     break;
                 case 5:
-                    startAngle = 202.0f;
+                    startAngle = 200.0f;
                     offsetX = 1.07f; ;
                     break;
                 case 6:
-                    startAngle = 198.0f;
+                    startAngle = 194.0f;
                     offsetX = 1.07f;
                     break;
                 case 7:
@@ -193,6 +198,13 @@ namespace ProjectColombo.UI.HUD
                 staminaData.currentStamina = staminaData.currentMaxStamina;
                 Debug.Log($"<color=blue>Debug</color>: Refilled stamina from {before} to {staminaData.currentStamina}.");
             }
+
+            if (toggleConsumptionDirection)
+            {
+                toggleConsumptionDirection = false;
+                consumeFromFirstToLast = !consumeFromFirstToLast;
+                Debug.Log($"<color=magenta>Debug</color>: Toggled consumption direction. Now consuming from {(consumeFromFirstToLast ? "first to last" : "last to first")}");
+            }
         }
 
         void BuildLayout()
@@ -252,21 +264,44 @@ namespace ProjectColombo.UI.HUD
         void UpdateVisuals()
         {
             float current = staminaData.currentStamina;
+            float total = staminaData.currentMaxStamina;
 
-            for (int i = 0; i < indicators.Count; i++)
+            if (consumeFromFirstToLast)
             {
-                float fill = 0f;
-
-                if (current >= i + 1f)
+                for (int i = 0; i < indicators.Count; i++)
                 {
-                    fill = 1f;
-                }
-                else if (current > i)
-                {
-                    fill = current % 1;
-                }
+                    float fill = 0f;
 
-                indicators[i].GetComponentInChildren<StaminaIndicator>().UpdateDisplay(fill);
+                    if (current >= i + 1f)
+                    {
+                        fill = 1f;
+                    }
+                    else if (current > i)
+                    {
+                        fill = current % 1;
+                    }
+
+                    indicators[i].GetComponentInChildren<StaminaIndicator>().UpdateDisplay(fill);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < indicators.Count; i++)
+                {
+                    int reverseIndex = indicators.Count - 1 - i;
+                    float fill = 0f;
+
+                    if (current >= i + 1f)
+                    {
+                        fill = 1f;
+                    }
+                    else if (current > i)
+                    {
+                        fill = current % 1;
+                    }
+
+                    indicators[reverseIndex].GetComponentInChildren<StaminaIndicator>().UpdateDisplay(fill);
+                }
             }
         }
 
@@ -280,6 +315,7 @@ namespace ProjectColombo.UI.HUD
                 removeStaminaPoint = false;
                 consumeStamina = false;
                 refillStamina = false;
+                toggleConsumptionDirection = false;
             }
 
             if (Application.isPlaying)

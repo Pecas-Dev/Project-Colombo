@@ -63,7 +63,7 @@ namespace ProjectColombo.StateMachine.Player
         void Awake()
         {
             myRigidbody = GetComponent<Rigidbody>();
-            myStamina = GetComponent<Stamina>();
+            myStamina = FindFirstObjectByType<Stamina>();
             myPlayerAnimator = GetComponent<PlayerAnimator>();
             myEntityAttributes = GetComponent<EntityAttributes>();
             myHealthManager = GetComponent<HealthManager>();

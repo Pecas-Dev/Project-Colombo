@@ -12,7 +12,7 @@ namespace ProjectColombo.Objects.Charms
 
         public override void Enable()
         {
-            myStamina = GameObject.Find("Player").GetComponent<Stamina>();
+            myStamina = FindFirstObjectByType<Stamina>();
             staminaRegenTimeValue = myStamina.regenTime * staminaRegenTimePercentage / 100f;
             myStamina.regenTime += staminaRegenTimeValue;
             Debug.Log("changed stamina regen time by: " + staminaRegenTimeValue + " to " + myStamina.regenTime);
