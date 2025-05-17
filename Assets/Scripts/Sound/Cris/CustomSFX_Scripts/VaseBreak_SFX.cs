@@ -11,6 +11,8 @@ namespace ProjectColombo.Objects.SFX
 
         private static AudioSource sfxAudioSource;
 
+        private static float nextPlayTime = 0f;
+
         public void PlaySFX()
         {
             if (sfxClip == null)
@@ -19,20 +21,22 @@ namespace ProjectColombo.Objects.SFX
                 return;
             }
 
-            if (sfxAudioSource == null)
+            if (Time.time >= nextPlayTime)
             {
-                GameObject sfxObj = new GameObject("SFXAudioSource");
-                sfxAudioSource = sfxObj.AddComponent<AudioSource>();
-                sfxAudioSource.playOnAwake = false;
-                DontDestroyOnLoad(sfxObj);
-            }
+                if (sfxAudioSource == null)
+                {
+                    GameObject sfxObj = new GameObject("SFXAudioSource");
+                    sfxAudioSource = sfxObj.AddComponent<AudioSource>();
+                    sfxAudioSource.playOnAwake = false;
+                    DontDestroyOnLoad(sfxObj);
+                }
 
-            if (!sfxAudioSource.isPlaying)
-            {
                 sfxAudioSource.clip = sfxClip;
                 sfxAudioSource.volume = volume;
                 sfxAudioSource.spatialBlend = 0f;
                 sfxAudioSource.Play();
+
+                nextPlayTime = Time.time + 0.4f;
             }
         }
     }
