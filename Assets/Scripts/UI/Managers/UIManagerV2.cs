@@ -10,30 +10,30 @@ namespace ProjectColombo.UI
     public class UIManagerV2 : MonoBehaviour
     {
         [Header("Pause Menu References")]
-        [SerializeField] private GameObject pauseInventoryCanvas;
-        [SerializeField] private GameObject inventoryTab;
-        [SerializeField] private GameObject settingsTab;
+        [SerializeField] GameObject pauseInventoryCanvas;
+        [SerializeField] GameObject inventoryTab;
+        [SerializeField] GameObject settingsTab;
 
         [Header("Main Menu References")]
-        [SerializeField] private GameObject mainMenuCanvas;
-        [SerializeField] private GameObject mainMenu;
-        [SerializeField] private GameObject optionsMenu;
+        [SerializeField] GameObject mainMenuCanvas;
+        [SerializeField] GameObject mainMenu;
+        [SerializeField] GameObject optionsMenu;
 
         [Header("Non-Pausable Scenes")]
-        [SerializeField] private string[] nonPausableScenes = { "00_MainMenu", "01_MaskSelection" };
+        [SerializeField] string[] nonPausableScenes = { "00_MainMenu", "01_MaskSelection" };
 
         [Header("Input Settings")]
-        [SerializeField] private float inputBufferTime = 0.2f;
-        [SerializeField] private Key keyboardPauseKey = Key.Escape;
+        [SerializeField] float inputBufferTime = 0.2f;
+        [SerializeField] Key keyboardPauseKey = Key.Escape;
 
         [Header("Debug")]
-        [SerializeField] private bool enableDebugLogs = true;
+        [SerializeField] bool enableDebugLogs = true;
 
-        private Keyboard keyboard;
-        private Gamepad gamepad;
-        private float lastPauseTime;
+        Keyboard keyboard;
+        Gamepad gamepad;
+        float lastPauseTime;
 
-        private void Awake()
+        void Awake()
         {
             keyboard = Keyboard.current;
             gamepad = Gamepad.current;
@@ -42,7 +42,7 @@ namespace ProjectColombo.UI
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
-        private void Update()
+        void Update()
         {
         }
 

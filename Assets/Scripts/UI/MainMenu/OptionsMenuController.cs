@@ -14,10 +14,10 @@ namespace ProjectColombo.UI
         [SerializeField] Button[] tabButtons;
 
         [Header("UI Manager Reference")]
-        [SerializeField] private UIManagerV2 uiManagerV2;
+        [SerializeField] UIManagerV2 uiManagerV2;
 
         [Header("Debug Settings")]
-        [SerializeField] private bool enableDebugLogs = true;
+        [SerializeField] bool enableDebugLogs = true;
 
         TextMeshProUGUI[] tabTexts;
 
@@ -30,11 +30,10 @@ namespace ProjectColombo.UI
 
         Coroutine[] textAnimationCoroutines;
 
-        private bool hasBeenInitialized = false;
+        bool hasBeenInitialized = false;
 
-        private void OnEnable()
+        void OnEnable()
         {
-            // This ensures animations run whenever the menu is activated
             if (hasBeenInitialized)
             {
                 RefreshUI();
@@ -50,7 +49,6 @@ namespace ProjectColombo.UI
         {
             base.Initialize();
 
-            // Find UIManagerV2 if not assigned
             if (uiManagerV2 == null)
             {
                 uiManagerV2 = FindFirstObjectByType<UIManagerV2>();
@@ -126,10 +124,8 @@ namespace ProjectColombo.UI
             }
         }
 
-        // Override to set up button navigation for tabs
         protected override void SetupButtonNavigation()
         {
-            // Setup tab buttons navigation
             if (tabButtons == null || tabButtons.Length == 0) return;
 
             LogDebug("Setting up navigation for " + tabButtons.Length + " tab buttons");
@@ -142,7 +138,6 @@ namespace ProjectColombo.UI
                 Navigation nav = button.navigation;
                 nav.mode = Navigation.Mode.Explicit;
 
-                // Configure horizontal navigation (left and right)
                 if (i > 0)
                 {
                     nav.selectOnLeft = tabButtons[i - 1];
@@ -168,7 +163,6 @@ namespace ProjectColombo.UI
                 button.navigation = nav;
             }
 
-            // Also set up tab content buttons for each tab screen
             for (int i = 0; i < tabScreens.Length; i++)
             {
                 if (tabScreens[i] == null) continue;
@@ -184,7 +178,6 @@ namespace ProjectColombo.UI
                     Navigation nav = button.navigation;
                     nav.mode = Navigation.Mode.Explicit;
 
-                    // Vertical navigation
                     if (j > 0)
                     {
                         nav.selectOnUp = contentButtons[j - 1];
@@ -207,7 +200,6 @@ namespace ProjectColombo.UI
                 }
             }
 
-            // Set initial tab selection
             if (tabButtons.Length > 0 && tabButtons[0] != null)
             {
                 EventSystem.current.SetSelectedGameObject(tabButtons[0].gameObject);
@@ -219,7 +211,6 @@ namespace ProjectColombo.UI
         {
             base.Show();
 
-            // Ensure we're visible
             if (menuContainer != null)
             {
                 menuContainer.SetActive(true);
@@ -233,15 +224,14 @@ namespace ProjectColombo.UI
             RefreshUI();
         }
 
-        // New method to refresh the UI and ensure animations work
-        private void RefreshUI()
+        void RefreshUI()
         {
-            // Reselect current tab to refresh animations
             int previousIndex = currentTabIndex;
+
             currentTabIndex = -1;
+
             SelectTab(previousIndex);
 
-            // Ensure button selection
             if (tabScreens.Length > 0 && currentTabIndex >= 0 && currentTabIndex < tabScreens.Length)
             {
                 Button firstButton = tabScreens[currentTabIndex].GetComponentInChildren<Button>();
@@ -267,7 +257,6 @@ namespace ProjectColombo.UI
         {
             base.Hide();
 
-            // Ensure we're hidden
             if (menuContainer != null)
             {
                 menuContainer.SetActive(false);
@@ -280,7 +269,6 @@ namespace ProjectColombo.UI
 
             if (gameInputSO != null && gameInputSO.playerInputActions != null)
             {
-                // Use shoulder buttons for tab navigation as in the original
                 if (gameInputSO.playerInputActions.UI.MoveLeftShoulder.WasPressedThisFrame() && CanNavigate())
                 {
                     NavigateLeft();
@@ -292,7 +280,6 @@ namespace ProjectColombo.UI
                     LogDebug("Right shoulder button pressed - navigating right");
                 }
 
-                // Add cancel button support to return to main menu
                 if (gameInputSO.playerInputActions.UI.Cancel.WasPressedThisFrame())
                 {
                     LogDebug("Cancel button pressed - returning to main menu");
@@ -301,20 +288,17 @@ namespace ProjectColombo.UI
             }
         }
 
-        // Method to return to main menu
-        private void ReturnToMainMenu()
+        void ReturnToMainMenu()
         {
             LogDebug("Returning to main menu");
 
-            // Use UIManagerV2 instead of old UIManager
             if (uiManagerV2 != null)
             {
-                Hide(); // First hide this menu
+                Hide();
                 uiManagerV2.ShowMainMenu();
             }
             else
             {
-                // Direct menu navigation as fallback
                 Hide();
 
                 if (transform.parent != null)
@@ -325,7 +309,6 @@ namespace ProjectColombo.UI
                         GameObject mainMenu = mainMenuTransform.gameObject;
                         mainMenu.SetActive(true);
 
-                        // Initialize the main menu controller if available
                         MainMenuController mainMenuController = mainMenu.GetComponent<MainMenuController>();
                         if (mainMenuController != null)
                         {
@@ -398,7 +381,6 @@ namespace ProjectColombo.UI
                 return;
             }
 
-            // Skip if already on this tab
             if (currentTabIndex == index)
             {
                 return;
@@ -476,7 +458,7 @@ namespace ProjectColombo.UI
             }
         }
 
-        private void LogDebug(string message)
+        void LogDebug(string message)
         {
             if (enableDebugLogs)
             {

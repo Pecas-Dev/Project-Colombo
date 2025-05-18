@@ -12,42 +12,35 @@ namespace ProjectColombo.UI
         [Header("Selection Settings")]
         [SerializeField] GameObject firstSelectedButton;
         [SerializeField] float reselectDelay = 0.1f;
-        [SerializeField] float checkInterval = 0.05f; // More frequent checking for better responsiveness
+        [SerializeField] float checkInterval = 0.05f;
 
         [Header("Device Detection")]
         [SerializeField] float mouseMovementThreshold = 0.5f;
         [SerializeField] float gamepadMovementThreshold = 0.2f;
-        [SerializeField] float deviceSwitchDelay = 0.15f; // Time to wait after device input before switching
-
+        [SerializeField] float deviceSwitchDelay = 0.15f;
         [Header("Debug Settings")]
         [SerializeField] bool enableDebugLogs = false;
         [SerializeField] bool enableVisualIndicator = false;
 
-        // Input state tracking
         bool wasUsingMouse = false;
         bool isUsingController = false;
         bool isTransitioningDevices = false;
 
-        // Timing variables
         float lastMouseInputTime = 0f;
         float lastControllerInputTime = 0f;
         float lastSelectionTime = 0f;
         float lastDeviceSwitchTime = 0f;
 
-        // For managing navigation flow between buttons
         Dictionary<GameObject, List<GameObject>> adjacentButtons = new Dictionary<GameObject, List<GameObject>>();
 
-        // References
         PlayerInput playerInput;
         EventSystem currentEventSystem;
         GameObject lastValidSelection;
 
-        // Visual indicator for debug
         GameObject indicatorObject;
 
         void Awake()
         {
-            // Create visual indicator if enabled
             if (enableVisualIndicator)
             {
                 CreateVisualIndicator();
@@ -56,7 +49,6 @@ namespace ProjectColombo.UI
 
         void Start()
         {
-            // Find the PlayerInput component
             playerInput = FindFirstObjectByType<PlayerInput>();
             currentEventSystem = EventSystem.current;
 
@@ -67,7 +59,6 @@ namespace ProjectColombo.UI
         {
             yield return new WaitForEndOfFrame();
 
-            // If we have a starting button, select it
             if (firstSelectedButton != null && currentEventSystem != null)
             {
                 currentEventSystem.SetSelectedGameObject(firstSelectedButton);
@@ -75,10 +66,8 @@ namespace ProjectColombo.UI
                 LogDebug($"Initially selected: {firstSelectedButton.name}");
             }
 
-            // Map the UI navigation structure for easier traversal if needed
             MapUINavigation();
 
-            // Start monitoring for input device changes
             StartCoroutine(MonitorInputDeviceChanges());
         }
 
@@ -87,14 +76,13 @@ namespace ProjectColombo.UI
             indicatorObject = new GameObject("InputDeviceIndicator");
             indicatorObject.transform.SetParent(transform);
 
-            // Add a small UI element to indicate the current input device
             Canvas canvas = GetComponentInParent<Canvas>();
+
             if (canvas == null)
             {
                 canvas = FindFirstObjectByType<Canvas>();
                 if (canvas == null)
                 {
-                    // Create a new canvas if needed
                     GameObject canvasObj = new GameObject("DebugCanvas");
                     canvas = canvasObj.AddComponent<Canvas>();
                     canvas.renderMode = RenderMode.ScreenSpaceOverlay;
@@ -103,8 +91,8 @@ namespace ProjectColombo.UI
                 }
             }
 
-            // Create an indicator that shows the current input device
             indicatorObject.transform.SetParent(canvas.transform);
+
             RectTransform rectTransform = indicatorObject.AddComponent<RectTransform>();
             rectTransform.anchorMin = new Vector2(1, 0);
             rectTransform.anchorMax = new Vector2(1, 0);
@@ -118,28 +106,38 @@ namespace ProjectColombo.UI
 
         void MapUINavigation()
         {
-            // Find all selectable UI elements in the scene
             Selectable[] selectables = FindObjectsByType<Selectable>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
             if (selectables.Length > 0)
             {
                 LogDebug($"Mapping UI navigation for {selectables.Length} selectable elements");
 
-                // Build a map of the UI navigation
                 foreach (Selectable selectable in selectables)
                 {
                     if (selectable.gameObject.activeInHierarchy)
                     {
-                        // Get adjacent buttons based on navigation
                         List<GameObject> adjacent = new List<GameObject>();
 
                         Navigation nav = selectable.navigation;
+
                         if (nav.mode == Navigation.Mode.Explicit)
                         {
-                            if (nav.selectOnUp != null) adjacent.Add(nav.selectOnUp.gameObject);
-                            if (nav.selectOnDown != null) adjacent.Add(nav.selectOnDown.gameObject);
-                            if (nav.selectOnLeft != null) adjacent.Add(nav.selectOnLeft.gameObject);
-                            if (nav.selectOnRight != null) adjacent.Add(nav.selectOnRight.gameObject);
+                            if (nav.selectOnUp != null)
+                            {
+                                adjacent.Add(nav.selectOnUp.gameObject);
+                            }
+                            if (nav.selectOnDown != null)
+                            {
+                                adjacent.Add(nav.selectOnDown.gameObject);
+                            }
+                            if (nav.selectOnLeft != null)
+                            {
+                                adjacent.Add(nav.selectOnLeft.gameObject);
+                            }
+                            if (nav.selectOnRight != null)
+                            {
+                                adjacent.Add(nav.selectOnRight.gameObject);
+                            }
                         }
 
                         adjacentButtons[selectable.gameObject] = adjacent;
@@ -152,20 +150,14 @@ namespace ProjectColombo.UI
         {
             while (true)
             {
-                // Check for mouse input
                 bool mouseInput = CheckForMouseInput();
 
-                // Check for gamepad input
                 bool gamepadInput = CheckForGamepadInput();
 
-                // Determine if we need to switch input modes
-                bool shouldSwitchToMouse = mouseInput && !wasUsingMouse &&
-                                           Time.unscaledTime - lastDeviceSwitchTime > deviceSwitchDelay;
+                bool shouldSwitchToMouse = mouseInput && !wasUsingMouse && Time.unscaledTime - lastDeviceSwitchTime > deviceSwitchDelay;
 
-                bool shouldSwitchToGamepad = gamepadInput && wasUsingMouse &&
-                                             Time.unscaledTime - lastDeviceSwitchTime > deviceSwitchDelay;
+                bool shouldSwitchToGamepad = gamepadInput && wasUsingMouse && Time.unscaledTime - lastDeviceSwitchTime > deviceSwitchDelay;
 
-                // Handle switching between mouse and gamepad
                 if (shouldSwitchToMouse && !isTransitioningDevices)
                 {
                     isTransitioningDevices = true;
@@ -181,16 +173,12 @@ namespace ProjectColombo.UI
                     StartCoroutine(ResetTransitionFlag(deviceSwitchDelay));
                 }
 
-                // Check if we need to restore a selection
                 if (currentEventSystem != null &&
                     isUsingController &&
                     currentEventSystem.currentSelectedGameObject == null &&
                     Time.unscaledTime - lastSelectionTime > reselectDelay)
                 {
-                    // Reselect the last valid selection or first button
-                    GameObject objectToSelect = lastValidSelection != null ?
-                                               lastValidSelection :
-                                               firstSelectedButton;
+                    GameObject objectToSelect = lastValidSelection != null ? lastValidSelection : firstSelectedButton;
 
                     if (objectToSelect != null)
                     {
@@ -200,7 +188,6 @@ namespace ProjectColombo.UI
                     }
                 }
 
-                // Update debug visual indicator
                 if (enableVisualIndicator && indicatorObject != null)
                 {
                     Image image = indicatorObject.GetComponent<Image>();
@@ -210,19 +197,18 @@ namespace ProjectColombo.UI
                     }
                 }
 
-                // Wait a short time before checking again
                 yield return new WaitForSecondsRealtime(checkInterval);
             }
         }
 
         bool CheckForMouseInput()
         {
-            if (Mouse.current == null) return false;
+            if (Mouse.current == null)
+            {
+                return false;
+            }
 
-            bool mousePressed = Mouse.current.leftButton.wasPressedThisFrame ||
-                               Mouse.current.rightButton.wasPressedThisFrame ||
-                               Mouse.current.middleButton.wasPressedThisFrame;
-
+            bool mousePressed = Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame || Mouse.current.middleButton.wasPressedThisFrame;
             bool mouseMoved = Mouse.current.delta.ReadValue().sqrMagnitude > mouseMovementThreshold;
 
             if (mousePressed || mouseMoved)
@@ -236,19 +222,14 @@ namespace ProjectColombo.UI
 
         bool CheckForGamepadInput()
         {
-            if (Gamepad.current == null) return false;
+            if (Gamepad.current == null)
+            {
+                return false;
+            }
 
-            // Check for D-pad input
             bool dpadMoved = Gamepad.current.dpad.ReadValue().sqrMagnitude > gamepadMovementThreshold;
-
-            // Check for stick input
             bool leftStickMoved = Gamepad.current.leftStick.ReadValue().sqrMagnitude > gamepadMovementThreshold;
-
-            // Check for face buttons
-            bool buttonPressed = Gamepad.current.buttonSouth.wasPressedThisFrame ||
-                                Gamepad.current.buttonNorth.wasPressedThisFrame ||
-                                Gamepad.current.buttonEast.wasPressedThisFrame ||
-                                Gamepad.current.buttonWest.wasPressedThisFrame;
+            bool buttonPressed = Gamepad.current.buttonSouth.wasPressedThisFrame || Gamepad.current.buttonNorth.wasPressedThisFrame || Gamepad.current.buttonEast.wasPressedThisFrame || Gamepad.current.buttonWest.wasPressedThisFrame;
 
             if (dpadMoved || leftStickMoved || buttonPressed)
             {
@@ -264,11 +245,9 @@ namespace ProjectColombo.UI
             wasUsingMouse = true;
             isUsingController = false;
 
-            // When using mouse, we don't need to maintain selection
             if (currentEventSystem != null)
             {
                 lastValidSelection = currentEventSystem.currentSelectedGameObject;
-                // We don't clear the selection here to avoid disrupting click events
             }
 
             LogDebug("Switched to MOUSE input mode");
@@ -279,7 +258,6 @@ namespace ProjectColombo.UI
             wasUsingMouse = false;
             isUsingController = true;
 
-            // When using controller, we need to ensure something is selected
             if (currentEventSystem != null && currentEventSystem.currentSelectedGameObject == null)
             {
                 GameObject objectToSelect = firstSelectedButton;
@@ -322,7 +300,6 @@ namespace ProjectColombo.UI
             }
         }
 
-        // Update the mapping when the UI structure changes
         public void UpdateUIMapping()
         {
             adjacentButtons.Clear();
@@ -330,13 +307,11 @@ namespace ProjectColombo.UI
             LogDebug("UI navigation mapping updated");
         }
 
-        // Get the currently detected input device
         public bool IsUsingController()
         {
             return isUsingController;
         }
 
-        // Force selection of a specific button (useful for menu transitions)
         public void ForceSelectButton(GameObject button)
         {
             if (button == null || currentEventSystem == null) return;
@@ -352,10 +327,7 @@ namespace ProjectColombo.UI
             currentEventSystem = EventSystem.current;
             if (currentEventSystem != null && isUsingController)
             {
-                // Force reselection of the last valid selection
-                GameObject objectToSelect = lastValidSelection != null ?
-                                          lastValidSelection :
-                                          firstSelectedButton;
+                GameObject objectToSelect = lastValidSelection != null ? lastValidSelection : firstSelectedButton;
 
                 if (objectToSelect != null)
                 {
@@ -374,17 +346,13 @@ namespace ProjectColombo.UI
 
         void Update()
         {
-            // Track the current EventSystem
             if (currentEventSystem != EventSystem.current)
             {
                 currentEventSystem = EventSystem.current;
                 LogDebug($"EventSystem reference updated: {(currentEventSystem != null ? currentEventSystem.name : "null")}");
             }
 
-            // Keep track of the last valid selection
-            if (currentEventSystem != null &&
-                currentEventSystem.currentSelectedGameObject != null &&
-                currentEventSystem.currentSelectedGameObject.activeInHierarchy)
+            if (currentEventSystem != null && currentEventSystem.currentSelectedGameObject != null && currentEventSystem.currentSelectedGameObject.activeInHierarchy)
             {
                 lastValidSelection = currentEventSystem.currentSelectedGameObject;
             }

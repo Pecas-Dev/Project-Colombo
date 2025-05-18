@@ -12,14 +12,20 @@ public class PlayerRollState : PlayerBaseState
 
     public static bool CanQueueRoll = true;
 
-    public PlayerRollState(PlayerStateMachine stateMachine) : base(stateMachine) 
-    { 
-    
+    public PlayerRollState(PlayerStateMachine stateMachine) : base(stateMachine)
+    {
+
     }
 
     public override void Enter()
     {
         if (!CanQueueRoll)
+        {
+            stateMachine.SwitchState(new PlayerMovementState(stateMachine));
+            return;
+        }
+
+        if (!stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.staminaToRoll))
         {
             stateMachine.SwitchState(new PlayerMovementState(stateMachine));
             return;

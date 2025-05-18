@@ -67,6 +67,9 @@ namespace ProjectColombo.GameManagement
 
         void Awake()
         {
+            GlobalStats globalStats = GetComponent<GlobalStats>();
+            globalStats.enabled = true;
+
             gameInput.Initialize();
 
             if (Instance != null && Instance != this)
@@ -78,7 +81,6 @@ namespace ProjectColombo.GameManagement
             Instance = this;
             DontDestroyOnLoad(gameObject); // Persist across scenes
 
-            // Initialize UIManagerV2
             uiManagerV2 = GetComponent<UIManagerV2>();
             if (uiManagerV2 == null)
             {
@@ -101,7 +103,6 @@ namespace ProjectColombo.GameManagement
 
             EnsureCorrectCharmSwapSystemActive();
 
-            // Initialize UI references
             if (uiManagerV2 != null)
             {
                 uiManagerV2.InitializeReferences();
@@ -153,7 +154,6 @@ namespace ProjectColombo.GameManagement
 
         void Update()
         {
-            // Check for pause input via UIManagerV2 (raw input)
             if (uiManagerV2 != null && uiManagerV2.CheckPauseInput())
             {
                 if (gameIsPaused)
@@ -166,7 +166,6 @@ namespace ProjectColombo.GameManagement
                 }
             }
 
-            // Check for pause through the input system as a backup
             if (gameInput.PausePressed)
             {
                 if (gameIsPaused)
@@ -179,7 +178,6 @@ namespace ProjectColombo.GameManagement
                 }
             }
 
-            // Check for UI Cancel action to close pause menu
             if (gameIsPaused && gameInput.playerInputActions.UI.Cancel.WasPressedThisFrame())
             {
                 ResumeGame();
@@ -203,6 +201,9 @@ namespace ProjectColombo.GameManagement
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
+            GlobalStats globalStats = GetComponent<GlobalStats>();
+            globalStats.enabled = true;
+
             ResumeGame();
 
             transition.Play("Open");
@@ -234,7 +235,6 @@ namespace ProjectColombo.GameManagement
                 charmSwapMenuController = null;
             }
 
-            // Re-initialize UI references after scene change
             if (uiManagerV2 != null)
             {
                 uiManagerV2.InitializeReferences();
@@ -253,12 +253,14 @@ namespace ProjectColombo.GameManagement
             {
                 if (uiManagerV2 != null)
                 {
-                    // Use the new UI manager to show the pause menu
                     uiManagerV2.ShowPauseMenu();
                 }
                 else if (useNewPauseMenu)
                 {
-                    HandleNewPauseMenuActivation();
+                    if (newPauseMenuCanvas != null)
+                    {
+                        newPauseMenuCanvas.SetActive(true);
+                    }
                 }
                 else
                 {
@@ -320,38 +322,13 @@ namespace ProjectColombo.GameManagement
 
             if (uiManagerV2 != null)
             {
-                // Use the new UI manager to hide the pause menu
                 uiManagerV2.HidePauseMenu();
             }
-            else if (useNewPauseMenu && pauseMenuController != null)
+            else if (useNewPauseMenu)
             {
-                LogDebug("Hiding new pause menu");
-                pauseMenuController.Hide();
-
-                if (directPauseMenuReference != null)
+                if (newPauseMenuCanvas != null)
                 {
-                    PauseCanvasManager canvasManager = directPauseMenuReference.GetComponent<PauseCanvasManager>();
-
-                    if (canvasManager != null)
-                    {
-                        canvasManager.HideGlobalElements();
-
-                        canvasManager.HideAllTabs();
-
-                        LogDebug("Hiding global elements and all tabs via PauseCanvasManager");
-                    }
-                    else
-                    {
-                        pauseMenuController.gameObject.SetActive(false);
-
-                        PauseMenuSettingsController settingsController = directPauseMenuReference.GetComponentInChildren<PauseMenuSettingsController>(true);
-
-                        if (settingsController != null)
-                        {
-                            settingsController.gameObject.SetActive(false);
-                            LogDebug("Manually deactivated settings controller");
-                        }
-                    }
+                    newPauseMenuCanvas.SetActive(false);
                 }
             }
             else if (pauseMenuUI != null)
@@ -359,10 +336,9 @@ namespace ProjectColombo.GameManagement
                 LogDebug("Hiding old pause menu");
                 pauseMenuUI.SetActive(false);
             }
-            else if (useNewCharmSwapUI && charmSwapMenuController != null)
-            {
-                charmSwapMenuController.Hide();
 
+            if (useNewCharmSwapUI && charmSwapMenuController != null)
+            {
                 if (charmSwapMenuController.WasActiveBeforePause)
                 {
                     charmSwapMenuController.RestoreAfterPause();
@@ -373,6 +349,10 @@ namespace ProjectColombo.GameManagement
                 }
             }
 
+            if (gameInput != null)
+            {
+                gameInput.DisableUIMode();
+            }
         }
 
         void StartInputResetSequence()

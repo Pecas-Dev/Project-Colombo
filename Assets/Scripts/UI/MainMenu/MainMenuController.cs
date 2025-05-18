@@ -16,10 +16,10 @@ public class MainMenuController : MenuController
     [SerializeField] AudioSource[] audioSources;
 
     [Header("UI Manager Reference")]
-    [SerializeField] private UIManagerV2 uiManagerV2;
+    [SerializeField] UIManagerV2 uiManagerV2;
 
     [Header("Debug Settings")]
-    [SerializeField] private bool enableDebugLogs = true;
+    [SerializeField] bool enableDebugLogs = true;
 
     int currentSelectedIndex = -1;
 
@@ -28,15 +28,13 @@ public class MainMenuController : MenuController
 
     Coroutine[] sizeAnimationCoroutines;
 
-    private bool hasBeenInitialized = false;
+    bool hasBeenInitialized = false;
 
-    private void OnEnable()
+    void OnEnable()
     {
 
-        // This ensures animations run whenever the menu is activated
         if (hasBeenInitialized)
         {
-            // Select the last active button instead of always the first one
             SelectButton(lastSelectedButtonIndex);
             RefreshAnimations();
         }
@@ -46,12 +44,10 @@ public class MainMenuController : MenuController
             hasBeenInitialized = true;
         }
 
-        // Force controller mode & button selection
         UIInputSwitcher inputSwitcher = FindFirstObjectByType<UIInputSwitcher>();
 
         if (inputSwitcher != null)
         {
-            // Force button selection in next frame
             StartCoroutine(ForceButtonSelection(inputSwitcher));
         }
     }
@@ -60,7 +56,6 @@ public class MainMenuController : MenuController
     {
         base.Initialize();
 
-        // Find UIManagerV2 if not assigned
         if (uiManagerV2 == null)
         {
             uiManagerV2 = FindFirstObjectByType<UIManagerV2>();
@@ -126,13 +121,13 @@ public class MainMenuController : MenuController
         }
     }
 
-    // Override SetupButtonNavigation to work with our specific buttons array
     protected override void SetupButtonNavigation()
     {
-        // Skip base implementation
-        if (buttons == null || buttons.Length == 0) return;
+        if (buttons == null || buttons.Length == 0)
+        {
+            return;
+        }
 
-        // Set up explicit navigation between main menu buttons
         LogDebug("Setting up navigation for " + buttons.Length + " buttons");
 
         for (int i = 0; i < buttons.Length; i++)
@@ -143,7 +138,6 @@ public class MainMenuController : MenuController
             Navigation nav = button.navigation;
             nav.mode = Navigation.Mode.Explicit;
 
-            // Configure vertical navigation (up and down)
             if (i > 0)
             {
                 nav.selectOnUp = buttons[i - 1];
@@ -151,7 +145,6 @@ public class MainMenuController : MenuController
             }
             else if (wrapNavigation)
             {
-                // Wrap around to the last button
                 nav.selectOnUp = buttons[buttons.Length - 1];
                 LogDebug($"Button {button.name} selectOnUp = {buttons[buttons.Length - 1].name} (wrap)");
             }
@@ -163,7 +156,6 @@ public class MainMenuController : MenuController
             }
             else if (wrapNavigation)
             {
-                // Wrap around to the first button
                 nav.selectOnDown = buttons[0];
                 LogDebug($"Button {button.name} selectOnDown = {buttons[0].name} (wrap)");
             }
@@ -171,7 +163,6 @@ public class MainMenuController : MenuController
             button.navigation = nav;
         }
 
-        // Set initial button selection if we have buttons
         if (buttons.Length > 0 && buttons[0] != null)
         {
             EventSystem.current.SetSelectedGameObject(buttons[0].gameObject);
@@ -183,7 +174,6 @@ public class MainMenuController : MenuController
     {
         base.Show();
 
-        // Make sure we're visible
         if (menuContainer != null)
         {
             menuContainer.SetActive(true);
@@ -192,17 +182,14 @@ public class MainMenuController : MenuController
         RefreshAnimations();
     }
 
-    private void RefreshAnimations()
+    void RefreshAnimations()
     {
-        // Ensure proper button selection
         if (currentSelectedIndex >= 0 && currentSelectedIndex < buttons.Length)
         {
-            // Force reselection to refresh animations
             int previousIndex = currentSelectedIndex;
             currentSelectedIndex = -1;
             SelectButton(previousIndex);
 
-            // Make sure EventSystem knows which button is selected
             EventSystem.current.SetSelectedGameObject(buttons[currentSelectedIndex].gameObject);
 
             if (uiInputSwitcher == null)
@@ -219,7 +206,6 @@ public class MainMenuController : MenuController
         }
         else if (buttons.Length > 0)
         {
-            // Default to first button if no selection
             SelectButton(0);
             EventSystem.current.SetSelectedGameObject(buttons[0].gameObject);
 
@@ -264,7 +250,7 @@ public class MainMenuController : MenuController
         }
 
         currentSelectedIndex = index;
-        lastSelectedButtonIndex = index; // Store this selection for next time
+        lastSelectedButtonIndex = index;
 
         if (index < clefImages.Length && clefImages[index] != null)
         {
@@ -281,7 +267,6 @@ public class MainMenuController : MenuController
             sizeAnimationCoroutines[index] = StartCoroutine(AnimateTextSize(buttonTexts[index], defaultMinFontSize, defaultMaxFontSize, selectedMinFontSize, selectedMaxFontSize, animationDuration));
         }
 
-        // Visual feedback through button animation
         if (index < buttons.Length && buttons[index] != null)
         {
             RectTransform rectTransform = buttons[index].GetComponent<RectTransform>();
@@ -321,7 +306,6 @@ public class MainMenuController : MenuController
 
     public void OpenOptionsMenu()
     {
-        // Use UIManagerV2 instead of the old UIManager
         if (uiManagerV2 != null)
         {
             uiManagerV2.ShowOptionsMenu();
@@ -330,14 +314,12 @@ public class MainMenuController : MenuController
         {
             Debug.LogWarning("UIManagerV2 reference missing!");
 
-            // Try to find and activate the options menu directly as fallback
             Transform optionsMenu = transform.parent?.Find("OptionsMenu");
             if (optionsMenu != null)
             {
                 menuContainer.SetActive(false);
                 optionsMenu.gameObject.SetActive(true);
 
-                // Initialize the options menu if possible
                 OptionsMenuController optionsController = optionsMenu.GetComponent<OptionsMenuController>();
                 if (optionsController != null)
                 {
@@ -399,7 +381,7 @@ public class MainMenuController : MenuController
             audioSources[0].volume = 0f;
         }
 
-        yield return new WaitForSecondsRealtime(0.5f);
+        yield return new WaitForSecondsRealtime(4.0f);
 
         Application.Quit();
 
@@ -411,17 +393,15 @@ public class MainMenuController : MenuController
         yield return new WaitForEndOfFrame();
         yield return new WaitForSecondsRealtime(0.05f);
 
-        // Refresh the EventSystem reference
         inputSwitcher.RefreshEventSystemReference();
 
-        // Force select the last selected button instead of always the first one
         if (buttons.Length > lastSelectedButtonIndex && buttons[lastSelectedButtonIndex] != null)
         {
             EventSystem.current.SetSelectedGameObject(buttons[lastSelectedButtonIndex].gameObject);
             inputSwitcher.SetFirstSelectedButton(buttons[lastSelectedButtonIndex].gameObject);
             inputSwitcher.ForceSelectButton(buttons[lastSelectedButtonIndex].gameObject);
         }
-        else if (buttons.Length > 0 && buttons[0] != null) // Fallback to first button if needed
+        else if (buttons.Length > 0 && buttons[0] != null)
         {
             EventSystem.current.SetSelectedGameObject(buttons[0].gameObject);
             inputSwitcher.SetFirstSelectedButton(buttons[0].gameObject);
@@ -431,18 +411,17 @@ public class MainMenuController : MenuController
 
     IEnumerator DelayedNavigationSetup()
     {
-        // Wait for next frame to ensure all components are ready
         yield return new WaitForEndOfFrame();
+
         SetupButtonNavigation();
 
-        // Force select the first button
         if (buttons.Length > 0 && buttons[0] != null)
         {
             EventSystem.current.SetSelectedGameObject(buttons[0].gameObject);
         }
     }
 
-    private void LogDebug(string message)
+    void LogDebug(string message)
     {
         if (enableDebugLogs)
         {
