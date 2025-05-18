@@ -20,11 +20,11 @@ namespace ProjectColombo.VFX
         {
             if (!sameScale)
             {
-                if (scale == GameGlobals.MusicScale.MAJOR)
+                if (scale == GameGlobals.MusicScale.MINOR)
                 {
                     majorStunIndicatorVFX.GetComponent<VisualEffect>().Play();
                 }
-                else if (scale == GameGlobals.MusicScale.MINOR)
+                else if (scale == GameGlobals.MusicScale.MAJOR)
                 {
                     minorStunIndicatorVFX.GetComponent<VisualEffect>().Play();
                 }

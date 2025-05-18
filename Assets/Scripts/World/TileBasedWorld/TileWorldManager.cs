@@ -168,50 +168,92 @@ namespace ProjectColombo.LevelManagement
         private void Start()
         {
             Instantiate(stopBuggingVFX);
+
             algorythm = GetComponent<TileWorldPathAlgorythm>();
+
             worldWidth = 2 * chamberOffsetX + layersOfChambers.Count * chamberOffsetX + 3;
+            worldHeight = 25; // You can also calculate this dynamically if you want
 
             world.CreateTilemap(worldWidth, worldHeight);
 
-            Vector2 startChamberTilePos = new(1, Mathf.RoundToInt(worldHeight / 2));
+            createdChambers.Clear();
+            chamberLayers.Clear();
+            paths.Clear();
+
+            // 1) Place Start Chamber
+            Vector2 startChamberTilePos = new Vector2(1, Mathf.RoundToInt(worldHeight / 2f));
             TryToMakeChamber(startChamber, startChamberTilePos, createdChambers);
-            createdChambers[0].GetComponent<TileWorldChamber>().ActivateChamber(); //activate start chamber
-            createdChambers[0].GetComponent<TileWorldChamber>().DeactivateChamber(); //deactivate start chamber
 
-            Vector2 endChamberTilePos = new(chamberOffsetX + layersOfChambers.Count * chamberOffsetX + (int)(endChamber.GetComponent<TileWorldChamber>().chamberSize.y/2f) + 1, Mathf.RoundToInt(worldHeight / 2));
-            TryToMakeChamber(endChamber, endChamberTilePos, createdChambers);
+            // Activate then deactivate start chamber as before (if needed)
+            createdChambers[0].GetComponent<TileWorldChamber>().ActivateChamber();
+            createdChambers[0].GetComponent<TileWorldChamber>().DeactivateChamber();
 
+            // Track horizontal position for layers (start from just right of start chamber)
+            int currentLayerPosX = (int)(startChamber.GetComponent<TileWorldChamber>().chamberSize.x + 2); // start chamber width + 1 padding
+
+            // 2) Place each layer of chambers
             for (int layer = 0; layer < layersOfChambers.Count; layer++)
             {
                 List<GameObject> currentLayer = new();
+
                 int chamberCount = layersOfChambers[layer];
 
-                int posX = chamberOffsetX * layer + chamberOffsetX + 1; //start + currentlayer
-                int posY = Mathf.RoundToInt(startChamberTilePos.y - ((chamberCount - 1) / 2f) * chamberOffsetY);
-                //int posY = (int)(startChamberTilePos.y - (chamberCount / 2f) * chamberOffsetY + 3); //move down to centralize
-                
-                //create  layer chambers
+                // Get total height of this layer to center vertically around start chamber Y
+                float totalLayerHeight = 0;
+                List<Vector2> chamberSizesInLayer = new();
+
+                // Pick chambers to calculate total height before placing (for centering)
                 for (int i = 0; i < chamberCount; i++)
                 {
-                    Vector2 position = new(posX, posY);
                     int index = Random.Range(0, chamberVariants.Count);
-                    TryToMakeChamber(chamberVariants[index], position, currentLayer);
-                    posY += chamberOffsetY;
+                    Vector2 size = chamberVariants[index].GetComponent<TileWorldChamber>().chamberSize;
+                    chamberSizesInLayer.Add(size);
+                    totalLayerHeight += size.y;
+                }
+
+                // Starting Y position to center this layer vertically
+                float posY = startChamberTilePos.y - totalLayerHeight / 2f;
+
+                // Track max width in this layer for horizontal spacing
+                int maxWidthInLayer = 0;
+
+                for (int i = 0; i < chamberCount; i++)
+                {
+                    Vector2 size = chamberSizesInLayer[i];
+
+                    Vector2 position = new(currentLayerPosX, Mathf.RoundToInt(posY + size.y / 2f)); // position at bottom + half height for center
+
+                    TryToMakeChamber(chamberVariants[Random.Range(0, chamberVariants.Count)], position, currentLayer);
+
+                    posY += size.y; // move Y for next chamber with padding
+
+                    if (size.x > maxWidthInLayer)
+                        maxWidthInLayer = (int)size.x;
                 }
 
                 chamberLayers.Add(currentLayer);
+
+                // Move horizontal position for next layer to the right of this one
+                currentLayerPosX += maxWidthInLayer + 1;
             }
 
-            //connect first layer to entrance
+            // 3) Place End Chamber last to the right of all layers, vertically centered
+            Vector2 endChamberSize = endChamber.GetComponent<TileWorldChamber>().chamberSize;
+            Vector2 endChamberPos = new(currentLayerPosX + Mathf.FloorToInt(endChamberSize.x/2f), Mathf.RoundToInt(worldHeight / 2f));
+            TryToMakeChamber(endChamber, endChamberPos, createdChambers);
+
+            // 4) Create paths and connect chambers
+
+            // Connect first layer to start chamber
             foreach (GameObject c in chamberLayers[0])
             {
                 paths.Add(CreatePath(createdChambers[0], c));
             }
 
-            //connect layers to one another
+            // Connect layers to each other
             for (int i = 0; i < chamberLayers.Count - 1; i++)
             {
-                if (i%2 == 0)
+                if (i % 2 == 0)
                 {
                     ConnectLayersIncrease(chamberLayers[i], chamberLayers[i + 1]);
                 }
@@ -221,14 +263,15 @@ namespace ProjectColombo.LevelManagement
                 }
             }
 
-            //connect last layer to exit
-            foreach (GameObject c in chamberLayers[^1]) //^1 means last
+            // Connect last layer to end chamber
+            foreach (GameObject c in chamberLayers[^1])
             {
                 paths.Add(CreatePath(c, createdChambers[1]));
             }
 
             MakeCorridors();
         }
+
 
         private void Update()
         {

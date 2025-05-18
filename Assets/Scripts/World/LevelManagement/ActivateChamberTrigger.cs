@@ -18,7 +18,18 @@ namespace ProjectColombo.LevelManagement
             {
                 myChamberData.GetComponentInChildren<GridManager>().CreateGrid();
                 myChamberData.ActivateChamber();
+                DestroyAllDrops();
                 gameObject.SetActive(false);
+            }
+        }
+
+        void DestroyAllDrops()
+        {
+            GameObject[] drops = GameObject.FindGameObjectsWithTag("Collectable");
+
+            foreach (var d in drops)
+            {
+                Destroy(d);
             }
         }
     }

@@ -18,6 +18,7 @@ namespace ProjectColombo
         
         [Header("Movement Settings")]
         public float rotationSpeedPlayer = 720f;
+        public float rollImpulseForce = 2.5f;
 
         [Header("Attack Settings")]
         public float attackImpulseForce = 2.5f;

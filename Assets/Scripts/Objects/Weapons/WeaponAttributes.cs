@@ -142,10 +142,6 @@ namespace ProjectColombo.Combat
                 {
                     mainModule.startColor = (Color)(GameGlobals.minorColor);
                 }
-                else
-                {
-                    mainModule.startColor = Color.red;
-                }
 
                 myParticles.Play();
             }
@@ -339,7 +335,7 @@ namespace ProjectColombo.Combat
 
         IEnumerator DoHitStop()
         {
-            float pauseDuration = 0.1f; // Adjust the duration of the freeze
+            float pauseDuration = 0.2f; // Adjust the duration of the freeze
 
             Time.timeScale = 0.1f; // Slow down time instead of freezing completely
             yield return new WaitForSecondsRealtime(pauseDuration);

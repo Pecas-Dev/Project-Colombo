@@ -84,5 +84,38 @@ namespace ProjectColombo.StateMachine.Mommotti
 
             pathIndex = 0;
         }
+
+        protected bool GetSpreadOutTarget(float threshold, out Vector3 spreadTarget)
+        {
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            float closestDist = Mathf.Infinity;
+            Vector3 closestPos = Vector3.zero;
+
+            foreach (GameObject m in enemies)
+            {
+                if (m == stateMachine.gameObject) continue;
+
+                MommottiStateMachine otherSM = m.GetComponent<MommottiStateMachine>();
+                if (otherSM == null) continue;
+
+                float dist = Vector3.Distance(stateMachine.transform.position, m.transform.position);
+                if (dist < closestDist)
+                {
+                    closestDist = dist;
+                    closestPos = m.transform.position;
+                }
+            }
+
+            if (closestDist < threshold)
+            {
+                Vector3 away = (stateMachine.transform.position - closestPos).normalized;
+                spreadTarget = stateMachine.transform.position + away * threshold;
+                return true;
+            }
+
+            spreadTarget = Vector3.zero;
+            return false;
+        }
+
     }
 }

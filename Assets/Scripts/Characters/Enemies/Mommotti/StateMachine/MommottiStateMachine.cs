@@ -8,7 +8,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 {
     public class MommottiStateMachine : StateMachine
     {
-        public enum MommottiState { PATROL, ALERTED, CHASE, ATTACK, DEAD };
+        public enum MommottiState { PATROL, ALERTED, CHASE, ATTACK, DEAD, STUNNED };
 
         [Header("Component References")]
         public Rigidbody myRigidbody;

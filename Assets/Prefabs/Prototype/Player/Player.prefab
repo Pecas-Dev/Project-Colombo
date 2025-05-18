@@ -646,6 +646,7 @@ MonoBehaviour:
   startAngle: 176.5
   arcAngle: 180
   spacingMultiplier: 0.5
+  consumeFromFirstToLast: 1
   positionOffset: {x: -14, y: 14, z: -11.5}
   debugMode: 0
   debugMaxStamina: 7
@@ -655,6 +656,7 @@ MonoBehaviour:
   debugConsumeAmount: 0.5
   consumeStamina: 0
   refillStamina: 0
+  toggleConsumptionDirection: 0
 --- !u!1 &1527953485902994323
 GameObject:
   m_ObjectHideFlags: 0
@@ -9158,7 +9160,8 @@ MonoBehaviour:
   moveSpeed: 5.55
   attackSpeed: 0
   rotationSpeedPlayer: 25
-  attackImpulseForce: 10
+  rollImpulseForce: 10
+  attackImpulseForce: 5
   stunnedTime: 0.7
   currentScale: 0
 --- !u!114 &4069275368503968586

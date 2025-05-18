@@ -5,6 +5,7 @@ using DG.DemiLib;
 using ProjectColombo.Enemies;
 using ProjectColombo.Enemies.Mommotti;
 using Unity.VisualScripting;
+using System.Collections;
 
 namespace ProjectColombo.LevelManagement
 {
@@ -129,12 +130,12 @@ namespace ProjectColombo.LevelManagement
         {
             CustomEvents.ChamberActivated();
 
-            GetComponent<EnemyAttackPriority>().Activate();
 
             foreach (GameObject spawner in spawnPoints)
             {
                 spawner.SetActive(true);
             }
+
 
             foreach (GameObject entrance in entrances)
             {
@@ -152,7 +153,15 @@ namespace ProjectColombo.LevelManagement
                 exit.GetComponentInChildren<Animator>().SetTrigger("Close"); //close gate animation
             }
 
+            StartCoroutine(FillEnemyPriorityList());
+
             isActive = true;
+        }
+
+        IEnumerator FillEnemyPriorityList()
+        {
+            yield return new WaitForSeconds(0.1f);
+            GetComponent<EnemyAttackPriority>().Activate();
         }
 
         public void DeactivateChamber()

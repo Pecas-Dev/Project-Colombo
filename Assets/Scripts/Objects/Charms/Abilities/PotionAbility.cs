@@ -11,7 +11,10 @@ namespace ProjectColombo.Objects.Masks
         public override void UseAbility()
         {
             myPlayerStateMachine.myHealthManager.Heal(healAmount);
-            int value = (int)(myPlayerStateMachine.myHealthManager.currentHealth * healPercentage / 100f);
+
+            int missingHealth = myPlayerStateMachine.myHealthManager.MaxHealth - myPlayerStateMachine.myHealthManager.currentHealth;
+            int value = (int)(missingHealth * healPercentage / 100f);
+
             myPlayerStateMachine.myHealthManager.Heal(value);
         }
 

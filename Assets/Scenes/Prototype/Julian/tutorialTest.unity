@@ -563,6 +563,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cdc7065b902420548ab3f4486891a3ad, type: 3}
+--- !u!1 &590863899 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 811823792382254168, guid: aebbf5e19360de24e8637d9c12b0e052, type: 3}
+  m_PrefabInstance: {fileID: 1228968965}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &622059730
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -917,6 +922,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 811823792382254168, guid: aebbf5e19360de24e8637d9c12b0e052, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 834280986389980350, guid: aebbf5e19360de24e8637d9c12b0e052, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -1357,6 +1366,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textComponent: {fileID: 925540460}
+  HUDCanvas: {fileID: 590863899}
   lines:
   - "\u201CGreetings, Last Musician. You must be bewildered\u2026 allow me to untangle
     the knot of your confusion.\u201D "
@@ -1373,7 +1383,7 @@ MonoBehaviour:
   - "That is why I am here: to guide you through Solvanni, so that you may confront
     the one whose greed condemned us, and bring an end to our sorrow.\u201D "
   - "\u201CBut beware: twisted, forgotten creatures stalk these cursed lands\u2026\u201D "
-  textSpeed: 0.3
+  textSpeed: 0.05
 --- !u!4 &1586497291
 Transform:
   m_ObjectHideFlags: 0
