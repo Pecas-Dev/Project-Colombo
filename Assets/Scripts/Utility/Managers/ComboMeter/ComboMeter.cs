@@ -114,6 +114,7 @@ namespace ProjectColombo.Combat.ComboMeter
         {
             currentLevel++;
             currentLevel = Mathf.Min(currentLevel, maxLevel);
+            CustomEvents.ComboMeterLevelChanged(currentLevel);
 
             DeactivateAllAttribStorages();
             ActivateAtrribStorage(currentLevel);
@@ -123,6 +124,7 @@ namespace ProjectColombo.Combat.ComboMeter
         {
             currentLevel--;
             currentLevel = Mathf.Max(currentLevel, 0);
+            CustomEvents.ComboMeterLevelChanged(currentLevel);
 
             DeactivateAllAttribStorages();
             ActivateAtrribStorage(currentLevel);
