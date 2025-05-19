@@ -7,6 +7,7 @@ using ProjectColombo.Inventory;
 using UnityEngine;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.GameManagement.Stats;
+using System.Collections;
 
 
 namespace ProjectColombo.StateMachine.Player
@@ -73,13 +74,30 @@ namespace ProjectColombo.StateMachine.Player
             closeShop = null;
         }
 
+        private void OnDestroy()
+        {
+            CustomEvents.OnSuccessfullParry -= ApplyParryIFrames;
+        }
+
         void Start()
         {
             LogMissingReferenceErrors();
             SwitchState(new PlayerMovementState(this));
-
+            CustomEvents.OnSuccessfullParry += ApplyParryIFrames;
             //get current selected weapon
             SwapWeapon();
+        }
+
+        private void ApplyParryIFrames(GameGlobals.MusicScale scale, bool sameScale)
+        {
+            StartCoroutine(SetInvincible(0.1f));
+        }
+
+        IEnumerator SetInvincible(float duration)
+        {
+            isInvunerable = true;
+            yield return new WaitForSeconds(duration);
+            isInvunerable = true;
         }
 
         public void ApplyKnockback(Vector3 direction, float knockbackStrength)

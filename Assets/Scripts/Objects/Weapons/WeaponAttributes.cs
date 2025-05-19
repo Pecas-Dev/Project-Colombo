@@ -10,6 +10,7 @@ using ProjectColombo.LevelManagement;
 using UnityEngine.VFX;
 using System.Collections.Generic;
 using ProjectColombo.Inventory;
+using UnityEngine.InputSystem;
 
 namespace ProjectColombo.Combat
 {
@@ -213,6 +214,7 @@ namespace ProjectColombo.Combat
                     {
                         StopTime();
                         ScreenShake();
+                        Rumble(0.2f, 1.0f, 0.3f); // Light buzz
                         doHitstop = false;
                     }
 
@@ -271,6 +273,7 @@ namespace ProjectColombo.Combat
                     {
                         StopTime();
                         ScreenShake();
+                        Rumble(1.0f, 0.5f, 0.5f); // Big rumble
                         doHitstop = false;
                     }
 
@@ -392,6 +395,32 @@ namespace ProjectColombo.Combat
                 successfullMinorParryVFX.Play();
             }
         }
-    }
 
+        public void Rumble(float big, float small, float duration)
+        {
+            var gamepad = Gamepad.current;
+            if (gamepad == null) return;
+
+            // Clamp values between 0 and 1
+            big = Mathf.Clamp01(big);
+            small = Mathf.Clamp01(small);
+
+            // Set motor speeds
+            gamepad.SetMotorSpeeds(big, small);
+
+            // Stop after duration
+            StartCoroutine(StopRumbleAfter(duration));
+        }
+
+        private IEnumerator StopRumbleAfter(float duration)
+        {
+            yield return new WaitForSeconds(duration);
+
+            var gamepad = Gamepad.current;
+            if (gamepad != null)
+            {
+                gamepad.SetMotorSpeeds(0f, 0f);
+            }
+        }
+    }
 }
