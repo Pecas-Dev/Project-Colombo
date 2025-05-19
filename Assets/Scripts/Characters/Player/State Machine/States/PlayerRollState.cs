@@ -51,9 +51,7 @@ public class PlayerRollState : PlayerBaseState
         stateMachine.gameInputSO.DisableAllInputsExcept(InputActionType.Pause, InputActionType.Movement);
         stateMachine.myPlayerAnimator.TriggerRoll();
 
-        // Apply clean impulse for the roll
-        float impulseForce = stateMachine.myEntityAttributes.rollImpulseForce;
-        stateMachine.myRigidbody.AddForce(stateMachine.transform.forward * impulseForce, ForceMode.Impulse);
+        stateMachine.StartCoroutine(ApplyPushForce());
     }
 
     public override void Tick(float deltaTime)
@@ -82,6 +80,19 @@ public class PlayerRollState : PlayerBaseState
     {
         yield return new WaitForSeconds(rollCooldown);
         CanQueueRoll = true;
+    }
+
+    IEnumerator ApplyPushForce()
+    {
+        yield return new WaitForFixedUpdate();
+
+        //reset velocities
+        stateMachine.myRigidbody.linearVelocity = Vector3.zero;
+        stateMachine.myRigidbody.angularVelocity = Vector3.zero;
+
+        // Apply clean impulse for the roll
+        float impulseForce = stateMachine.myEntityAttributes.rollImpulseForce;
+        stateMachine.myRigidbody.AddForce(stateMachine.transform.forward * impulseForce, ForceMode.Impulse);
     }
 
     private void SetIgnoreLayers()

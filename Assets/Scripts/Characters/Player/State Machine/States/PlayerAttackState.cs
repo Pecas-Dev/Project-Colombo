@@ -3,6 +3,7 @@ using ProjectColombo.Combat;
 using UnityEngine;
 using Unity.VisualScripting;
 using System.Collections.Generic;
+using System.Collections;
 
 
 namespace ProjectColombo.StateMachine.Player
@@ -75,7 +76,7 @@ namespace ProjectColombo.StateMachine.Player
             targetPosition = currentTarget?.transform.position ??
                 (stateMachine.transform.position + stateMachine.transform.forward * stateMachine.myWeaponAttributes.distanceToActivateForwardImpulse);
 
-            ApplyAttackImpulse();
+            stateMachine.StartCoroutine(ApplyAttackImpulse());
         }
 
         public override void Tick(float deltaTime)
@@ -265,10 +266,12 @@ namespace ProjectColombo.StateMachine.Player
             stateMachine.myRigidbody.transform.rotation = targetRotation;
         }
 
-        void ApplyAttackImpulse()
+        IEnumerator ApplyAttackImpulse()
         {
-            // Reset all current forces
-            stateMachine.myRigidbody.linearVelocity = new Vector3(0, stateMachine.myRigidbody.linearVelocity.y, 0);
+            yield return new WaitForFixedUpdate();
+
+            //reset velocities
+            stateMachine.myRigidbody.linearVelocity = Vector3.zero;
             stateMachine.myRigidbody.angularVelocity = Vector3.zero;
 
             WeaponAttributes playerWeapon = stateMachine.myWeaponAttributes;
