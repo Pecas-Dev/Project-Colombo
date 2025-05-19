@@ -7,10 +7,16 @@ namespace ProjectColombo.StateMachine.Player
     public abstract class PlayerBaseState : State
     {
         protected PlayerStateMachine stateMachine;
+        Matrix4x4 isometricMatrix;
 
         public PlayerBaseState(PlayerStateMachine playerStateMachine)
         {
             this.stateMachine = playerStateMachine;
+            isometricMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, stateMachine.Angle, 0));
+        }
+        protected Vector3 TransformDirectionToIsometric(Vector3 direction)
+        {
+            return isometricMatrix.MultiplyVector(direction).normalized;
         }
 
         protected void HandleStateSwitchFromInput()

@@ -5,11 +5,10 @@ namespace ProjectColombo.StateMachine.Player
 {
     public class PlayerMovementState : PlayerBaseState
     {
-        Matrix4x4 isometricMatrix;
 
         public PlayerMovementState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
         {
-            isometricMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, stateMachine.Angle, 0));
+
         }
 
         public override void Enter()
@@ -20,6 +19,11 @@ namespace ProjectColombo.StateMachine.Player
             stateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Movement);
             stateMachine.myPlayerAnimator.PlayMovementAnimation();
             stateMachine.gameInputSO.EnableAllInputs();
+
+            if (stateMachine.gameInputSO.MovementInput.magnitude < 0.01f)
+            {
+                stateMachine.gameInputSO.ResetMovementInput();
+            }
         }
 
         public override void Tick(float deltaTime)
@@ -34,7 +38,11 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Exit()
         {
-            stateMachine.gameInputSO.ResetMovementInput();
+            if (stateMachine.gameInputSO.MovementInput.magnitude < 0.01f)
+            {
+                stateMachine.gameInputSO.ResetMovementInput();
+            }
+
             stateMachine.gameInputSO.EnableAllInputs();
         }
 
@@ -93,11 +101,6 @@ namespace ProjectColombo.StateMachine.Player
             bool hasMovementInput = animationSpeed > 0.01f;
 
             stateMachine.myPlayerAnimator.UpdateAnimator(animationSpeed, false, hasMovementInput);
-        }
-
-        private Vector3 TransformDirectionToIsometric(Vector3 direction)
-        {
-            return isometricMatrix.MultiplyVector(direction).normalized;
         }
     }
 }

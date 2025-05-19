@@ -9,6 +9,7 @@ using ProjectColombo.GameManagement;
 using ProjectColombo.LevelManagement;
 using UnityEngine.VFX;
 using System.Collections.Generic;
+using ProjectColombo.Inventory;
 
 namespace ProjectColombo.Combat
 {
@@ -48,6 +49,7 @@ namespace ProjectColombo.Combat
         Collider myCollider;
         GlobalStats myGlobalStats;
         LevelStats myLevelStats;
+        PlayerInventory myPlayerInventory;
 
         public VisualEffect majorVFX;
         public VisualEffect minorVFX;
@@ -59,8 +61,9 @@ namespace ProjectColombo.Combat
 
         private void Start()
         {
-            myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
+            myGlobalStats = GameManager.Instance.GetComponent<GlobalStats>();
             myLevelStats = GameObject.Find("WorldGeneration").GetComponent<LevelStats>();
+            myPlayerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
             myCollider = GetComponent<Collider>();
             DisableWeaponHitbox();
             GetCurrentStats();
@@ -223,6 +226,15 @@ namespace ProjectColombo.Combat
                         //Debug.Log("..but not the opposite scale");
                     }
 
+                    int rand = Random.Range(0, 101);
+                    int currentCritChance = Mathf.RoundToInt(myPlayerInventory.currentLuck / 10f);
+
+                    if (rand < currentCritChance)
+                    {
+                        Debug.Log("crit");
+                        damage = Mathf.RoundToInt(damage * 1.3f);
+                    }
+
                     Debug.Log("Damage delt: " + damage);
                     int comboLength = GetComponentInParent<PlayerStateMachine>().currentComboString.Length;
                     CustomEvents.DamageDelt(damage, currentScale, otherHealth, comboLength);
@@ -237,7 +249,21 @@ namespace ProjectColombo.Combat
                 EntityAttributes otherAttributes = other.GetComponent<EntityAttributes>();
                 HealthManager otherHealth = other.GetComponent<HealthManager>();
 
-                if (otherHealth.GetIgnoreDamage()) return;
+                if (otherHealth.GetIgnoreDamage())
+                {
+                    Debug.Log("immortal currently");
+                    return;
+                }
+
+                int rand = Random.Range(0, 101);
+                int currentEvadeChance = Mathf.RoundToInt(myPlayerInventory.currentLuck / 10f);
+
+                if (rand < currentEvadeChance)
+                {
+                    Debug.Log("evaded damage");
+                    return;
+                }
+                
 
                 if (otherStateMachine != null && otherHealth != null && otherHealth.CurrentHealth > 0)
                 {

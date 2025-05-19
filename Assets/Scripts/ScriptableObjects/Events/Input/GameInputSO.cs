@@ -237,13 +237,19 @@ namespace ProjectColombo.GameInputSystem
         {
             if (!IsInputEnabled(InputActionType.Movement)) return;
 
-            MovementInput = context.ReadValue<Vector2>();
+            Vector2 input = context.ReadValue<Vector2>();
 
-            if (MovementInput.magnitude > 1f)
+            // Clamp stick noise
+            if (input.magnitude < 0.1f)
             {
-                MovementInput = MovementInput.normalized;
+                MovementInput = Vector2.zero;
+            }
+            else
+            {
+                MovementInput = input.magnitude > 1f ? input.normalized : input;
             }
         }
+
 
         void OnMoveCanceled(InputAction.CallbackContext context)
         {

@@ -145,7 +145,6 @@ namespace ProjectColombo.LevelManagement
         int worldHeight = 25;
         int worldWidth = 0;
         int chamberOffsetX = 3;
-        int chamberOffsetY = 3;
 
         public List<GameObject> chamberVariants;
         public List<GameObject> ICorridors;

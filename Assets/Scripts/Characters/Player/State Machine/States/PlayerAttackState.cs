@@ -26,15 +26,25 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Enter()
         {
-            if (!stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.staminaToAttack))
+            stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.staminaToAttack);
+
+            //snap to direction
+            if (stateMachine.gameInputSO.MovementInput.magnitude > 0.01f)
             {
-                Debug.Log("no stamina");
-                stateMachine.SwitchState(new PlayerMovementState(stateMachine));
-                return;
+                Vector2 moveInput = stateMachine.gameInputSO.MovementInput;
+                Vector3 moveDirection = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
+
+                // Convert input to isometric space
+                Vector3 isometricDirection = TransformDirectionToIsometric(moveDirection);
+
+                if (isometricDirection.sqrMagnitude > 0.001f)
+                {
+                    Quaternion targetRotation = Quaternion.LookRotation(isometricDirection);
+                    stateMachine.transform.rotation = targetRotation;
+                }
             }
 
             stateMachine.currentComboString += myScale == GameGlobals.MusicScale.MAJOR ? "M" : "m";
-            //Debug.Log(stateMachine.currentComboString);
             stateMachine.myWeaponAttributes.currentScale = myScale;
             stateMachine.comboWindowOpen = false;
 
@@ -43,6 +53,7 @@ namespace ProjectColombo.StateMachine.Player
             stateMachine.gameInputSO.DisableAllInputsExcept(
                 InputActionType.Roll, 
                 InputActionType.Block, 
+                InputActionType.Movement, 
                 InputActionType.MajorParry, 
                 InputActionType.MinorParry,
                 InputActionType.MajorAttack,
@@ -99,6 +110,7 @@ namespace ProjectColombo.StateMachine.Player
                 //}
 
                 stateMachine.gameInputSO.ResetMajorAttackPressed();
+
                 hitCombo = true;
                 nextScale = GameGlobals.MusicScale.MAJOR;
                 return;
@@ -113,6 +125,7 @@ namespace ProjectColombo.StateMachine.Player
                 //}
 
                 stateMachine.gameInputSO.ResetMinorAttackPressed();
+
                 hitCombo = true;
                 nextScale = GameGlobals.MusicScale.MINOR;
                 return;
@@ -147,6 +160,12 @@ namespace ProjectColombo.StateMachine.Player
             stateMachine.myWeaponAttributes.DisableWeaponHitbox();
 
             stateMachine.gameInputSO.EnableAllInputs();
+
+
+            if (stateMachine.gameInputSO.MovementInput.magnitude < 0.01f)
+            {
+                stateMachine.gameInputSO.ResetMovementInput();
+            }
         }
 
         void CheckComboSwitch()
@@ -192,8 +211,18 @@ namespace ProjectColombo.StateMachine.Player
         GameObject GetClosestTarget()
         {
             Vector3 myPosition = stateMachine.transform.position;
+            Vector3 myForward = stateMachine.transform.forward;
             float closestDistance = 5f; // max auto-lock range
+            float maxViewAngle = 60f; // adjustable angle of view (half-angle, like a cone)
             GameObject closestTarget = null;
+
+            // Helper function to check if within view
+            bool IsInView(Vector3 targetPosition)
+            {
+                Vector3 directionToTarget = (targetPosition - myPosition).normalized;
+                float angle = Vector3.Angle(myForward, directionToTarget);
+                return angle <= maxViewAngle;
+            }
 
             // 1. Check for enemies first
             GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -201,7 +230,7 @@ namespace ProjectColombo.StateMachine.Player
             foreach (GameObject enemy in enemies)
             {
                 float distance = Vector3.Distance(enemy.transform.position, myPosition);
-                if (distance < closestDistance)
+                if (distance < closestDistance && IsInView(enemy.transform.position))
                 {
                     closestTarget = enemy;
                     closestDistance = distance;
@@ -216,7 +245,7 @@ namespace ProjectColombo.StateMachine.Player
                 foreach (GameObject obj in destroyables)
                 {
                     float distance = Vector3.Distance(obj.transform.position, myPosition);
-                    if (distance < closestDistance)
+                    if (distance < closestDistance && IsInView(obj.transform.position))
                     {
                         closestTarget = obj;
                         closestDistance = distance;
@@ -229,6 +258,7 @@ namespace ProjectColombo.StateMachine.Player
         }
 
 
+
         void TurnToTarget()
         {
             Quaternion targetRotation = Quaternion.LookRotation(targetPosition - stateMachine.transform.position);
@@ -237,6 +267,10 @@ namespace ProjectColombo.StateMachine.Player
 
         void ApplyAttackImpulse()
         {
+            // Reset all current forces
+            stateMachine.myRigidbody.linearVelocity = new Vector3(0, stateMachine.myRigidbody.linearVelocity.y, 0);
+            stateMachine.myRigidbody.angularVelocity = Vector3.zero;
+
             WeaponAttributes playerWeapon = stateMachine.myWeaponAttributes;
             float maxDistance = playerWeapon.maxDistanceAfterImpulse;
             float minDistance = playerWeapon.minDistanceAfterImpulse;

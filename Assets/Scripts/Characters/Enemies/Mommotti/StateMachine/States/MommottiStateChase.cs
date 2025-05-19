@@ -9,8 +9,6 @@ namespace ProjectColombo.StateMachine.Mommotti
     {
         private Vector3 targetDirection;
 
-        private bool isPlayerVisible;
-
         private float checkInterval = 0.5f;
         private float timer;
 
@@ -25,8 +23,6 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public override void Enter()
         {
-            isPlayerVisible = true;
-
             lastWalkableNode = stateMachine.myPathfindingAlgorythm.GetNode(stateMachine.transform.position);
 
             targetDirection = stateMachine.myMommottiAttributes.GetPlayerPosition() - stateMachine.transform.position;

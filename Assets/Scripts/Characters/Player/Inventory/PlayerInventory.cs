@@ -49,7 +49,7 @@ namespace ProjectColombo.Inventory
             CustomEvents.OnShopClose += ShopClosed;
             CustomEvents.OnEchoUnlocked += EnableMaskAbility;
             dropManager = GameManager.Instance.GetComponent<DropManager>();
-            myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
+            myGlobalStats = GameManager.Instance.GetComponent<GlobalStats>();
             if (charmSelectScreen != null)
             {
                 charmSelectScreen.SetActive(false);
@@ -116,6 +116,11 @@ namespace ProjectColombo.Inventory
 
         void GetCurrentStats()
         {
+            if (myGlobalStats == null)
+            {
+                myGlobalStats = GetComponent<GlobalStats>();
+            }
+
             currencyAmount = myGlobalStats.currentCurrencyAmount;
             currentLuck = myGlobalStats.currentLuckPoints;
         }

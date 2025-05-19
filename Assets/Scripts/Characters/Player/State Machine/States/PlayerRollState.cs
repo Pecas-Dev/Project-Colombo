@@ -1,7 +1,7 @@
 using ProjectColombo.StateMachine.Player;
 using System.Collections;
 using UnityEngine;
-
+using ProjectColombo.GameInputSystem;
 public class PlayerRollState : PlayerBaseState
 {
     int playerLayer = LayerMask.NameToLayer("Player");
@@ -25,20 +25,33 @@ public class PlayerRollState : PlayerBaseState
             return;
         }
 
-        if (!stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.staminaToRoll))
+        CanQueueRoll = false;
+
+        stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.staminaToRoll);
+
+        //snap to direction
+        if (stateMachine.gameInputSO.MovementInput.magnitude > 0.01f)
         {
-            stateMachine.SwitchState(new PlayerMovementState(stateMachine));
-            return;
+            Vector2 moveInput = stateMachine.gameInputSO.MovementInput;
+            Vector3 moveDirection = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
+
+            // Convert input to isometric space
+            Vector3 isometricDirection = TransformDirectionToIsometric(moveDirection);
+
+            if (isometricDirection.sqrMagnitude > 0.001f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(isometricDirection);
+                stateMachine.myRigidbody.rotation = targetRotation;
+            }
         }
 
-        CanQueueRoll = false;
         stateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Roll);
         SetIgnoreLayers();
 
-        stateMachine.gameInputSO.DisableAllInputsExcept(ProjectColombo.GameInputSystem.InputActionType.Pause);
+        stateMachine.gameInputSO.DisableAllInputsExcept(InputActionType.Pause, InputActionType.Movement);
         stateMachine.myPlayerAnimator.TriggerRoll();
 
-
+        // Apply clean impulse for the roll
         float impulseForce = stateMachine.myEntityAttributes.rollImpulseForce;
         stateMachine.myRigidbody.AddForce(stateMachine.transform.forward * impulseForce, ForceMode.Impulse);
     }
@@ -54,7 +67,14 @@ public class PlayerRollState : PlayerBaseState
     public override void Exit()
     {
         ResetIgnoreLayers();
+
         stateMachine.gameInputSO.EnableAllInputs();
+
+        if (stateMachine.gameInputSO.MovementInput.magnitude < 0.01f)
+        {
+            stateMachine.gameInputSO.ResetMovementInput();
+        }
+
         stateMachine.StartCoroutine(RollCooldown());
     }
 

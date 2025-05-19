@@ -1,4 +1,5 @@
 using ProjectColombo.GameManagement;
+using ProjectColombo.Inventory;
 using ProjectColombo.LevelManagement;
 using UnityEngine;
 
@@ -62,6 +63,9 @@ namespace ProjectColombo.Enemies.DropSystem
         {
             float random = Random.Range(0, 100);
             DropManager manager = GameManager.Instance.GetComponent<DropManager>();
+
+            int currentLuck = GameManager.Instance.GetComponent<PlayerInventory>().currentLuck;
+            random += Mathf.CeilToInt(currentLuck / 10f);
 
             if (random <= dropChanceCommonCharm)
             {
