@@ -46,10 +46,5 @@ namespace ProjectColombo.Objects.Masks
             currentCollected = 0;
             Debug.Log($"<color=#FF00FF>[DamageDelt] Progress RESET to 0/{damageToDeal}</color>");
         }
-
-        public override void ResetProgress()
-        {
-            currentCollected = 0;
-        }
     }
 }

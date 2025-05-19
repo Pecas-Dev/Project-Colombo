@@ -31,10 +31,5 @@ namespace ProjectColombo.Objects.Masks
         {
             currentCollected = 0;
         }
-
-        public override void ResetProgress()
-        {
-            currentCollected = 0;
-        }
     }
 }
