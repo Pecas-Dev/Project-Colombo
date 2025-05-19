@@ -1,5 +1,6 @@
 using ProjectColombo.GameManagement;
 using UnityEngine;
+using UnityEngine.VFX;
 
 namespace ProjectColombo.Objects.Decorations
 {
@@ -7,6 +8,7 @@ namespace ProjectColombo.Objects.Decorations
     {
         public GameObject chestCanvas;
         public Animator chestAnimator;
+        public VisualEffect chestVFX;
         bool playerClose;
 
         private void Update()
@@ -24,6 +26,7 @@ namespace ProjectColombo.Objects.Decorations
         {
             GetComponent<Collider>().enabled = false;
             chestCanvas.SetActive(false);
+            chestVFX.Stop();
             chestAnimator.SetTrigger("OpenChest");
         }
 
