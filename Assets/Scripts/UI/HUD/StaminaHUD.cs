@@ -16,6 +16,11 @@ namespace ProjectColombo.UI.HUD
 
         List<GameObject> indicators = new();
 
+        void Awake()
+        {
+            myStamina = FindFirstObjectByType<Stamina>();
+        }
+
         private void Update()
         {
             UpdateVisuals();
