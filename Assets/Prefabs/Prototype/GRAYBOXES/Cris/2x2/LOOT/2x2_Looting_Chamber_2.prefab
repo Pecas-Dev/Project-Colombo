@@ -165,6 +165,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 26903445789390529}
   - {fileID: 3491977394678274858}
   - {fileID: 1824631954818589907}
   - {fileID: 6176866552068577399}
@@ -253,9 +254,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fa9d59818b405443938061e0748bf2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentEnemies: []
-  attackersAtTheSameTime: 2
+  allCurrentEnemies: []
+  currentChasingEnemies: []
   currentAttackerEnemies: []
+  attackersAtTheSameTime: 2
+  interval: 3
 --- !u!1 &5287483470531014116
 GameObject:
   m_ObjectHideFlags: 0
@@ -1242,6 +1245,68 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 6968253519578724366, guid: 3ee6858d28a653840917ef5ae3e65e2f, type: 3}
   m_PrefabInstance: {fileID: 755972662080088808}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &819849288715627929
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4052789039141451792}
+    m_Modifications:
+    - target: {fileID: 810406173760215896, guid: f69ea4bb4aa8a8542b62b8b61e9b2aa6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -29.63
+      objectReference: {fileID: 0}
+    - target: {fileID: 810406173760215896, guid: f69ea4bb4aa8a8542b62b8b61e9b2aa6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 810406173760215896, guid: f69ea4bb4aa8a8542b62b8b61e9b2aa6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 18.89
+      objectReference: {fileID: 0}
+    - target: {fileID: 810406173760215896, guid: f69ea4bb4aa8a8542b62b8b61e9b2aa6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.960876
+      objectReference: {fileID: 0}
+    - target: {fileID: 810406173760215896, guid: f69ea4bb4aa8a8542b62b8b61e9b2aa6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 810406173760215896, guid: f69ea4bb4aa8a8542b62b8b61e9b2aa6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.2769792
+      objectReference: {fileID: 0}
+    - target: {fileID: 810406173760215896, guid: f69ea4bb4aa8a8542b62b8b61e9b2aa6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 810406173760215896, guid: f69ea4bb4aa8a8542b62b8b61e9b2aa6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 810406173760215896, guid: f69ea4bb4aa8a8542b62b8b61e9b2aa6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 32.16
+      objectReference: {fileID: 0}
+    - target: {fileID: 810406173760215896, guid: f69ea4bb4aa8a8542b62b8b61e9b2aa6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2762063898075131869, guid: f69ea4bb4aa8a8542b62b8b61e9b2aa6, type: 3}
+      propertyPath: m_Name
+      value: PoleSign_Looting
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f69ea4bb4aa8a8542b62b8b61e9b2aa6, type: 3}
+--- !u!4 &26903445789390529 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 810406173760215896, guid: f69ea4bb4aa8a8542b62b8b61e9b2aa6, type: 3}
+  m_PrefabInstance: {fileID: 819849288715627929}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &859152055500091244
 PrefabInstance:
