@@ -160,7 +160,11 @@ namespace ProjectColombo.UI.Pausescreen
             HideAllClefs();
 
             Button selectedButton = inventorySlotButtons[slotIndex];
-            if (selectedButton == null) return;
+
+            if (selectedButton == null)
+            {
+                return;
+            }
 
             if (IsChildOf(selectedButton.transform, weaponPentagram))
             {
