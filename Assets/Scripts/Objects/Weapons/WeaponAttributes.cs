@@ -229,12 +229,12 @@ namespace ProjectColombo.Combat
                     }
 
                     int rand = Random.Range(0, 101);
-                    int currentCritChance = Mathf.RoundToInt(myPlayerInventory.currentLuck / 10f);
+                    int currentCritChance = Mathf.RoundToInt(myPlayerInventory.currentLuck / 2f);
 
                     if (rand < currentCritChance)
                     {
                         Debug.Log("crit");
-                        damage = Mathf.RoundToInt(damage * 1.3f);
+                        damage = Mathf.RoundToInt(damage * 2f);
                     }
 
                     Debug.Log("Damage delt: " + damage);
@@ -258,7 +258,7 @@ namespace ProjectColombo.Combat
                 }
 
                 int rand = Random.Range(0, 101);
-                int currentEvadeChance = Mathf.RoundToInt(myPlayerInventory.currentLuck / 10f);
+                int currentEvadeChance = Mathf.RoundToInt(myPlayerInventory.currentLuck / 5f);
 
                 if (rand < currentEvadeChance)
                 {

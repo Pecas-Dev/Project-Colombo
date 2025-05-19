@@ -6,7 +6,6 @@ using ProjectColombo.UI;
 using System.Collections.Generic;
 using ProjectColombo.Objects.Masks;
 using ProjectColombo.Objects.Charms;
-using ProjectColombo.Objects;
 using ProjectColombo.Shop;
 
 
@@ -50,6 +49,7 @@ namespace ProjectColombo.Inventory
             CustomEvents.OnEchoUnlocked += EnableMaskAbility;
             dropManager = GameManager.Instance.GetComponent<DropManager>();
             myGlobalStats = GameManager.Instance.GetComponent<GlobalStats>();
+
             if (charmSelectScreen != null)
             {
                 charmSelectScreen.SetActive(false);
@@ -78,6 +78,11 @@ namespace ProjectColombo.Inventory
         {
             GameObject mask = maskSlot.transform.GetChild(0).gameObject;
             mask.GetComponent<BaseMask>().abilityObject = Instantiate(mask.GetComponent<BaseMask>().GetAbility(), maskAbilitySlot.transform);
+        }
+
+        public void AddLuckPoints(int amount)
+        {
+            currentLuck = Mathf.Clamp(currentLuck + amount, 0, 20);
         }
 
 

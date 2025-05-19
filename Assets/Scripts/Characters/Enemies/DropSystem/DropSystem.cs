@@ -65,26 +65,30 @@ namespace ProjectColombo.Enemies.DropSystem
             DropManager manager = GameManager.Instance.GetComponent<DropManager>();
 
             int currentLuck = GameManager.Instance.GetComponent<PlayerInventory>().currentLuck;
-            random += Mathf.CeilToInt(currentLuck / 10f);
 
-            if (random <= dropChanceCommonCharm)
+            int currentDropChanceCommonCharm = Mathf.RoundToInt(dropChanceCommonCharm * currentLuck * 0.25f);
+            int currentDropChanceRareCharm = Mathf.RoundToInt(dropChanceRareCharm * currentLuck * 0.25f);
+            int currentDropChanceLegendaryCharm = Mathf.RoundToInt(dropChanceLegendaryCharm * currentLuck * 0.25f);
+
+            if (random <= currentDropChanceCommonCharm)
             {
                 Vector3 position = new Vector3(transform.position.x, 0f, transform.position.z);
                 manager.DropRandomCommonCharm(position);
             }
-            else if (random <= dropChanceRareCharm + dropChanceCommonCharm)
+            else if (random <= currentDropChanceRareCharm + currentDropChanceCommonCharm)
             {
                 Vector3 position = new Vector3(transform.position.x, 0f, transform.position.z);
                 manager.DropRandomRareCharm(position);
             }
-            else if (random <= dropChanceLegendaryCharm + dropChanceRareCharm + dropChanceCommonCharm)
+            else if (random <= currentDropChanceLegendaryCharm + currentDropChanceRareCharm + currentDropChanceCommonCharm)
             {
                 Vector3 position = new Vector3(transform.position.x, 0f, transform.position.z);
                 manager.DropRandomLegendaryCharm(position);
             }
-            else if (random <= dropChanceCoins + dropChanceLegendaryCharm + dropChanceRareCharm + dropChanceCommonCharm)
+            else if (random <= dropChanceCoins + currentDropChanceLegendaryCharm + currentDropChanceRareCharm + currentDropChanceCommonCharm)
             {
                 int rand = Random.Range(minAmountOfCoins, maxAmountOfCoins+1);
+                rand += 2 * currentLuck;
 
                 Vector3 position = new Vector3(transform.position.x, 0f, transform.position.z);
                 manager.DropCoins(rand, position);

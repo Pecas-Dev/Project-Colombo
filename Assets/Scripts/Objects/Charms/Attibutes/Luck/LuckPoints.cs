@@ -14,7 +14,7 @@ namespace ProjectColombo.Objects.Charms
         {
             myPlayerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
             Debug.Log("extra Luck added: " + extraLuck);
-            myPlayerInventory.currentLuck += extraLuck;
+            myPlayerInventory.AddLuckPoints(extraLuck);
         }
 
         public override void Disable()
@@ -26,7 +26,7 @@ namespace ProjectColombo.Objects.Charms
                 return;
             }
 
-            myPlayerInventory.currentLuck -= extraLuck;
+            myPlayerInventory.AddLuckPoints(-extraLuck);
         }
     }
 }
