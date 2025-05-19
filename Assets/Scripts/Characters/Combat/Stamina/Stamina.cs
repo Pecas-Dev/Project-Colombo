@@ -21,19 +21,37 @@ namespace ProjectColombo.Combat
         public int staminaToRoll = 1;
         public int staminaToAttack = 1;
 
+        [ReadOnlyInspector] public bool exploreMode;
+
 
 
         private void Start()
         {
             CustomEvents.OnLevelChange += SaveCurrentStats;
+            CustomEvents.OnChamberActivated += ActivateFightingMode;
+            CustomEvents.OnChamberFinished += ActivateExploreMode;
+
+            exploreMode = true;
             myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
             GetCurrentStats();
             //GetComponentInChildren<StaminaHUD>().Reset();
         }
 
+        private void ActivateExploreMode()
+        {
+            exploreMode = true;
+        }
+
+        private void ActivateFightingMode()
+        {
+            exploreMode = false;
+        }
+
         private void OnDestroy()
         {
             CustomEvents.OnLevelChange -= SaveCurrentStats;
+            CustomEvents.OnChamberActivated -= ActivateFightingMode;
+            CustomEvents.OnChamberFinished -= ActivateExploreMode;
         }
 
         private void SaveCurrentStats()
@@ -97,11 +115,15 @@ namespace ProjectColombo.Combat
 
         public bool HasEnoughStamina(float staminaCost)
         {
+            if (exploreMode) return true;
+
             return Mathf.FloorToInt(currentStamina) >= staminaCost;
         }
 
         public bool TryConsumeStamina(float staminaCost)
         {
+            if (exploreMode) return true;
+
             if (staminaCost < 0)
             {
                 currentStamina = Mathf.Min(currentStamina - staminaCost, currentMaxStamina);

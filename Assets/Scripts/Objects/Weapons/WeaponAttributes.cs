@@ -214,7 +214,7 @@ namespace ProjectColombo.Combat
                     {
                         StopTime();
                         ScreenShake();
-                        Rumble(0.2f, 1.0f, 0.3f); // Light buzz
+                        Rumble(0.1f, 0.5f, 0.1f); // Light buzz
                         doHitstop = false;
                     }
 

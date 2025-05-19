@@ -19,6 +19,8 @@ namespace ProjectColombo.StateMachine.Player
 
         GameObject currentTarget;
         Vector3 targetPosition;
+
+        public float stabImpulseMultiplier = 1.5f;
         
         public PlayerAttackState(PlayerStateMachine playerStateMachine, GameGlobals.MusicScale scale) : base(playerStateMachine)
         {
@@ -284,6 +286,8 @@ namespace ProjectColombo.StateMachine.Player
             float distanceToTarget = directionToTarget.magnitude;
 
             float impulseForce = stateMachine.myEntityAttributes.attackImpulseForce;
+
+            if (myScale == GameGlobals.MusicScale.MINOR) impulseForce *= stabImpulseMultiplier;
 
             if (distanceToTarget > maxDistance)
             {

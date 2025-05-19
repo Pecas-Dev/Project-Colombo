@@ -2,6 +2,7 @@ using ProjectColombo.Enemies.Mommotti;
 using ProjectColombo.Enemies.Pathfinding;
 using ProjectColombo.Combat;
 using UnityEngine;
+using ProjectColombo.Enemies;
 
 
 namespace ProjectColombo.StateMachine.Mommotti
@@ -21,7 +22,6 @@ namespace ProjectColombo.StateMachine.Mommotti
 
 
         public SkinnedMeshRenderer myFadeOutSkin;
-        public MeshRenderer myMajorMinorSkin;
 
         public MommottiState currentState;
         GameGlobals.MusicScale hitByScale;
@@ -197,9 +197,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             myEntityAttributes.currentScale = scale;
             myWeaponAttributes.currentScale = scale;
 
-            Color color = scale == GameGlobals.MusicScale.MAJOR ? GameGlobals.majorColor : GameGlobals.minorColor;
-
-            myMajorMinorSkin.material.SetColor("_Major_MinorColor", color);
+            GetComponent<TextureSwapScale>().SetMaterials(scale);
         }
 
         public void SetAttackingState()

@@ -41,9 +41,6 @@ namespace ProjectColombo.StateMachine.Player
         [Header("Player State")]
         public PlayerState currentState;
 
-        [Header("VFX")]
-        public ParticleSystem comboParticles;
-
         [HideInInspector] public GameInputSO gameInputSO;
 
         [Header("Isometric Settings")]
@@ -300,7 +297,6 @@ namespace ProjectColombo.StateMachine.Player
             if (currentComboString.Length <= 2)
             {
                 //Debug.Log("combo Window open");
-                comboParticles.Play();
                 comboWindowOpen = true;
             }
             else
@@ -312,7 +308,6 @@ namespace ProjectColombo.StateMachine.Player
         public void CloseComboWindow()
         {
             //Debug.Log("combo Window closed");
-            comboParticles.Stop();
             comboWindowOpen = false;
         }
 
