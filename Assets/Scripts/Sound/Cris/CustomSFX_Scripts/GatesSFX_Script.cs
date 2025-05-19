@@ -16,11 +16,32 @@ public class GatesSFX_Script : MonoBehaviour
     [Range(0f, 1f)] public float gateClosedVolume = 1f;
 
     private AudioSource audioSource;
+    private bool gameStarted = false;
+    private float startTimer = 0f;
+    private float startDelay = 5f;
 
     void Awake()
     {
         audioSource = GetComponent<AudioSource>();
         audioSource.loop = false;
+    }
+
+    void Start()
+    {
+        startTimer = 0f;
+        gameStarted = false;
+    }
+
+    void Update()
+    {
+        if (!gameStarted)
+        {
+            startTimer += Time.deltaTime;
+            if (startTimer >= startDelay)
+            {
+                gameStarted = true;
+            }
+        }
     }
 
     public void PlayGateOpening()
@@ -45,7 +66,8 @@ public class GatesSFX_Script : MonoBehaviour
 
     private void PlaySound(AudioClip clip, float volume, bool loop)
     {
-        if (clip == null) return;
+        if (!gameStarted || clip == null)
+            return;
 
         audioSource.clip = clip;
         audioSource.volume = volume;
