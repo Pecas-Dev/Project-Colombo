@@ -1,16 +1,22 @@
+using ProjectColombo.LevelManagement;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class TutorialManager : MonoBehaviour
+namespace ProjectColombo.Tutorial
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class TutorialManager : MonoBehaviour
     {
-        
-    }
+        public List<GameObject> chambers;
+        public TutorialSpawner startSpawner;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        private void Start()
+        {
+            foreach (var chamber in chambers)
+            {
+                chamber.GetComponent<TileWorldChamber>().Initialize(new Vector2(0,0));
+            }
+
+            startSpawner.SpawnEnemy();
+        }
     }
 }

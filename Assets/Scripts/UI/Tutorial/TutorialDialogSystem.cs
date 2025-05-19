@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 using ProjectColombo.GameManagement;
+using UnityEngine.Events;
 
 namespace ProjectColombo.UI
 {
@@ -12,6 +13,7 @@ namespace ProjectColombo.UI
         public GameObject HUDCanvas;
         public string[] lines;
         public float textSpeed;
+        public UnityEvent onDialogComplete;
 
         int index;
 
@@ -78,6 +80,7 @@ namespace ProjectColombo.UI
         public void DisableDialog()
         {
             GameManager.Instance.gameInput.EnableAllInputs();
+            onDialogComplete.Invoke();
             HUDCanvas.SetActive(true);
             gameObject.SetActive(false);
         }

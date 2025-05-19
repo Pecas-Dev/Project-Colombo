@@ -18,7 +18,7 @@ namespace ProjectColombo.LevelManagement
         public bool isLooting = false;
         public List<GameObject> entrances;
         public List<GameObject> exits;
-        [ReadOnlyInspector] public List<GameObject> spawnPoints = new();
+        List<GameObject> spawnPoints = new();
 
         [HideInInspector] public Vector2 chamberTilePosition = new();
         [HideInInspector] public bool entrancesConnected = false;
@@ -63,6 +63,7 @@ namespace ProjectColombo.LevelManagement
         {
             chamberTilePosition = pos;
 
+            spawnPoints = new();
             entrancesLocal = new();
             entranceDir = new();
             exitsLocal = new();
