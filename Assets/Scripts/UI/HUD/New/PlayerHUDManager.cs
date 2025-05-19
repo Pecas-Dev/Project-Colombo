@@ -256,29 +256,29 @@ namespace ProjectColombo.UI
             Invoke("UpdateMaskDisplay", 0.1f);
         }
 
-        //void HandleLevelChangeStarted()
-        //{
-        //    isChangingLevel = true;
-        //    DebugLog("Level change started - hiding mission text");
+        void HandleLevelChangeStarted()
+        {
+            isChangingLevel = true;
+            DebugLog("Level change started - hiding mission text");
 
-        //    if (echoMissionTitleText != null && echoMissionProgressText != null)
-        //    {
-        //        Color titleColor = echoMissionTitleText.color;
-        //        Color progressColor = echoMissionProgressText.color;
+            if (echoMissionTitleText != null && echoMissionProgressText != null)
+            {
+                Color titleColor = echoMissionTitleText.color;
+                Color progressColor = echoMissionProgressText.color;
 
-        //        titleColor.a = 0f;
-        //        progressColor.a = 0f;
+                titleColor.a = 0f;
+                progressColor.a = 0f;
 
-        //        echoMissionTitleText.color = titleColor;
-        //        echoMissionProgressText.color = progressColor;
-        //    }
+                echoMissionTitleText.color = titleColor;
+                echoMissionProgressText.color = progressColor;
+            }
 
-        //    if (fadeCoroutine != null)
-        //    {
-        //        StopCoroutine(fadeCoroutine);
-        //        fadeCoroutine = null;
-        //    }
-        //}
+            if (fadeCoroutine != null)
+            {
+                StopCoroutine(fadeCoroutine);
+                fadeCoroutine = null;
+            }
+        }
 
         void HandleLevelChanged()
         {
