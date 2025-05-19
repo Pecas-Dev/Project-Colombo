@@ -31,5 +31,10 @@ namespace ProjectColombo.Objects.Masks
         {
             CustomEvents.OnEnemyDeath -= OnEnemyDeath;
         }
+
+        public override void ResetProgress()
+        {
+            currentCollected = 0;
+        }
     }
 }

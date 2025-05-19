@@ -17,5 +17,7 @@ namespace ProjectColombo.Objects.Masks
 
         public abstract void Enable();
         public abstract void Disable();
+
+        public abstract void ResetProgress();
     }
 }

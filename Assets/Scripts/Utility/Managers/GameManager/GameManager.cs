@@ -5,6 +5,8 @@ using ProjectColombo.UI.Pausescreen;
 using ProjectColombo.GameInputSystem;
 using ProjectColombo.GameManagement.Stats;
 using ProjectColombo.UI;
+using ProjectColombo.Inventory;
+using ProjectColombo.Objects.Masks;
 
 
 namespace ProjectColombo.GameManagement
@@ -206,6 +208,11 @@ namespace ProjectColombo.GameManagement
 
             ResumeGame();
 
+            if (scene.name == "02_LevelOne")
+            {
+                ResetAllEchoMissions();
+            }
+
             transition.Play("Open");
 
             gameInput.Uninitialize();
@@ -238,6 +245,15 @@ namespace ProjectColombo.GameManagement
             if (uiManagerV2 != null)
             {
                 uiManagerV2.InitializeReferences();
+            }
+        }
+
+        public void PlayCloseTransition()
+        {
+            if (transition != null)
+            {
+                transition.Play("Close");
+                LogDebug("Playing Close transition animation");
             }
         }
 
@@ -485,6 +501,34 @@ namespace ProjectColombo.GameManagement
                     LogDebug("Activating old charm swap screen (but keeping it hidden)");
                     oldCharmSwapScreen.SetActive(true);
                     oldCharmSwapScreen.SetActive(false);
+                }
+            }
+        }
+
+        void ResetAllEchoMissions()
+        {
+            if (GetComponent<PlayerInventory>() != null)
+            {
+                PlayerInventory inventory = GetComponent<PlayerInventory>();
+
+                if (inventory.maskSlot != null && inventory.maskSlot.transform.childCount > 0)
+                {
+                    BaseMask mask = inventory.maskSlot.transform.GetChild(0).GetComponent<BaseMask>();
+                    if (mask != null)
+                    {
+                        if (mask.echoUnlocked)
+                        {
+                            System.Reflection.FieldInfo echoUnlockedField = typeof(BaseMask).GetField("echoUnlocked");
+                            if (echoUnlockedField != null)
+                            {
+                                echoUnlockedField.SetValue(mask, false);
+                                LogDebug("Reset echoUnlocked flag for mask: " + mask.maskName);
+                            }
+                        }
+
+                        mask.ResetEchoMission();
+                        LogDebug("Reset echo mission for equipped mask: " + mask.maskName);
+                    }
                 }
             }
         }

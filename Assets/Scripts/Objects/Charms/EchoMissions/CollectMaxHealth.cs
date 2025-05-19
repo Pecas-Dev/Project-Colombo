@@ -24,7 +24,12 @@ namespace ProjectColombo.Objects.Masks
 
         public override void Disable()
         {
-            CustomEvents.OnMaxHealthGained += OnMaxHealthGained;
+            CustomEvents.OnMaxHealthGained -= OnMaxHealthGained;
+        }
+
+        public override void ResetProgress()
+        {
+            currentCollected = 0;
         }
     }
 }

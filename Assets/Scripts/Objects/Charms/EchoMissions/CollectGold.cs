@@ -26,5 +26,10 @@ namespace ProjectColombo.Objects.Masks
         {
             CustomEvents.OnCoinsCollected -= OnCoinsCollected;
         }
+
+        public override void ResetProgress()
+        {
+            currentCollected = 0;
+        }
     }
 }

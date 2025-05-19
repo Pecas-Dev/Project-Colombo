@@ -91,5 +91,26 @@ namespace ProjectColombo.Objects.Masks
 
             echoMission.Disable();
         }
+
+        public void ResetEchoMission()
+        {
+            Debug.Log($"[BaseMask] {maskName}: ResetEchoMission called. Current echoUnlocked: {echoUnlocked}");
+
+            if (echoMission != null)
+            {
+                Debug.Log($"[BaseMask] {maskName}: Disabling echo mission");
+                echoMission.Disable();
+
+                Debug.Log($"[BaseMask] {maskName}: Resetting mission progress");
+                echoMission.ResetProgress();
+
+                Debug.Log($"[BaseMask] {maskName}: Re-enabling echo mission");
+                echoMission.Enable();
+            }
+            else
+            {
+                Debug.LogError($"[BaseMask] {maskName}: echoMission is null!");
+            }
+        }
     }
 }

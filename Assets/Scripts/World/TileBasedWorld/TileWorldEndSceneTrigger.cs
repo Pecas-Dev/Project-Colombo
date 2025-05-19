@@ -1,3 +1,4 @@
+using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 using System.Collections;
 using UnityEngine;
@@ -22,7 +23,15 @@ namespace ProjectColombo.LevelManagement
 
             yield return new WaitForSeconds(0.2f); //let events handle first and then load next
 
-            
+
+            GameManager gameManager = GameManager.Instance;
+            if (gameManager != null)
+            {
+                gameManager.PlayCloseTransition();
+            }
+
+            yield return new WaitForSeconds(1.5f);
+
             int nextScene = GameObject.Find("WorldGeneration").GetComponent<LevelStats>().nextSceneNumber;
 
             if (nextScene >= 0 && nextScene < SceneManager.sceneCountInBuildSettings)
