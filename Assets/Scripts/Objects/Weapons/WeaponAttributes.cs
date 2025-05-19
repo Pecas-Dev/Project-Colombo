@@ -205,6 +205,7 @@ namespace ProjectColombo.Combat
                 MommottiStateMachine otherStateMachine = other.GetComponent<MommottiStateMachine>();
                 EntityAttributes otherAttributes = other.GetComponent<EntityAttributes>();
                 HealthManager otherHealth = other.GetComponent<HealthManager>();
+                bool sameScale = false;
 
                 if (otherHealth.GetIgnoreDamage()) return;
 
@@ -221,10 +222,12 @@ namespace ProjectColombo.Combat
                     if (currentScale != otherAttributes.currentScale)
                     {
                         //Debug.Log("..with the opposite scale");
+                        sameScale = false;
                         damage = AddTemporaryDamagePercentage(damage, correctAttackScaleBonusPercentage);
                     }
                     else
                     {
+                        sameScale = true;
                         //Debug.Log("..but not the opposite scale");
                     }
 
@@ -239,7 +242,7 @@ namespace ProjectColombo.Combat
 
                     Debug.Log("Damage delt: " + damage);
                     int comboLength = GetComponentInParent<PlayerStateMachine>().currentComboString.Length;
-                    CustomEvents.DamageDelt(damage, currentScale, otherHealth, comboLength);
+                    CustomEvents.DamageDelt(damage, currentScale, sameScale, otherHealth, comboLength);
                     otherHealth.TakeDamage(damage);
                     otherStateMachine.ApplyKnockback(attackDirection, knockback, currentScale);
                 }

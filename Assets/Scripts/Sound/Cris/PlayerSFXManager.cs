@@ -359,7 +359,7 @@ public class PlayerSFXManager : MonoBehaviour
         CustomEvents.OnDamageDelt -= HandleDamageDelt;
     }
 
-    private void HandleDamageDelt(int damage, GameGlobals.MusicScale scale, HealthManager enemy, int comboLength)
+    private void HandleDamageDelt(int damage, GameGlobals.MusicScale scale, bool sameScale, HealthManager enemy, int comboLength)
     {
         if (hasPlayedComboSound)
             return;

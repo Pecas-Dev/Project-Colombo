@@ -18,7 +18,7 @@ namespace ProjectColombo.Objects.Charms
             myHealthManager = GameObject.Find("Player").GetComponent<HealthManager>();
         }
 
-        private void OnDamageDelt(int amount, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager, int comboLength)
+        private void OnDamageDelt(int amount, GameGlobals.MusicScale scale, bool sameScale, Combat.HealthManager healthmanager, int comboLength)
         {
             int multiplyer = Mathf.FloorToInt(myHealthManager.MaxHealth / forHowManyMaxHealth);
             int value = (int)(multiplyer * damagePercentageMaxHealth / 100f);

@@ -19,7 +19,7 @@ namespace ProjectColombo.Objects.Charms
             CustomEvents.OnDamageDelt += OnDamageDelt;
         }
 
-        private void OnDamageDelt(int arg1, GameGlobals.MusicScale arg2, Combat.HealthManager arg3, int comboLength)
+        private void OnDamageDelt(int arg1, GameGlobals.MusicScale arg2, bool sameScale, Combat.HealthManager arg3, int comboLength)
         {
             int rand = Random.Range(minAmountOfGold, maxAmountOfGold + 1);
             Debug.Log("extra gold for damage: " + rand);

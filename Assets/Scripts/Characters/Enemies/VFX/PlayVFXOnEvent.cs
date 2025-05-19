@@ -19,7 +19,7 @@ namespace ProjectColombo.VFX
             }
         }
 
-        private void PlayDamageVFX(int amount, GameGlobals.MusicScale scale, Combat.HealthManager healthManager, int comboLength)
+        private void PlayDamageVFX(int amount, GameGlobals.MusicScale scale, bool sameScale, Combat.HealthManager healthManager, int comboLength)
         {
             if (healthManager.gameObject == this.gameObject)
             {

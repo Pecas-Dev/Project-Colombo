@@ -7,7 +7,7 @@ namespace ProjectColombo.GameManagement.Events
 {
     public class CustomEvents : MonoBehaviour
     {
-        public static event Action<int, GameGlobals.MusicScale, HealthManager, int> OnDamageDelt;
+        public static event Action<int, GameGlobals.MusicScale, bool, HealthManager, int> OnDamageDelt;
         public static event Action<int, GameGlobals.MusicScale, HealthManager> OnDamageReceived;
         public static event Action<GameGlobals.MusicScale, GameObject> OnEnemyDeath;
         public static event Action OnPlayerDeath;
@@ -30,9 +30,9 @@ namespace ProjectColombo.GameManagement.Events
         public static event Action<string> OnAbilityUsed;
         public static event Action<GameObject> OnEnemyAttack;
 
-        public static void DamageDelt(int damage, GameGlobals.MusicScale scale, HealthManager enemyHealthManager, int comboLength)
+        public static void DamageDelt(int damage, GameGlobals.MusicScale scale, bool sameScale, HealthManager enemyHealthManager, int comboLength)
         {
-            OnDamageDelt?.Invoke(damage, scale, enemyHealthManager, comboLength);
+            OnDamageDelt?.Invoke(damage, scale, sameScale, enemyHealthManager, comboLength);
         }
 
         public static void DamageReceived(int damage, GameGlobals.MusicScale scale, HealthManager playerHealthManager)
