@@ -29,7 +29,8 @@ namespace ProjectColombo.GameManagement.Events
         public static event Action OnChamberFinished;
         public static event Action<string> OnAbilityUsed;
         public static event Action<GameObject> OnEnemyAttack;
-        public static event Action<int> OnComboMeterLevelChange;
+        public static event Action<int> OnComboMeterLevelIncrease;
+        public static event Action<int> OnComboMeterLevelDecrease;
 
         public static void DamageDelt(int damage, GameGlobals.MusicScale scale, bool sameScale, HealthManager enemyHealthManager, int comboLength)
         {
@@ -139,9 +140,14 @@ namespace ProjectColombo.GameManagement.Events
             OnEnemyAttack?.Invoke(enemy);
         }
 
-        public static void ComboMeterLevelChanged(int newLevel)
+        public static void ComboMeterLevelIncreased(int newLevel)
         {
-            OnComboMeterLevelChange?.Invoke(newLevel);
+            OnComboMeterLevelIncrease?.Invoke(newLevel);
+        }
+
+        public static void ComboMeterLevelDecreased(int newLevel)
+        {
+            OnComboMeterLevelDecrease?.Invoke(newLevel);
         }
     }
 }

@@ -7,6 +7,7 @@ namespace ProjectColombo.UI
 {
     public class TutorialDialogSystem : MonoBehaviour
     {
+        public GameObject dialogCanvas;
         public TextMeshProUGUI textComponent;
         public GameObject HUDCanvas;
         public string[] lines;
@@ -16,7 +17,7 @@ namespace ProjectColombo.UI
 
         private void Start()
         {
-            StartDialog();
+            dialogCanvas.SetActive(false);
         }
 
         private void Update()
@@ -37,7 +38,6 @@ namespace ProjectColombo.UI
 
         void StartDialog()
         {
-            index = 0;
             StartCoroutine(TypeLine());
         }
 
@@ -67,6 +67,8 @@ namespace ProjectColombo.UI
         public void EnableDialog()
         {
             GameManager.Instance.gameInput.DisableAllInputsExcept(GameInputSystem.InputActionType.UseItem);
+            GameManager.Instance.gameInput.ResetMovementInput();
+            dialogCanvas.SetActive(true);
             HUDCanvas.SetActive(false);
             index = 0;
             textComponent.text = "";
