@@ -23,7 +23,7 @@ namespace ProjectColombo.Objects.Charms
             int multiplyer = Mathf.FloorToInt(myHealthManager.MaxHealth / forHowManyMaxHealth);
             int value = (int)(multiplyer * damagePercentageMaxHealth / 100f);
 
-            Debug.Log("dealt " + value + " extra damage for maxHealth: " + myHealthManager.MaxHealth);
+            Debug.Log("dealt " + value + " less damage for maxHealth: " + myHealthManager.MaxHealth);
             healthmanager.TakeDamage(value);
         }
 

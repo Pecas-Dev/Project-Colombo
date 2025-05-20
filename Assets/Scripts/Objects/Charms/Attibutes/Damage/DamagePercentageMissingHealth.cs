@@ -7,7 +7,7 @@ namespace ProjectColombo.Objects.Charms
 {
     public class DamagePercentageMissingHealth : BaseAttributes
     {
-        public float damagePercentageMissingHealth;
+        public float damageMissingHealth;
         public int forHowManyMissingHealth;
 
         HealthManager myHealthManager;
@@ -21,7 +21,7 @@ namespace ProjectColombo.Objects.Charms
         private void OnDamageDelt(int amount, GameGlobals.MusicScale scale, bool sameScale, Combat.HealthManager healthmanager, int comboLength)
         {
             int multiplyer = Mathf.FloorToInt((myHealthManager.MaxHealth - myHealthManager.currentHealth) / forHowManyMissingHealth);
-            int value = (int)(multiplyer * damagePercentageMissingHealth / 100f);
+            int value = (int)(multiplyer * damageMissingHealth);
 
             Debug.Log("dealt " + value + " extra damage for missing health: " + (myHealthManager.MaxHealth - myHealthManager.currentHealth));
             healthmanager.TakeDamage(value);

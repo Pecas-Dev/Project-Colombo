@@ -21,7 +21,7 @@ namespace ProjectColombo.Objects.Charms
         private void OnDamageReceive(int arg1, GameGlobals.MusicScale arg2, Combat.HealthManager arg3)
         {
             int value = (int)(myPlayerInventory.currencyAmount * damageForGoldPercentage / 100f);
-            Debug.Log("extra gold for getting hit: " + value);
+            Debug.Log("losing gold for getting hit: " + value);
             myPlayerInventory.currencyAmount += value;
         }
 

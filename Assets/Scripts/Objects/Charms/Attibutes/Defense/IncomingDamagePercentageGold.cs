@@ -23,7 +23,7 @@ namespace ProjectColombo.Objects.Charms
         {
             int multiplyer = Mathf.FloorToInt(myPlayerInventory.currencyAmount / perHowManyGold);
             int value = (int)(multiplyer * damgePercentage / 100f);
-            Debug.Log("extra damage: " + value + " for held gold: " + myPlayerInventory.currencyAmount);
+            Debug.Log("receiving extra damage: " + value + " for held gold: " + myPlayerInventory.currencyAmount);
             healthmanager.TakeDamage(value);
         }
 

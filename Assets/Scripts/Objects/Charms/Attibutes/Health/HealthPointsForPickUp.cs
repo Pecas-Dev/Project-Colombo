@@ -14,7 +14,6 @@ namespace ProjectColombo.Objects.Charms
         public override void Enable()
         {
             myHealthManager = GameObject.Find("Player").GetComponent<HealthManager>();
-            CustomEvents.OnCoinsCollected += OnCoinsCollected;
             CustomEvents.OnMaskCollected += OnMaskCollected;
             CustomEvents.OnCharmCollected += OnCharmCollected;
         }
@@ -29,11 +28,6 @@ namespace ProjectColombo.Objects.Charms
             AddHealth();
         }
 
-        private void OnCoinsCollected(int arg1)
-        {
-            AddHealth();
-        }
-
         void AddHealth()
         {
             Debug.Log("extra health for pick up: " + healthForPickup);
@@ -42,7 +36,6 @@ namespace ProjectColombo.Objects.Charms
 
         public override void Disable()
         {
-            CustomEvents.OnCoinsCollected -= OnCoinsCollected;
             CustomEvents.OnMaskCollected -= OnMaskCollected;
             CustomEvents.OnCharmCollected -= OnCharmCollected;
         }
