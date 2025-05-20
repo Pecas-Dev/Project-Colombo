@@ -29,9 +29,16 @@ namespace ProjectColombo.UI
         [Header("Debug")]
         [SerializeField] bool enableDebugLogs = true;
 
+
+        float lastPauseTime;
+
+
         Keyboard keyboard;
         Gamepad gamepad;
-        float lastPauseTime;
+
+
+        UINavigationManager navigationManager;
+
 
         void Awake()
         {
@@ -40,6 +47,18 @@ namespace ProjectColombo.UI
             lastPauseTime = -inputBufferTime;
 
             SceneManager.sceneLoaded += OnSceneLoaded;
+
+            navigationManager = FindFirstObjectByType<UINavigationManager>();
+
+            if (navigationManager == null)
+            {
+                GameObject navigationManagerObj = new GameObject("UINavigationManager");
+                navigationManager = navigationManagerObj.AddComponent<UINavigationManager>();
+                if (enableDebugLogs)
+                {
+                    LogDebug("Created UINavigationManager");
+                }
+            }
         }
 
         void Update()
@@ -95,7 +114,13 @@ namespace ProjectColombo.UI
                 optionsMenu.SetActive(false);
             }
 
+            if (navigationManager != null)
+            {
+                navigationManager.SetNavigationState(UINavigationState.MainMenu);
+            }
+
             MainMenuController mainMenuController = mainMenu.GetComponent<MainMenuController>();
+
             if (mainMenuController != null)
             {
                 mainMenuController.Show();
@@ -119,7 +144,13 @@ namespace ProjectColombo.UI
                 mainMenu.SetActive(false);
             }
 
+            if (navigationManager != null)
+            {
+                navigationManager.SetNavigationState(UINavigationState.OptionsMenuGraphicsTab);
+            }
+
             OptionsMenuController optionsController = optionsMenu.GetComponent<OptionsMenuController>();
+
             if (optionsController != null)
             {
                 optionsController.Show();
@@ -188,10 +219,23 @@ namespace ProjectColombo.UI
 
             pauseInventoryCanvas.SetActive(true);
 
-            if (inventoryTab != null) inventoryTab.SetActive(true);
-            if (settingsTab != null) settingsTab.SetActive(false);
+            if (inventoryTab != null)
+            {
+                inventoryTab.SetActive(true);
+            }
+            if (settingsTab != null)
+            {
+                settingsTab.SetActive(false);
+            }
+
+
+            if (navigationManager != null)
+            {
+                navigationManager.SetNavigationState(UINavigationState.PauseInventoryTab);
+            }
 
             PauseCanvasManager canvasManager = pauseInventoryCanvas.GetComponent<PauseCanvasManager>();
+
             if (canvasManager != null)
             {
                 canvasManager.ShowGlobalElements();

@@ -470,7 +470,6 @@ namespace ProjectColombo.GameInputSystem
 
             if (uiNavigateValue.sqrMagnitude > 0.5f)
             {
-                Debug.Log($"UI Navigation: {uiNavigateValue}");
             }
         }
 

@@ -14,6 +14,11 @@ namespace ProjectColombo.UI
 
         EventSystem currentEventSystem;
 
+
+        UINavigationManager navigationManager;
+
+
+
         void Awake()
         {
             currentEventSystem = GetComponentInChildren<EventSystem>();
@@ -31,6 +36,25 @@ namespace ProjectColombo.UI
             if (currentEventSystem == null)
             {
                 CreateEventSystem();
+            }
+
+            navigationManager = FindFirstObjectByType<UINavigationManager>();
+
+            if (navigationManager == null)
+            {
+                navigationManager = FindFirstObjectByType<UINavigationManager>();
+                if (navigationManager == null && debugLogging)
+                {
+                    Debug.Log("[EventSystemManager] UINavigationManager not found");
+                }
+            }
+        }
+
+        void Update()
+        {
+            if (currentEventSystem != null && currentEventSystem.currentSelectedGameObject == null)
+            {
+                EnsureSelectionIsValid();
             }
         }
 
@@ -78,6 +102,27 @@ namespace ProjectColombo.UI
                 if (debugLogging)
                 {
                     Debug.Log("[EventSystemManager] Preserved EventSystem on destroy");
+                }
+            }
+        }
+
+        public void EnsureSelectionIsValid()
+        {
+            if (currentEventSystem == null)
+            {
+                currentEventSystem = EventSystem.current;
+            }
+
+            if (currentEventSystem != null && currentEventSystem.currentSelectedGameObject == null)
+            {
+                if (navigationManager != null)
+                {
+                    UINavigationState currentState = navigationManager.GetCurrentState();
+
+                    if (currentState != UINavigationState.None && currentState != UINavigationState.HUD)
+                    {
+                        navigationManager.SetNavigationState(currentState);
+                    }
                 }
             }
         }

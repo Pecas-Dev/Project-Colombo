@@ -28,9 +28,9 @@ namespace ProjectColombo.UI.Pausescreen
         [Header("Global Elements")]
         [SerializeField] GameObject[] globalElements;
 
-        [Header("First Selected Elements")]
-        [SerializeField] GameObject inventoryFirstSelected;
-        [SerializeField] GameObject settingsFirstSelected;
+        //[Header("First Selected Elements")]
+        //[SerializeField] GameObject inventoryFirstSelected;
+        //[SerializeField] GameObject settingsFirstSelected;
 
         [Header("Tab Text Animation")]
         [SerializeField] float selectedMinFontSize = 75f;
@@ -74,12 +74,32 @@ namespace ProjectColombo.UI.Pausescreen
         GameObject[] tabScreens;
         Button[] tabButtons;
 
+
+        PauseMenuNavigationExtension navigationExtension;
+
+
         void Awake()
         {
             tabScreens = new GameObject[] { inventoryTab, statsTab, settingsTab };
             tabButtons = new Button[] { inventoryTitleButton, statsTitleButton, settingsTitleButton };
 
             Initialize();
+
+            navigationExtension = GetComponent<PauseMenuNavigationExtension>();
+
+            if (navigationExtension == null)
+            {
+                navigationExtension = gameObject.AddComponent<PauseMenuNavigationExtension>();
+
+                //if (inventoryFirstSelected != null)
+                //{
+                //    navigationExtension.GetType().GetField("inventoryFirstSelected", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(navigationExtension, inventoryFirstSelected);
+                //}
+                //if (settingsFirstSelected != null)
+                //{
+                //    navigationExtension.GetType().GetField("settingsFirstSelected", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(navigationExtension, settingsFirstSelected);
+                //}
+            }
         }
 
         void OnEnable()
@@ -358,27 +378,24 @@ namespace ProjectColombo.UI.Pausescreen
                     StopCoroutine(textAnimationCoroutines[currentTabIndex]);
                 }
 
-                textAnimationCoroutines[currentTabIndex] = StartCoroutine(
-                    AnimateTextSize(tabTexts[currentTabIndex],
-                        defaultMinFontSize, defaultMaxFontSize,
-                        selectedMinFontSize, selectedMaxFontSize,
-                        animationDuration));
+                textAnimationCoroutines[currentTabIndex] = StartCoroutine(AnimateTextSize(tabTexts[currentTabIndex], defaultMinFontSize, defaultMaxFontSize, selectedMinFontSize, selectedMaxFontSize, animationDuration));
 
                 tabTexts[currentTabIndex].color = tabSelectedColor;
             }
 
             GameObject firstSelected = null;
-            switch (currentTabIndex)
-            {
-                case 0:
-                    firstSelected = inventoryFirstSelected;
-                    break;
-                case 1:
-                    break;
-                case 2:
-                    firstSelected = settingsFirstSelected;
-                    break;
-            }
+
+            //switch (currentTabIndex)
+            //{
+            //    case 0:
+            //        firstSelected = inventoryFirstSelected;
+            //        break;
+            //    case 1:
+            //        break;
+            //    case 2:
+            //        firstSelected = settingsFirstSelected;
+            //        break;
+            //}
 
             if (firstSelected != null)
             {
@@ -399,6 +416,11 @@ namespace ProjectColombo.UI.Pausescreen
                 {
                     PlayButtonClickAnimation(rectTransform);
                 }
+            }
+
+            if (navigationExtension != null)
+            {
+                navigationExtension.OnTabChanged(tabIndex);
             }
         }
 

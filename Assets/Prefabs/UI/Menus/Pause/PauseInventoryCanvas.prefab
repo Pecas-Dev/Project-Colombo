@@ -627,6 +627,7 @@ GameObject:
   - component: {fileID: 1450737975819853424}
   - component: {fileID: 2284090241307161761}
   - component: {fileID: 5910756699318534959}
+  - component: {fileID: 7707114235719547445}
   m_Layer: 5
   m_Name: PauseInventoryCanvas
   m_TagString: Untagged
@@ -809,6 +810,25 @@ MonoBehaviour:
     m_RotationOrder: 4
   gameInput: {fileID: 11400000, guid: 4cbc555f8dd252548884cda6a4b53710, type: 2}
   tabSwitchCooldown: 0.2
+  enableDebugLogs: 1
+--- !u!114 &7707114235719547445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1092413801362953887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9df7b636d7410614aba5d41d0ee071ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inventoryFirstSelected: {fileID: 5355778018765862505}
+  statsFirstSelected: {fileID: 3634005130468475927}
+  settingsFirstSelected: {fileID: 5071997936466246330}
+  inventoryTab: {fileID: 600044478548006849}
+  statsTab: {fileID: 2786454776432192295}
+  settingsTab: {fileID: 8571020403619354243}
   enableDebugLogs: 1
 --- !u!1 &1101041176148417019
 GameObject:

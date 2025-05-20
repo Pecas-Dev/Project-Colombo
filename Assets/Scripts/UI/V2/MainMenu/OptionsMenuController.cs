@@ -25,12 +25,17 @@ namespace ProjectColombo.UI
         [SerializeField] Color tabOriginalColor = Color.black;
         [SerializeField] Color tabHoverColor = new Color(0.4415095f, 0f, 0.4200771f);
 
-
         int currentTabIndex = 0;
+
+        bool hasBeenInitialized = false;
+
 
         Coroutine[] textAnimationCoroutines;
 
-        bool hasBeenInitialized = false;
+
+
+        OptionsMenuNavigationExtension navigationExtension;
+
 
         void OnEnable()
         {
@@ -120,6 +125,22 @@ namespace ProjectColombo.UI
                     {
                         uiInputSwitcher.SetFirstSelectedButton(firstButton.gameObject);
                     }
+                }
+            }
+
+            navigationExtension = GetComponent<OptionsMenuNavigationExtension>();
+
+            if (navigationExtension == null)
+            {
+                navigationExtension = gameObject.AddComponent<OptionsMenuNavigationExtension>();
+
+                if (tabScreens != null && tabScreens.Length >= 3)
+                {
+                    navigationExtension.GetType().GetField("graphicsTab", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(navigationExtension, tabScreens[0]);
+
+                    navigationExtension.GetType().GetField("audioTab", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(navigationExtension, tabScreens[1]);
+
+                    navigationExtension.GetType().GetField("controlsTab", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(navigationExtension, tabScreens[2]);
                 }
             }
         }
@@ -455,6 +476,11 @@ namespace ProjectColombo.UI
                 {
                     PlayButtonClickAnimation(rectTransform);
                 }
+            }
+
+            if (navigationExtension != null)
+            {
+                navigationExtension.OnTabChanged(index);
             }
         }
 

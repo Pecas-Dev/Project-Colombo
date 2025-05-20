@@ -25,10 +25,16 @@ public class MainMenuController : MenuController
 
     static int lastSelectedButtonIndex = 0;
 
+    bool hasBeenInitialized = false;
+
 
     Coroutine[] sizeAnimationCoroutines;
 
-    bool hasBeenInitialized = false;
+
+
+    MainMenuNavigationExtension navigationExtension;
+
+
 
     void OnEnable()
     {
@@ -118,6 +124,18 @@ public class MainMenuController : MenuController
         if (enableMenuNavigation)
         {
             StartCoroutine(DelayedNavigationSetup());
+        }
+
+        navigationExtension = GetComponent<MainMenuNavigationExtension>();
+
+        if (navigationExtension == null)
+        {
+            navigationExtension = gameObject.AddComponent<MainMenuNavigationExtension>();
+
+            if (buttons != null && buttons.Length > 0)
+            {
+                navigationExtension.GetType().GetField("firstSelectedObject", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(navigationExtension, buttons[0].gameObject);
+            }
         }
     }
 
