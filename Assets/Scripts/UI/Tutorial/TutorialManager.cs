@@ -1,3 +1,4 @@
+using ProjectColombo.GameManagement;
 using ProjectColombo.LevelManagement;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +18,11 @@ namespace ProjectColombo.Tutorial
             }
 
             startSpawner.SpawnEnemy();
+        }
+
+        private void Update()
+        {
+            //GameManager.Instance.gameInput.DisableAllInputsExcept(GameInputSystem.InputActionType.Movement, GameInputSystem.InputActionType.Roll);
         }
     }
 }

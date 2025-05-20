@@ -68,7 +68,7 @@ namespace ProjectColombo.UI
 
         public void EnableDialog()
         {
-            GameManager.Instance.gameInput.DisableAllInputsExcept(GameInputSystem.InputActionType.UseItem);
+            GameManager.Instance.gameInput.DisableAllInputsExcept(GameInputSystem.InputActionType.Interact);
             GameManager.Instance.gameInput.ResetMovementInput();
             dialogCanvas.SetActive(true);
             HUDCanvas.SetActive(false);

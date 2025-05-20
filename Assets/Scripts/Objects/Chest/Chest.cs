@@ -35,7 +35,7 @@ namespace ProjectColombo.Objects.Decorations
         {
             if (other.CompareTag("Player"))
             {
-                GameManager.Instance.gameInput.EnableInput(GameInputSystem.InputActionType.UseItem);
+                GameManager.Instance.gameInput.EnableInput(GameInputSystem.InputActionType.Interact);
                 chestCanvas.SetActive(true);
                 playerClose = true;
             }

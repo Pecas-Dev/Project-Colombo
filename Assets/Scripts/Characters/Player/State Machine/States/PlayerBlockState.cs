@@ -1,4 +1,5 @@
 using ProjectColombo.GameInputSystem;
+using System.Collections;
 using UnityEngine;
 
 
@@ -19,6 +20,7 @@ namespace ProjectColombo.StateMachine.Player
 
             stateMachine.isBlocking = true;
             stateMachine.gameInputSO.DisableAllInputsExcept(
+                InputActionType.Movement,
                 InputActionType.Block,
                 InputActionType.Roll,
                 InputActionType.MajorAttack,
@@ -27,13 +29,39 @@ namespace ProjectColombo.StateMachine.Player
                 InputActionType.MinorParry,
                 InputActionType.Pause);
 
+            stateMachine.StartCoroutine(StopMovement());
+        }
+
+        IEnumerator StopMovement()
+        {
+            yield return new WaitForFixedUpdate();
+
+            //reset velocities
+            stateMachine.myRigidbody.linearVelocity = Vector3.zero;
+            stateMachine.myRigidbody.angularVelocity = Vector3.zero;
         }
 
         public override void Tick(float deltaTime)
         {
+            if (stateMachine.gameInputSO.MovementInput.magnitude > 0.01f)
+            {
+                Vector2 moveInput = stateMachine.gameInputSO.MovementInput;
+                Vector3 moveDirection = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
+
+                // Convert input to isometric space
+                Vector3 isometricDirection = TransformDirectionToIsometric(moveDirection);
+
+                if (isometricDirection.sqrMagnitude > 0.001f)
+                {
+                    Quaternion targetRotation = Quaternion.LookRotation(isometricDirection);
+                    stateMachine.myRigidbody.MoveRotation(Quaternion.Slerp(stateMachine.myRigidbody.rotation, targetRotation, Time.fixedDeltaTime * stateMachine.myEntityAttributes.rotationSpeedPlayer));
+                }
+            }
+
+
             HandleStateSwitchFromInput();
 
-            if (!stateMachine.gameInputSO.BlockPressed)
+            if (!stateMachine.gameInputSO.BlockPressed())
             {
                 stateMachine.SwitchState(new PlayerMovementState(stateMachine));
                 return;

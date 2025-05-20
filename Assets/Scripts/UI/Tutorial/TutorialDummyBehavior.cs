@@ -39,21 +39,14 @@ namespace ProjectColombo.Tutorial
             if (lastFrameHealth > myHealthManager.currentHealth)
             {
                 myAnimator.SetTrigger("Impact");
-                lastFrameHealth = myHealthManager.currentHealth;
+                TutorialEvents.EnemyHit();
             }
+
+            lastFrameHealth = myHealthManager.currentHealth;
 
             if (healWhenLow && myHealthManager.currentHealth < minHealth)
             {
                 myHealthManager.Heal(maxHealth);
-            }
-
-            if (Input.GetKeyDown(KeyCode.J))
-            {
-                SwitchScale(GameGlobals.MusicScale.MAJOR);
-            }
-            else if (Input.GetKeyDown(KeyCode.K))
-            {
-                SwitchScale(GameGlobals.MusicScale.MINOR);
             }
         }
 
@@ -63,7 +56,7 @@ namespace ProjectColombo.Tutorial
             GetComponent<TextureSwapScale>().SetMaterials(newScale);
 
             myHealthManager.Heal(maxHealth);
-
+            lastFrameHealth = maxHealth;
         }
     }
 }

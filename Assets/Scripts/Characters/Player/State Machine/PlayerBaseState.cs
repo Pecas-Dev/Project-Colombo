@@ -50,7 +50,7 @@ namespace ProjectColombo.StateMachine.Player
                 return;
             }
 
-            if (stateMachine.gameInputSO.BlockPressed && stateMachine.currentState != PlayerStateMachine.PlayerState.Block)
+            if (stateMachine.gameInputSO.BlockPressed() && stateMachine.currentState != PlayerStateMachine.PlayerState.Block)
             {
                 stateMachine.SwitchState(new PlayerBlockState(stateMachine));
                 return;

@@ -15,7 +15,7 @@ namespace ProjectColombo.Objects.Items
 
         private void Start()
         {
-            GameManager.Instance.gameInput.EnableInput(GameInputSystem.InputActionType.UseItem);
+            GameManager.Instance.gameInput.EnableInput(GameInputSystem.InputActionType.Interact);
         }
 
         private void Update()

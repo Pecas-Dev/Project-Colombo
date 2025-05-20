@@ -7,8 +7,7 @@ namespace ProjectColombo.Tutorial
     public class TutorialDialogFunctions : MonoBehaviour
     {
         public GameObject chamberSlot;
-        public GameObject mommottiSlot;
-
+        public GameObject setActiveSlot;
 
         public void ActivateChamber()
         {
@@ -20,14 +19,14 @@ namespace ProjectColombo.Tutorial
             chamberSlot.GetComponent<TileWorldChamber>().DeactivateChamber();
         }
 
-        public void EnableMommotti()
-        {
-            mommottiSlot.SetActive(true);
-        }
-
         public void EndTutorial()
         {
             SceneManager.LoadScene(3);
+        }
+
+        public void SetActive()
+        {
+            setActiveSlot.SetActive(true);
         }
     }
 }
