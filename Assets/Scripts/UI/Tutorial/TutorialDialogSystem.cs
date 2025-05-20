@@ -1,9 +1,10 @@
-using UnityEngine;
-using TMPro;
-using System.Collections;
 using ProjectColombo.GameManagement;
-using UnityEngine.Events;
+using ProjectColombo.StateMachine.Player;
 using ProjectColombo.Tutorial;
+using System.Collections;
+using TMPro;
+using UnityEngine;
+using UnityEngine.Events;
 
 namespace ProjectColombo.UI
 {
@@ -76,7 +77,10 @@ namespace ProjectColombo.UI
         public void EnableDialog()
         {
             isEnabled = true;
+
+            GameObject player = GameObject.Find("Player");
             GameManager.Instance.gameInput.ResetMovementInput();
+            player.GetComponent<PlayerStateMachine>().SwitchState(new PlayerMovementState(player.GetComponent<PlayerStateMachine>()));
 
             myTutorialManager.allowedInputs = new GameInputSystem.InputActionType[]
             {

@@ -13,6 +13,11 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Enter()
         {
+            if (stateMachine.gameInputSO.MovementInput.magnitude < 0.01f)
+            {
+                stateMachine.gameInputSO.ResetMovementInput();
+            }
+
             stateMachine.ParryFrameStop();
             stateMachine.ParryPanaltyStop();
             stateMachine.currentComboString = "";
