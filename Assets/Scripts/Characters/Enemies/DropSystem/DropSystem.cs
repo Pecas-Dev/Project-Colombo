@@ -66,9 +66,9 @@ namespace ProjectColombo.Enemies.DropSystem
 
             int currentLuck = GameManager.Instance.GetComponent<PlayerInventory>().currentLuck;
 
-            int currentDropChanceCommonCharm = Mathf.RoundToInt(dropChanceCommonCharm * currentLuck * 0.25f);
-            int currentDropChanceRareCharm = Mathf.RoundToInt(dropChanceRareCharm * currentLuck * 0.25f);
-            int currentDropChanceLegendaryCharm = Mathf.RoundToInt(dropChanceLegendaryCharm * currentLuck * 0.25f);
+            int currentDropChanceCommonCharm = Mathf.RoundToInt(dropChanceCommonCharm + currentLuck * 0.25f);
+            int currentDropChanceRareCharm = Mathf.RoundToInt(dropChanceRareCharm + currentLuck * 0.25f);
+            int currentDropChanceLegendaryCharm = Mathf.RoundToInt(dropChanceLegendaryCharm + currentLuck * 0.25f);
 
             if (random <= currentDropChanceCommonCharm)
             {
