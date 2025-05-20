@@ -39,7 +39,7 @@ namespace ProjectColombo.Tutorial
             if (lastFrameHealth > myHealthManager.currentHealth)
             {
                 myAnimator.SetTrigger("Impact");
-                TutorialEvents.EnemyHit();
+                TutorialEvents.DummyHit();
             }
 
             lastFrameHealth = myHealthManager.currentHealth;
@@ -47,6 +47,11 @@ namespace ProjectColombo.Tutorial
             if (healWhenLow && myHealthManager.currentHealth < minHealth)
             {
                 myHealthManager.Heal(maxHealth);
+            }
+            else if (myHealthManager.currentHealth <= 0)
+            {
+                TutorialEvents.DummyDied();
+                Destroy(this.gameObject);
             }
         }
 

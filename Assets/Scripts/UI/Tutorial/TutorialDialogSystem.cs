@@ -72,6 +72,7 @@ namespace ProjectColombo.UI
         public void EnableDialog()
         {
             GameManager.Instance.gameInput.ResetMovementInput();
+
             myTutorialManager.allowedInputs = new GameInputSystem.InputActionType[]
             {
                 GameInputSystem.InputActionType.Interact

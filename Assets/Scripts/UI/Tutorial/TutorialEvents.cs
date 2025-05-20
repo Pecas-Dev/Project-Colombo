@@ -5,11 +5,17 @@ namespace ProjectColombo.Tutorial
 {
     public class TutorialEvents : MonoBehaviour
     {
-        public static event Action OnEnemyHit;
+        public static event Action OnDummyHit;
+        public static event Action OnDummyDeath;
 
-        public static void EnemyHit()
+        public static void DummyHit()
         {
-            OnEnemyHit?.Invoke();
+            OnDummyHit?.Invoke();
+        }
+
+        public static void DummyDied()
+        {
+            OnDummyDeath?.Invoke();
         }
     }
 }
