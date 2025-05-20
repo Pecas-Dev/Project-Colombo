@@ -7,6 +7,42 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
 
+    [Header("Volume Settings")]
+
+    [Range(0f, 1f)]
+    public float masterVolume = 1f;
+
+    [Range(0f, 1f)]
+    public float mainMenuVolume = 1f;
+
+    [Range(0f, 1f)]
+    public float explorationVolume = 0.5f;
+
+    [Range(0f, 1f)]
+    public float churchEntranceVolume = 0.5f;
+
+    [Range(0f, 1f)]
+    public float churchFightVolume = 0.5f;
+
+    [Range(0f, 1f)]
+    public float endingSongVolume = 0.5f;
+
+    [Range(0f, 1f)]
+    public float[] battleLayerVolumes = new float[4] { 1f, 1f, 1f, 1f };
+
+    private enum MusicCategory
+    {
+        None,
+        MainMenu,
+        Exploration,
+        Battle,
+        ChurchEntrance,
+        ChurchFight,
+        Ending
+    }
+
+    private MusicCategory currentMusicCategory = MusicCategory.None;
+
     [Header("General Music Settings")]
     public float fadeSpeed = 1f;
 
@@ -20,6 +56,9 @@ public class AudioManager : MonoBehaviour
     [Header("Church Music Set")]
     public AudioClip churchExplorationClip;
     public AudioClip[] churchBattleClips;
+
+    [Header("Ending Music")]
+    public AudioClip endingSongClip;
 
     private AudioSource explorationMusic;
     private AudioSource[] battleMusicLayers;
@@ -71,26 +110,78 @@ public class AudioManager : MonoBehaviour
 
     private void Update()
     {
+        // Only skip if no music playing at all
+        if (explorationMusic.clip == null || !explorationMusic.isPlaying)
+            return;
+
+        // For menu music and ending music, update volume always
+        if (currentMusicCategory == MusicCategory.MainMenu || currentMusicCategory == MusicCategory.Ending)
+        {
+            float volMultiplier = 1f;
+
+            if (currentMusicCategory == MusicCategory.MainMenu)
+                volMultiplier = mainMenuVolume;
+            else if (currentMusicCategory == MusicCategory.Ending)
+                volMultiplier = endingSongVolume;
+
+            float targetVolume = volMultiplier * masterVolume;
+            explorationMusic.volume = Mathf.Lerp(explorationMusic.volume, targetVolume, Time.deltaTime * fadeSpeed);
+
+            return;
+        }
+
         if (!isInGameplay) return;
 
-        float targetExplorationVolume = 1f - battleBlend;
+        float explorationVolMultiplier = explorationVolume;
+
+        switch (currentMusicCategory)
+        {
+            case MusicCategory.MainMenu:
+                explorationVolMultiplier = mainMenuVolume;
+                break;
+            case MusicCategory.Exploration:
+                explorationVolMultiplier = explorationVolume;
+                break;
+            case MusicCategory.ChurchEntrance:
+                explorationVolMultiplier = churchEntranceVolume;
+                break;
+            case MusicCategory.Ending:
+                explorationVolMultiplier = endingSongVolume;
+                break;
+            case MusicCategory.ChurchFight:
+                explorationVolMultiplier = churchFightVolume;
+                break;
+                // Battle handled separately below
+        }
+
+        float targetExplorationVolume = (explorationVolMultiplier * (1f - battleBlend)) * masterVolume;
         explorationMusic.volume = Mathf.Lerp(explorationMusic.volume, targetExplorationVolume, Time.deltaTime * fadeSpeed);
 
-        // Only normal layer for now
         float intensityLayer0 = Mathf.Clamp01(musicIntensity);
-        float targetVolume = battleBlend * intensityLayer0;
-        battleMusicLayers[0].volume = Mathf.Lerp(battleMusicLayers[0].volume, targetVolume, Time.deltaTime * fadeSpeed);
 
-        // Other layers are disabled
-        // for (int i = 1; i < battleMusicLayers.Length; i++)
-        // {
-        //     battleMusicLayers[i].volume = 0f;
-        // }
+        float battleVolMultiplier = battleLayerVolumes[0];
+        if (currentMusicCategory == MusicCategory.ChurchFight)
+            battleVolMultiplier *= churchFightVolume;
+        else if (currentMusicCategory == MusicCategory.Battle)
+            battleVolMultiplier *= explorationVolume;
+
+        float targetBattleVolume = battleBlend * intensityLayer0 * battleVolMultiplier * masterVolume;
+        battleMusicLayers[0].volume = Mathf.Lerp(battleMusicLayers[0].volume, targetBattleVolume, Time.deltaTime * fadeSpeed);
+
+        // Uncomment and implement if you want more battle layers controlled similarly
+        /*
+        for (int i = 1; i < battleMusicLayers.Length; i++)
+        {
+            float target = battleBlend * musicIntensity * battleLayerVolumes[i] * masterVolume;
+            battleMusicLayers[i].volume = Mathf.Lerp(battleMusicLayers[i].volume, target, Time.deltaTime * fadeSpeed);
+        }
+        */
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         currentScene = scene.name;
+        Debug.Log("Loaded scene: " + currentScene);  // Add this
 
         StopAllCoroutines();
 
@@ -140,8 +231,10 @@ public class AudioManager : MonoBehaviour
         if (menuMusicClip == null) return;
 
         explorationMusic.clip = menuMusicClip;
-        explorationMusic.volume = 1f;
+        explorationMusic.volume = 0f;
         explorationMusic.Play();
+
+        currentMusicCategory = MusicCategory.MainMenu;
     }
 
     private void PlayGameplayMusic(AudioClip explorationClip, AudioClip[] battleClips)
@@ -164,20 +257,30 @@ public class AudioManager : MonoBehaviour
         }
 
         explorationMusic.clip = explorationClip;
-        explorationMusic.volume = 1f;
+        explorationMusic.volume = 0f;
         explorationMusic.Play();
 
-        // Only use layer 0
         battleMusicLayers[0].clip = battleClips[0];
         battleMusicLayers[0].volume = 0f;
         battleMusicLayers[0].Play();
 
-        // Commented out remaining layers
-        // for (int i = 1; i < 4; i++)
-        // {
-        //     battleMusicLayers[i].clip = null;
-        //     battleMusicLayers[i].volume = 0f;
-        // }
+        if (currentScene == "05_Church")
+            currentMusicCategory = MusicCategory.ChurchEntrance;
+        else
+            currentMusicCategory = MusicCategory.Exploration;
+    }
+
+    private void PlayEndingSong()
+    {
+        StopAllMusic();
+
+        if (endingSongClip == null) return;
+
+        explorationMusic.clip = endingSongClip;
+        explorationMusic.volume = 0f;
+        explorationMusic.Play();
+
+        currentMusicCategory = MusicCategory.Ending;
     }
 
     private void StopAllMusic()
@@ -193,11 +296,21 @@ public class AudioManager : MonoBehaviour
     {
         battleBlend = 1f;
         musicIntensity = 0.5f;
+
+        if (currentScene == "05_Church")
+            currentMusicCategory = MusicCategory.ChurchFight;
+        else
+            currentMusicCategory = MusicCategory.Battle;
     }
 
     private void HandleChamberFinished()
     {
         battleBlend = 0f;
+
+        if (currentScene == "05_Church")
+            currentMusicCategory = MusicCategory.ChurchEntrance;
+        else
+            currentMusicCategory = MusicCategory.Exploration;
     }
 
     public void SetBattleIntensity(float intensity)

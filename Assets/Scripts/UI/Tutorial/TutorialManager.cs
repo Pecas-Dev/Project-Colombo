@@ -15,9 +15,10 @@ namespace ProjectColombo.Tutorial
         [ReadOnlyInspector] public GameInputSystem.InputActionType[] allowedInputs;
         public List<TutorialDialogSystem> dialogsInOrder;
         public TutorialDialogSystem afterParry;
-        public GameObject spawner;
         int currentDialog = -1;
         int dummiesHit = 0;
+        public GameObject fightingChamber;
+        public GameObject potionText;
 
         private void Start()
         {
@@ -36,15 +37,21 @@ namespace ProjectColombo.Tutorial
 
             TutorialEvents.OnDummyHit += OnDummyHit;
             CustomEvents.OnSuccessfullParry += OnSuccessfullParry;
+            CustomEvents.OnPotionUsed += OnPotionUsed;
+        }
+
+        private void OnPotionUsed()
+        {
+            potionText.SetActive(false);
+            fightingChamber.GetComponent<TileWorldChamber>().DeactivateChamber();
         }
 
         private void OnSuccessfullParry(GameGlobals.MusicScale scale, bool sameScale)
         {
-            if (sameScale)
+            if (!sameScale)
             {
                 afterParry.gameObject.SetActive(true);
                 afterParry.EnableDialog();
-                spawner.SetActive(false);
                 CustomEvents.OnSuccessfullParry -= OnSuccessfullParry;
             }
         }
