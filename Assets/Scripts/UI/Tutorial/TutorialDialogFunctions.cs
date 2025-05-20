@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using ProjectColombo.Combat;
 
 namespace ProjectColombo.Tutorial
 {
@@ -26,6 +27,13 @@ namespace ProjectColombo.Tutorial
 
         public void EndTutorial()
         {
+            HealthManager hm = GameObject.Find("Player").GetComponent<HealthManager>();
+
+            while (hm.currentHealth < hm.MaxHealth)
+            {
+                hm.Heal(hm.MaxHealth);
+            }
+
             SceneManager.LoadScene(3);
         }
 
