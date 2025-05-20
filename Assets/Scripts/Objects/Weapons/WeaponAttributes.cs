@@ -246,6 +246,30 @@ namespace ProjectColombo.Combat
                     otherHealth.TakeDamage(damage);
                     otherStateMachine.ApplyKnockback(attackDirection, knockback, currentScale);
                 }
+                else if (otherHealth != null) //for tutorial dummy
+                {
+                    if (doHitstop)
+                    {
+                        StopTime();
+                        ScreenShake();
+                        Rumble(0.1f, 0.5f, 0.1f); // Light buzz
+                        doHitstop = false;
+                    }
+
+                    if (currentScale != otherAttributes.currentScale)
+                    {
+                        //Debug.Log("..with the opposite scale");
+                        sameScale = false;
+                        damage = AddTemporaryDamagePercentage(damage, correctAttackScaleBonusPercentage);
+                    }
+                    else
+                    {
+                        sameScale = true;
+                        //Debug.Log("..but not the opposite scale");
+                    }
+
+                    otherHealth.TakeDamage(damage);
+                }
             }
             else if (ownerTag == "Enemy" && other.CompareTag("Player"))
             {

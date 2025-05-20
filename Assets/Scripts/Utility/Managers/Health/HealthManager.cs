@@ -15,6 +15,7 @@ namespace ProjectColombo.Combat
         GlobalStats myGlobalStats;
         LevelStats myLevelStats;
         int maxHealth = 100;
+        public bool dontDie = false;
 
         [ReadOnlyInspector] public int currentHealth;
         [ReadOnlyInspector] public bool ignoreDamage = false;
@@ -92,7 +93,7 @@ namespace ProjectColombo.Combat
 
             HealthChanged?.Invoke(currentHealth, maxHealth);
 
-            if (currentHealth <= 0)
+            if (!dontDie && currentHealth <= 0)
             {
                 Die();
             }
@@ -100,7 +101,7 @@ namespace ProjectColombo.Combat
 
         public void Heal(int healAmount)
         {
-            if (currentHealth <= 0)
+            if (!dontDie && currentHealth <= 0)
             {
                 return; 
             }
