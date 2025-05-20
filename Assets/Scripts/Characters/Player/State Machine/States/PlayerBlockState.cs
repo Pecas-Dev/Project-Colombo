@@ -72,6 +72,11 @@ namespace ProjectColombo.StateMachine.Player
         {
             stateMachine.gameInputSO.EnableAllInputs();
             stateMachine.isBlocking = false;
+
+            if (stateMachine.gameInputSO.MovementInput.magnitude < 0.01f)
+            {
+                stateMachine.gameInputSO.ResetMovementInput();
+            }
         }
     }
 }

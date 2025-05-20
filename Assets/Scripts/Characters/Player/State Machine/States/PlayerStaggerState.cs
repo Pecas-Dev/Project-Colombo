@@ -41,6 +41,11 @@ namespace ProjectColombo.StateMachine.Player
         public override void Exit()
         {
             stateMachine.gameInputSO.EnableAllInputs();
+
+            if (stateMachine.gameInputSO.MovementInput.magnitude < 0.01f)
+            {
+                stateMachine.gameInputSO.ResetMovementInput();
+            }
         }
     }
 }

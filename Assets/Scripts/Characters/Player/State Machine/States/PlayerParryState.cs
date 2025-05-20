@@ -34,6 +34,12 @@ namespace ProjectColombo.StateMachine.Player
             stateMachine.gameInputSO.EnableAllInputs();
             stateMachine.ParryFrameStop();
             stateMachine.ParryPanaltyStop();
+
+
+            if (stateMachine.gameInputSO.MovementInput.magnitude < 0.01f)
+            {
+                stateMachine.gameInputSO.ResetMovementInput();
+            }
         }
     }
 }
