@@ -1832,7 +1832,7 @@ AudioSource:
   m_GameObject: {fileID: 3074596907412376985}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: -3165942800488051908, guid: 7e984f512e89b60468e829489e8883e3, type: 2}
+  OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -4656,6 +4656,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de7e534c6d0c808458b38f233fad212b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dontDie: 0
   currentHealth: 0
   ignoreDamage: 0
   isDead: 0
@@ -4717,6 +4718,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e0133149aabf25b4ab05f956a0062563, type: 3}
   - {fileID: 8300000, guid: 3c295a1e191fd7143b542a3b7664a94e, type: 3}
   churchRollSounds: []
+  maskAbilitySound1: {fileID: 8300000, guid: f0c411983adaf1346b00a1f99ff17800, type: 3}
+  maskAbilitySound2: {fileID: 8300000, guid: 2e67e89c0aff6c6468d39bbb80082fea, type: 3}
+  maskAbilitySound3: {fileID: 8300000, guid: 4f1c9b596185e0749a263c97336ea1ef, type: 3}
+  maskAbilitySound4: {fileID: 8300000, guid: b677e8632874e064f812b1bfbd7c6bd2, type: 3}
   firstAttackClips:
   - {fileID: 8300000, guid: b916c811caef99842aaaf727f7d7ec9f, type: 3}
   - {fileID: 8300000, guid: aff9a792ab8c98f40873aa33411def7b, type: 3}
@@ -4893,7 +4898,7 @@ MonoBehaviour:
   attackVolume: 1
   blockVolume: 1
   parryVolume: 1
-  rollVolume: 1
+  rollVolume: 0.917
   comboVolume: 1
 --- !u!114 &8546847635247379355
 MonoBehaviour:

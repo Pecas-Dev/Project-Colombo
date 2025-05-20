@@ -44,9 +44,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee35f558998888f42a9ed5eb69141d62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeSpeed: 1
-  menuMusicClip: {fileID: 0}
-  levelExplorationClip: {fileID: 0}
-  levelBattleClips: []
-  churchExplorationClip: {fileID: 0}
-  churchBattleClips: []
+  masterVolume: 0.75
+  mainMenuVolume: 0.75
+  explorationVolume: 0.547
+  churchEntranceVolume: 0.5
+  churchFightVolume: 0.5
+  endingSongVolume: 0.5
+  battleLayerVolumes:
+  - 0.75
+  - 0.82
+  - 0.8
+  - 0.78
+  fadeSpeed: 1.25
+  menuMusicClip: {fileID: 8300000, guid: 3ad373f67961e7e4f91bc3a914019675, type: 3}
+  levelExplorationClip: {fileID: 8300000, guid: 36725ae9f710d8c4e86b124ce6f97ca7, type: 3}
+  levelBattleClips:
+  - {fileID: 8300000, guid: 61c3c51ff69e2d844aa0a222fc2a70f4, type: 3}
+  - {fileID: 8300000, guid: c6fd730a5803b4a459306ac6c37b1d64, type: 3}
+  - {fileID: 8300000, guid: 509a840bfe3d9ef47816e8731b3b6336, type: 3}
+  - {fileID: 8300000, guid: 56c13adb8ae31dd4a897c2aa9a0ed367, type: 3}
+  churchExplorationClip: {fileID: 8300000, guid: dc8845ff43978724ab1f071088b2baf2, type: 3}
+  churchBattleClips:
+  - {fileID: 8300000, guid: 0f962fc69d8189d489b2869e62a7d090, type: 3}
+  endingSongClip: {fileID: 0}

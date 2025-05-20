@@ -8,10 +8,12 @@ using System;
 public class PlayerSFXManager : MonoBehaviour
 {
     //      [STEPS]
+    [Header("Steps")]
     public AudioClip[] footstepSounds;
     public AudioClip[] churchFootstepSounds;
 
     //      [ATTACKS]
+    [Header("Attacks")]
     public AudioClip[] minorStab1Sounds;
     public AudioClip[] churchMinorStab1Sounds;
     public AudioClip[] minorStab2Sounds;
@@ -27,16 +29,26 @@ public class PlayerSFXManager : MonoBehaviour
     public AudioClip[] churchMajorSlash3Sounds;
 
     //      [BLOCK]
+    [Header("Block")]
     public AudioClip[] blockExecutionSounds;
     public AudioClip[] churchBlockExecutionSounds;
 
     //      [PARRY]
+    [Header("Parry")]
     public AudioClip[] parryExecutionSounds;
     public AudioClip[] churchParryExecutionSounds;
 
     //      [ROLL]  
+    [Header("Roll")]
     public AudioClip[] rollSounds;
     public AudioClip[] churchRollSounds;
+
+    //      [MASK ABILITIES]
+    [Header("Mask Abilities")]
+    public AudioClip maskAbilitySound1;
+    public AudioClip maskAbilitySound2;
+    public AudioClip maskAbilitySound3;
+    public AudioClip maskAbilitySound4;
 
     //      [COMBO SYSTEM]
     [Header("1st Attack Sounds")]
@@ -352,11 +364,13 @@ public class PlayerSFXManager : MonoBehaviour
     private void OnEnable()
     {
         CustomEvents.OnDamageDelt += HandleDamageDelt;
+        CustomEvents.OnAbilityUsed += HandleAbilityUsed;
     }
 
     private void OnDisable()
     {
         CustomEvents.OnDamageDelt -= HandleDamageDelt;
+        CustomEvents.OnAbilityUsed -= HandleAbilityUsed;
     }
 
     private void HandleDamageDelt(int damage, GameGlobals.MusicScale scale, bool sameScale, HealthManager enemy, int comboLength)
@@ -390,5 +404,40 @@ public class PlayerSFXManager : MonoBehaviour
         }
 
         hasPlayedComboSound = true; // Prevent from playing again this frame
+    }
+
+    public void PlayAbilitySound(string abilityName)
+    {
+        AudioClip selectedClip = null;
+        Debug.Log($"Received ability name: {abilityName}");
+
+        switch (abilityName)
+        {
+            case "Coviello_Mask_Ability":
+                selectedClip = maskAbilitySound1;
+                break;
+            case "Dosseno_Mask_Ability":
+                selectedClip = maskAbilitySound2;
+                break;
+            case "Abbatazzu_Mask_Ability":
+                selectedClip = maskAbilitySound3;
+                break;
+            case "Zanni_Mask_Ability":
+                selectedClip = maskAbilitySound4;
+                break;
+            default:
+                Debug.LogWarning($"No audio clip mapped for ability: {abilityName}");
+                return;
+        }
+
+        if (selectedClip != null)
+        {
+            audioSource.PlayOneShot(selectedClip, comboVolume);
+        }
+    }
+
+    private void HandleAbilityUsed(string abilityName)
+    {
+        PlayAbilitySound(abilityName);
     }
 }
