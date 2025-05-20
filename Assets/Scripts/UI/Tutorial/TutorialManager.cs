@@ -10,6 +10,8 @@ namespace ProjectColombo.Tutorial
         public List<GameObject> chambers;
         public TutorialSpawner startSpawner;
 
+        [ReadOnlyInspector] public GameInputSystem.InputActionType[] allowedInputs;
+
         private void Start()
         {
             foreach (var chamber in chambers)
@@ -18,11 +20,17 @@ namespace ProjectColombo.Tutorial
             }
 
             startSpawner.SpawnEnemy();
+
+            allowedInputs = new GameInputSystem.InputActionType[]
+            {
+                GameInputSystem.InputActionType.Movement,
+                GameInputSystem.InputActionType.Roll
+            };
         }
 
         private void Update()
         {
-            //GameManager.Instance.gameInput.DisableAllInputsExcept(GameInputSystem.InputActionType.Movement, GameInputSystem.InputActionType.Roll);
+            GameManager.Instance.gameInput.DisableAllInputsExcept(allowedInputs);
         }
     }
 }

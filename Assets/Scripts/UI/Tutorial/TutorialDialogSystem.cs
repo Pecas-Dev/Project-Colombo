@@ -3,6 +3,7 @@ using TMPro;
 using System.Collections;
 using ProjectColombo.GameManagement;
 using UnityEngine.Events;
+using ProjectColombo.Tutorial;
 
 namespace ProjectColombo.UI
 {
@@ -14,11 +15,13 @@ namespace ProjectColombo.UI
         public string[] lines;
         public float textSpeed;
         public UnityEvent onDialogComplete;
+        TutorialManager myTutorialManager;
 
         int index;
 
         private void Start()
         {
+            myTutorialManager = GameObject.Find("TutorialManager").GetComponent<TutorialManager>();
             dialogCanvas.SetActive(false);
         }
 
@@ -68,8 +71,12 @@ namespace ProjectColombo.UI
 
         public void EnableDialog()
         {
-            GameManager.Instance.gameInput.DisableAllInputsExcept(GameInputSystem.InputActionType.Interact);
             GameManager.Instance.gameInput.ResetMovementInput();
+            myTutorialManager.allowedInputs = new GameInputSystem.InputActionType[]
+            {
+                GameInputSystem.InputActionType.Interact
+            };
+
             dialogCanvas.SetActive(true);
             HUDCanvas.SetActive(false);
             index = 0;
@@ -79,7 +86,12 @@ namespace ProjectColombo.UI
 
         public void DisableDialog()
         {
-            GameManager.Instance.gameInput.EnableAllInputs();
+            myTutorialManager.allowedInputs = new GameInputSystem.InputActionType[]
+            {
+                GameInputSystem.InputActionType.Movement,
+                GameInputSystem.InputActionType.Roll
+            };
+
             onDialogComplete.Invoke();
             HUDCanvas.SetActive(true);
             gameObject.SetActive(false);

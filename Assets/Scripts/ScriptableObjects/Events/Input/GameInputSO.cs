@@ -172,7 +172,7 @@ namespace ProjectColombo.GameInputSystem
                 allowedInputs |= input;
             }
 
-            ResetAllInputs();
+            //ResetAllInputs();
         }
 
         public bool IsInputEnabled(InputActionType inputAction)
