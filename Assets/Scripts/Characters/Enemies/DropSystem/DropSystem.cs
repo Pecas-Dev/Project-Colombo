@@ -70,22 +70,22 @@ namespace ProjectColombo.Enemies.DropSystem
             int currentDropChanceRareCharm = Mathf.RoundToInt(dropChanceRareCharm + currentLuck * 0.25f);
             int currentDropChanceLegendaryCharm = Mathf.RoundToInt(dropChanceLegendaryCharm + currentLuck * 0.25f);
 
-            if (random <= currentDropChanceCommonCharm)
+            if (random < currentDropChanceCommonCharm)
             {
                 Vector3 position = new Vector3(transform.position.x, 0f, transform.position.z);
                 manager.DropRandomCommonCharm(position);
             }
-            else if (random <= currentDropChanceRareCharm + currentDropChanceCommonCharm)
+            else if (random < currentDropChanceRareCharm + currentDropChanceCommonCharm)
             {
                 Vector3 position = new Vector3(transform.position.x, 0f, transform.position.z);
                 manager.DropRandomRareCharm(position);
             }
-            else if (random <= currentDropChanceLegendaryCharm + currentDropChanceRareCharm + currentDropChanceCommonCharm)
+            else if (random < currentDropChanceLegendaryCharm + currentDropChanceRareCharm + currentDropChanceCommonCharm)
             {
                 Vector3 position = new Vector3(transform.position.x, 0f, transform.position.z);
                 manager.DropRandomLegendaryCharm(position);
             }
-            else if (random <= dropChanceCoins + currentDropChanceLegendaryCharm + currentDropChanceRareCharm + currentDropChanceCommonCharm)
+            else if (random < dropChanceCoins + currentDropChanceLegendaryCharm + currentDropChanceRareCharm + currentDropChanceCommonCharm)
             {
                 int rand = Random.Range(minAmountOfCoins, maxAmountOfCoins+1);
                 rand += 2 * currentLuck;
