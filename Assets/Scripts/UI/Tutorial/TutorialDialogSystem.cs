@@ -17,16 +17,20 @@ namespace ProjectColombo.UI
         public UnityEvent onDialogComplete;
         TutorialManager myTutorialManager;
 
+        bool isEnabled = false;
         int index;
 
         private void Start()
         {
+            isEnabled = false;
             myTutorialManager = GameObject.Find("TutorialManager").GetComponent<TutorialManager>();
             dialogCanvas.SetActive(false);
         }
 
         private void Update()
         {
+            if (!isEnabled) return;
+
             if (GameManager.Instance.gameInput.InteractPressed)
             {
                 if (textComponent.text == lines[index])
@@ -71,6 +75,7 @@ namespace ProjectColombo.UI
 
         public void EnableDialog()
         {
+            isEnabled = true;
             GameManager.Instance.gameInput.ResetMovementInput();
 
             myTutorialManager.allowedInputs = new GameInputSystem.InputActionType[]
@@ -87,6 +92,7 @@ namespace ProjectColombo.UI
 
         public void DisableDialog()
         {
+            isEnabled = false;
             myTutorialManager.allowedInputs = new GameInputSystem.InputActionType[]
             {
                 GameInputSystem.InputActionType.Movement,

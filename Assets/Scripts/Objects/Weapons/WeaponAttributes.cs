@@ -11,6 +11,7 @@ using UnityEngine.VFX;
 using System.Collections.Generic;
 using ProjectColombo.Inventory;
 using UnityEngine.InputSystem;
+using ProjectColombo.Tutorial;
 
 namespace ProjectColombo.Combat
 {
@@ -404,6 +405,12 @@ namespace ProjectColombo.Combat
 
             foreach (GameObject e in enemies)
             {
+                if (!e.TryGetComponent<MommottiStateMachine>(out _))
+                {
+                    e.GetComponent<TutorialDummyBehavior>().SetStaggered();
+                    return;
+                }
+
                 if (Vector3.Magnitude(transform.position - e.transform.position) < stunArea)
                 {
                     e.GetComponent<MommottiStateMachine>().SetStaggered();

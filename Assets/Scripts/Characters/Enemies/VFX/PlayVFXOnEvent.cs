@@ -23,7 +23,7 @@ namespace ProjectColombo.VFX
         {
             if (healthManager.gameObject == this.gameObject)
             {
-                bool oppositeScale = healthManager.gameObject.GetComponent<EntityAttributes>().currentScale != scale;
+                bool oppositeScale = !sameScale;
 
                 if (scale == GameGlobals.MusicScale.MAJOR)
                 {

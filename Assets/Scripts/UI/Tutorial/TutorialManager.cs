@@ -15,7 +15,6 @@ namespace ProjectColombo.Tutorial
         [ReadOnlyInspector] public GameInputSystem.InputActionType[] allowedInputs;
         public List<TutorialDialogSystem> dialogsInOrder;
         public TutorialDialogSystem afterParry;
-        public GameObject spawner;
         int currentDialog = -1;
         int dummiesHit = 0;
 
@@ -40,11 +39,10 @@ namespace ProjectColombo.Tutorial
 
         private void OnSuccessfullParry(GameGlobals.MusicScale scale, bool sameScale)
         {
-            if (sameScale)
+            if (!sameScale)
             {
                 afterParry.gameObject.SetActive(true);
                 afterParry.EnableDialog();
-                spawner.SetActive(false);
                 CustomEvents.OnSuccessfullParry -= OnSuccessfullParry;
             }
         }

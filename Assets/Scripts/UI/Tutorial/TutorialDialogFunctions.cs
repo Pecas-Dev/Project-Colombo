@@ -11,6 +11,7 @@ namespace ProjectColombo.Tutorial
         public GameObject chamberSlot;
         public List<GameObject> setActiveSlot;
         public List<GameObject> setInactiveSlot;
+        public List<TutorialDummyBehavior> dummiesToAttack;
         public GameInputSystem.InputActionType[] input;
 
         public void ActivateChamber()
@@ -41,6 +42,14 @@ namespace ProjectColombo.Tutorial
             foreach (var g in setInactiveSlot)
             {
                 g.SetActive(false);
+            }
+        }
+
+        public void DummiesAttack()
+        {
+            foreach (var e in dummiesToAttack)
+            {
+                e.SetAttacker();
             }
         }
 
