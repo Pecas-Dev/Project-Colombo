@@ -312,7 +312,7 @@ GameObject:
   - component: {fileID: 2636444706612549488}
   - component: {fileID: 5653774101777937556}
   m_Layer: 0
-  m_Name: TutorialDialog
+  m_Name: DialogSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -350,52 +350,11 @@ MonoBehaviour:
   dialogCanvas: {fileID: 2342794921734465254}
   textComponent: {fileID: 6417276115000217295}
   HUDCanvas: {fileID: 0}
-  lines:
-  - "\u201CGreetings, Last Musician. You must be bewildered\u2026 allow me to untangle
-    the knot of your confusion.\u201D "
-  - "\u201CI am Arlecchino: clever servant, sharp of wit, and I welcome you to Solvanni
-    di Luma.\u201D "
-  - "\u201CI am one of the Masks, creatures of the Commedia, actors, writers, storytellers,
-    dancers\u2026 and every other artistic profession you can imagine.\u201D "
-  - "\u201CBut as you\u2019ve surely seen\u2026 these lands lie in ruin. A curse
-    has fallen, stealing from us the music and the sound, the very lifeblood of our
-    craft.\u201D "
-  - "\u201CWithout them, we are hollow. Without them, our purpose remains unfinished.\u201D "
-  - "\u201CYet, hope flickers still, a lone ember in the dark. You, Last Musician,
-    are that spark. You alone can lift the curse and restore harmony.\u201D "
-  - " \u201CThat is why I am here: to guide you through Solvanni, so that you may
-    confront the one whose greed condemned us, and bring an end to our sorrow.\u201D "
-  - "\u201CBut beware: twisted, forgotten creatures stalk these cursed lands\u2026\u201D "
+  lines: []
   textSpeed: 0.05
   onDialogComplete:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5653774101777937556}
-        m_TargetAssemblyTypeName: ProjectColombo.Tutorial.TutorialDialogFunctions,
-          Assembly-CSharp
-        m_MethodName: ActivateChamber
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 5653774101777937556}
-        m_TargetAssemblyTypeName: ProjectColombo.Tutorial.TutorialDialogFunctions,
-          Assembly-CSharp
-        m_MethodName: DeactivateChamber
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &5653774101777937556
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -409,7 +368,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chamberSlot: {fileID: 0}
-  setActiveSlot: {fileID: 0}
+  setActiveSlot: []
+  setInactiveSlot: []
+  input: 
 --- !u!1 &7785501137696672233
 GameObject:
   m_ObjectHideFlags: 0

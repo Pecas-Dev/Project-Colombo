@@ -2,14 +2,16 @@ using ProjectColombo.LevelManagement;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 namespace ProjectColombo.Tutorial
 {
     public class TutorialDialogFunctions : MonoBehaviour
     {
         public GameObject chamberSlot;
-        public GameObject setActiveSlot;
-        public GameInputSystem.InputActionType input;
+        public List<GameObject> setActiveSlot;
+        public List<GameObject> setInactiveSlot;
+        public GameInputSystem.InputActionType[] input;
 
         public void ActivateChamber()
         {
@@ -28,26 +30,25 @@ namespace ProjectColombo.Tutorial
 
         public void SetActive()
         {
-            setActiveSlot.SetActive(true);
+            foreach (var g in setActiveSlot)
+            {
+                g.SetActive(true);
+            }
+        }
+
+        public void SetInactive()
+        {
+            foreach (var g in setInactiveSlot)
+            {
+                g.SetActive(false);
+            }
         }
 
         public void EnableInput()
         {
             TutorialManager tm = GameObject.Find("TutorialManager").GetComponent<TutorialManager>();
 
-            GameInputSystem.InputActionType[] current = tm.allowedInputs;
-
-            // Check if the input is already enabled to avoid duplicates
-            if (current.Contains(input))
-                return;
-
-            // Create a new array with one extra slot
-            GameInputSystem.InputActionType[] updated = new GameInputSystem.InputActionType[current.Length + 1];
-            current.CopyTo(updated, 0);
-            updated[updated.Length - 1] = input;
-
-            tm.allowedInputs = updated;
+            tm.allowedInputs = input;
         }
-
     }
 }

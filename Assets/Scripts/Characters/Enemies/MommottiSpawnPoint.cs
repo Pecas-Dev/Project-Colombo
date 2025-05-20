@@ -19,7 +19,15 @@ namespace ProjectColombo.Enemies.Mommotti
         private void Start()
         {
             TileWorldChamber myChamber = GetComponentInParent<TileWorldChamber>();
-            myGridManager = myChamber.GetComponentInChildren<GridManager>();
+
+            if (myChamber != null)
+            {
+                myGridManager = myChamber.GetComponentInChildren<GridManager>();
+            }
+            else
+            {
+                myGridManager = transform.parent.GetComponentInChildren<GridManager>();
+            }
 
             if (myGridManager == null)
             {
