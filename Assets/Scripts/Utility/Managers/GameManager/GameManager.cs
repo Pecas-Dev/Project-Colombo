@@ -187,11 +187,11 @@ namespace ProjectColombo.GameManagement
 
             if (gameInput.playerInputActions.Player.enabled == true && enableInputActionMapLogs == true)
             {
-                //Debug.Log("PLAYERRRRRRRRRR!");
+                Debug.Log("PLAYERRRRRRRRRR!");
             }
             if (gameInput.playerInputActions.UI.enabled == true && enableInputActionMapLogs == true)
             {
-                //Debug.Log("UIIIIIIIIIIIIIIIII!");
+                Debug.Log("UIIIIIIIIIIIIIIIII!");
             }
         }
 
