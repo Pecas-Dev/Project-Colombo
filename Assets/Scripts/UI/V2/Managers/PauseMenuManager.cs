@@ -352,8 +352,7 @@ namespace ProjectColombo.UI.Pausescreen
                         StopCoroutine(textAnimationCoroutines[currentTabIndex]);
                     }
 
-                    textAnimationCoroutines[currentTabIndex] = StartCoroutine(
-                        AnimateTextSize(tabTexts[currentTabIndex], selectedMinFontSize, selectedMaxFontSize, defaultMinFontSize, defaultMaxFontSize, animationDuration));
+                    textAnimationCoroutines[currentTabIndex] = StartCoroutine(AnimateTextSize(tabTexts[currentTabIndex], selectedMinFontSize, selectedMaxFontSize, defaultMinFontSize, defaultMaxFontSize, animationDuration));
 
                     tabTexts[currentTabIndex].color = tabUnselectedColor;
                 }

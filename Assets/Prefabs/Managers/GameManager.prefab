@@ -3906,7 +3906,6 @@ GameObject:
   - component: {fileID: 1276941781460225690}
   - component: {fileID: 3076555964993878941}
   - component: {fileID: 4629685792473749813}
-  - component: {fileID: 7047018327662434224}
   - component: {fileID: 6614873227827517046}
   m_Layer: 0
   m_Name: GameManager
@@ -3941,7 +3940,6 @@ Transform:
   - {fileID: 4671025593511185114}
   - {fileID: 3176220898398655382}
   - {fileID: 6284439194696719541}
-  - {fileID: 6506158789559769372}
   - {fileID: 8902500176476732431}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4105,21 +4103,6 @@ MonoBehaviour:
   inputBufferTime: 0.2
   keyboardPauseKey: 60
   enableDebugLogs: 1
---- !u!114 &7047018327662434224
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6775568680766651447}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea00765ed84ed6c469da8176aa94ca7e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  eventSystemPrefab: {fileID: 7480923492074868709, guid: cdad9caf01557394985bd2f756aff913, type: 3}
-  makeChildOfManager: 0
-  debugLogging: 0
 --- !u!114 &6614873227827517046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5218,58 +5201,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &9175742912666381567
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6506158789559769372}
-  - component: {fileID: 7398744838324451652}
-  m_Layer: 0
-  m_Name: InputSwitcher
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6506158789559769372
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9175742912666381567}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6657307741488687647}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7398744838324451652
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9175742912666381567}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8dfdc6781e3e02d448c96d1c358a0037, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  firstSelectedButton: {fileID: 0}
-  reselectDelay: 0.1
-  checkInterval: 0.1
-  mouseMovementThreshold: 0.5
-  gamepadMovementThreshold: 0.2
-  deviceSwitchDelay: 0.15
-  enableDebugLogs: 0
-  enableVisualIndicator: 0
 --- !u!1 &9188115623988816513
 GameObject:
   m_ObjectHideFlags: 0

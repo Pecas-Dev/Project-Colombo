@@ -32,7 +32,7 @@ namespace ProjectColombo.UI.Pausescreen
             UINavigationState.PauseSettingsTab
        };
 
-         void Awake()
+        void Awake()
         {
             pauseMenuManager = GetComponent<PauseMenuManager>();
 

@@ -486,25 +486,31 @@ namespace ProjectColombo.GameInputSystem
 
         public void EnableUIMode()
         {
-            DisableInput(InputActionType.Movement); // Disable player movement
-            ResetAllInputs(); // Clear any active inputs
+            DisableInput(InputActionType.Movement);
+            ResetAllInputs();
 
             if (playerInputActions != null)
             {
                 if (playerInputActions.Player.enabled)
                 {
-                    playerInputActions.Player.Disable(); // Disable player controls
+                    playerInputActions.Player.Disable();
                 }
 
                 if (!playerInputActions.UI.enabled)
                 {
-                    playerInputActions.UI.Enable(); // Enable UI navigation
+                    playerInputActions.UI.Enable();
                 }
+
+                playerInputActions.UI.Navigate.Enable();
+                playerInputActions.UI.Submit.Enable();
+                playerInputActions.UI.MoveLeftShoulder.Enable();
+                playerInputActions.UI.MoveRightShoulder.Enable();
+
+                Debug.Log("<color=#00FFFF>[GameInputSO] UI mode enabled, Player disabled, UI Navigate enabled</color>");
             }
             else
             {
                 Debug.LogWarning("Player input actions not initialized in EnableUIMode");
-
                 Initialize();
 
                 if (playerInputActions != null)
@@ -514,11 +520,15 @@ namespace ProjectColombo.GameInputSystem
                         playerInputActions.Player.Disable();
                     }
 
-
                     if (!playerInputActions.UI.enabled)
                     {
                         playerInputActions.UI.Enable();
                     }
+
+                    playerInputActions.UI.Navigate.Enable();
+                    playerInputActions.UI.Submit.Enable();
+                    playerInputActions.UI.MoveLeftShoulder.Enable();
+                    playerInputActions.UI.MoveRightShoulder.Enable();
                 }
             }
         }

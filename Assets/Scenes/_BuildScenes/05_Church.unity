@@ -2638,6 +2638,10 @@ PrefabInstance:
       value: -15
       objectReference: {fileID: 0}
     - target: {fileID: 3542367805368305166, guid: 04a52d6204cd6e9488303e62b51b3b07, type: 3}
+      propertyPath: orthographic size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3542367805368305166, guid: 04a52d6204cd6e9488303e62b51b3b07, type: 3}
       propertyPath: m_CullingMask.m_Bits
       value: 16383
       objectReference: {fileID: 0}
@@ -8091,6 +8095,58 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5633e02f786f8d341845583705762ec3, type: 3}
+--- !u!1 &620631045
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 620631047}
+  - component: {fileID: 620631046}
+  m_Layer: 0
+  m_Name: InputSwitcher
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &620631046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620631045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8dfdc6781e3e02d448c96d1c358a0037, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firstSelectedButton: {fileID: 0}
+  reselectDelay: 0.1
+  checkInterval: 0.1
+  mouseMovementThreshold: 0.5
+  gamepadMovementThreshold: 0.2
+  deviceSwitchDelay: 0.15
+  enableDebugLogs: 0
+  enableVisualIndicator: 0
+--- !u!4 &620631047
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620631045}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.0016149879, y: 1.9060975, z: 200.24463}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &625572878
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10958,11 +11014,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3396720378059377541, guid: 5633e02f786f8d341845583705762ec3, type: 3}
   m_PrefabInstance: {fileID: 288860866}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &872243152 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8229391992207323923, guid: 183f179aa085cb3459c2918d06deab8d, type: 3}
-  m_PrefabInstance: {fileID: 1062649556}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &872243154 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8434489369586150890, guid: 183f179aa085cb3459c2918d06deab8d, type: 3}
@@ -11096,9 +11147,6 @@ MonoBehaviour:
   entrances: []
   exits:
   - {fileID: 512837684}
-  spawnPoints:
-  - {fileID: 872243152}
-  - {fileID: 2023211087}
   chamberTilePosition: {x: 0, y: 0}
   entrancesConnected: 0
   exitsConnected: 0
@@ -11147,9 +11195,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fa9d59818b405443938061e0748bf2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentEnemies: []
-  attackersAtTheSameTime: 2
+  allCurrentEnemies: []
+  currentChasingEnemies: []
   currentAttackerEnemies: []
+  attackersAtTheSameTime: 2
+  interval: 3
 --- !u!4 &890399712 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5424576029222733927, guid: 1947bdc684994ca49a61c089abfe5b44, type: 3}
@@ -20046,7 +20096,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nextSceneNumber: 6
-  showSigns: 1
   defaultMommottiSpeed: 3
   currentMommottiSpeed: 0
   defaultMommottiMaxHealth: 1000
@@ -22571,11 +22620,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3396720378059377541, guid: 5633e02f786f8d341845583705762ec3, type: 3}
   m_PrefabInstance: {fileID: 742237930}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &2023211087 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8229391992207323923, guid: 183f179aa085cb3459c2918d06deab8d, type: 3}
-  m_PrefabInstance: {fileID: 949486596}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2023211089 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8434489369586150890, guid: 183f179aa085cb3459c2918d06deab8d, type: 3}
@@ -23716,4 +23760,5 @@ SceneRoots:
   - {fileID: 1688617590}
   - {fileID: 214909416}
   - {fileID: 1654999869}
+  - {fileID: 620631047}
   - {fileID: 36081678}

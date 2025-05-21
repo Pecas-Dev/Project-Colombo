@@ -104,6 +104,7 @@ namespace ProjectColombo.UI.Pausescreen
                 {
                     eventID = EventTriggerType.Select
                 };
+
                 selectEntry.callback.AddListener((data) => SelectSlot(slotIndex));
                 eventTrigger.triggers.Add(selectEntry);
             }
@@ -202,6 +203,7 @@ namespace ProjectColombo.UI.Pausescreen
                 SelectSlot(currentSelectedIndex);
             }
         }
+
         IEnumerator AnimateSelector(GameObject selector)
         {
             if (selector == null) yield break;
@@ -241,7 +243,6 @@ namespace ProjectColombo.UI.Pausescreen
             }
         }
 
-
         void HideAllSelectors()
         {
             if (slotSelectors == null) return;
@@ -254,6 +255,7 @@ namespace ProjectColombo.UI.Pausescreen
                 }
             }
         }
+
         bool IsChildOf(Transform child, GameObject parent)
         {
             if (child == null || parent == null) return false;
