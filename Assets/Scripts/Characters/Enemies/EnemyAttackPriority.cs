@@ -66,6 +66,12 @@ namespace ProjectColombo.Enemies
         private void OnEnemyAttack(GameObject enemy)
         {
             currentAttackerEnemies.Remove(enemy);
+
+            if (allCurrentEnemies.Count > 1)
+            {
+                SetAttackers();
+                timer = 0f;
+            }
         }
 
 
