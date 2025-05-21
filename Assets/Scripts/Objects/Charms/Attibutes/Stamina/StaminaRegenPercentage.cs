@@ -1,4 +1,5 @@
 using ProjectColombo.Combat;
+using ProjectColombo.StateMachine.Player;
 using UnityEngine;
 
 namespace ProjectColombo.Objects.Charms
@@ -12,7 +13,7 @@ namespace ProjectColombo.Objects.Charms
 
         public override void Enable()
         {
-            myStamina = FindFirstObjectByType<Stamina>();
+            myStamina = GameObject.Find("Player").GetComponent<PlayerStateMachine>().myStamina;
             staminaRegenTimeValue = myStamina.regenTime * staminaRegenTimePercentage / 100f;
             myStamina.regenTime += staminaRegenTimeValue;
             Debug.Log("changed stamina regen time by: " + staminaRegenTimeValue + " to " + myStamina.regenTime);

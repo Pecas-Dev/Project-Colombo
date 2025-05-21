@@ -1,4 +1,5 @@
 using ProjectColombo.Combat;
+using ProjectColombo.StateMachine.Player;
 using UnityEngine;
 
 namespace ProjectColombo.Objects.Charms
@@ -11,7 +12,7 @@ namespace ProjectColombo.Objects.Charms
 
         public override void Enable()
         {
-            myStamina = GameObject.Find("Player").GetComponent<Stamina>();
+            myStamina = GameObject.Find("Player").GetComponent<PlayerStateMachine>().myStamina;
             myStamina.AddStamina(addedStaminaPoints);
             Debug.Log("added " + addedStaminaPoints + " stamina");
         }
