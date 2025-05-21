@@ -39,6 +39,11 @@ public class IndicatorGlyphs : MonoBehaviour
         OnControlsChanged(playerInput);
     }
 
+    void Update()
+    {
+        OnControlsChanged(playerInput);
+    }
+
     void OnDestroy()
     {
         if (playerInput != null)
