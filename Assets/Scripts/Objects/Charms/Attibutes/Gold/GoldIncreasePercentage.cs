@@ -20,7 +20,12 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnCoinsCollected(int amount)
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             int extra = Mathf.RoundToInt(amount * extraGoldPercentage / 100f);
+            CustomEvents.CoinsCollected(extra);
             myPlayerInventory.currencyAmount += extra;
         }
 

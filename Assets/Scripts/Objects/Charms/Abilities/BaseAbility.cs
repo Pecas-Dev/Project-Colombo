@@ -49,6 +49,18 @@ namespace ProjectColombo.Objects.Masks
         {
             if (available)
             {
+                GameObject player = GameObject.Find("Player");
+
+                if (player != null)
+                {
+                    myPlayerStateMachine = player.GetComponent<PlayerStateMachine>();
+                }
+                else
+                {
+                    Debug.Log("player not found in base ability");
+                    return false;
+                }
+
                 UseAbility();
                 available = false;
                 active = true;
@@ -56,6 +68,7 @@ namespace ProjectColombo.Objects.Masks
                 return true;
             }
 
+            Debug.Log("ability is not ready");
             return false;
         }
 

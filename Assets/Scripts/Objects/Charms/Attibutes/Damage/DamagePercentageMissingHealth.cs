@@ -20,10 +20,16 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnDamageDelt(int amount, GameGlobals.MusicScale scale, bool sameScale, Combat.HealthManager healthmanager, int comboLength)
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             int multiplyer = Mathf.FloorToInt((myHealthManager.MaxHealth - myHealthManager.currentHealth) / forHowManyMissingHealth);
             int value = (int)(multiplyer * damageMissingHealth);
 
             Debug.Log("dealt " + value + " extra damage for missing health: " + (myHealthManager.MaxHealth - myHealthManager.currentHealth));
+
+            CustomEvents.DamageDelt(value, scale, sameScale, healthmanager, comboLength);
             healthmanager.TakeDamage(value);
         }
 

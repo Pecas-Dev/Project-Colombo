@@ -17,10 +17,15 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnCoinsCollected(int amount)
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             int rand = Random.Range(0, 101);
 
             if (rand < doubleGoldOnPickUpPercentage)
             {
+                CustomEvents.CoinsCollected(amount);
                 myPlayerInventory.currencyAmount += amount;
                 Debug.Log("doubled coins pickup");
             }

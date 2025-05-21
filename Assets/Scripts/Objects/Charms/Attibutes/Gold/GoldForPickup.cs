@@ -38,8 +38,13 @@ namespace ProjectColombo.Objects.Charms
 
         void AddCoins()
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             int rand = Random.Range(minAmountOfGold, maxAmountOfGold + 1);
             Debug.Log("extra gold for pick up: " + rand);
+            CustomEvents.CoinsCollected(rand);
             myPlayerInventory.currencyAmount += rand;
         }
 

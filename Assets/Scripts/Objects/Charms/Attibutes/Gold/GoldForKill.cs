@@ -23,6 +23,7 @@ namespace ProjectColombo.Objects.Charms
         {
             int rand = Random.Range(minAmountOfGold, maxAmountOfGold + 1);
             Debug.Log("extra gold for kill: " + rand);
+            CustomEvents.CoinsCollected(rand);
             myPlayerInventory.currencyAmount += rand;
         }
 

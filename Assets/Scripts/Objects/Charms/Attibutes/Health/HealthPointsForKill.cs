@@ -19,6 +19,7 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnEnemyDeath(GameGlobals.MusicScale obj, GameObject enemy)
         {
+            CustomEvents.MaxHealthIncreased(healthPointsForKill);
             myHealthManager.AddHealthPoints(healthPointsForKill);
         }
 

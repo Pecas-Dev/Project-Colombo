@@ -22,6 +22,7 @@ namespace ProjectColombo.Objects.Charms
         {
             int value = (int)(myPlayerInventory.currencyAmount * damageForGoldPercentage / 100f);
             Debug.Log("losing gold for getting hit: " + value);
+            CustomEvents.CoinsCollected(value);
             myPlayerInventory.currencyAmount += value;
         }
 
