@@ -28,10 +28,6 @@ namespace ProjectColombo.UI.Pausescreen
         [Header("Global Elements")]
         [SerializeField] GameObject[] globalElements;
 
-        //[Header("First Selected Elements")]
-        //[SerializeField] GameObject inventoryFirstSelected;
-        //[SerializeField] GameObject settingsFirstSelected;
-
         [Header("Tab Text Animation")]
         [SerializeField] float selectedMinFontSize = 75f;
         [SerializeField] float selectedMaxFontSize = 105f;
@@ -90,15 +86,6 @@ namespace ProjectColombo.UI.Pausescreen
             if (navigationExtension == null)
             {
                 navigationExtension = gameObject.AddComponent<PauseMenuNavigationExtension>();
-
-                //if (inventoryFirstSelected != null)
-                //{
-                //    navigationExtension.GetType().GetField("inventoryFirstSelected", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(navigationExtension, inventoryFirstSelected);
-                //}
-                //if (settingsFirstSelected != null)
-                //{
-                //    navigationExtension.GetType().GetField("settingsFirstSelected", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(navigationExtension, settingsFirstSelected);
-                //}
             }
         }
 
@@ -216,6 +203,12 @@ namespace ProjectColombo.UI.Pausescreen
                     nav.mode = Navigation.Mode.None;
                     button.navigation = nav;
                 }
+            }
+
+            UINavigationManager navigationManager = FindFirstObjectByType<UINavigationManager>();
+            if (navigationManager != null)
+            {
+                navigationManager.ExcludeButtonsFromNavigation(tabButtons);
             }
 
             LogDebug("Pause menu manager initialized");
@@ -383,18 +376,6 @@ namespace ProjectColombo.UI.Pausescreen
             }
 
             GameObject firstSelected = null;
-
-            //switch (currentTabIndex)
-            //{
-            //    case 0:
-            //        firstSelected = inventoryFirstSelected;
-            //        break;
-            //    case 1:
-            //        break;
-            //    case 2:
-            //        firstSelected = settingsFirstSelected;
-            //        break;
-            //}
 
             if (firstSelected != null)
             {

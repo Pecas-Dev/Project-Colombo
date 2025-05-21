@@ -45,6 +45,10 @@ namespace ProjectColombo.UI
         [SerializeField] GameObject statsTab;
         [SerializeField] GameObject settingsTab;
 
+        [Header("Excluded Buttons (Tabs)")]
+        [SerializeField] List<Button> excludedButtons = new List<Button>();
+
+
         //[Header("Mask Selection References")]
         //[SerializeField] GameObject maskSelectionCanvas;
 
@@ -128,9 +132,19 @@ namespace ProjectColombo.UI
 
             if (eventSystem.currentSelectedGameObject != null && currentState != UINavigationState.None && eventSystem.currentSelectedGameObject.activeInHierarchy)
             {
-                lastSelectables[currentState] = eventSystem.currentSelectedGameObject;
-            }
+                Button selectedButton = eventSystem.currentSelectedGameObject.GetComponent<Button>();
 
+                if (selectedButton != null && excludedButtons.Contains(selectedButton))
+                {
+                    LogDebug($"Excluded button {selectedButton.name} was selected - restoring proper selection");
+                    eventSystem.SetSelectedGameObject(null);
+                    RestoreSelectionForCurrentState();
+                }
+                else
+                {
+                    lastSelectables[currentState] = eventSystem.currentSelectedGameObject;
+                }
+            }
 
             if (currentState != UINavigationState.None && currentState != UINavigationState.HUD && eventSystem.currentSelectedGameObject == null && Time.unscaledTime - lastNavigationTime > navigationCooldown)
             {
@@ -347,6 +361,32 @@ namespace ProjectColombo.UI
         #endregion
 
         #region Public Methods
+
+        public void ExcludeButtonFromNavigation(Button button)
+        {
+            if (button != null && !excludedButtons.Contains(button))
+            {
+                Navigation nav = button.navigation;
+                nav.mode = Navigation.Mode.None;
+                button.navigation = nav;
+
+                excludedButtons.Add(button);
+                LogDebug($"Button {button.name} excluded from navigation");
+            }
+        }
+
+        public void ExcludeButtonsFromNavigation(Button[] buttons)
+        {
+            if (buttons == null)
+            {
+                return;
+            }
+
+            foreach (var button in buttons)
+            {
+                ExcludeButtonFromNavigation(button);
+            }
+        }
 
         public void SetNavigationState(UINavigationState newState)
         {

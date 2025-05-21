@@ -60,7 +60,15 @@ namespace ProjectColombo.UI.Pausescreen
 
             ResetSelectionState();
 
+            StartCoroutine(DelayedInitialSelection());
             StartCoroutine(WaitForTabSelection());
+
+            UINavigationManager navigationManager = FindFirstObjectByType<UINavigationManager>();
+            if (navigationManager != null && inventorySlotButtons != null && inventorySlotButtons.Length > 0)
+            {
+                navigationManager.RegisterFirstSelectable(UINavigationState.PauseInventoryTab, inventorySlotButtons[0].gameObject);
+                LogDebug("Registered first selectable with navigation manager");
+            }
         }
 
         void OnDisable()
@@ -192,87 +200,89 @@ namespace ProjectColombo.UI.Pausescreen
             isInitialized = true;
         }
 
+
         void SetupExplicitNavigation(int buttonIndex)
         {
             if (buttonIndex < 0 || buttonIndex >= inventorySlotButtons.Length || inventorySlotButtons[buttonIndex] == null)
                 return;
 
             Button button = inventorySlotButtons[buttonIndex];
-
             Navigation nav = button.navigation;
             nav.mode = Navigation.Mode.Explicit;
 
-            if (IsChildOf(button.transform, weaponPentagram))
+            // 0.SlotWeapon, 1.SlotMask, 2.SlotCharm_1, 3.SlotCharm_2, 4.SlotCharm_3, 
+            // 5.SlotCharm_4, 6.SlotCharm_5, 7.SlotPotion_1
+
+            switch (buttonIndex)
             {
-                Button maskButton = FindFirstButtonInArea(maskPentagram);
-                if (maskButton != null)
-                {
-                    nav.selectOnDown = maskButton;
-                }
+                // SlotWeapon (0)
+                case 0:
+                    nav.selectOnUp = inventorySlotButtons[2]; // SlotCharm_1
+                    nav.selectOnDown = inventorySlotButtons[1]; // SlotMask
+                    nav.selectOnLeft = null;
+                    nav.selectOnRight = null;
+                    break;
 
-                Button firstCharmButton = FindFirstButtonInArea(potionCharmPentagram);
-                if (firstCharmButton != null)
-                {
-                    nav.selectOnRight = firstCharmButton;
-                }
+                // SlotMask (1)
+                case 1:
+                    nav.selectOnUp = inventorySlotButtons[0]; // SlotWeapon
+                    nav.selectOnDown = inventorySlotButtons[2]; // SlotCharm_1
+                    nav.selectOnLeft = null;
+                    nav.selectOnRight = null;
+                    break;
 
-                nav.selectOnUp = null;
-                nav.selectOnLeft = null;
-            }
-            else if (IsChildOf(button.transform, maskPentagram))
-            {
-                Button weaponButton = FindFirstButtonInArea(weaponPentagram);
-                if (weaponButton != null)
-                {
-                    nav.selectOnUp = weaponButton;
-                }
+                // SlotCharm_1 (2)
+                case 2:
+                    nav.selectOnUp = inventorySlotButtons[1]; // SlotMask
+                    nav.selectOnDown = inventorySlotButtons[0]; // SlotWeapon
+                    nav.selectOnLeft = inventorySlotButtons[7]; // SlotPotion_1
+                    nav.selectOnRight = inventorySlotButtons[3]; // SlotCharm_2
+                    break;
 
-                Button firstCharmButton = FindFirstButtonInArea(potionCharmPentagram);
-                if (firstCharmButton != null)
-                {
-                    nav.selectOnDown = firstCharmButton;
-                    nav.selectOnRight = firstCharmButton;
-                }
+                // SlotCharm_2 (3)
+                case 3:
+                    nav.selectOnUp = inventorySlotButtons[1]; // SlotMask
+                    nav.selectOnDown = inventorySlotButtons[0]; // SlotWeapon
+                    nav.selectOnLeft = inventorySlotButtons[2]; // SlotCharm_1
+                    nav.selectOnRight = inventorySlotButtons[4]; // SlotCharm_3
+                    break;
 
-                nav.selectOnLeft = null;
-            }
-            else if (IsChildOf(button.transform, potionCharmPentagram))
-            {
-                Button[] charmButtons = GetButtonsInArea(potionCharmPentagram);
-                int buttonPosition = System.Array.IndexOf(charmButtons, button);
+                // SlotCharm_3 (4)
+                case 4:
+                    nav.selectOnUp = inventorySlotButtons[1]; // SlotMask
+                    nav.selectOnDown = inventorySlotButtons[0]; // SlotWeapon
+                    nav.selectOnLeft = inventorySlotButtons[3]; // SlotCharm_2
+                    nav.selectOnRight = inventorySlotButtons[5]; // SlotCharm_4
+                    break;
 
-                if (buttonPosition != -1)
-                {
-                    if (buttonPosition > 0)
-                    {
-                        nav.selectOnLeft = charmButtons[buttonPosition - 1];
-                    }
-                    else
-                    {
-                        Button _maskButton = FindFirstButtonInArea(maskPentagram);
-                        if (_maskButton != null)
-                        {
-                            nav.selectOnLeft = _maskButton;
-                        }
-                    }
+                // SlotCharm_4 (5)
+                case 5:
+                    nav.selectOnUp = inventorySlotButtons[1]; // SlotMask
+                    nav.selectOnDown = inventorySlotButtons[0]; // SlotWeapon
+                    nav.selectOnLeft = inventorySlotButtons[4]; // SlotCharm_3
+                    nav.selectOnRight = inventorySlotButtons[6]; // SlotCharm_5
+                    break;
 
-                    if (buttonPosition < charmButtons.Length - 1)
-                    {
-                        nav.selectOnRight = charmButtons[buttonPosition + 1];
-                    }
+                // SlotCharm_5 (6)
+                case 6:
+                    nav.selectOnUp = inventorySlotButtons[1]; // SlotMask
+                    nav.selectOnDown = inventorySlotButtons[0]; // SlotWeapon
+                    nav.selectOnLeft = inventorySlotButtons[5]; // SlotCharm_4
+                    nav.selectOnRight = inventorySlotButtons[7]; // SlotPotion_1
+                    break;
 
-                    Button maskButton = FindFirstButtonInArea(maskPentagram);
-                    if (maskButton != null)
-                    {
-                        nav.selectOnUp = maskButton;
-                    }
-
-                    nav.selectOnDown = null;
-                }
+                // SlotPotion_1 (7)
+                case 7:
+                    nav.selectOnUp = inventorySlotButtons[1]; // SlotMask
+                    nav.selectOnDown = inventorySlotButtons[0]; // SlotWeapon
+                    nav.selectOnLeft = inventorySlotButtons[6]; // SlotCharm_5
+                    nav.selectOnRight = inventorySlotButtons[2]; // SlotCharm_1
+                    break;
             }
 
             button.navigation = nav;
         }
+
 
         Button FindFirstButtonInArea(GameObject area)
         {
@@ -443,6 +453,23 @@ namespace ProjectColombo.UI.Pausescreen
 
                 time += Time.unscaledDeltaTime;
                 yield return null;
+            }
+        }
+
+        IEnumerator DelayedInitialSelection()
+        {
+            yield return new WaitForEndOfFrame();
+
+            yield return null;
+
+            if (inventorySlotButtons != null && inventorySlotButtons.Length > 0 && inventorySlotButtons[0] != null)
+            {
+                SelectSlot(0, true);
+                LogDebug("Initial selection set to slot 0");
+            }
+            else
+            {
+                LogDebug("Failed to set initial selection - no buttons available");
             }
         }
 
