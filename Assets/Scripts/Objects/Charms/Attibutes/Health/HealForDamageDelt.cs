@@ -18,6 +18,10 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnDamageDelt(int amount, GameGlobals.MusicScale scale, bool sameScale, Combat.HealthManager healthmanager, int comboLength)
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             int value = (int)(amount * healDamagePercentage / 100f);
             Debug.Log("healed: " + value + "of this damage: " + amount);
             myHealthmanager.Heal(value);

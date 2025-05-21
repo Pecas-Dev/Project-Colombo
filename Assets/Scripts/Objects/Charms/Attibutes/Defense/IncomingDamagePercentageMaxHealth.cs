@@ -16,6 +16,10 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnDamageReceived(int amount, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager)
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             int multiplyer = Mathf.FloorToInt(healthmanager.MaxHealth / perHowManyMaxHealth);
             int value = (int)(multiplyer * damgePercentage / 100f);
             Debug.Log("extra damage: " + value + " for max health: " + healthmanager.MaxHealth);

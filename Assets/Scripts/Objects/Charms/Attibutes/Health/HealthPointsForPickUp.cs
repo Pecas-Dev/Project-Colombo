@@ -20,11 +20,19 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnCharmCollected(GameObject obj)
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             AddHealth();
         }
 
         private void OnMaskCollected(GameObject obj)
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             AddHealth();
         }
 

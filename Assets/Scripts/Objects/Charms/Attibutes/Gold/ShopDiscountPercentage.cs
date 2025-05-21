@@ -15,6 +15,10 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnShopOpen(Shop.ShopKeeper shop)
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             shop.GetComponentInChildren<ShopScreen>().SetDiscount(discountPercentage);
         }
 

@@ -14,6 +14,10 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnDamageBlocked(int amount, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager)
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             int value = (int)(amount * extraBlockDamagePercentage / 100f);
             Debug.Log("added block damage of: " + value);
             healthmanager.TakeDamage(value);

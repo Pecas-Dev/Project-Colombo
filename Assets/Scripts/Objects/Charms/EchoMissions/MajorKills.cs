@@ -32,6 +32,7 @@ namespace ProjectColombo.Objects.Masks
 
         public override void Disable()
         {
+            isEnabled = false;
             CustomEvents.OnEnemyDeath -= OnEnemyDeath;
         }
 

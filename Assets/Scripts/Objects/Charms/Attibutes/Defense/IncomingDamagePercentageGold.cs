@@ -21,6 +21,10 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnDamageReceived(int amount, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager)
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             int multiplyer = Mathf.FloorToInt(myPlayerInventory.currencyAmount / perHowManyGold);
             int value = (int)(multiplyer * damgePercentage / 100f);
             Debug.Log("receiving extra damage: " + value + " for held gold: " + myPlayerInventory.currencyAmount);

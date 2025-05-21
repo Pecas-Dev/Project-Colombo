@@ -15,6 +15,10 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnDamageReceived(int amount, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager)
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             if (scale == GameGlobals.MusicScale.MAJOR)
             {
                 int value = (int)(amount * majorDamagePercentage / 100f);

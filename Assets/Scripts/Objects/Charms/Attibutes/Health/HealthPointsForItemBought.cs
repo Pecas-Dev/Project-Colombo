@@ -19,6 +19,10 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnItemPurchase(int price)
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             int value = (int)(price * healthPointsForItemPricePercentage / 100f);
             Debug.Log("health for item price: " + value);
             myHealthManager.TakeDamage(value);

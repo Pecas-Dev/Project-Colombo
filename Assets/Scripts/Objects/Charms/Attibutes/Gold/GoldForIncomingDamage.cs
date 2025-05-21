@@ -20,6 +20,10 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnDamageReceive(int arg1, GameGlobals.MusicScale arg2, Combat.HealthManager arg3)
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             int value = (int)(myPlayerInventory.currencyAmount * damageForGoldPercentage / 100f);
             Debug.Log("losing gold for getting hit: " + value);
             CustomEvents.CoinsCollected(value);

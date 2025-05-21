@@ -21,6 +21,10 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnSuccessfullParry(GameGlobals.MusicScale arg2, bool arg3)
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             int rand = Random.Range(minAmountOfGold, maxAmountOfGold + 1);
             Debug.Log("extra gold for parry: " + rand);
             CustomEvents.CoinsCollected(rand);

@@ -23,16 +23,28 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnCharmCollected(GameObject obj)
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             AddCoins();
         }
 
         private void OnMaskCollected(GameObject obj)
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             AddCoins();
         }
 
         private void OnCoinsCollected(int arg1)
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             AddCoins();
         }
 

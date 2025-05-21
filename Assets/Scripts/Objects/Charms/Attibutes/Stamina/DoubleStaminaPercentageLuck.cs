@@ -19,6 +19,10 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnStaminaUsed()
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             int rand = Random.Range(0, 101);
 
             if (rand < chanceForDoubleStamina)

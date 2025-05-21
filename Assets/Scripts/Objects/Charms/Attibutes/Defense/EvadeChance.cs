@@ -14,6 +14,10 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnDamageReceived(int amount, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager)
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             int rand = Random.Range(0, 101);
 
             if (rand < evadeChancePercentage)

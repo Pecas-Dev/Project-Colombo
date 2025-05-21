@@ -31,6 +31,14 @@ namespace ProjectColombo.Objects.Masks
             staminaCounter = 0;
 
             CustomEvents.OnStaminaUsed += OnStaminaUsed;
+            CustomEvents.OnDamageDelt += OnDamageDelt;
+        }
+
+        private void OnDamageDelt(int amount, GameGlobals.MusicScale arg2, bool arg3, Combat.HealthManager healthmanager, int arg5)
+        {
+            int value = (int)(amount * extraDamageForStaminaPercent / 100f);
+            int multiplied = abilityExtraDamageCounter * value;
+            healthmanager.TakeDamage(multiplied);
         }
 
         public override void EndAbility()
@@ -41,6 +49,7 @@ namespace ProjectColombo.Objects.Masks
             }
 
             CustomEvents.OnStaminaUsed -= OnStaminaUsed;
+            CustomEvents.OnDamageDelt -= OnDamageDelt;
         }
 
         private void OnStaminaUsed()

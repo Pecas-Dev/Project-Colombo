@@ -15,6 +15,10 @@ namespace ProjectColombo.Objects.Charms
 
         private void OnParryFailed(int amount, GameGlobals.MusicScale scale, Combat.HealthManager healthManager, bool sameScale)
         {
+            if (eventHandled) return;
+            eventHandled = true;
+            StartCoroutine(ResetEventHandled());
+
             if (sameScale)
             {
                 int value = (int)(amount * extraDamageMissedParrySameScalePercentage / 100f);
