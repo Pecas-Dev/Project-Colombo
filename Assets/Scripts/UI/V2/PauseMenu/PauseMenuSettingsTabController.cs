@@ -173,7 +173,7 @@ namespace ProjectColombo.UI.Pausescreen
                 {
                     LogDebug("Return to Hub button clicked");
                     GameManager.Instance.ResumeGame();
-                    UnityEngine.SceneManagement.SceneManager.LoadScene("02_LevelOne");
+                    UnityEngine.SceneManagement.SceneManager.LoadScene("03_LevelTwo");
                 });
             }
 

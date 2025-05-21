@@ -1,11 +1,11 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+using UnityEngine.EventSystems;
 using ProjectColombo.Inventory;
 using ProjectColombo.Objects.Charms;
 using ProjectColombo.GameManagement;
-using System.Collections.Generic;
-using UnityEngine.EventSystems;
+
 
 namespace ProjectColombo.UI.Pausescreen
 {
@@ -13,21 +13,57 @@ namespace ProjectColombo.UI.Pausescreen
     {
         [Header("Inventory References")]
         [SerializeField] PauseMenuInventoryTabController inventoryTabController;
-        [SerializeField] PlayerInventory playerInventory; 
+        [SerializeField] PlayerInventory playerInventory;
 
-        [Header("Charm Slot References")]
-        [SerializeField] CharmButton[] charmButtons; 
-        [SerializeField] CharmButton legendaryCharmButton;
-        //[SerializeField] CharmButton potionButton; 
+        [Header("Slot References")]
+        [SerializeField] Button weaponSlotButton; // Slot 0
+        [SerializeField] Button maskSlotButton;   // Slot 1
+        [SerializeField] CharmButton[] charmButtons; // Slots 3-6 in the inventory array
+        [SerializeField] CharmButton legendaryCharmButton; //Slot 2
+        [SerializeField] Button potionSlotButton; // Slot 7
+
+        [Header("Slot Images")]
+        [SerializeField] Image weaponSlotImage;
+        [SerializeField] Image maskSlotImage;
+        [SerializeField] Image potionSlotImage;
 
         [Header("Text Elements")]
         [SerializeField] TextMeshProUGUI charmTitleText;
         [SerializeField] TextMeshProUGUI charmDescriptionText;
 
+        [Header("Empty Slot Messages")]
+        [SerializeField] string emptyWeaponMessage = "No weapon equipped";
+        [SerializeField] string emptyMaskMessage = "No mask equipped";
+        [SerializeField] string emptyCharmMessage = "No charm equipped";
+        [SerializeField] string emptyPotionMessage = "No potion available";
+
+        [Header("Rarity Colors")]
+        [SerializeField] Color defaultTextColor = Color.white;
+        [SerializeField] Color commonRarityColor = new Color(0.8f, 0.8f, 0.8f);
+        [SerializeField] Color rareRarityColor = new Color(0.0f, 0.5f, 1.0f);
+        [SerializeField] Color legendaryRarityColor = new Color(1.0f, 0.84f, 0.0f);
+
         [Header("Debug Settings")]
         [SerializeField] bool enableDebugLogs = true;
 
-         bool isInitialized = false;
+
+        bool isInitialized = false;
+
+
+        public Color GetRarityColor(RARITY rarity)
+        {
+            switch (rarity)
+            {
+                case RARITY.COMMON:
+                    return commonRarityColor;
+                case RARITY.RARE:
+                    return rareRarityColor;
+                case RARITY.LEGENDARY:
+                    return legendaryRarityColor;
+                default:
+                    return defaultTextColor;
+            }
+        }
 
         void Awake()
         {
@@ -37,68 +73,11 @@ namespace ProjectColombo.UI.Pausescreen
             }
         }
 
-        void Start()
-        {
-            if (charmTitleText == null)
-            {
-                LogDebug("Charm title text reference is missing!", true);
-            }
-
-            if (charmDescriptionText == null)
-            {
-                LogDebug("Charm description text reference is missing!", true);
-            }
-
-            if (charmButtons != null)
-            {
-                foreach (CharmButton button in charmButtons)
-                {
-                    if (button != null)
-                    {
-                        button.isPauseMenuButton = true;
-                    }
-                }
-            }
-
-            if (legendaryCharmButton != null)
-                legendaryCharmButton.isPauseMenuButton = true;
-
-            //if (potionButton != null)
-            //{
-            //    potionButton.isPauseMenuButton = true;
-            //}
-        }
-
         void OnEnable()
         {
             LogDebug("Inventory Manager enabled");
             UpdateInventoryDisplay();
-
-            StartCoroutine(MonitorSelection());
-        }
-
-        System.Collections.IEnumerator MonitorSelection()
-        {
-            yield return new WaitForEndOfFrame();
-
-            GameObject lastSelected = null;
-
-            while (gameObject.activeInHierarchy)
-            {
-                if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject != null && EventSystem.current.currentSelectedGameObject != lastSelected)
-                {
-                    lastSelected = EventSystem.current.currentSelectedGameObject;
-                    CharmButton button = lastSelected.GetComponent<CharmButton>();
-
-                    if (button != null)
-                    {
-                        UpdateCharmInfo(button.charmObject);
-                        LogDebug($"Selection changed to: {button.name}");
-                    }
-                }
-
-                yield return null;
-            }
+            SetupEventTriggers();
         }
 
         void Initialize()
@@ -123,16 +102,60 @@ namespace ProjectColombo.UI.Pausescreen
             if (charmTitleText != null)
             {
                 charmTitleText.text = "";
-                LogDebug($"Initialized charmTitleText: {charmTitleText.gameObject.name}");
+                charmTitleText.color = defaultTextColor;
+            }
+
+            if (legendaryCharmButton != null)
+            {
+                legendaryCharmButton.isPauseMenuButton = true;
             }
 
             if (charmDescriptionText != null)
             {
                 charmDescriptionText.text = "";
-                LogDebug($"Initialized charmDescriptionText: {charmDescriptionText.gameObject.name}");
             }
 
             isInitialized = true;
+        }
+
+        void SetupEventTriggers()
+        {
+            SetupButtonEventTrigger(weaponSlotButton, () => ShowEmptyWeaponInfo());
+            SetupButtonEventTrigger(maskSlotButton, () => ShowEmptyMaskInfo());
+            SetupButtonEventTrigger(potionSlotButton, () => ShowEmptyPotionInfo());
+        }
+
+        void SetupButtonEventTrigger(Button button, UnityEngine.Events.UnityAction action)
+        {
+            if (button == null)
+            {
+                return;
+            }
+
+            EventTrigger eventTrigger = button.GetComponent<EventTrigger>();
+
+            if (eventTrigger == null)
+            {
+                eventTrigger = button.gameObject.AddComponent<EventTrigger>();
+            }
+
+            eventTrigger.triggers.Clear();
+
+            EventTrigger.Entry selectEntry = new EventTrigger.Entry
+            {
+                eventID = EventTriggerType.Select
+            };
+
+            selectEntry.callback.AddListener((data) => action());
+            eventTrigger.triggers.Add(selectEntry);
+
+            EventTrigger.Entry pointerEnterEntry = new EventTrigger.Entry
+            {
+                eventID = EventTriggerType.PointerEnter
+            };
+
+            pointerEnterEntry.callback.AddListener((data) => action());
+            eventTrigger.triggers.Add(pointerEnterEntry);
         }
 
         public void UpdateInventoryDisplay()
@@ -145,11 +168,39 @@ namespace ProjectColombo.UI.Pausescreen
 
             LogDebug("Updating inventory display");
 
+            if (weaponSlotImage != null)
+            {
+            }
+
+            if (maskSlotImage != null && playerInventory.maskSlot != null)
+            {
+                bool hasMask = playerInventory.maskSlot.transform.childCount > 0;
+            }
+
+            if (potionSlotImage != null)
+            {
+                bool hasPotion = playerInventory.numberOfPotions > 0;
+                potionSlotImage.enabled = hasPotion;
+            }
+
             UpdateCharmSlots();
         }
 
         void UpdateCharmSlots()
         {
+            foreach (CharmButton btn in charmButtons)
+            {
+                if (btn != null)
+                {
+                    btn.UpdateInfo(null);
+                }
+            }
+
+            if (legendaryCharmButton != null)
+            {
+                legendaryCharmButton.UpdateInfo(null);
+            }
+
             if (charmButtons != null)
             {
                 foreach (CharmButton button in charmButtons)
@@ -159,11 +210,6 @@ namespace ProjectColombo.UI.Pausescreen
                         button.UpdateInfo(null);
                     }
                 }
-            }
-
-            if (legendaryCharmButton != null)
-            {
-                legendaryCharmButton.UpdateInfo(null);
             }
 
             if (playerInventory == null)
@@ -182,52 +228,127 @@ namespace ProjectColombo.UI.Pausescreen
                 }
             }
 
-            // Update legendary charm slot
             if (legendaryCharmButton != null && playerInventory.legendaryCharms != null && playerInventory.legendaryCharms.Count > 0)
             {
                 legendaryCharmButton.UpdateInfo(playerInventory.legendaryCharms[0]);
             }
-
-            //if (potionButton != null)
-            //{
-            //    potionButton.UpdateInfo(null); 
-            //}
         }
 
         public void UpdateCharmInfo(GameObject charmObject)
         {
-            if (charmTitleText == null || charmDescriptionText == null)
-            {
-                LogDebug("Text components are missing!", true);
-                return;
-            }
-
             if (charmObject == null)
             {
-                charmTitleText.text = "";
-                charmDescriptionText.text = "";
-
-                LogDebug("Cleared charm info display");
+                ShowEmptyCharmInfo();
                 return;
             }
 
             BaseCharm charmInfo = charmObject.GetComponent<BaseCharm>();
+
             if (charmInfo == null)
             {
                 LogDebug("Selected object doesn't have a BaseCharm component!", true);
+                ShowEmptyCharmInfo();
                 return;
             }
 
-            LogDebug($"Setting charmTitleText to: {charmInfo.charmName}");
-            charmTitleText.text = charmInfo.charmName;
+            if (charmTitleText != null)
+            {
+                charmTitleText.text = charmInfo.charmName;
 
-            LogDebug($"Setting charmDescriptionText to: {charmInfo.charmDescription}");
-            charmDescriptionText.text = charmInfo.charmDescription;
+                charmTitleText.color = GetRarityColor(charmInfo.charmRarity);
+            }
 
-            charmTitleText.ForceMeshUpdate();
-            charmDescriptionText.ForceMeshUpdate();
+            if (charmDescriptionText != null)
+            {
+                charmDescriptionText.text = charmInfo.charmDescription;
+            }
 
-            LogDebug($"Updated charm info display for: {charmInfo.charmName}");
+            if (inventoryTabController != null)
+            {
+                inventoryTabController.UpdateSelectorColorForCharm(charmInfo);
+            }
+
+            LogDebug($"Updated charm info display for: {charmInfo.charmName} (Rarity: {charmInfo.charmRarity})");
+        }
+
+        public void ShowEmptyWeaponInfo()
+        {
+            if (charmTitleText != null)
+            {
+                charmTitleText.text = emptyWeaponMessage;
+                charmTitleText.color = defaultTextColor;
+            }
+
+            if (charmDescriptionText != null)
+                charmDescriptionText.text = "";
+
+            if (inventoryTabController != null)
+            {
+                inventoryTabController.ResetSelectorColor();
+            }
+
+            LogDebug("Showing empty weapon info");
+        }
+
+        public void ShowEmptyMaskInfo()
+        {
+            if (charmTitleText != null)
+            {
+                charmTitleText.text = emptyMaskMessage;
+                charmTitleText.color = defaultTextColor;
+            }
+
+            if (charmDescriptionText != null)
+            {
+                charmDescriptionText.text = "";
+            }
+
+            if (inventoryTabController != null)
+            {
+                inventoryTabController.ResetSelectorColor();
+            }
+
+            LogDebug("Showing empty mask info");
+        }
+
+        public void ShowEmptyCharmInfo()
+        {
+            if (charmTitleText != null)
+            {
+                charmTitleText.text = emptyCharmMessage;
+                charmTitleText.color = defaultTextColor;
+            }
+
+            if (charmDescriptionText != null)
+                charmDescriptionText.text = "";
+
+            if (inventoryTabController != null)
+            {
+                inventoryTabController.ResetSelectorColor();
+            }
+
+            LogDebug("Showing empty charm info");
+        }
+
+        public void ShowEmptyPotionInfo()
+        {
+            if (charmTitleText != null)
+            {
+                charmTitleText.text = emptyPotionMessage;
+                charmTitleText.color = defaultTextColor;
+            }
+
+            if (charmDescriptionText != null)
+            {
+                charmDescriptionText.text = "";
+            }
+
+            if (inventoryTabController != null)
+            {
+                inventoryTabController.ResetSelectorColor();
+            }
+
+            LogDebug("Showing empty potion info");
         }
 
         void LogDebug(string message, bool isWarning = false)
@@ -235,9 +356,14 @@ namespace ProjectColombo.UI.Pausescreen
             if (enableDebugLogs)
             {
                 if (isWarning)
+                {
                     Debug.LogWarning($"[PauseMenuInventoryManager] {message}");
+
+                }
                 else
+                {
                     Debug.Log($"<color=#FF9900>[PauseMenuInventoryManager] {message}</color>");
+                }
             }
         }
     }

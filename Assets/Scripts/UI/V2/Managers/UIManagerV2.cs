@@ -20,7 +20,7 @@ namespace ProjectColombo.UI
         [SerializeField] GameObject optionsMenu;
 
         [Header("Non-Pausable Scenes")]
-        [SerializeField] string[] nonPausableScenes = { "00_MainMenu", "01_MaskSelection" };
+        [SerializeField] string[] nonPausableScenes = { "00_MainMenu", "02_MaskSelection" };
 
         [Header("Input Settings")]
         [SerializeField] float inputBufferTime = 0.2f;

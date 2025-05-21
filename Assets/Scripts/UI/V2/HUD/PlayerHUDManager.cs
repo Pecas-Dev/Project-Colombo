@@ -162,7 +162,7 @@ namespace ProjectColombo.UI
 
         void Update()
         {
-            bool isLevelOne = SceneManager.GetActiveScene().name == "02_LevelOne";
+            bool isLevelOne = SceneManager.GetActiveScene().name == "03_LevelTwo";
 
             if (isChangingLevel)
             {
@@ -205,7 +205,7 @@ namespace ProjectColombo.UI
             Debug.Log($"Coins collected: {amount}");
             UpdateCurrencyDisplay();
 
-            bool isLevelOne = SceneManager.GetActiveScene().name == "02_LevelOne";
+            bool isLevelOne = SceneManager.GetActiveScene().name == "03_LevelTwo";
 
             if (currentMask != null && currentMask.echoMission != null && currentMask.echoMission is CollectGold && (!currentMask.echoUnlocked || isLevelOne))
             {
@@ -216,7 +216,7 @@ namespace ProjectColombo.UI
 
         void HandleMaxHealthGained(int amount)
         {
-            bool isLevelOne = SceneManager.GetActiveScene().name == "02_LevelOne";
+            bool isLevelOne = SceneManager.GetActiveScene().name == "03_LevelTwo";
 
             if (currentMask != null && currentMask.echoMission != null && currentMask.echoMission is CollectMaxHealth && (!currentMask.echoUnlocked || isLevelOne))
             {
@@ -227,7 +227,7 @@ namespace ProjectColombo.UI
 
         void HandleEnemyDeath(GameGlobals.MusicScale scale, GameObject enemy)
         {
-            bool isLevelOne = SceneManager.GetActiveScene().name == "02_LevelOne";
+            bool isLevelOne = SceneManager.GetActiveScene().name == "03_LevelTwo";
 
             if (currentMask != null && currentMask.echoMission != null && currentMask.echoMission is MajorKills && (!currentMask.echoUnlocked || isLevelOne))
             {
@@ -241,7 +241,7 @@ namespace ProjectColombo.UI
 
         void HandleDamageDelt(int damage, GameGlobals.MusicScale scale, bool sameScale, HealthManager enemyHealthManager, int comboLength)
         {
-            bool isLevelOne = SceneManager.GetActiveScene().name == "02_LevelOne";
+            bool isLevelOne = SceneManager.GetActiveScene().name == "03_LevelTwo";
 
             if (currentMask != null && currentMask.echoMission != null && currentMask.echoMission is DamageDelt && (!currentMask.echoUnlocked || isLevelOne))
             {
@@ -289,7 +289,7 @@ namespace ProjectColombo.UI
             Invoke("FindPlayerReferences", 0.5f);
             Invoke("UpdateUI", 1.0f);
 
-            if (SceneManager.GetActiveScene().name == "02_LevelOne")
+            if (SceneManager.GetActiveScene().name == "03_LevelTwo")
             {
                 echoWasUnlocked = false;
                 shouldBeVisible = true;
@@ -465,7 +465,7 @@ namespace ProjectColombo.UI
                 return;
             }
 
-            bool isLevelOne = SceneManager.GetActiveScene().name == "02_LevelOne";
+            bool isLevelOne = SceneManager.GetActiveScene().name == "03_LevelTwo";
 
             if (currentMask == null || echoMissionTitleText == null || echoMissionProgressText == null)
             {
@@ -614,7 +614,7 @@ namespace ProjectColombo.UI
         #region Fade Effects
         void TriggerFadeIn()
         {
-            bool isLevelOne = SceneManager.GetActiveScene().name == "02_LevelOne";
+            bool isLevelOne = SceneManager.GetActiveScene().name == "03_LevelTwo";
 
             if (isChangingLevel || (currentMask != null && (currentMask.echoUnlocked || echoWasUnlocked) && !isLevelOne))
             {
@@ -623,8 +623,7 @@ namespace ProjectColombo.UI
 
             lastEventTime = Time.time;
 
-            if (!isFadingIn && ((echoMissionTitleText != null && echoMissionTitleText.color.a < 1f) ||
-                                (echoMissionProgressText != null && echoMissionProgressText.color.a < 1f)))
+            if (!isFadingIn && ((echoMissionTitleText != null && echoMissionTitleText.color.a < 1f) ||(echoMissionProgressText != null && echoMissionProgressText.color.a < 1f)))
             {
                 if (fadeCoroutine != null)
                 {
@@ -640,7 +639,7 @@ namespace ProjectColombo.UI
 
         void StartFadeOut()
         {
-            bool isLevelOne = SceneManager.GetActiveScene().name == "02_LevelOne";
+            bool isLevelOne = SceneManager.GetActiveScene().name == "03_LevelTwo";
 
             if (!isFadingOut && !isFadingIn && currentMask != null && (!currentMask.echoUnlocked || isLevelOne) && (!echoWasUnlocked || isLevelOne))
             {

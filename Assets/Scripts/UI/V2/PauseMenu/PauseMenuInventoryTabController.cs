@@ -3,15 +3,22 @@ using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.EventSystems;
 using ProjectColombo.GameInputSystem;
-
+using ProjectColombo.Objects.Charms;
 
 namespace ProjectColombo.UI.Pausescreen
 {
     public class PauseMenuInventoryTabController : MonoBehaviour
     {
+        [Header("Inventory Manager Reference")]
+        [SerializeField] PauseMenuInventoryManager inventoryManager;
+
         [Header("Inventory Slots")]
         [SerializeField] Button[] inventorySlotButtons;
         [SerializeField] GameObject[] slotSelectors;
+
+        // CHANGE COLOR OF IMAGE OF THE BUTTON ITSELF
+        //[Header("Button Images")]
+        //[SerializeField] GameObject[] buttonImages;
 
         [Header("Pentagram Areas")]
         [SerializeField] GameObject weaponPentagram;
@@ -28,6 +35,18 @@ namespace ProjectColombo.UI.Pausescreen
         [SerializeField] float selectorMinAlpha = 0.5f;
         [SerializeField] float selectorMaxAlpha = 1f;
 
+        [Header("Selector Colors")]
+        [SerializeField] Color defaultSelectorColor = Color.black;
+        [SerializeField] Color commonSelectorColor = new Color(0.8f, 0.8f, 0.8f, 1f);
+        [SerializeField] Color rareSelectorColor = new Color(0.0f, 0.5f, 1.0f, 1f);
+        [SerializeField] Color legendarySelectorColor = new Color(1.0f, 0.84f, 0.0f, 1f);
+
+        [Header("Text Display Categories")]
+        [SerializeField] string weaponCategoryName = "Weapon";
+        [SerializeField] string maskCategoryName = "Mask";
+        [SerializeField] string charmCategoryName = "Charm";
+        [SerializeField] string potionCategoryName = "Potion";
+
         [Header("Input Settings")]
         [SerializeField] GameInputSO gameInput;
 
@@ -40,10 +59,9 @@ namespace ProjectColombo.UI.Pausescreen
         bool isActive = false;
         bool isTabSelected = false;
 
+        Color[] originalSelectorColors;
 
         IEnumerator[] selectorAnimations;
-
-
 
         void Awake()
         {
@@ -83,21 +101,24 @@ namespace ProjectColombo.UI.Pausescreen
         IEnumerator WaitForTabSelection()
         {
             yield return new WaitForEndOfFrame();
+
             yield return null;
 
             UINavigationManager navManager = FindFirstObjectByType<UINavigationManager>();
+
             if (navManager != null)
             {
                 isTabSelected = navManager.GetCurrentState() == UINavigationState.PauseInventoryTab;
                 LogDebug($"Tab selection status from UINavigationManager: {isTabSelected}");
             }
-
         }
 
         void Update()
         {
             if (!isActive || !isTabSelected)
+            {
                 return;
+            }
 
             if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject != null)
             {
@@ -151,7 +172,36 @@ namespace ProjectColombo.UI.Pausescreen
         {
             LogDebug("Initializing inventory tab controller");
 
+            InitializeInventoryManager();
+
             selectorAnimations = new IEnumerator[slotSelectors.Length];
+            originalSelectorColors = new Color[slotSelectors.Length];
+
+            for (int i = 0; i < slotSelectors.Length; i++)
+            {
+                if (slotSelectors[i] != null)
+                {
+                    Image selectorImage = slotSelectors[i].GetComponent<Image>();
+                    if (selectorImage != null)
+                    {
+                        originalSelectorColors[i] = selectorImage.color;
+                    }
+                }
+            }
+
+            // CHANGE COLOR OF IMAGE OF THE BUTTON ITSELF
+            //for (int i = 0; i < buttonImages.Length; i++)
+            //{
+            //    if (buttonImages[i] != null)
+            //    {
+            //        Image buttonImage = slotSelectors[i].GetComponent<Image>();
+
+            //        if (buttonImage != null)
+            //        {
+            //            originalSelectorColors[i] = buttonImage.color;
+            //        }
+            //    }
+            //}
 
             HideAllClefs();
             HideAllSelectors();
@@ -177,14 +227,22 @@ namespace ProjectColombo.UI.Pausescreen
                 {
                     eventID = EventTriggerType.Select
                 };
-                selectEntry.callback.AddListener((data) => SelectSlot(slotIndex));
+                selectEntry.callback.AddListener((data) =>
+                {
+                    SelectSlot(slotIndex);
+                    UpdateInfoDisplay(slotIndex);
+                });
                 eventTrigger.triggers.Add(selectEntry);
 
                 EventTrigger.Entry pointerEnterEntry = new EventTrigger.Entry
                 {
                     eventID = EventTriggerType.PointerEnter
                 };
-                pointerEnterEntry.callback.AddListener((data) => SelectSlot(slotIndex));
+                pointerEnterEntry.callback.AddListener((data) =>
+                {
+                    SelectSlot(slotIndex);
+                    UpdateInfoDisplay(slotIndex);
+                });
                 eventTrigger.triggers.Add(pointerEnterEntry);
 
                 EventTrigger.Entry pointerExitEntry = new EventTrigger.Entry
@@ -200,11 +258,162 @@ namespace ProjectColombo.UI.Pausescreen
             isInitialized = true;
         }
 
+        void InitializeInventoryManager()
+        {
+            if (inventoryManager == null)
+            {
+                inventoryManager = GetComponent<PauseMenuInventoryManager>();
+
+                if (inventoryManager == null)
+                {
+                    inventoryManager = FindFirstObjectByType<PauseMenuInventoryManager>();
+                }
+            }
+        }
+
+        void UpdateInfoDisplay(int slotIndex)
+        {
+            if (inventoryManager == null) return;
+
+            CharmButton charmButton = inventorySlotButtons[slotIndex].GetComponent<CharmButton>();
+            if (charmButton != null)
+            {
+                return;
+            }
+
+            switch (slotIndex)
+            {
+                case 0: // Weapon Slot
+                    inventoryManager.ShowEmptyWeaponInfo();
+                    break;
+                case 1: // Mask Slot
+                    inventoryManager.ShowEmptyMaskInfo();
+                    break;
+                case 7: // Potion Slot
+                    inventoryManager.ShowEmptyPotionInfo();
+                    break;
+                default:
+                    inventoryManager.ShowEmptyCharmInfo();
+                    break;
+            }
+        }
+
+        public void UpdateSelectorColorForCharm(BaseCharm charm)
+        {
+            if (currentSelectedIndex < 0 || currentSelectedIndex >= slotSelectors.Length || charm == null)
+            {
+                return;
+            }
+
+            // CHANGE COLOR OF IMAGE OF THE BUTTON ITSELF
+            //if (currentSelectedIndex < 0 || currentSelectedIndex >= buttonImages.Length || charm == null)
+            //{
+            //    return;
+            //}
+
+            GameObject selector = slotSelectors[currentSelectedIndex];
+
+            if (selector == null)
+            {
+                return;
+            }
+
+            Image selectorImage = selector.GetComponent<Image>();
+
+            if (selectorImage == null)
+            {
+                return;
+            }
+
+
+            // CHANGE COLOR OF IMAGE OF THE BUTTON ITSELF
+            //GameObject buttonImage = buttonImages[currentSelectedIndex];
+            //if (buttonImage == null)
+            //{
+            //    return;
+            //}
+            //Image imageOfButton = buttonImage.GetComponent<Image>();
+            //if (imageOfButton == null)
+            //{
+            //    return;
+            //}
+
+            Color newColor;
+
+            switch (charm.charmRarity)
+            {
+                case RARITY.COMMON:
+                    newColor = commonSelectorColor;
+                    break;
+                case RARITY.RARE:
+                    newColor = rareSelectorColor;
+                    break;
+                case RARITY.LEGENDARY:
+                    newColor = legendarySelectorColor;
+                    break;
+                default:
+                    newColor = defaultSelectorColor;
+                    break;
+            }
+
+            selectorImage.color = new Color(newColor.r, newColor.g, newColor.b, selectorImage.color.a);
+
+            // CHANGE COLOR OF IMAGE OF THE BUTTON ITSELF
+            //imageOfButton.color = new Color(newColor.r, newColor.g, newColor.b, imageOfButton.color.a);
+
+            LogDebug($"Updated selector color for {charm.charmName} (Rarity: {charm.charmRarity})");
+        }
+
+        public void ResetSelectorColor()
+        {
+            if (currentSelectedIndex < 0 || currentSelectedIndex >= slotSelectors.Length)
+            {
+                return;
+            }
+
+            GameObject selector = slotSelectors[currentSelectedIndex];
+
+            if (selector == null)
+            {
+                return;
+            }
+
+            Image selectorImage = selector.GetComponent<Image>();
+
+            if (selectorImage == null)
+            {
+                return;
+            }
+
+
+            // CHANGE COLOR OF IMAGE OF THE BUTTON ITSELF
+            //GameObject buttonImage = buttonImages[currentSelectedIndex];
+            //if (buttonImage == null) 
+            //{
+            //    return;
+            //}
+            //Image imageOfButton = buttonImage.GetComponent<Image>();
+            //if (imageOfButton == null)
+            //{
+            //    return;
+            //}
+
+            Color originalColor = (currentSelectedIndex < originalSelectorColors.Length && originalSelectorColors[currentSelectedIndex] != null) ? originalSelectorColors[currentSelectedIndex] : defaultSelectorColor;
+
+            selectorImage.color = new Color(originalColor.r, originalColor.g, originalColor.b, selectorImage.color.a);
+
+            // CHANGE COLOR OF IMAGE OF THE BUTTON ITSELF
+            //imageOfButton.color = new Color(originalColor.r, originalColor.g, originalColor.b, imageOfButton.color.a);
+
+            LogDebug("Reset selector color to default");
+        }
 
         void SetupExplicitNavigation(int buttonIndex)
         {
             if (buttonIndex < 0 || buttonIndex >= inventorySlotButtons.Length || inventorySlotButtons[buttonIndex] == null)
+            {
                 return;
+            }
 
             Button button = inventorySlotButtons[buttonIndex];
             Navigation nav = button.navigation;
@@ -282,7 +491,6 @@ namespace ProjectColombo.UI.Pausescreen
 
             button.navigation = nav;
         }
-
 
         Button FindFirstButtonInArea(GameObject area)
         {
@@ -371,10 +579,48 @@ namespace ProjectColombo.UI.Pausescreen
             {
                 slotSelectors[slotIndex].SetActive(true);
 
+                CharmButton charmButton = inventorySlotButtons[slotIndex].GetComponent<CharmButton>();
+
+                if (charmButton != null && charmButton.charmObject != null)
+                {
+                    BaseCharm charm = charmButton.charmObject.GetComponent<BaseCharm>();
+
+                    if (charm != null)
+                    {
+                        UpdateSelectorColorForCharm(charm);
+                    }
+                }
+                else
+                {
+                    ResetSelectorColor();
+                }
+
                 StopSelectorAnimation(slotIndex);
                 selectorAnimations[slotIndex] = AnimateSelector(slotSelectors[slotIndex]);
                 StartCoroutine(selectorAnimations[slotIndex]);
             }
+
+            // CHANGE COLOR OF IMAGE OF THE BUTTON ITSELF
+            //if (slotIndex < buttonImages.Length && buttonImages[slotIndex] != null)
+            //{
+            //    buttonImages[slotIndex].SetActive(true);
+
+            //    CharmButton charmButton = inventorySlotButtons[slotIndex].GetComponent<CharmButton>();
+
+            //    if (charmButton != null && charmButton.charmObject != null)
+            //    {
+            //        BaseCharm charm = charmButton.charmObject.GetComponent<BaseCharm>();
+
+            //        if (charm != null)
+            //        {
+            //            UpdateSelectorColorForCharm(charm);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        ResetSelectorColor();
+            //    }
+            //}
         }
 
         void StopSelectorAnimation(int index)
@@ -535,11 +781,14 @@ namespace ProjectColombo.UI.Pausescreen
             gameObject.SetActive(false);
         }
 
-        void LogDebug(string message)
+        void LogDebug(string message, bool isWarning = false)
         {
             if (enableDebugLogs)
             {
-                Debug.Log($"<color=#00AAFF>[InventoryTabController] {message}</color>");
+                if (isWarning)
+                    Debug.LogWarning($"[InventoryTabController] {message}");
+                else
+                    Debug.Log($"<color=#00AAFF>[InventoryTabController] {message}</color>");
             }
         }
     }
