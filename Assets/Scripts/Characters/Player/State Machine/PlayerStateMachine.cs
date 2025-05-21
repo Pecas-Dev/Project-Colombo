@@ -359,8 +359,6 @@ namespace ProjectColombo.StateMachine.Player
                     //Debug.Log("Player hit Destroyable");
                     HealthManager otherHealth = other.GetComponent<HealthManager>();
 
-                    restoreVelocity = true;
-
                     if (otherHealth != null)
                     {
                         otherHealth.TakeDamage(1000);
