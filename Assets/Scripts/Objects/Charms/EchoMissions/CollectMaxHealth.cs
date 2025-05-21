@@ -9,6 +9,9 @@ namespace ProjectColombo.Objects.Masks
 
         public override void Enable()
         {
+            if (isEnabled) return;
+            isEnabled = true;
+
             CustomEvents.OnMaxHealthGained += OnMaxHealthGained;
         }
 
@@ -24,6 +27,7 @@ namespace ProjectColombo.Objects.Masks
 
         public override void Disable()
         {
+            isEnabled = false;
             CustomEvents.OnMaxHealthGained -= OnMaxHealthGained;
         }
 

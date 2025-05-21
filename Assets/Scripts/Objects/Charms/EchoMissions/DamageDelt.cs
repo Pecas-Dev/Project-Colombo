@@ -7,11 +7,12 @@ namespace ProjectColombo.Objects.Masks
     {
         public int damageToDeal;
         int currentCollected = 0;
-        bool isEnabled = false;
 
         public override void Enable()
         {
+            if (isEnabled) return;
             isEnabled = true;
+
             CustomEvents.OnDamageDelt += OnDamageDelt;
             Debug.Log($"<color=#FF00FF>[DamageDelt] Event listener ENABLED. Current: {currentCollected}/{damageToDeal}</color>");
         }

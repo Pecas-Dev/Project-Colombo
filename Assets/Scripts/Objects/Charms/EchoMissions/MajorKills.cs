@@ -10,6 +10,9 @@ namespace ProjectColombo.Objects.Masks
 
         public override void Enable()
         {
+            if (isEnabled) return;
+            isEnabled = true;
+
             CustomEvents.OnEnemyDeath += OnEnemyDeath;
         }
 

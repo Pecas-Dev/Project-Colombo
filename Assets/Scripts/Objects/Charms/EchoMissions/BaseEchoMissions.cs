@@ -4,6 +4,8 @@ namespace ProjectColombo.Objects.Masks
 {
     public abstract class BaseEchoMissions : MonoBehaviour
     {
+        protected bool isEnabled = false;
+
         public void CompletedMission()
         {
             BaseMask myMask = GetComponent<BaseMask>();
@@ -12,6 +14,7 @@ namespace ProjectColombo.Objects.Masks
             {
                 GetComponent<BaseMask>().UnlockEcho();
             }
+
             Disable();
         }
 
