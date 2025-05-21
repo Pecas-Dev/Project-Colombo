@@ -49,8 +49,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a24b44ebd5ebf24a9a4714e04825db9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  majorDamagePercentage: 10
-  minorDamagePercentage: -8
+  majorDamagePercentage: 28
+  minorDamagePercentage: -26
 --- !u!114 &4203043025350488816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 680bca3fdf1007c4cbf52df948f719d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damagePercentageLuck: 0.32
+  damagePercentageLuck: 160
   forHowManyLuck: 1
 --- !u!114 &8401997991766263146
 MonoBehaviour:
@@ -77,8 +77,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 521362f5fbc274143bcb8c02f8304ba4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  majorDamagePercentage: 5
-  minorDamagePercentage: 5
+  majorDamagePercentage: 20
+  minorDamagePercentage: 20
 --- !u!114 &4143820610560830421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,8 +91,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3e7f031a502ec941babd832e159fef9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  extraDamageMissedParrySameScalePercentage: 20
-  extraDamageMissedParryDifferentScalePercentage: 20
+  extraDamageMissedParrySameScalePercentage: 35
+  extraDamageMissedParryDifferentScalePercentage: 35
 --- !u!114 &8693380853264456009
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105,7 +105,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c656f332c4ac83a429ea65beea2063f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chanceForDoubleStamina: 50
+  chanceForDoubleStamina: 45
+  chanceReductionPerLuck: 0.7
 --- !u!114 &9127790370784349041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,7 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4f3f14eb1344e14498f563fc416cbfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  extraLuck: 30
+  extraLuck: 20
 --- !u!1 &1969649022979653137
 GameObject:
   m_ObjectHideFlags: 0
@@ -190,19 +191,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maskName: Mask of the Zanni
   maskPicture: {fileID: 21300000, guid: 3c8a387d66fb9dd49974a7e2d051f2b3, type: 3}
-  maskDescription: '+6% major scale damage (increases with luck)
+  maskDescription: '+18% major scale damage dealt (increases with luck)
 
-    -8% minor scale
-    damage
+    -24%
+    minor scale damage dealt
 
-    +5% damage from all sources
+    +12% received damage from all sources
 
-    +20% samina regen speed
+    +20%
+    samina regen speed
 
-    +50%
-    chance of using 2 stamina points (reduces with luck)
+    +50% chance of using 2 stamina points (reduces with luck)
 
-    +20 luck points'
+    +15
+    luck points'
   echoDescription: Kill 25 enemies with Major Attacks
   maskLore: lore missing
   echoUnlocked: 0
@@ -273,8 +275,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a24b44ebd5ebf24a9a4714e04825db9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  majorDamagePercentage: 6
-  minorDamagePercentage: -8
+  majorDamagePercentage: 18
+  minorDamagePercentage: -24
 --- !u!114 &4925203911259083679
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -287,7 +289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 680bca3fdf1007c4cbf52df948f719d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damagePercentageLuck: 0.22
+  damagePercentageLuck: 120
   forHowManyLuck: 1
 --- !u!114 &2805913791286166190
 MonoBehaviour:
@@ -301,8 +303,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 521362f5fbc274143bcb8c02f8304ba4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  majorDamagePercentage: 5
-  minorDamagePercentage: 5
+  majorDamagePercentage: 12
+  minorDamagePercentage: 12
 --- !u!114 &8563481752699327756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -315,8 +317,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3e7f031a502ec941babd832e159fef9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  extraDamageMissedParrySameScalePercentage: 20
-  extraDamageMissedParryDifferentScalePercentage: 20
+  extraDamageMissedParrySameScalePercentage: 25
+  extraDamageMissedParryDifferentScalePercentage: 25
 --- !u!114 &6762685901744608797
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -329,7 +331,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39dfe80de21da5243a13ba5ffbc133a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  staminaRegenTimePercentage: -20
+  staminaRegenTimePercentage: -25
 --- !u!114 &1636997531106178044
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -343,6 +345,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chanceForDoubleStamina: 50
+  chanceReductionPerLuck: 0.5
 --- !u!114 &7192849533151599573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -355,4 +358,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4f3f14eb1344e14498f563fc416cbfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  extraLuck: 20
+  extraLuck: 15

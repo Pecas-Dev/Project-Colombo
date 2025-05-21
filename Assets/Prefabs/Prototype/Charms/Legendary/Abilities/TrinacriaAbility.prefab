@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a24b44ebd5ebf24a9a4714e04825db9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  majorDamagePercentage: -10
-  minorDamagePercentage: -10
+  majorDamagePercentage: -25
+  minorDamagePercentage: -25
 --- !u!114 &560343961293245823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,7 +60,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 521ee173c23e46348a372419f5ba27ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedIncreasePercentage: -6
+  speedIncreasePercentage: -16
 --- !u!114 &5126732118646983062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73,8 +73,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 521362f5fbc274143bcb8c02f8304ba4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  majorDamagePercentage: 8
-  minorDamagePercentage: 8
+  majorDamagePercentage: 40
+  minorDamagePercentage: 40
 --- !u!1 &6264174016970401175
 GameObject:
   m_ObjectHideFlags: 0
@@ -129,12 +129,12 @@ MonoBehaviour:
 
     After the effect vanishes, for the next 4 seconds:
 
-    -10%
+    -25%
     Damage dealt
 
-    -6% Movement speed
+    -16% Movement speed
 
-    +8% damage from all sources
+    +40% received damage from all sources
 
 '
   cooldownInSeconds: 160
@@ -143,6 +143,7 @@ MonoBehaviour:
   abilityDuration: 6
   abilityTimer: 0
   active: 0
+  abilitySoundName: 
   myPlayerStateMachine: {fileID: 0}
   invincibleDuration: 2
   attribs: {fileID: 170554799141380188}

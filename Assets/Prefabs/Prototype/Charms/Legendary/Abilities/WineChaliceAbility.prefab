@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75f73ae067f846444b94c9514f81c77b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackSpeedPercentage: -10
+  attackSpeedPercentage: -20
 --- !u!114 &8667639186024719576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,7 +61,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 521ee173c23e46348a372419f5ba27ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedIncreasePercentage: -8
+  speedIncreasePercentage: -12
 --- !u!114 &4658347108562501461
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,8 +87,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a24b44ebd5ebf24a9a4714e04825db9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  majorDamagePercentage: 18
-  minorDamagePercentage: 18
+  majorDamagePercentage: 26
+  minorDamagePercentage: 26
 --- !u!114 &5340939155385361052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,17 +151,17 @@ MonoBehaviour:
   abilityName: Drunken Warrior
   abilityDescription: 'Drunken Warrior [120 Seconds Cooldown]
 
-    For the next
-    5 seconds:
+    For the next 5
+    seconds:
 
-    -10% Attack speed
+    -20% Attack speed
 
-    -8% Movement speed
+    -12% Movement speed
 
-    -15% Stamina
-    regeneration speed
+    -15% Stamina regeneration
+    speed
 
-    +18% Damage dealt
+    +25% Damage dealt
 
     You heal by 6% of damage dealt
 
@@ -172,5 +172,6 @@ MonoBehaviour:
   abilityDuration: 5
   abilityTimer: 0
   active: 0
+  abilitySoundName: 
   myPlayerStateMachine: {fileID: 0}
   attribs: {fileID: 7559495277424758099}

@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 8824432527257582053}
   - component: {fileID: 4246842388228380329}
   - component: {fileID: 6414081879701640990}
-  - component: {fileID: 3474316527689871992}
+  - component: {fileID: 3839687379849024515}
   - component: {fileID: 8546503095521453683}
   m_Layer: 0
   m_Name: BeforeEchoAttrib
@@ -80,7 +80,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e57de4b8f5c8e0e439930bdcb682a693, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damagePercentageMaxHealth: 1.2
+  damagePercentageMaxHealth: -1.2
   forHowManyMaxHealth: 1
 --- !u!114 &8874726295449789267
 MonoBehaviour:
@@ -146,22 +146,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 521362f5fbc274143bcb8c02f8304ba4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  majorDamagePercentage: -14
-  minorDamagePercentage: -14
---- !u!114 &3474316527689871992
+  majorDamagePercentage: -18
+  minorDamagePercentage: -18
+--- !u!114 &3839687379849024515
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3010321451754386822}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e8a513198664fe478788696ed51f3b7, type: 3}
+  m_Script: {fileID: 11500000, guid: 51323258caef5d3489f14b673e013f50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damgePercentageSameScale: 3
-  damgePercentageOppScale: 3
+  damgePercentage: -3
   perHowManyMaxHealth: 1
 --- !u!114 &8546503095521453683
 MonoBehaviour:
@@ -175,7 +174,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 874468821b607e641a2be80e5486a96a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthForPickup: 50
+  healthForPickup: 40
 --- !u!1 &4303818640728422693
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,10 +248,10 @@ MonoBehaviour:
   maskPicture: {fileID: 21300000, guid: 41003840a3afc304faeb3fd32c4fbb83, type: 3}
   maskDescription: '+20 max health for killing an enemy
 
-    -12% major/ minor damage
-    (decreases with more max health)
+    -10% damage dealt (decreases
+    with more max health)
 
-    - 6% damage (decreases with max health)
+    -16% received damage(decreases with max health)
 
     -15%
     stamina regeneration speed
@@ -298,7 +297,7 @@ GameObject:
   - component: {fileID: 7370087533988570453}
   - component: {fileID: 4759203913854737995}
   - component: {fileID: 5951150437689305600}
-  - component: {fileID: 4754368770046783686}
+  - component: {fileID: 482634972588176196}
   - component: {fileID: 213586028205261992}
   - component: {fileID: 5997195312644731801}
   m_Layer: 0
@@ -348,8 +347,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a24b44ebd5ebf24a9a4714e04825db9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  majorDamagePercentage: -12
-  minorDamagePercentage: -12
+  majorDamagePercentage: -16
+  minorDamagePercentage: -16
 --- !u!114 &6652067946164696297
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -362,7 +361,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e57de4b8f5c8e0e439930bdcb682a693, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damagePercentageMaxHealth: 0.5
+  damagePercentageMaxHealth: -2
   forHowManyMaxHealth: 1
 --- !u!114 &2488881813009111348
 MonoBehaviour:
@@ -376,7 +375,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75f73ae067f846444b94c9514f81c77b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackSpeedPercentage: -16
+  attackSpeedPercentage: -14
 --- !u!114 &6591424045415913797
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -389,7 +388,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39dfe80de21da5243a13ba5ffbc133a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  staminaRegenTimePercentage: -15
+  staminaRegenTimePercentage: -16
 --- !u!114 &7370087533988570453
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -402,7 +401,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e66389dbcca4af8468a79ef1de122183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  discountPercentage: 20
+  discountPercentage: 25
 --- !u!114 &4759203913854737995
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -415,7 +414,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7feb76319bb719944a657aa9ff5db43c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthPointsForItemPricePercentage: -20
+  healthPointsForItemPricePercentage: -22
 --- !u!114 &5951150437689305600
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -428,9 +427,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 521362f5fbc274143bcb8c02f8304ba4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  majorDamagePercentage: -9
-  minorDamagePercentage: -9
---- !u!114 &4754368770046783686
+  majorDamagePercentage: -32
+  minorDamagePercentage: -32
+--- !u!114 &482634972588176196
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -439,11 +438,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5082400444315058323}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e8a513198664fe478788696ed51f3b7, type: 3}
+  m_Script: {fileID: 11500000, guid: 51323258caef5d3489f14b673e013f50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damgePercentageSameScale: 0.38
-  damgePercentageOppScale: 0.38
+  damgePercentage: -5
   perHowManyMaxHealth: 1
 --- !u!114 &213586028205261992
 MonoBehaviour:
@@ -457,7 +455,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 874468821b607e641a2be80e5486a96a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthForPickup: 30
+  healthForPickup: 50
 --- !u!114 &5997195312644731801
 MonoBehaviour:
   m_ObjectHideFlags: 0

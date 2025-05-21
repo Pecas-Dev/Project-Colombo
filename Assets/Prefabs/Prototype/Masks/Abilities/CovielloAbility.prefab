@@ -48,9 +48,9 @@ MonoBehaviour:
   abilitySprite: {fileID: 21300000, guid: b405d449a27db5044951a93a43dee53a, type: 3}
   abilityName: Skill Showdown
   abilityDescription: "Skill Showdown [100 seconds Cooldown]\r\nFor next 6 seconds
-    every 2 stamina points used, you get +5% damage for 8 seconds (stacks up to 25%)\r\neach
-    attack consumes 20 Health Points \r\n+10% attack speed \r\n+8% movement speed.\r\n"
-  cooldownInSeconds: 100
+    every 2 stamina points used, you get +5% damage for 8 seconds (stacks up to 30%)\r\neach
+    attack consumes 25 Health Points \r\n+12% attack speed \r\n+10% movement speed.\r\n"
+  cooldownInSeconds: 90
   timer: 0
   available: 1
   abilityDuration: 6
@@ -61,7 +61,7 @@ MonoBehaviour:
   extraDamageForStaminaPercent: 5
   extraDamageDuration: 8
   attribs: {fileID: 9208563797021453163}
-  removeHealthPerAttack: 20
+  removeHealthPerAttack: 25
 --- !u!1 &9208563797021453163
 GameObject:
   m_ObjectHideFlags: 0
@@ -107,7 +107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75f73ae067f846444b94c9514f81c77b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackSpeedPercentage: 10
+  attackSpeedPercentage: 12
 --- !u!114 &6367793156976781942
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -120,4 +120,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 521ee173c23e46348a372419f5ba27ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedIncreasePercentage: 8
+  speedIncreasePercentage: 10

@@ -1,4 +1,5 @@
 using ProjectColombo.GameManagement.Events;
+using ProjectColombo.Inventory;
 using ProjectColombo.StateMachine.Player;
 using UnityEngine;
 
@@ -8,8 +9,10 @@ namespace ProjectColombo.Objects.Charms
     public class DoubleStaminaPercentageLuck : BaseAttributes
     {
         public float chanceForDoubleStamina;
+        public float chanceReductionPerLuck;
 
         PlayerStateMachine myPlayerStateMachine;
+        PlayerInventory myPlayerInventory;
 
         public override void Enable()
         {
@@ -24,6 +27,7 @@ namespace ProjectColombo.Objects.Charms
             StartCoroutine(ResetEventHandled());
 
             int rand = Random.Range(0, 101);
+            chanceForDoubleStamina = chanceForDoubleStamina - (chanceReductionPerLuck * myPlayerInventory.currentLuck);
 
             if (rand < chanceForDoubleStamina)
             {
