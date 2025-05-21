@@ -326,7 +326,7 @@ namespace ProjectColombo.Inventory
 
         public void UsePotion()
         {
-            if (numberOfPotions >= 0)
+            if (numberOfPotions > 0)
             {
                 numberOfPotions--;
                 potionSlot.GetComponentInChildren<BaseAbility>().Activate();

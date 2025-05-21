@@ -253,7 +253,7 @@ namespace ProjectColombo.GameInputSystem
             MajorParryPressed = false;
             TargetPressed = false;
             TargetPointInput = Vector2.zero;
-            UsePotionPressed = false;
+            //UsePotionPressed = false;
             UseCharmAbilityPressed = false;
             PausePressed = false;
         }

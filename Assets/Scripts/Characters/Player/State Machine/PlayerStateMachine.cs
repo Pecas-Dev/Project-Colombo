@@ -80,6 +80,7 @@ namespace ProjectColombo.StateMachine.Player
 
         void Start()
         {
+            gameInputSO.ResetUsePotion();
             LogMissingReferenceErrors();
             SwitchState(new PlayerMovementState(this));
             CustomEvents.OnSuccessfullParry += ApplyParryIFrames;
@@ -138,6 +139,7 @@ namespace ProjectColombo.StateMachine.Player
 
             if (gameInputSO.UsePotionPressed)
             {
+                gameInputSO.ResetUsePotion();
                 myPlayerInventory.UsePotion();
             }
 
