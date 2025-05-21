@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -21,6 +22,9 @@ namespace ProjectColombo.StateMachine.Player
 
         protected void HandleStateSwitchFromInput()
         {
+
+            stateMachine.StartCoroutine(ResetInputs());
+
             //set attack states
             if (stateMachine.gameInputSO.MajorAttackPressed && stateMachine.currentState != PlayerStateMachine.PlayerState.Attack)
             {
@@ -43,7 +47,6 @@ namespace ProjectColombo.StateMachine.Player
             //set defense states
             if (stateMachine.gameInputSO.RollPressed)
             {
-
                 if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToRoll)) return;
 
                 stateMachine.SwitchState(new PlayerRollState(stateMachine));
@@ -67,6 +70,18 @@ namespace ProjectColombo.StateMachine.Player
             {
                 stateMachine.SwitchState(new PlayerParryState(stateMachine, GameGlobals.MusicScale.MINOR));
                 return;
+            }
+        }
+
+        IEnumerator ResetInputs()
+        {
+            yield return new WaitForEndOfFrame();
+
+            stateMachine.gameInputSO.ResetAllInputs();
+
+            if (stateMachine.gameInputSO.MovementInput.magnitude < 0.01f)
+            {
+                stateMachine.gameInputSO.ResetMovementInput();
             }
         }
     }

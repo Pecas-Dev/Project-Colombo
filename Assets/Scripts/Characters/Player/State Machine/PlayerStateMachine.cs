@@ -330,13 +330,13 @@ namespace ProjectColombo.StateMachine.Player
             }
         }
 
-        private void LateUpdate()
-        {
-            if (gameInputSO.InteractPressed)
-            {
-                GameManager.Instance.gameInput.ResetUseItemPressed();
-            }
-        }
+        //private void LateUpdate()
+        //{
+        //    if (gameInputSO.InteractPressed)
+        //    {
+        //        GameManager.Instance.gameInput.ResetUseItemPressed();
+        //    }
+        //}
 
         public void PlayWeaponVFX()
         {
