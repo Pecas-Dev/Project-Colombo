@@ -301,8 +301,6 @@ namespace ProjectColombo.Combat
                     {
                         StopTime();
                         ScreenShake();
-                        Rumble(1.0f, 0.5f, 0.5f); // Big rumble
-                        doHitstop = false;
                     }
 
                     if (otherStateMachine.isBlocking)
@@ -310,6 +308,11 @@ namespace ProjectColombo.Combat
                         Debug.Log("Player blocked incoming attack");
                         damage = AddTemporaryDamagePercentage(damage, -blockDamageReductionPercentage);
                         CustomEvents.DamageBlocked(damage, currentScale, otherHealth);
+
+                        if (doHitstop)
+                        {
+                            Rumble(0.1f, 0.5f, 0.1f); // Light buzz
+                        }
                     }
                     else if (otherStateMachine.isParrying)
                     {
@@ -328,6 +331,11 @@ namespace ProjectColombo.Combat
                             //Debug.Log("..but not the opposite scale");
                         }
 
+                        if (doHitstop)
+                        {
+                            Rumble(0.1f, 0.5f, 0.1f); // Light buzz
+                        }
+
                         otherAttributes.GetComponent<PlayerStateMachine>().myWeaponAttributes.PlayStunVFX(otherAttributes.currentScale);
 
                         CustomEvents.SuccessfullParry(currentScale, sameScale);
@@ -344,16 +352,32 @@ namespace ProjectColombo.Combat
                             sameScale = false;
                         }
 
+                        if (doHitstop)
+                        {
+                            Rumble(1.0f, 0.5f, 0.5f); // Big buzz
+                        }
+
                         otherStateMachine.SetStaggered();
                         CustomEvents.FailedParry(damage, currentScale, otherHealth, sameScale);
                     }
                     else
                     {
+
+                        if (doHitstop)
+                        {
+                            Rumble(1.0f, 0.5f, 0.5f); // Big buzz
+                        }
+
                         otherStateMachine.SetStaggered();
                         CustomEvents.DamageReceived(damage, currentScale, otherHealth);
                     }
 
                     otherHealth.TakeDamage(damage);
+
+                    if (doHitstop)
+                    {
+                        doHitstop = false;
+                    }
                 }
             }
         }
@@ -448,7 +472,7 @@ namespace ProjectColombo.Combat
 
         private IEnumerator StopRumbleAfter(float duration)
         {
-            yield return new WaitForSeconds(duration);
+            yield return new WaitForSecondsRealtime(duration);
 
             var gamepad = Gamepad.current;
             if (gamepad != null)
