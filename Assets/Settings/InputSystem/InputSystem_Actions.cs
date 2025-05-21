@@ -474,6 +474,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""ba78f18f-31db-4512-9981-956f77852f3e"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UsePotion"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""1b9c0bea-dc61-44ee-9b31-e8d2a0b4ac3b"",
                     ""path"": ""<Gamepad>/dpad/left"",
                     ""interactions"": """",
