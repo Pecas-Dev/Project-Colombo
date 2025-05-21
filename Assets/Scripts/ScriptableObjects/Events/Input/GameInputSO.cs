@@ -1,7 +1,9 @@
 using System;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static Unity.Collections.AllocatorManager;
 
 
 
@@ -156,6 +158,7 @@ namespace ProjectColombo.GameInputSystem
         public void DisableInput(InputActionType inputAction)
         {
             allowedInputs &= ~inputAction;
+            ResetInput(inputAction);
         }
 
         public void EnableInput(InputActionType inputAction)
@@ -167,13 +170,65 @@ namespace ProjectColombo.GameInputSystem
         {
             allowedInputs = InputActionType.None;
 
+            // Build the new allowedInputs bitmask
             foreach (var input in exceptions)
             {
                 allowedInputs |= input;
             }
 
-            //ResetAllInputs();
+            // Disable all inputs not in exceptions
+            foreach (InputActionType input in Enum.GetValues(typeof(InputActionType)))
+            {
+                if (input == InputActionType.None)
+                    continue;
+
+                if (!exceptions.Contains(input))
+                {
+                    ResetInput(input); // You need to implement this
+                }
+            }
         }
+
+        private void ResetInput(InputActionType input)
+        {
+            switch (input)
+            {
+            case InputActionType.Movement:
+                    ResetMovementInput();
+                        break;
+            case InputActionType.MajorAttack:
+                    ResetMajorAttackPressed();
+                        break;
+            case InputActionType.MinorAttack:
+                    ResetMinorAttackPressed();
+                        break;
+            case InputActionType.UseSpecialAbility:
+                    ResetUseSpecialAbilityPressed();
+                        break;
+            case InputActionType.Interact:
+                    ResetUseItemPressed();
+                        break;
+            case InputActionType.Roll:
+                    ResetRollPressed();
+                        break;
+            case InputActionType.MinorParry:
+                    ResetMinorParryPressed();
+                        break;
+            case InputActionType.MajorParry:
+                    ResetMajorParryPressed();
+                        break;
+            case InputActionType.Target:
+                    ResetTargetPressed();
+                        break;
+            case InputActionType.UsePotion:
+                    ResetUsePotion();
+                        break;
+            case InputActionType.UseCharmAbility:
+                    ResetUseCharmAbility();
+                        break;
+            }
+        }
+
 
         public bool IsInputEnabled(InputActionType inputAction)
         {

@@ -78,9 +78,7 @@ namespace ProjectColombo.UI
         {
             isEnabled = true;
 
-            GameObject player = GameObject.Find("Player");
-            GameManager.Instance.gameInput.ResetMovementInput();
-            player.GetComponent<PlayerStateMachine>().SwitchState(new PlayerMovementState(player.GetComponent<PlayerStateMachine>()));
+            StartCoroutine(StopMoving());
 
             myTutorialManager.allowedInputs = new GameInputSystem.InputActionType[]
             {
@@ -92,6 +90,15 @@ namespace ProjectColombo.UI
             index = 0;
             textComponent.text = "";
             StartDialog();
+        }
+
+        IEnumerator StopMoving()
+        {
+            yield return new WaitForEndOfFrame();
+
+            GameObject player = GameObject.Find("Player");
+            GameManager.Instance.gameInput.ResetMovementInput();
+            player.GetComponent<PlayerStateMachine>().SwitchState(new PlayerMovementState(player.GetComponent<PlayerStateMachine>()));
         }
 
         public void DisableDialog()
