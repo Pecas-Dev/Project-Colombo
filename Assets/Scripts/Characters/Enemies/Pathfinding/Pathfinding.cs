@@ -10,7 +10,7 @@ namespace ProjectColombo.Enemies.Pathfinding
 
         private void Start()
         {
-            gridManager = GetComponent<MommottiAttributes>().myGridManager;
+            if (gridManager == null) gridManager = GetComponent<MommottiAttributes>().myGridManager;
 
             if (gridManager == null)
             {
