@@ -49,6 +49,10 @@ namespace ProjectColombo.Tutorial
         {
             GameManager.Instance.GetComponent<PlayerInventory>().numberOfPotions = 1;
             GameObject.Find("Player").GetComponent<HealthManager>().Heal(1000);
+            TutorialEvents.OnDummyHit -= OnDummyHit;
+            CustomEvents.OnSuccessfullParry -= OnSuccessfullParry;
+            CustomEvents.OnPotionUsed -= OnPotionUsed;
+            CustomEvents.OnCharmCollected -= OnCharmCollected;
             CustomEvents.OnLevelChange -= EndTutorial;
         }
 

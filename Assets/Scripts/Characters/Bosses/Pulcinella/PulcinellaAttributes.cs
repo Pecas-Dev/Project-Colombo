@@ -16,5 +16,6 @@ namespace ProjectColombo.Enemies.Pulcinella
         public float distanceToSlash;
         public float distanceToRageImpact;
         public int chanceToLeap;
+        public float leapStrengh;
     }
 }

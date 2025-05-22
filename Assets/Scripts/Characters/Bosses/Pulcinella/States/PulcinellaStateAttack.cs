@@ -1,6 +1,3 @@
-using NUnit.Framework.Constraints;
-using ProjectColombo.Combat;
-using System.Collections;
 using UnityEngine;
 
 namespace ProjectColombo.StateMachine.Pulcinella
@@ -44,7 +41,7 @@ namespace ProjectColombo.StateMachine.Pulcinella
 
                 if (currentDistance > stateMachine.myPulcinellaAttributes.targetDistance)
                 {
-                    MoveToTarget(stateMachine.playerRef.transform.position, deltaTime, stateMachine.myEntityAttributes.moveSpeed);
+                    MoveToTarget(stateMachine.playerRef.transform.position, deltaTime, stateMachine.myEntityAttributes.moveSpeed * 3);
                 }
 
                 RotateTowardsTarget(stateMachine.playerRef.position, deltaTime, 120f);
