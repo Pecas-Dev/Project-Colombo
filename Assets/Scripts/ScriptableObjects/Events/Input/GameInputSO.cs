@@ -182,9 +182,12 @@ namespace ProjectColombo.GameInputSystem
                 if (input == InputActionType.None)
                     continue;
 
+                if (input == InputActionType.All)
+                    continue;
+
                 if (!exceptions.Contains(input))
                 {
-                    ResetInput(input); // You need to implement this
+                    ResetInput(input); //reset inputs that are now disabled
                 }
             }
         }

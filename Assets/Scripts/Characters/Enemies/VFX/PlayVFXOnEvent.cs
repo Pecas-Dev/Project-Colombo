@@ -32,7 +32,7 @@ namespace ProjectColombo.VFX
                 }
                 else if (scale == GameGlobals.MusicScale.MINOR)
                 {
-                    onGettingHitMajor.SetBool("CorrectScale", oppositeScale);
+                    onGettingHitMinor.SetBool("CorrectScale", oppositeScale);
                     onGettingHitMinor.Play();
                 }
             }

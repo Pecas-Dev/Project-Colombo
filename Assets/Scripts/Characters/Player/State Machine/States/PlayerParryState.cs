@@ -16,7 +16,7 @@ namespace ProjectColombo.StateMachine.Player
 
             stateMachine.gameInputSO.DisableAllInputsExcept(InputActionType.Pause);
             stateMachine.myPlayerAnimator.TriggerParry();
-            stateMachine.myWeaponAttributes.Telegraphing();
+            stateMachine.myWeaponAttributes.PlayParryVFX();
         }
 
         public override void Tick(float deltaTime)

@@ -30,6 +30,7 @@ namespace ProjectColombo.StateMachine.Player
                 InputActionType.Pause);
 
             stateMachine.StartCoroutine(StopMovement());
+            stateMachine.myPlayerVFX.blockVFX.Play();
         }
 
         IEnumerator StopMovement()
@@ -72,6 +73,8 @@ namespace ProjectColombo.StateMachine.Player
         {
             stateMachine.gameInputSO.EnableAllInputs();
             stateMachine.isBlocking = false;
+
+            stateMachine.myPlayerVFX.blockVFX.Stop();
 
             if (stateMachine.gameInputSO.MovementInput.magnitude < 0.01f)
             {

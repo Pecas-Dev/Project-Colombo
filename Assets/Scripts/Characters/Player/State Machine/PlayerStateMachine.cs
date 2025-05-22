@@ -8,6 +8,7 @@ using UnityEngine;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.GameManagement.Stats;
 using System.Collections;
+using ProjectColombo.VFX;
 
 
 namespace ProjectColombo.StateMachine.Player
@@ -36,6 +37,7 @@ namespace ProjectColombo.StateMachine.Player
         public WeaponAttributes myWeaponAttributes;
         public Targeter myTargeter;
         public PlayerInventory myPlayerInventory;
+        public PlayerVFXManager myPlayerVFX;
 
 
         [Header("Player State")]
@@ -69,6 +71,7 @@ namespace ProjectColombo.StateMachine.Player
             myHealthManager = GetComponent<HealthManager>();
             myTargeter = GetComponentInChildren<Targeter>();
             myPlayerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
+            myPlayerVFX = GetComponent<PlayerVFXManager>();
 
             closeShop = null;
         }
