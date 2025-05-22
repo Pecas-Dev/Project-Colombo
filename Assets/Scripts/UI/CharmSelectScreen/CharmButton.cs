@@ -56,16 +56,6 @@ namespace ProjectColombo.UI
             }
         }
 
-        //public void AddCharm()
-        //{
-        //    CharmSelectScreen selectScreen = GetComponentInParent<CharmSelectScreen>();
-
-        //    if (selectScreen != null && charmObject != null)
-        //    {
-        //        selectScreen.AddCharm(charmObject);
-        //    }
-        //}
-
         public void OnSelect(BaseEventData eventData)
         {
             UpdateDisplayInfo();

@@ -19,7 +19,8 @@ namespace ProjectColombo.UI
         PauseStatsTab,
         PauseSettingsTab,
         MaskSelection,
-        HUD
+        HUD,
+        CharmSwapScreen
     }
 
     public class UINavigationManager : MonoBehaviour
@@ -44,6 +45,10 @@ namespace ProjectColombo.UI
         [SerializeField] GameObject inventoryTab;
         [SerializeField] GameObject statsTab;
         [SerializeField] GameObject settingsTab;
+
+        [Header("Charm Swap References")]
+        [SerializeField] GameObject charmSwapCanvas;
+        [SerializeField] GameObject charmSwapScreen;
 
         [Header("Excluded Buttons (Tabs)")]
         [SerializeField] List<Button> excludedButtons = new List<Button>();
@@ -260,6 +265,19 @@ namespace ProjectColombo.UI
                 }
             }
 
+            if (charmSwapCanvas == null)
+            {
+                charmSwapCanvas = GameObject.Find("CharmSwapCanvas");
+            }
+
+            if (charmSwapCanvas != null)
+            {
+                if (charmSwapScreen == null)
+                {
+                    charmSwapScreen = FindChildWithName(charmSwapCanvas, "CharmSwapController");
+                }
+            }
+
             //if (maskSelectionCanvas == null)
             //{
             //    maskSelectionCanvas = GameObject.Find("Canvas");
@@ -337,6 +355,16 @@ namespace ProjectColombo.UI
                 {
                     firstSelectables[UINavigationState.PauseSettingsTab] = firstButton.gameObject;
                     lastSelectables[UINavigationState.PauseSettingsTab] = firstButton.gameObject;
+                }
+            }
+
+            if (charmSwapScreen != null)
+            {
+                Button firstButton = GetFirstSelectableButton(charmSwapScreen);
+                if (firstButton != null)
+                {
+                    firstSelectables[UINavigationState.CharmSwapScreen] = firstButton.gameObject;
+                    lastSelectables[UINavigationState.CharmSwapScreen] = firstButton.gameObject;
                 }
             }
 

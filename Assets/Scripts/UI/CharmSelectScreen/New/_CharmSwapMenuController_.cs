@@ -12,7 +12,7 @@ using ProjectColombo.Objects.Charms;
 
 namespace ProjectColombo.UI
 {
-    public class CharmSwapMenuController : MenuController
+    public class _CharmSwapMenuController_ : MenuController
     {
         [Header("New Charm Display")]
         [SerializeField] TMP_Text newCharmTitleText;

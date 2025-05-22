@@ -1,12 +1,12 @@
 using UnityEngine;
+using ProjectColombo.UI;
+using ProjectColombo.Inventory;
 using UnityEngine.SceneManagement;
-using UnityEngine.InputSystem;
+using ProjectColombo.Objects.Masks;
 using ProjectColombo.UI.Pausescreen;
 using ProjectColombo.GameInputSystem;
 using ProjectColombo.GameManagement.Stats;
-using ProjectColombo.UI;
-using ProjectColombo.Inventory;
-using ProjectColombo.Objects.Masks;
+
 
 
 namespace ProjectColombo.GameManagement
@@ -31,12 +31,7 @@ namespace ProjectColombo.GameManagement
         [Tooltip("New pause menu reference (should be the PauseInventoryCanvas)")]
         [SerializeField] GameObject newPauseMenuCanvas;
 
-
         [Header("Charm Swap System")]
-        [Tooltip("Toggle between old and new charm swap UI systems")]
-        [SerializeField] bool useNewCharmSwapUI = false;
-
-        [SerializeField] GameObject oldCharmSwapScreen;
         [SerializeField] GameObject newCharmSwapCanvas;
 
 
@@ -65,7 +60,6 @@ namespace ProjectColombo.GameManagement
         private UIManagerV2 uiManagerV2;
 
         public CharmSwapMenuController CharmSwapMenuCtrl => charmSwapMenuController;
-        public bool UseNewCharmSwapUI => useNewCharmSwapUI;
 
         void Awake()
         {
@@ -113,43 +107,37 @@ namespace ProjectColombo.GameManagement
 
         void EnsureCorrectCharmSwapSystemActive()
         {
-            if (oldCharmSwapScreen == null)
-            {
-                oldCharmSwapScreen = GameObject.Find("CharmSelectScreen");
 
-                if (oldCharmSwapScreen == null)
+            if (newCharmSwapCanvas == null)
+            {
+                newCharmSwapCanvas = GameObject.Find("CharmSwapCanvas");
+                LogDebug("Found CharmSwapCanvas: " + (newCharmSwapCanvas != null));
+            }
+
+            if (charmSwapMenuController == null && newCharmSwapCanvas != null)
+            {
+                Transform charmSwapControllerTransform = newCharmSwapCanvas.transform.Find("CharmSwapController");
+                if (charmSwapControllerTransform != null)
                 {
-                    oldCharmSwapScreen = FindFirstObjectByType<CharmSelectScreen>(FindObjectsInactive.Include)?.gameObject;
+                    charmSwapMenuController = charmSwapControllerTransform.GetComponent<CharmSwapMenuController>();
+                    directCharmSwapMenuReference = charmSwapControllerTransform.gameObject;
+                    LogDebug("Found CharmSwapMenuController: " + (charmSwapMenuController != null));
+                }
+                else
+                {
+                    LogDebug("CharmSwapController not found as child of CharmSwapCanvas!");
                 }
             }
 
-            if (useNewCharmSwapUI)
+            if (newCharmSwapCanvas != null)
             {
-                if (directCharmSwapMenuReference != null)
-                {
-                    directCharmSwapMenuReference.SetActive(true);
-
-                    if (charmSwapMenuController != null)
-                    {
-                        charmSwapMenuController.gameObject.SetActive(false);
-                    }
-                }
-
-                if (oldCharmSwapScreen != null)
-                {
-                    oldCharmSwapScreen.SetActive(false);
-                }
-            }
-            else
-            {
-                if (oldCharmSwapScreen != null)
-                {
-                    oldCharmSwapScreen.SetActive(false);
-                }
+                newCharmSwapCanvas.SetActive(true);
+                LogDebug("CharmSwapCanvas activated");
 
                 if (directCharmSwapMenuReference != null)
                 {
                     directCharmSwapMenuReference.SetActive(false);
+                    LogDebug("CharmSwapController initially hidden");
                 }
             }
         }
@@ -213,6 +201,11 @@ namespace ProjectColombo.GameManagement
                 ResetAllEchoMissions();
             }
 
+            if (scene.name == "01_Tutorial" || scene.name == "00_MainMenu" || scene.name == "03_LevelTwo")
+            {
+                ResetCharmButtonColors();
+            }
+
             transition.Play("Open");
 
             gameInput.Uninitialize();
@@ -236,11 +229,7 @@ namespace ProjectColombo.GameManagement
                 pauseMenuController = null;
             }
 
-            if (useNewCharmSwapUI)
-            {
-                directCharmSwapMenuReference = null;
-                charmSwapMenuController = null;
-            }
+            EnsureCorrectCharmSwapSystemActive();
 
             if (uiManagerV2 != null)
             {
@@ -353,18 +342,6 @@ namespace ProjectColombo.GameManagement
                 pauseMenuUI.SetActive(false);
             }
 
-            if (useNewCharmSwapUI && charmSwapMenuController != null)
-            {
-                if (charmSwapMenuController.WasActiveBeforePause)
-                {
-                    charmSwapMenuController.RestoreAfterPause();
-                }
-                else
-                {
-                    charmSwapMenuController.Hide();
-                }
-            }
-
             if (gameInput != null)
             {
                 gameInput.DisableUIMode();
@@ -453,56 +430,40 @@ namespace ProjectColombo.GameManagement
 
         public void ToggleCharmSwapSystem(bool useNew)
         {
-            useNewCharmSwapUI = useNew;
 
-            if (oldCharmSwapScreen == null)
+            if (newCharmSwapCanvas == null)
             {
-                oldCharmSwapScreen = GameObject.Find("CharmSelectScreen");
+                newCharmSwapCanvas = GameObject.Find("CharmSwapCanvas");
+            }
 
-                if (oldCharmSwapScreen == null)
+            if (charmSwapMenuController == null && newCharmSwapCanvas != null)
+            {
+                Transform charmSwapControllerTransform = newCharmSwapCanvas.transform.Find("CharmSwapController");
+                if (charmSwapControllerTransform != null)
                 {
-                    oldCharmSwapScreen = FindFirstObjectByType<CharmSelectScreen>(FindObjectsInactive.Include)?.gameObject;
+                    charmSwapMenuController = charmSwapControllerTransform.GetComponent<CharmSwapMenuController>();
+                    directCharmSwapMenuReference = charmSwapControllerTransform.gameObject;
                 }
             }
 
-            if (useNewCharmSwapUI)
-            {
-                LogDebug("Switched to NEW charm swap menu system");
 
-                if (oldCharmSwapScreen != null)
-                {
-                    LogDebug("Deactivating old charm swap screen");
-                    oldCharmSwapScreen.SetActive(false);
-                }
+            if (newCharmSwapCanvas != null)
+            {
+                LogDebug("Activating new charm swap canvas");
+                newCharmSwapCanvas.SetActive(true);
 
                 if (directCharmSwapMenuReference != null)
                 {
-                    LogDebug("Activating new charm swap canvas");
-                    directCharmSwapMenuReference.SetActive(true);
-
-                    if (charmSwapMenuController != null)
-                    {
-                        charmSwapMenuController.gameObject.SetActive(false);
-                    }
-                }
-            }
-            else
-            {
-                LogDebug("Switched to OLD charm swap menu system");
-
-                if (directCharmSwapMenuReference != null)
-                {
-                    LogDebug("Deactivating new charm swap canvas");
                     directCharmSwapMenuReference.SetActive(false);
                 }
-
-                if (oldCharmSwapScreen != null)
-                {
-                    LogDebug("Activating old charm swap screen (but keeping it hidden)");
-                    oldCharmSwapScreen.SetActive(true);
-                    oldCharmSwapScreen.SetActive(false);
-                }
             }
+
+            if (newCharmSwapCanvas != null)
+            {
+                LogDebug("Deactivating new charm swap canvas");
+                newCharmSwapCanvas.SetActive(false);
+            }
+
         }
 
         void ResetAllEchoMissions()
@@ -530,6 +491,21 @@ namespace ProjectColombo.GameManagement
                         LogDebug("Reset echo mission for equipped mask: " + mask.maskName);
                     }
                 }
+            }
+        }
+
+        void ResetCharmButtonColors()
+        {
+            PauseMenuInventoryTabController inventoryTabController = FindFirstObjectByType<PauseMenuInventoryTabController>();
+
+            if (inventoryTabController != null)
+            {
+                inventoryTabController.ResetAllCharmButtonColorsToWhite();
+                LogDebug($"Reset charm button colors to white for scene: {SceneManager.GetActiveScene().name}");
+            }
+            else
+            {
+                LogDebug("Could not find PauseMenuInventoryTabController to reset charm button colors");
             }
         }
 

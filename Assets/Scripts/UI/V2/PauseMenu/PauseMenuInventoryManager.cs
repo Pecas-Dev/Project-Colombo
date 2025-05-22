@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using ProjectColombo.Inventory;
 using ProjectColombo.Objects.Charms;
+using ProjectColombo.Objects.Masks;
 using ProjectColombo.GameManagement;
 
 
@@ -43,11 +44,18 @@ namespace ProjectColombo.UI.Pausescreen
         [SerializeField] Color rareRarityColor = new Color(0.0f, 0.5f, 1.0f);
         [SerializeField] Color legendaryRarityColor = new Color(1.0f, 0.84f, 0.0f);
 
+        [Header("Mask Colors")]
+        [SerializeField] Color normalMaskColor = new Color(0.6f, 0.8f, 1.0f); 
+        [SerializeField] Color echoMaskColor = new Color(1.0f, 0.6f, 0.8f);   
+
         [Header("Debug Settings")]
         [SerializeField] bool enableDebugLogs = true;
 
 
         bool isInitialized = false;
+
+
+        Sprite originalMaskSlotSprite;
 
 
         public Color GetRarityColor(RARITY rarity)
@@ -63,6 +71,11 @@ namespace ProjectColombo.UI.Pausescreen
                 default:
                     return defaultTextColor;
             }
+        }
+
+        public Color GetMaskColor(bool echoUnlocked)
+        {
+            return echoUnlocked ? echoMaskColor : normalMaskColor;
         }
 
         void Awake()
@@ -99,6 +112,12 @@ namespace ProjectColombo.UI.Pausescreen
                 }
             }
 
+            if (maskSlotImage != null)
+            {
+                originalMaskSlotSprite = maskSlotImage.sprite;
+                LogDebug("Stored original mask slot sprite");
+            }
+
             if (charmTitleText != null)
             {
                 charmTitleText.text = "";
@@ -121,7 +140,7 @@ namespace ProjectColombo.UI.Pausescreen
         void SetupEventTriggers()
         {
             SetupButtonEventTrigger(weaponSlotButton, () => ShowEmptyWeaponInfo());
-            SetupButtonEventTrigger(maskSlotButton, () => ShowEmptyMaskInfo());
+            SetupButtonEventTrigger(maskSlotButton, () => ShowMaskInfo());
             SetupButtonEventTrigger(potionSlotButton, () => ShowEmptyPotionInfo());
         }
 
@@ -175,6 +194,46 @@ namespace ProjectColombo.UI.Pausescreen
             if (maskSlotImage != null && playerInventory.maskSlot != null)
             {
                 bool hasMask = playerInventory.maskSlot.transform.childCount > 0;
+
+                if (hasMask)
+                {
+                    GameObject maskObject = playerInventory.maskSlot.transform.GetChild(0).gameObject;
+                    BaseMask maskComponent = maskObject.GetComponent<BaseMask>();
+
+                    if (maskComponent != null && maskComponent.maskPicture != null)
+                    {
+                        maskSlotImage.sprite = maskComponent.maskPicture;
+                        maskSlotImage.enabled = true;
+                        LogDebug($"Updated mask slot image on startup: {maskComponent.maskName}");
+                    }
+                    else
+                    {
+                        if (originalMaskSlotSprite != null)
+                        {
+                            maskSlotImage.sprite = originalMaskSlotSprite;
+                            maskSlotImage.enabled = true;
+                        }
+                        else
+                        {
+                            maskSlotImage.enabled = false;
+                        }
+                        LogDebug("Mask found but no picture available, using original sprite");
+                    }
+                }
+                else
+                {
+                    if (originalMaskSlotSprite != null)
+                    {
+                        maskSlotImage.sprite = originalMaskSlotSprite;
+                        maskSlotImage.enabled = true;
+                        LogDebug("No mask equipped, showing original sprite");
+                    }
+                    else
+                    {
+                        maskSlotImage.enabled = false;
+                        LogDebug("No mask equipped and no original sprite");
+                    }
+                }
             }
 
             if (potionSlotImage != null)
@@ -232,6 +291,79 @@ namespace ProjectColombo.UI.Pausescreen
             {
                 legendaryCharmButton.UpdateInfo(playerInventory.legendaryCharms[0]);
             }
+
+            if (inventoryTabController != null)
+            {
+                inventoryTabController.UpdateAllCharmButtonColors();
+                LogDebug("Updated all charm button colors after charm slot update");
+            }
+        }
+
+        public void ShowMaskInfo()
+        {
+            if (playerInventory == null || playerInventory.maskSlot == null)
+            {
+                ShowEmptyMaskInfo();
+                return;
+            }
+
+            bool hasMask = playerInventory.maskSlot.transform.childCount > 0;
+
+            if (!hasMask)
+            {
+                ShowEmptyMaskInfo();
+                return;
+            }
+
+            GameObject maskObject = playerInventory.maskSlot.transform.GetChild(0).gameObject;
+            BaseMask maskComponent = maskObject.GetComponent<BaseMask>();
+
+            if (maskComponent == null)
+            {
+                LogDebug("Selected mask object doesn't have a BaseMask component!", true);
+                ShowEmptyMaskInfo();
+                return;
+            }
+
+            if (charmTitleText != null)
+            {
+                charmTitleText.text = maskComponent.maskName;
+                charmTitleText.color = GetMaskColor(maskComponent.echoUnlocked);
+            }
+
+            if (charmDescriptionText != null)
+            {
+                if (maskComponent.echoUnlocked && !string.IsNullOrEmpty(maskComponent.echoDescription))
+                {
+                    charmDescriptionText.text = maskComponent.echoDescription;
+                }
+                else
+                {
+                    charmDescriptionText.text = maskComponent.maskDescription;
+                }
+            }
+
+            if (maskSlotImage != null)
+            {
+                if (maskComponent.maskPicture != null)
+                {
+                    maskSlotImage.sprite = maskComponent.maskPicture;
+                    maskSlotImage.enabled = true;
+                    LogDebug($"Updated mask slot image: {maskComponent.maskName}");
+                }
+                else
+                {
+                    maskSlotImage.enabled = false;
+                    LogDebug($"Mask {maskComponent.maskName} has no picture assigned");
+                }
+            }
+
+            if (inventoryTabController != null)
+            {
+                inventoryTabController.UpdateSelectorColorForMask(maskComponent);
+            }
+
+            LogDebug($"Updated mask info display for: {maskComponent.maskName} (Echo Unlocked: {maskComponent.echoUnlocked})");
         }
 
         public void UpdateCharmInfo(GameObject charmObject)
@@ -254,7 +386,6 @@ namespace ProjectColombo.UI.Pausescreen
             if (charmTitleText != null)
             {
                 charmTitleText.text = charmInfo.charmName;
-
                 charmTitleText.color = GetRarityColor(charmInfo.charmRarity);
             }
 
@@ -280,7 +411,9 @@ namespace ProjectColombo.UI.Pausescreen
             }
 
             if (charmDescriptionText != null)
+            {
                 charmDescriptionText.text = "";
+            }
 
             if (inventoryTabController != null)
             {
@@ -303,6 +436,21 @@ namespace ProjectColombo.UI.Pausescreen
                 charmDescriptionText.text = "";
             }
 
+            if (maskSlotImage != null)
+            {
+                if (originalMaskSlotSprite != null)
+                {
+                    maskSlotImage.sprite = originalMaskSlotSprite;
+                    maskSlotImage.enabled = true;
+                    LogDebug("Restored original mask slot sprite");
+                }
+                else
+                {
+                    maskSlotImage.enabled = false;
+                    LogDebug("No original mask sprite to restore, hiding image");
+                }
+            }
+
             if (inventoryTabController != null)
             {
                 inventoryTabController.ResetSelectorColor();
@@ -320,7 +468,9 @@ namespace ProjectColombo.UI.Pausescreen
             }
 
             if (charmDescriptionText != null)
+            {
                 charmDescriptionText.text = "";
+            }
 
             if (inventoryTabController != null)
             {

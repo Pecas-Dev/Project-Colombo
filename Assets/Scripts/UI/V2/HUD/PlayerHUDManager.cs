@@ -6,7 +6,6 @@ using ProjectColombo.Combat;
 using ProjectColombo.Inventory;
 using UnityEngine.SceneManagement;
 using ProjectColombo.Objects.Masks;
-using ProjectColombo.Objects.Charms;
 using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 

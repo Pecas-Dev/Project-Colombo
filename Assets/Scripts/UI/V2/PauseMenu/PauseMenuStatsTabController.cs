@@ -2,6 +2,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using ProjectColombo.GameManagement;
+using ProjectColombo.GameManagement.Stats;
+
 
 
 namespace ProjectColombo.UI.Pausescreen
@@ -15,13 +18,15 @@ namespace ProjectColombo.UI.Pausescreen
         [Header("Graph References")]
         [SerializeField] GameObject graphLines;
 
+        [Header("Global Stats Reference")]
+        [SerializeField] GlobalStats globalStats;
+
         [Header("Debug Settings")]
         [SerializeField] bool enableDebugLogs = true;
 
-        float healthStat = 0.75f;
-        float attackStat = 0.60f;
-        float defenseStat = 0.45f;
-        float speedStat = 0.85f;
+        [Header("Missing Stats (Manual Override)")]
+        [SerializeField] float criticalChancePercent = 15f;
+        [SerializeField] float evadeChancePercent = 25f;
 
         Coroutine[] statBarAnimations;
 
@@ -45,6 +50,20 @@ namespace ProjectColombo.UI.Pausescreen
 
         public void Initialize()
         {
+            if (globalStats == null)
+            {
+                if (GameManager.Instance != null)
+                {
+                    globalStats = GameManager.Instance.GetComponent<GlobalStats>();
+                    LogDebug("Found GlobalStats from GameManager");
+                }
+
+                if (globalStats == null)
+                {
+                    globalStats = FindFirstObjectByType<GlobalStats>();
+                    LogDebug("Found GlobalStats in scene");
+                }
+            }
 
             if (statBarImages != null)
             {
@@ -60,6 +79,11 @@ namespace ProjectColombo.UI.Pausescreen
 
         public void UpdateStats()
         {
+            if (globalStats == null)
+            {
+                LogDebug("WARNING: GlobalStats reference is missing!", true);
+                return;
+            }
 
             if (statValueTexts != null)
             {
@@ -69,18 +93,39 @@ namespace ProjectColombo.UI.Pausescreen
                     {
                         switch (i)
                         {
-                            case 0:
-                                statValueTexts[i].text = Mathf.RoundToInt(healthStat * 100f) + "%";
+                            case 0: // Damage (using Major Damage Multiplier)
+                                float damageValue = globalStats.currentMajorDamageMultiplyer * 100f;
+                                statValueTexts[i].text = "Damage (" + Mathf.RoundToInt(damageValue).ToString() + ")";
+                                LogDebug($"Updated Damage: {damageValue}%");
                                 break;
-                            case 1:
-                                statValueTexts[i].text = Mathf.RoundToInt(attackStat * 100f).ToString();
+                            case 1: // Defense (using Block Reduction Percent)
+                                float defenseValue = globalStats.currentBlockReductionPercent;
+                                statValueTexts[i].text = "Defense (" + Mathf.RoundToInt(defenseValue) + "%)";
+                                LogDebug($"Updated Defense: {defenseValue}%");
                                 break;
-                            case 2:
-                                statValueTexts[i].text = Mathf.RoundToInt(defenseStat * 100f).ToString();
+                            case 2: // Attack Speed
+                                float attackSpeedValue = globalStats.currentPlayerAttackSpeed * 100f;
+                                statValueTexts[i].text = "Attack Speed (" + Mathf.RoundToInt(attackSpeedValue).ToString() + ")";
+                                LogDebug($"Updated Attack Speed: {attackSpeedValue}");
                                 break;
-                            case 3:
-                                statValueTexts[i].text = Mathf.RoundToInt(speedStat * 100f).ToString();
+                            case 3: // Movement Speed
+                                float movementSpeedValue = globalStats.currentPlayerSpeed;
+                                statValueTexts[i].text = "Move Speed (" + movementSpeedValue.ToString("F1") + ")";
+                                LogDebug($"Updated Movement Speed: {movementSpeedValue}");
                                 break;
+                            case 4: // Luck
+                                int luckValue = globalStats.currentLuckPoints;
+                                statValueTexts[i].text = "Luck (" + luckValue.ToString() + ")";
+                                LogDebug($"Updated Luck: {luckValue}");
+                                break;
+                                //case 5: // Critical Chance 
+                                //    statValueTexts[i].text = Mathf.RoundToInt(criticalChancePercent) + "%";
+                                //    LogDebug($"Updated Critical Chance (placeholder): {criticalChancePercent}%");
+                                //    break;
+                                //case 6: // Evade Chance 
+                                //    statValueTexts[i].text = Mathf.RoundToInt(evadeChancePercent) + "%";
+                                //    LogDebug($"Updated Evade Chance (placeholder): {evadeChancePercent}%");
+                                //    break;
                         }
                     }
                     else
@@ -103,8 +148,22 @@ namespace ProjectColombo.UI.Pausescreen
                 return;
             }
 
+            if (globalStats == null)
+            {
+                LogDebug("Cannot animate stat bars: GlobalStats reference is missing");
+                return;
+            }
 
-            float[] statValues = new float[] { healthStat, attackStat, defenseStat, speedStat };
+            float[] statValues = new float[]
+            {
+                Mathf.Clamp01(globalStats.currentMajorDamageMultiplyer), // Damage
+                Mathf.Clamp01(globalStats.currentBlockReductionPercent / 100f), // Defense
+                Mathf.Clamp01(globalStats.currentPlayerAttackSpeed), // Attack Speed
+                Mathf.Clamp01(globalStats.currentPlayerSpeed / 10f), // Movement Speed (normalized by dividing by 10)
+                Mathf.Clamp01(globalStats.currentLuckPoints / 20f), // Luck (normalized by dividing by 20, assuming max 20)
+                //Mathf.Clamp01(criticalChancePercent / 100f), // Critical Chance
+                //Mathf.Clamp01(evadeChancePercent / 100f) // Evade Chance
+            };
 
             for (int i = 0; i < statBarImages.Length; i++)
             {
@@ -145,7 +204,6 @@ namespace ProjectColombo.UI.Pausescreen
                 float newFill = Mathf.Lerp(0f, targetValue, smoothT);
                 statBar.fillAmount = newFill;
 
-
                 elapsed += Time.unscaledDeltaTime;
                 yield return null;
             }
@@ -153,11 +211,18 @@ namespace ProjectColombo.UI.Pausescreen
             statBar.fillAmount = targetValue;
         }
 
-        void LogDebug(string message)
+        void LogDebug(string message, bool isWarning = false)
         {
             if (enableDebugLogs)
             {
-                Debug.Log($"<color=#33AAFF>[StatsTabController] {message}</color>");
+                if (isWarning)
+                {
+                    Debug.LogWarning($"[StatsTabController] {message}");
+                }
+                else
+                {
+                    Debug.Log($"<color=#33AAFF>[StatsTabController] {message}</color>");
+                }
             }
         }
     }

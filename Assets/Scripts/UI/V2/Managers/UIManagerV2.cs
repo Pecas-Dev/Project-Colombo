@@ -1,8 +1,8 @@
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.InputSystem;
-using ProjectColombo.UI.Pausescreen;
 using System;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using ProjectColombo.UI.Pausescreen;
 
 
 namespace ProjectColombo.UI
@@ -13,6 +13,10 @@ namespace ProjectColombo.UI
         [SerializeField] GameObject pauseInventoryCanvas;
         [SerializeField] GameObject inventoryTab;
         [SerializeField] GameObject settingsTab;
+
+        [Header("Charm Swap References")]
+        [SerializeField] GameObject charmSwapCanvas;
+        [SerializeField] GameObject charmSwapScreen;
 
         [Header("Main Menu References")]
         [SerializeField] GameObject mainMenuCanvas;
@@ -275,6 +279,58 @@ namespace ProjectColombo.UI
             LogDebug("Pause menu hidden");
         }
 
+        public void ShowCharmSwapScreen()
+        {
+            if (charmSwapCanvas == null)
+            {
+                LogDebug("Error: Charm Swap Canvas reference missing");
+                return;
+            }
+
+            charmSwapCanvas.SetActive(true);
+
+            if (charmSwapScreen != null)
+            {
+                charmSwapScreen.SetActive(true);
+            }
+
+            if (navigationManager != null)
+            {
+                navigationManager.SetNavigationState(UINavigationState.CharmSwapScreen);
+            }
+
+            CharmSwapMenuController charmSwapController = charmSwapScreen?.GetComponent<CharmSwapMenuController>();
+            if (charmSwapController != null)
+            {
+                charmSwapController.Show();
+                LogDebug("Called Show() on CharmSwapMenuController");
+            }
+
+            LogDebug("Charm swap screen shown");
+        }
+
+        public void HideCharmSwapScreen()
+        {
+            if (charmSwapCanvas != null)
+            {
+                CharmSwapMenuController charmSwapController = charmSwapScreen?.GetComponent<CharmSwapMenuController>();
+                if (charmSwapController != null)
+                {
+                    charmSwapController.Hide();
+                    LogDebug("Called Hide() on CharmSwapMenuController");
+                }
+
+                if (charmSwapScreen != null)
+                {
+                    charmSwapScreen.SetActive(false);
+                }
+
+                charmSwapCanvas.SetActive(false);
+            }
+
+            LogDebug("Charm swap screen hidden");
+        }
+
         void LogDebug(string message)
         {
             if (enableDebugLogs)
@@ -336,6 +392,24 @@ namespace ProjectColombo.UI
                 if (optionsMenu == null)
                 {
                     LogDebug("Could not find OptionsMenu");
+                }
+            }
+
+            if (charmSwapCanvas == null)
+            {
+                charmSwapCanvas = GameObject.Find("CharmSwapCanvas");
+                if (charmSwapCanvas == null)
+                {
+                    LogDebug("Could not find CharmSwapCanvas");
+                }
+            }
+
+            if (charmSwapScreen == null && charmSwapCanvas != null)
+            {
+                charmSwapScreen = FindChildWithName(charmSwapCanvas, "CharmSwapController");
+                if (charmSwapScreen == null)
+                {
+                    LogDebug("Could not find CharmSwapController");
                 }
             }
 
