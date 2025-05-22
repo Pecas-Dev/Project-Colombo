@@ -29,11 +29,7 @@ namespace ProjectColombo
         {
             myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
 
-            if (gameObject.CompareTag("Enemy"))
-            {
-                myLevelStats = GameObject.Find("WorldGeneration").GetComponent<LevelStats>();
-            }
-
+            myLevelStats = GameObject.Find("WorldGeneration").GetComponent<LevelStats>();
             GetCurrentStats();
         }
 
@@ -49,6 +45,10 @@ namespace ProjectColombo
             else if (gameObject.CompareTag("Enemy"))
             {
                 moveSpeed = myLevelStats.currentMommottiSpeed;
+            }
+            else if (gameObject.CompareTag("Boss"))
+            {
+                moveSpeed = myLevelStats.defaultBossSpeed;
             }
         }
 

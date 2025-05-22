@@ -20,6 +20,15 @@ namespace ProjectColombo.LevelManagement
         public int defaultMommottiDamage = 50;
         [ReadOnlyInspector] public int currentMommottiDamage;
 
+        [Header("Boss Default Stats")]
+        [Header("EntityAttributes")]
+        public float defaultBossSpeed = 3f;
+
+        [Header("HealthManager")]
+        public int defaultBossMaxHealth = 200;
+
+
+
         [Header("DropRates")]
         [Header("Vases")]
         public float dropChanceCoinsVase;

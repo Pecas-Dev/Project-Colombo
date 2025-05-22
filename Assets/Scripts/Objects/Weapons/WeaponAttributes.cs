@@ -200,7 +200,7 @@ namespace ProjectColombo.Combat
                     otherHealth.TakeDamage(damage);
                 }
             }
-            else if (ownerTag == "Player" && other.CompareTag("Enemy"))
+            else if (ownerTag == "Player" && (other.CompareTag("Enemy") || other.CompareTag("Boss")))
             {
                 //Debug.Log("Player hit Enemy");
                 MommottiStateMachine otherStateMachine = other.GetComponent<MommottiStateMachine>();
@@ -257,7 +257,7 @@ namespace ProjectColombo.Combat
                         doHitstop = false;
                     }
 
-                    if (currentScale != otherAttributes.currentScale)
+                    if (currentScale != otherAttributes.currentScale && otherAttributes.currentScale != GameGlobals.MusicScale.NONE)
                     {
                         //Debug.Log("..with the opposite scale");
                         sameScale = false;
@@ -269,6 +269,7 @@ namespace ProjectColombo.Combat
                         //Debug.Log("..but not the opposite scale");
                     }
 
+                    CustomEvents.DamageDelt(damage, currentScale, sameScale, otherHealth, 0);
                     otherHealth.TakeDamage(damage);
                 }
             }

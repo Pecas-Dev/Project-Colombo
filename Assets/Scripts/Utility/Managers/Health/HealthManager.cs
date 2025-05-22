@@ -77,6 +77,11 @@ namespace ProjectColombo.Combat
             {
                 maxHealth = currentHealth = 1;
             }
+            else if (gameObject.CompareTag("Boss"))
+            {
+                maxHealth = myLevelStats.defaultBossMaxHealth;
+                currentHealth = maxHealth;
+            }
         }
 
         public bool GetIgnoreDamage()
