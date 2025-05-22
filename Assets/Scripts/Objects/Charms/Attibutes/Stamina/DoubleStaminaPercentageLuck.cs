@@ -12,7 +12,6 @@ namespace ProjectColombo.Objects.Charms
         public float chanceReductionPerLuck;
 
         PlayerStateMachine myPlayerStateMachine;
-        PlayerInventory myPlayerInventory;
 
         public override void Enable()
         {
@@ -27,7 +26,7 @@ namespace ProjectColombo.Objects.Charms
             StartCoroutine(ResetEventHandled());
 
             int rand = Random.Range(0, 101);
-            chanceForDoubleStamina = chanceForDoubleStamina - (chanceReductionPerLuck * myPlayerInventory.currentLuck);
+            chanceForDoubleStamina = chanceForDoubleStamina - (chanceReductionPerLuck * myPlayerStateMachine.myPlayerInventory.currentLuck);
 
             if (rand < chanceForDoubleStamina)
             {

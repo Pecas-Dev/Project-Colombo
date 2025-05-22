@@ -65,6 +65,7 @@ public class AudioManager : MonoBehaviour
 
     private float musicIntensity = 0f;
     private float battleBlend = 0f;
+    private int currentComboLevel = 0;
 
     private string currentScene = "";
 
@@ -99,12 +100,16 @@ public class AudioManager : MonoBehaviour
     {
         CustomEvents.OnChamberActivated += HandleChamberActivated;
         CustomEvents.OnChamberFinished += HandleChamberFinished;
+        CustomEvents.OnComboMeterLevelIncrease += HandleComboIncrease;
+        CustomEvents.OnComboMeterLevelDecrease += HandleComboDecrease;
     }
 
     private void OnDestroy()
     {
         CustomEvents.OnChamberActivated -= HandleChamberActivated;
         CustomEvents.OnChamberFinished -= HandleChamberFinished;
+        CustomEvents.OnComboMeterLevelIncrease -= HandleComboIncrease;
+        CustomEvents.OnComboMeterLevelDecrease -= HandleComboDecrease;
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
@@ -256,13 +261,21 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
+        double startTime = AudioSettings.dspTime + 0.1f; // slight delay ensures scheduling is processed
+
         explorationMusic.clip = explorationClip;
         explorationMusic.volume = 0f;
-        explorationMusic.Play();
+        explorationMusic.PlayScheduled(startTime);
 
-        battleMusicLayers[0].clip = battleClips[0];
-        battleMusicLayers[0].volume = 0f;
-        battleMusicLayers[0].Play();
+        for (int i = 0; i < battleMusicLayers.Length; i++)
+        {
+            if (i < battleClips.Length && battleClips[i] != null)
+            {
+                battleMusicLayers[i].clip = battleClips[i];
+                battleMusicLayers[i].volume = 0f;
+                battleMusicLayers[i].PlayScheduled(startTime);
+            }
+        }
 
         if (currentScene == "05_Church")
             currentMusicCategory = MusicCategory.ChurchEntrance;
@@ -316,5 +329,42 @@ public class AudioManager : MonoBehaviour
     public void SetBattleIntensity(float intensity)
     {
         musicIntensity = Mathf.Clamp01(intensity);
+    }
+
+    private void HandleComboIncrease(int newLevel)
+    {
+        currentComboLevel = Mathf.Clamp(newLevel, 0, 3);
+        UpdateBattleMusicLayers();
+    }
+
+    private void HandleComboDecrease(int newLevel)
+    {
+        currentComboLevel = Mathf.Clamp(newLevel, 0, 3);
+        UpdateBattleMusicLayers();
+    }
+
+    private void UpdateBattleMusicLayers()
+    {
+        for (int i = 0; i < battleMusicLayers.Length; i++)
+        {
+            bool shouldBeActive = i <= currentComboLevel;
+            float intensity = Mathf.Clamp01(musicIntensity);
+            float volume = battleBlend * intensity * battleLayerVolumes[i] * masterVolume;
+
+            // Only enable layers if they have a valid clip
+            if (battleMusicLayers[i].clip != null)
+            {
+                if (shouldBeActive && !battleMusicLayers[i].isPlaying)
+                {
+                    battleMusicLayers[i].Play();
+                }
+                else if (!shouldBeActive && battleMusicLayers[i].isPlaying)
+                {
+                    battleMusicLayers[i].Pause(); // Or .Stop() if you want a hard cut
+                }
+
+                battleMusicLayers[i].volume = shouldBeActive ? volume : 0f;
+            }
+        }
     }
 }
