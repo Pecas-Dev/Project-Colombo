@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 
 namespace ProjectColombo.StateMachine.Pulcinella
@@ -11,12 +12,19 @@ namespace ProjectColombo.StateMachine.Pulcinella
 
         public override void Enter()
         {
-
+            timer = 0;
         }
 
         public override void Tick(float deltaTime)
         {
-         
+            timer += deltaTime;
+            RotateTowardsTarget(stateMachine.playerRef.position, deltaTime, 120f);
+
+            if (timer >= stateMachine.myPulcinellaAttributes.idleTimeAfterAttack)
+            {
+                stateMachine.SwitchState(new PulcinellaStateMovement(stateMachine));
+                return;
+            }
         }
 
         public override void Exit()

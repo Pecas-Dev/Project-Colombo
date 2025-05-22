@@ -3064,11 +3064,12 @@ GameObject:
   m_Component:
   - component: {fileID: 223973854}
   - component: {fileID: 223973859}
+  - component: {fileID: 223973861}
   - component: {fileID: 223973855}
   - component: {fileID: 223973857}
+  - component: {fileID: 223973860}
   - component: {fileID: 223973856}
   - component: {fileID: 223973858}
-  - component: {fileID: 223973860}
   m_Layer: 0
   m_Name: Pulcinella
   m_TagString: Boss
@@ -3198,6 +3199,7 @@ MonoBehaviour:
   myEntityAttributes: {fileID: 0}
   myPathfindingAlgorythm: {fileID: 0}
   myHealthManager: {fileID: 0}
+  myPulcinellaAttributes: {fileID: 0}
   currentState: 0
   playerRef: {fileID: 0}
 --- !u!114 &223973860
@@ -3213,6 +3215,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridManager: {fileID: 335664494}
+--- !u!114 &223973861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 223973853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0059b52ec89244b4a8c014ee5e902133, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetDistance: 0
+  idleTimeAfterAttack: 5
+  minTimeBetweenAttacks: 10
+  maxTimeBetweenAttacks: 10
+  distanceToSlash: 0
+  distanceToRageImpact: 0
+  chanceToLeap: 0
 --- !u!1001 &227362091
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -2,6 +2,7 @@ using ProjectColombo.Enemies.Pathfinding;
 using ProjectColombo.Combat;
 using UnityEngine;
 using ProjectColombo.Enemies;
+using ProjectColombo.Enemies.Pulcinella;
 
 
 namespace ProjectColombo.StateMachine.Pulcinella
@@ -16,6 +17,7 @@ namespace ProjectColombo.StateMachine.Pulcinella
         public EntityAttributes myEntityAttributes;
         public Pathfinding myPathfindingAlgorythm;
         public HealthManager myHealthManager;
+        public PulcinellaAttributes myPulcinellaAttributes;
 
         public PulcinellaState currentState;
         [ReadOnlyInspector] public Transform playerRef;
@@ -27,6 +29,7 @@ namespace ProjectColombo.StateMachine.Pulcinella
             myEntityAttributes = GetComponent<EntityAttributes>();
             myPathfindingAlgorythm = GetComponent<Pathfinding>();
             myHealthManager = GetComponent<HealthManager>();
+            myPulcinellaAttributes = GetComponent<PulcinellaAttributes>();
         }
 
         void Start()
@@ -61,27 +64,32 @@ namespace ProjectColombo.StateMachine.Pulcinella
         {
             if (myRigidbody == null)
             {
-                Debug.Log("Missing Rigidbody in Mommotti!");
+                Debug.Log("Missing Rigidbody in Pulcinella!");
             }
 
             if (myAnimator == null)
             {
-                Debug.Log("Missing Animator in Mommotti!");
+                Debug.Log("Missing Animator in Pulcinella!");
             }
 
             if (myEntityAttributes == null)
             {
-                Debug.Log("Missing Entity Attributes in Mommotti!");
+                Debug.Log("Missing Entity Attributes in Pulcinella!");
             }
 
             if (myPathfindingAlgorythm == null)
             {
-                Debug.Log("Missing Pathfinding Algorythm in Mommotti!");
+                Debug.Log("Missing Pathfinding Algorythm in Pulcinella!");
             }
 
             if (myHealthManager == null)
             {
-                Debug.Log("Missing HealthManager in Mommotti!");
+                Debug.Log("Missing HealthManager in Pulcinella!");
+            }
+
+            if (myPulcinellaAttributes == null)
+            {
+                Debug.Log("Missing Pulcinella Attributes");
             }
         }
 

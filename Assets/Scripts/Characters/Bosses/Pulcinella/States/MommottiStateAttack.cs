@@ -4,9 +4,12 @@ namespace ProjectColombo.StateMachine.Pulcinella
 {
     public class PulcinellaStateAttack : PulcinellaBaseState
     {
-        public PulcinellaStateAttack(PulcinellaStateMachine stateMachine) : base(stateMachine)
+        int attackMode;
+
+        public PulcinellaStateAttack(PulcinellaStateMachine stateMachine, int attackMode) : base(stateMachine)
         {
             stateMachine.SetCurrentState(PulcinellaStateMachine.PulcinellaState.ATTACK);
+            this.attackMode = attackMode;
         }
 
         public override void Enter()

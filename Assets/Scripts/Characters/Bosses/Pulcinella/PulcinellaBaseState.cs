@@ -1,5 +1,6 @@
 using ProjectColombo.Enemies.Pathfinding;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace ProjectColombo.StateMachine.Pulcinella
@@ -8,6 +9,8 @@ namespace ProjectColombo.StateMachine.Pulcinella
     {
         protected PulcinellaStateMachine stateMachine;
         private Vector3 currentVelocity = Vector3.zero;
+        protected float timer = 0;
+
 
         //pathfinding
         protected List<Node> currentPath;
@@ -66,7 +69,7 @@ namespace ProjectColombo.StateMachine.Pulcinella
                 nextNodePos = currentPath[pathIndex].worldPosition;
             }
 
-            RotateTowardsTarget(nextNodePos, deltaTime, stateMachine.myEntityAttributes.rotationSpeedPlayer);
+            //RotateTowardsTarget(nextNodePos, deltaTime, stateMachine.myEntityAttributes.rotationSpeedPlayer);
             MoveToTarget(nextNodePos, deltaTime, speed);
 
             return true;
