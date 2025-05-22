@@ -1,5 +1,7 @@
+using ProjectColombo.Combat;
 using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
+using ProjectColombo.Inventory;
 using ProjectColombo.LevelManagement;
 using ProjectColombo.UI;
 using System.Collections.Generic;
@@ -40,6 +42,14 @@ namespace ProjectColombo.Tutorial
             CustomEvents.OnSuccessfullParry += OnSuccessfullParry;
             CustomEvents.OnPotionUsed += OnPotionUsed;
             CustomEvents.OnCharmCollected += OnCharmCollected;
+            CustomEvents.OnLevelChange += EndTutorial;
+        }
+
+        private void EndTutorial()
+        {
+            GameManager.Instance.GetComponent<PlayerInventory>().numberOfPotions = 1;
+            GameObject.Find("Player").GetComponent<HealthManager>().Heal(1000);
+            CustomEvents.OnLevelChange -= EndTutorial;
         }
 
         private void OnCharmCollected(GameObject obj)
