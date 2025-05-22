@@ -28,7 +28,12 @@ namespace ProjectColombo
         private void Start()
         {
             myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
-            myLevelStats = GameObject.Find("WorldGeneration").GetComponent<LevelStats>();
+
+            if (gameObject.CompareTag("Enemy"))
+            {
+                myLevelStats = GameObject.Find("WorldGeneration").GetComponent<LevelStats>();
+            }
+
             GetCurrentStats();
         }
 
