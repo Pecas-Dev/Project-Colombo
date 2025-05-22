@@ -214,7 +214,6 @@ namespace ProjectColombo.Combat
             }
             else if (ownerTag == "Player" && (other.CompareTag("Enemy") || other.CompareTag("Boss")))
             {
-                //Debug.Log("Player hit Enemy");
                 MommottiStateMachine otherStateMachine = other.GetComponent<MommottiStateMachine>();
                 EntityAttributes otherAttributes = other.GetComponent<EntityAttributes>();
                 HealthManager otherHealth = other.GetComponent<HealthManager>();
@@ -253,7 +252,7 @@ namespace ProjectColombo.Combat
                         damage = Mathf.RoundToInt(damage * 2f);
                     }
 
-                    Debug.Log("Damage delt: " + damage);
+                    Debug.Log("regular enemy Damage delt: " + damage);
                     int comboLength = GetComponentInParent<PlayerStateMachine>().currentComboString.Length;
                     CustomEvents.DamageDelt(damage, currentScale, sameScale, otherHealth, comboLength);
                     otherHealth.TakeDamage(damage);
@@ -262,6 +261,28 @@ namespace ProjectColombo.Combat
                     attackDirection.y = 0.0f; //could be increased to make the hit entity jump a bit
 
                     otherStateMachine.ApplyKnockback(attackDirection, knockback, currentScale);
+                }
+                else if (otherHealth != null && otherHealth.CurrentHealth > 0)
+                {
+                    if (doHitstop)
+                    {
+                        StopTime();
+                        ScreenShake();
+                        Rumble(0.1f, 0.5f, 0.1f); // Light buzz
+                        doHitstop = false;
+                    }
+
+                    int rand = Random.Range(0, 101);
+                    int currentCritChance = Mathf.RoundToInt(myPlayerInventory.currentLuck / 2f);
+
+                    if (rand < currentCritChance)
+                    {
+                        damage = Mathf.RoundToInt(damage * 2f);
+                    }
+
+                    int comboLength = GetComponentInParent<PlayerStateMachine>().currentComboString.Length;
+                    CustomEvents.DamageDelt(damage, currentScale, sameScale, otherHealth, comboLength);
+                    otherHealth.TakeDamage(damage);
                 }
                 else if (otherHealth != null) //for tutorial dummy
                 {
@@ -285,6 +306,7 @@ namespace ProjectColombo.Combat
                         //Debug.Log("..but not the opposite scale");
                     }
 
+                    Debug.Log("tutorial hit damage = " + damage);
                     CustomEvents.DamageDelt(damage, currentScale, sameScale, otherHealth, 0);
                     otherHealth.TakeDamage(damage);
                 }
@@ -384,8 +406,6 @@ namespace ProjectColombo.Combat
                         {
                             Rumble(1.0f, 0.5f, 0.5f); // Big buzz
                         }
-
-                        Debug.Log("damaged" + damage);
 
                         otherStateMachine.SetStaggered();
                         CustomEvents.DamageReceived(damage, currentScale, otherHealth);
