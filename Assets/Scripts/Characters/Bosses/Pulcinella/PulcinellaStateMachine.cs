@@ -1,8 +1,11 @@
-using ProjectColombo.Enemies.Pathfinding;
+using ProjectColombo.Camera;
 using ProjectColombo.Combat;
-using UnityEngine;
 using ProjectColombo.Enemies;
+using ProjectColombo.Enemies.Pathfinding;
 using ProjectColombo.Enemies.Pulcinella;
+using System.Collections;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 
 namespace ProjectColombo.StateMachine.Pulcinella
@@ -18,9 +21,13 @@ namespace ProjectColombo.StateMachine.Pulcinella
         public Pathfinding myPathfindingAlgorythm;
         public HealthManager myHealthManager;
         public PulcinellaAttributes myPulcinellaAttributes;
+        public WeaponAttributes leftHand;
+        public GameObject leftHandCanvas;
 
         public PulcinellaState currentState;
         [ReadOnlyInspector] public Transform playerRef;
+
+        public GameObject impactSphere;
 
         private void Awake()
         {
@@ -38,6 +45,9 @@ namespace ProjectColombo.StateMachine.Pulcinella
 
             playerRef = GameObject.FindGameObjectWithTag("Player").transform;
             SwitchState(new PulcinellaStateIdle(this));
+            leftHandCanvas.SetActive(false);
+
+            myPathfindingAlgorythm.gridManager = GameObject.Find("GridManager").GetComponent<GridManager>();
         }
 
         private void FixedUpdate()
@@ -124,6 +134,73 @@ namespace ProjectColombo.StateMachine.Pulcinella
             {
                 gameObject.AddComponent<HealthManager>();
             }
+        }
+
+        public void OnAttackAnimationEnd()
+        {
+            SwitchState(new PulcinellaStateIdle(this));
+        }
+
+        public void EnableLeftHand()
+        {
+            leftHand.EnableWeaponHitbox();
+            leftHandCanvas.SetActive(true);
+        }
+
+        public void DisableLeftHand()
+        {
+            leftHand.DisableWeaponHitbox();
+            leftHandCanvas.SetActive(false);
+        }
+
+        public void DoSlash()
+        {
+            SwitchState(new PulcinellaStateAttack(this, 0));
+        }
+
+        public void SpawnRageFullImpactSphere()
+        {
+            Vector3 pos = new(transform.position.x, 1, transform.position.z);
+            Instantiate(impactSphere, pos, transform.rotation);
+        }
+
+
+        public void ImpactFeedback()
+        {
+            Rumble(1.0f, 0.5f, 0.5f);
+            ScreenShake();
+        }
+
+        void Rumble(float big, float small, float duration)
+        {
+            var gamepad = Gamepad.current;
+            if (gamepad == null) return;
+
+            // Clamp values between 0 and 1
+            big = Mathf.Clamp01(big);
+            small = Mathf.Clamp01(small);
+
+            // Set motor speeds
+            gamepad.SetMotorSpeeds(big, small);
+
+            // Stop after duration
+            StartCoroutine(StopRumbleAfter(duration));
+        }
+
+        private IEnumerator StopRumbleAfter(float duration)
+        {
+            yield return new WaitForSecondsRealtime(duration);
+
+            var gamepad = Gamepad.current;
+            if (gamepad != null)
+            {
+                gamepad.SetMotorSpeeds(0f, 0f);
+            }
+        }
+
+        private void ScreenShake()
+        {
+            FindFirstObjectByType<ScreenShakeManager>().Shake(0.4f);
         }
     }
 }

@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace ProjectColombo.StateMachine.Pulcinella
@@ -34,30 +35,34 @@ namespace ProjectColombo.StateMachine.Pulcinella
                 if (currentDistance <= stateMachine.myPulcinellaAttributes.distanceToSlash)
                 {
                     stateMachine.SwitchState(new PulcinellaStateAttack(stateMachine, 0));
+                    return;
                 }
                 else if (currentDistance <= stateMachine.myPulcinellaAttributes.distanceToRageImpact)
                 {
                     stateMachine.SwitchState(new PulcinellaStateAttack(stateMachine, 1));
+                    return;
                 }
                 else
                 {
-                    int rand = Random.Range(0, 101);
+                    //int rand = Random.Range(0, 101);
 
-                    if (rand < stateMachine.myPulcinellaAttributes.chanceToLeap)
-                    {
+                    //if (rand < stateMachine.myPulcinellaAttributes.chanceToLeap)
+                    //{
                         stateMachine.SwitchState(new PulcinellaStateAttack(stateMachine, 2));
-                    }
-                    else
-                    {
-                        stateMachine.SwitchState(new PulcinellaStateAttack(stateMachine, 3));
-                    }
+                        return;
+                    //}
+                    //else
+                    //{
+                        //stateMachine.SwitchState(new PulcinellaStateAttack(stateMachine, 3));
+                        //return;
+                    //}
                 }
             }
         }
 
         public override void Exit()
         {
-
+            timer = 0;
         }
     }
 }

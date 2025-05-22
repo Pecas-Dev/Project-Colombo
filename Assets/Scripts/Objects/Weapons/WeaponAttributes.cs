@@ -39,7 +39,7 @@ namespace ProjectColombo.Combat
 
         public float stunArea = 2f;
 
-        [SerializeField, ReadOnlyInspector] string ownerTag;
+        [ReadOnlyInspector] public string ownerTag;
         [HideInInspector] public bool onCooldown;
         [HideInInspector] public bool isAttacking;
         [HideInInspector] public GameGlobals.MusicScale currentScale = GameGlobals.MusicScale.NONE;
@@ -71,7 +71,21 @@ namespace ProjectColombo.Combat
             GetCurrentStats();
             isAttacking = false;
             currentTimer = 0;
-            ownerTag = GetComponentInParent<HealthManager>().tag;
+
+            if (GetComponentInParent<HealthManager>() != null)
+            {
+                ownerTag = GetComponentInParent<HealthManager>().tag;
+            }
+
+            if (ownerTag == "Boss" || ownerTag == "")
+            {
+                ownerTag = "Enemy";
+                majorDamageMultiplier = 1;
+                minorDamageMultiplier = 1;
+                blockDamageReductionPercentage = myGlobalStats.currentBlockReductionPercent;
+                missedParryPaneltyPercentage = myGlobalStats.currentMissedParryPaneltyPercent;
+            }
+
             myParticles = GetComponent<ParticleSystem>();
         }
 
@@ -79,7 +93,7 @@ namespace ProjectColombo.Combat
 
         void GetCurrentStats()
         {
-            if (GetComponentInParent<EntityAttributes>().CompareTag("Player"))
+            if (ownerTag == "Player")
             {
                 Debug.Log("set weapon stats");
                 majorDamageMultiplier = myGlobalStats.currentMajorDamageMultiplyer;
@@ -88,7 +102,7 @@ namespace ProjectColombo.Combat
                 blockDamageReductionPercentage = myGlobalStats.currentBlockReductionPercent;
                 missedParryPaneltyPercentage = myGlobalStats.currentMissedParryPaneltyPercent;
             }
-            else if (GetComponentInParent<EntityAttributes>().CompareTag("Enemy"))
+            else if (ownerTag == "Enemy")
             {
                 myLevelStats.ResetStats();
                 defaultMinorDamage = myLevelStats.currentMommottiDamage;
@@ -187,8 +201,6 @@ namespace ProjectColombo.Combat
 
 
             int damage = currentScale == GameGlobals.MusicScale.MAJOR ? (int)(defaultMajorDamage * majorDamageMultiplier) : (int)(defaultMinorDamage * minorDamageMultiplier);
-            Vector3 attackDirection = (other.transform.position - transform.parent.position).normalized; //get direction from user to target
-            attackDirection.y = 0.0f; //could be increased to make the hit entity jump a bit
 
             if (ownerTag == "Player" && other.CompareTag("Destroyable"))
             {
@@ -245,6 +257,10 @@ namespace ProjectColombo.Combat
                     int comboLength = GetComponentInParent<PlayerStateMachine>().currentComboString.Length;
                     CustomEvents.DamageDelt(damage, currentScale, sameScale, otherHealth, comboLength);
                     otherHealth.TakeDamage(damage);
+
+                    Vector3 attackDirection = (other.transform.position - transform.parent.position).normalized; //get direction from user to target
+                    attackDirection.y = 0.0f; //could be increased to make the hit entity jump a bit
+
                     otherStateMachine.ApplyKnockback(attackDirection, knockback, currentScale);
                 }
                 else if (otherHealth != null) //for tutorial dummy
@@ -369,6 +385,8 @@ namespace ProjectColombo.Combat
                             Rumble(1.0f, 0.5f, 0.5f); // Big buzz
                         }
 
+                        Debug.Log("damaged" + damage);
+
                         otherStateMachine.SetStaggered();
                         CustomEvents.DamageReceived(damage, currentScale, otherHealth);
                     }
@@ -480,6 +498,11 @@ namespace ProjectColombo.Combat
             {
                 gamepad.SetMotorSpeeds(0f, 0f);
             }
+        }
+
+        public void ClearCollider()
+        {
+            hitObjects = new();
         }
     }
 }

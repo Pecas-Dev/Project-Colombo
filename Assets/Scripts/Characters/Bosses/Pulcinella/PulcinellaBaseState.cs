@@ -42,7 +42,10 @@ namespace ProjectColombo.StateMachine.Pulcinella
 
         protected void RotateTowardsTarget(Vector3 targetPosition, float deltaTime, float rotationSpeed)
         {
-            Vector3 direction = (targetPosition - stateMachine.transform.position).normalized;
+            Vector3 direction = (targetPosition - stateMachine.transform.position);
+            direction.y = 0;
+            direction = direction.normalized;
+
 
             if (direction.sqrMagnitude > 0.001f) // Prevent jittering when already aligned
             {

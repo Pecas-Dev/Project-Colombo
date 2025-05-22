@@ -12,6 +12,7 @@ namespace ProjectColombo.StateMachine.Pulcinella
 
         public override void Enter()
         {
+            stateMachine.myAnimator.Play("Idle");
             timer = 0;
         }
 

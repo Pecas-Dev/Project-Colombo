@@ -54,6 +54,8 @@ public class IndicatorGlyphs : MonoBehaviour
 
     void OnControlsChanged(PlayerInput playerInput)
     {
+        if (playerInput == null) return;
+
         if (playerInput.currentControlScheme == "KeyboardMouse")
         {
             SetGlyph(keyboardGlyph);
