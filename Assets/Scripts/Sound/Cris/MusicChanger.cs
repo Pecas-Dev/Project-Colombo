@@ -66,6 +66,7 @@ public class AudioManager : MonoBehaviour
     private float musicIntensity = 0f;
     private float battleBlend = 0f;
     private int currentComboLevel = 0;
+    private bool isFadingOut = false;
 
     private string currentScene = "";
 
@@ -186,21 +187,30 @@ public class AudioManager : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         currentScene = scene.name;
-        Debug.Log("Loaded scene: " + currentScene);  // Add this
+        Debug.Log("Loaded scene: " + currentScene);
 
-        StopAllCoroutines();
+        // Determine if we should treat these scenes as part of a shared exploration set
+        bool isExplorationSharedScene = scene.name == "01_MaskSelection" || scene.name == "02_Tutorial";
+
+        // Do not stop music if it's already the correct clip and it's a shared exploration scene
+        if (!isExplorationSharedScene)
+            StopAllCoroutines();
 
         switch (currentScene)
         {
             case "00_MainMenu":
-            case "01_MaskSelection":
                 PlayMenuMusic();
                 isInGameplay = false;
                 break;
 
-            case "02_LevelOne":
-            case "03_LevelTwo":
-            case "04_LevelThree":
+            case "01_Tutorial":
+            case "02_MaskSelection":
+                PlayGameplayMusic(levelExplorationClip, levelBattleClips, preserveIfAlreadyPlaying: true);
+                isInGameplay = true;
+                break;
+
+            case "03_LevelOne":
+            case "04_LevelTwo":
                 PlayGameplayMusic(levelExplorationClip, levelBattleClips);
                 isInGameplay = true;
                 break;
@@ -242,9 +252,9 @@ public class AudioManager : MonoBehaviour
         currentMusicCategory = MusicCategory.MainMenu;
     }
 
-    private void PlayGameplayMusic(AudioClip explorationClip, AudioClip[] battleClips)
+    private void PlayGameplayMusic(AudioClip explorationClip, AudioClip[] battleClips, bool preserveIfAlreadyPlaying = false)
     {
-        if (explorationMusic.clip == explorationClip && explorationMusic.isPlaying)
+        if (preserveIfAlreadyPlaying && explorationMusic.clip == explorationClip && explorationMusic.isPlaying)
             return;
 
         StopAllMusic();
@@ -261,7 +271,7 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
-        double startTime = AudioSettings.dspTime + 0.1f; // slight delay ensures scheduling is processed
+        double startTime = AudioSettings.dspTime + 0.1f;
 
         explorationMusic.clip = explorationClip;
         explorationMusic.volume = 0f;
@@ -366,5 +376,37 @@ public class AudioManager : MonoBehaviour
                 battleMusicLayers[i].volume = shouldBeActive ? volume : 0f;
             }
         }
+    }
+
+    public IEnumerator FadeOutMusic(float duration)
+    {
+        float startVolume = explorationMusic.volume;
+        float time = 0f;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float t = time / duration;
+            float newVolume = Mathf.Lerp(startVolume, 0f, t);
+            explorationMusic.volume = newVolume;
+            yield return null;
+        }
+
+        explorationMusic.Stop();
+        explorationMusic.volume = startVolume; // Reset if needed later
+    }
+
+    public void FadeOutAndLoadScene(string sceneName, float duration)
+    {
+        if (isFadingOut) return; // Prevent multiple calls
+        isFadingOut = true;
+        StartCoroutine(FadeAndLoad(sceneName, duration));
+    }
+
+    private IEnumerator FadeAndLoad(string sceneName, float duration)
+    {
+        yield return StartCoroutine(FadeOutMusic(duration));
+        SceneManager.LoadScene(sceneName);
+        isFadingOut = false; // Reset if you need to reuse this logic later
     }
 }
