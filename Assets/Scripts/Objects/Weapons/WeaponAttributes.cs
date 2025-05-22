@@ -68,7 +68,6 @@ namespace ProjectColombo.Combat
             myPlayerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
             myCollider = GetComponent<Collider>();
             DisableWeaponHitbox();
-            GetCurrentStats();
             isAttacking = false;
             currentTimer = 0;
 
@@ -76,6 +75,8 @@ namespace ProjectColombo.Combat
             {
                 ownerTag = GetComponentInParent<HealthManager>().tag;
             }
+
+            GetCurrentStats();
 
             if (ownerTag == "Boss" || ownerTag == "")
             {
