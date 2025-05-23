@@ -10,10 +10,12 @@ namespace ProjectColombo.LevelManagement
         private void Start()
         {
             CustomEvents.OnEnemyDeath += EndBossFight;
+            CustomEvents.ChamberActivated();
         }
 
         private void EndBossFight(GameGlobals.MusicScale arg1, GameObject arg2)
         {
+            CustomEvents.ChamberFinished();
             endLevelTrigger.SetActive(true);
             CustomEvents.OnEnemyDeath -= EndBossFight;
         }

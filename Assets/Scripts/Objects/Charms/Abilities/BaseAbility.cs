@@ -28,6 +28,7 @@ namespace ProjectColombo.Objects.Masks
         private void Start()
         {
             SceneManager.activeSceneChanged += SetStateMachine;
+            timer = cooldownInSeconds;
         }
 
         private void SetStateMachine(Scene arg0, Scene arg1)
@@ -47,6 +48,8 @@ namespace ProjectColombo.Objects.Masks
 
         public bool Activate()
         {
+            timer = 0;
+
             if (available)
             {
                 GameObject player = GameObject.Find("Player");
@@ -74,16 +77,16 @@ namespace ProjectColombo.Objects.Masks
 
         private void Update()
         {
-            if (!available)
+            if (timer < cooldownInSeconds)
             {
                 timer += Time.deltaTime;
-
-                if (timer > cooldownInSeconds)
-                {
-                    timer = 0;
-                    available = true;
-                }
             }
+
+            if (timer > cooldownInSeconds)
+            {
+                available = true;
+            }
+
 
             if (active)
             {
