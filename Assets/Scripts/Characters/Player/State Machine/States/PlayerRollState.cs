@@ -1,11 +1,13 @@
+using ProjectColombo.Combat;
+using ProjectColombo.GameInputSystem;
 using ProjectColombo.StateMachine.Player;
 using System.Collections;
 using UnityEngine;
-using ProjectColombo.GameInputSystem;
 public class PlayerRollState : PlayerBaseState
 {
     int playerLayer = LayerMask.NameToLayer("Player");
     int weaponLayer = LayerMask.NameToLayer("Weapon");
+    int destroyableLayer = LayerMask.NameToLayer("Destroyable");
 
     float rollCooldown = 0.125f;
 
@@ -54,12 +56,15 @@ public class PlayerRollState : PlayerBaseState
         stateMachine.StartCoroutine(ApplyPushForce());
     }
 
+
     public override void Tick(float deltaTime)
     {
         if (!stateMachine.myPlayerAnimator.IsInRoll)
         {
             stateMachine.SwitchState(new PlayerMovementState(stateMachine));
         }
+
+        CheckForDestroyablesDuringRoll();
     }
 
     public override void Exit()
@@ -97,11 +102,34 @@ public class PlayerRollState : PlayerBaseState
 
     private void SetIgnoreLayers()
     {
+        Physics.IgnoreLayerCollision(playerLayer, destroyableLayer, true);
         Physics.IgnoreLayerCollision(playerLayer, weaponLayer, true);
     }
 
     private void ResetIgnoreLayers()
     {
+        Physics.IgnoreLayerCollision(playerLayer, destroyableLayer, false);
         Physics.IgnoreLayerCollision(playerLayer, weaponLayer, false);
     }
+
+    private void CheckForDestroyablesDuringRoll()
+    {
+        float radius = 1.0f; // tweak based on character size
+        Collider[] hits = Physics.OverlapSphere(stateMachine.transform.position, radius, LayerMask.GetMask("Destroyable"));
+
+        foreach (Collider hit in hits)
+        {
+            GameObject go = hit.gameObject;
+            if (go.CompareTag("Destroyable"))
+            {
+                HealthManager health = go.GetComponent<HealthManager>();
+                if (health != null)
+                {
+                    health.TakeDamage(1000);
+                    hit.enabled = false; // optional, prevents re-hitting
+                }
+            }
+        }
+    }
+
 }

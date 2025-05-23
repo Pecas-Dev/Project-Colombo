@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using ProjectColombo.Combat;
+using ProjectColombo.GameManagement;
+using ProjectColombo.Inventory;
 
 namespace ProjectColombo.Tutorial
 {
@@ -66,6 +68,11 @@ namespace ProjectColombo.Tutorial
             TutorialManager tm = GameObject.Find("TutorialManager").GetComponent<TutorialManager>();
 
             tm.allowedInputs = input;
+        }
+
+        public void AddPotion()
+        {
+            GameManager.Instance.GetComponent<PlayerInventory>().numberOfPotions = 1;
         }
     }
 }

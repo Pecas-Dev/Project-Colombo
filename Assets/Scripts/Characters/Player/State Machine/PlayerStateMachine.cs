@@ -59,8 +59,6 @@ namespace ProjectColombo.StateMachine.Player
         [HideInInspector] public string currentComboString = "";
         [HideInInspector] public ShopKeeper closeShop = null;
         bool activateCharmsAndMask = false;
-        bool restoreVelocity = false;
-        Vector3 oldVelocity = Vector3.zero;
 
         void Awake()
         {
@@ -157,14 +155,6 @@ namespace ProjectColombo.StateMachine.Player
             }
 
             gameInputSO.ResetAllInputs();
-
-            if (restoreVelocity)
-            {
-                myRigidbody.linearVelocity = oldVelocity;
-                restoreVelocity = false;
-            }
-
-            oldVelocity = myRigidbody.linearVelocity;
         }
 
         void LogMissingReferenceErrors()
@@ -324,54 +314,6 @@ namespace ProjectColombo.StateMachine.Player
         {
             //Debug.Log("combo Window closed");
             comboWindowOpen = false;
-        }
-
-        public void OnCollisionEnter(Collision collision)
-        {
-            if (currentState == PlayerState.Roll)
-            {
-                GameObject other = collision.gameObject;
-
-                if (other.CompareTag("Destroyable"))
-                {
-                    //Debug.Log("Player hit Destroyable");
-                    HealthManager otherHealth = other.GetComponent<HealthManager>();
-
-                    restoreVelocity = true;
-
-                    if (otherHealth != null)
-                    {
-                        otherHealth.TakeDamage(1000);
-                    }
-
-                    Collider otherCollider = other.GetComponent<Collider>();
-                    if (otherCollider != null)
-                        otherCollider.enabled = false;
-                }
-            }
-        }
-
-        public void OnCollisionStay(Collision collision)
-        {
-            if (currentState == PlayerState.Roll)
-            {
-                GameObject other = collision.gameObject;
-
-                if (other.CompareTag("Destroyable"))
-                {
-                    //Debug.Log("Player hit Destroyable");
-                    HealthManager otherHealth = other.GetComponent<HealthManager>();
-
-                    if (otherHealth != null)
-                    {
-                        otherHealth.TakeDamage(1000);
-                    }
-
-                    Collider otherCollider = other.GetComponent<Collider>();
-                    if (otherCollider != null)
-                        otherCollider.enabled = false;
-                }
-            }
         }
 
 

@@ -11,6 +11,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         //patrol points
         bool onSpawnPoint;
+        Vector3 target;
 
         //speeds
         float patrolSpeed = 2.5f;
@@ -68,6 +69,8 @@ namespace ProjectColombo.StateMachine.Mommotti
                 timer = 0;
             }
 
+            RotateTowardsTarget(target, deltaTime, stateMachine.myEntityAttributes.rotationSpeedPlayer);
+
             if (!FollowPath(deltaTime, patrolSpeed))
             {
                 SetTarget(GetNextPatrolPoint());
@@ -95,15 +98,21 @@ namespace ProjectColombo.StateMachine.Mommotti
 
                     nextNode = stateMachine.myPathfindingAlgorythm.GetNode(nextPosition);
 
-                    if (nextNode != null && nextNode.walkable) return nextPosition;
+                    if (nextNode != null && nextNode.walkable) 
+                    {
+                        target = nextPosition;
+                        return nextPosition; 
+                    }
                 }
 
                 onSpawnPoint = true;
+                target = stateMachine.myMommottiAttributes.spawnPointLocation;
                 return stateMachine.myMommottiAttributes.spawnPointLocation;
             }
             else
             {
                 onSpawnPoint = true;
+                target = stateMachine.myMommottiAttributes.spawnPointLocation;
                 return stateMachine.myMommottiAttributes.spawnPointLocation;
             }
         }

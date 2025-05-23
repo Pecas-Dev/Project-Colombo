@@ -66,7 +66,7 @@ namespace ProjectColombo.StateMachine.Mommotti
                 nextNodePos = currentPath[pathIndex].worldPosition;
             }
 
-            RotateTowardsTarget(nextNodePos, deltaTime, stateMachine.myEntityAttributes.rotationSpeedPlayer);
+            //RotateTowardsTarget(nextNodePos, deltaTime, stateMachine.myEntityAttributes.rotationSpeedPlayer);
             MoveToTarget(nextNodePos, deltaTime, speed);
 
             return true;
