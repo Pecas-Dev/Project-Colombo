@@ -38,6 +38,8 @@ namespace ProjectColombo.Control
             {
                 attackAnimations[combo.comboKey] = combo.animationName;
             }
+
+            animator.speed = 1f;
         }
 
         public void UpdateAnimator(float speed, bool isRolling, bool hasMovementInput)
@@ -51,6 +53,7 @@ namespace ProjectColombo.Control
         // ---------------------------------------------------------
         public void PlayMovementAnimation(float transitionTime = 0.1f)
         {
+            animator.speed = 1f;
             animator.CrossFadeInFixedTime("Movement", transitionTime);
         }
 
@@ -74,14 +77,8 @@ namespace ProjectColombo.Control
 
             // Optionally reset after the animation duration
             float animationLength = animator.GetCurrentAnimatorStateInfo(0).length;
-            //StartCoroutine(ResetAnimatorSpeed(animationLength / animationSpeed));
         }
 
-        private IEnumerator ResetAnimatorSpeed(float delay)
-        {
-            yield return new WaitForSeconds(delay);
-            animator.speed = 1f;
-        }
 
         public bool FinishedAttack()
         {
@@ -102,6 +99,7 @@ namespace ProjectColombo.Control
         // ---------------------------------------------------------
         public void TriggerRoll()
         {
+            animator.speed = 1f;
             isInRoll = true;
             animator.SetTrigger("roll");
         }
@@ -109,6 +107,7 @@ namespace ProjectColombo.Control
         //  Animation Event at the end of the Roll
         public void OnRollFinished()
         {
+            animator.speed = 1f;
             isInRoll = false;
         }
 
@@ -118,6 +117,7 @@ namespace ProjectColombo.Control
         // ---------------------------------------------------------
         public void TriggerBlock()
         {
+            animator.speed = 1f;
             animator.SetTrigger("Block");
         }
 
@@ -126,6 +126,7 @@ namespace ProjectColombo.Control
         // ---------------------------------------------------------
         public void TriggerParry(float transitionDuration = 0.2f)
         {
+            animator.speed = 1f;
             isInParry = true;
             animator.CrossFadeInFixedTime("Parry", transitionDuration);
         }
@@ -141,6 +142,7 @@ namespace ProjectColombo.Control
         // ---------------------------------------------------------
         public void TriggerStagger()
         {
+            animator.speed = 1f;
             isInStagger = true;
             animator.SetTrigger("Impact");
         }
@@ -161,6 +163,7 @@ namespace ProjectColombo.Control
         // ---------------------------------------------------------
         public void TriggerDeath()
         {
+            animator.speed = 1f;
             animator.SetTrigger("death");
         }
 

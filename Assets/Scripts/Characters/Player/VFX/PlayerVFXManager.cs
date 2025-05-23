@@ -12,11 +12,25 @@ namespace ProjectColombo.VFX
         public VisualEffect minorStunIndicatorVFX;
         public VisualEffect blockVFX;
         public VisualEffect successfullBlockVFX;
+        public VisualEffect potionVFX;
+        public VisualEffect maskAbilityVFX;
 
         private void Start()
         {
             CustomEvents.OnSuccessfullParry += PlaySuccessfullParryVFX;
             CustomEvents.OnDamageBlocked += PlaySuccessfullBlockVFX;
+            CustomEvents.OnPotionUsed += PlayPotionVFX;
+            CustomEvents.OnAbilityUsed += PlayAbilityUsedVFX;
+        }
+
+        private void PlayAbilityUsedVFX(string obj)
+        {
+            maskAbilityVFX.Play();
+        }
+
+        private void PlayPotionVFX()
+        {
+            potionVFX.Play();
         }
 
         private void PlaySuccessfullBlockVFX(int arg1, GameGlobals.MusicScale arg2, Combat.HealthManager arg3)
