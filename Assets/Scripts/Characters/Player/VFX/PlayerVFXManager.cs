@@ -57,6 +57,8 @@ namespace ProjectColombo.VFX
         {
             CustomEvents.OnSuccessfullParry -= PlaySuccessfullParryVFX;
             CustomEvents.OnDamageBlocked -= PlaySuccessfullBlockVFX;
+            CustomEvents.OnPotionUsed -= PlayPotionVFX;
+            CustomEvents.OnAbilityUsed -= PlayAbilityUsedVFX;
         }
 
         public void PlayRollVFX()
