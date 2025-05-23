@@ -69,7 +69,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             smoothedSpeed = Mathf.Lerp(smoothedSpeed, currentSpeed, speedSmoothTime / Time.fixedDeltaTime);
 
             // Update animator
-            myAnimator.SetFloat("Speed", smoothedSpeed > 0.1f ? smoothedSpeed : 0f);
+            //myAnimator.SetFloat("Speed", smoothedSpeed > 0.1f ? smoothedSpeed : 0f);
 
             // Update position
             positionLastFrame = transform.position;

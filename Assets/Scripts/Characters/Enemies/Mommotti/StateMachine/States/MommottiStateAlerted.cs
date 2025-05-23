@@ -17,6 +17,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             timer = 0;
             alertedPosition = stateMachine.myMommottiAttributes.GetPlayerPosition();
             stateMachine.SetCurrentState(MommottiStateMachine.MommottiState.ALERTED);
+            stateMachine.myAnimator.SetFloat("Speed", 0);
         }
 
         public override void Tick(float deltaTime)

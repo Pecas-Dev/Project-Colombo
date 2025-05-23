@@ -35,6 +35,8 @@ namespace ProjectColombo.StateMachine.Mommotti
                     deltaTime                          // DeltaTime for frame-rate independence
                 );
             }
+
+            stateMachine.myAnimator.SetFloat("Speed", currentVelocity.magnitude);
         }
 
         protected void RotateTowardsTarget(Vector3 targetPosition, float deltaTime, float rotationSpeed)
@@ -52,7 +54,10 @@ namespace ProjectColombo.StateMachine.Mommotti
         protected bool FollowPath(float deltaTime, float speed, float nodeReachThreshold = 0.2f)
         {
             if (currentPath == null || pathIndex >= currentPath.Count)
+            {
+                stateMachine.myAnimator.SetFloat("Speed", 0);
                 return false;
+            }
 
             Vector3 nextNodePos = currentPath[pathIndex].worldPosition;
             Vector3 toNextNode = nextNodePos - stateMachine.transform.position;
@@ -62,7 +67,11 @@ namespace ProjectColombo.StateMachine.Mommotti
             {
                 pathIndex++;
                 if (pathIndex >= currentPath.Count)
+                {
+                    stateMachine.myAnimator.SetFloat("Speed", 0);
                     return false;
+                }
+
                 nextNodePos = currentPath[pathIndex].worldPosition;
             }
 
