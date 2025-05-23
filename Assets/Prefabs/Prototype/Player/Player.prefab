@@ -4728,6 +4728,7 @@ MonoBehaviour:
   maskAbilitySound2: {fileID: 8300000, guid: 2e67e89c0aff6c6468d39bbb80082fea, type: 3}
   maskAbilitySound3: {fileID: 8300000, guid: 4f1c9b596185e0749a263c97336ea1ef, type: 3}
   maskAbilitySound4: {fileID: 8300000, guid: b677e8632874e064f812b1bfbd7c6bd2, type: 3}
+  potionSound: {fileID: 8300000, guid: 4ff90cbf8f8dc7f499cd282d0ea66b96, type: 3}
   firstAttackClips:
   - {fileID: 8300000, guid: b916c811caef99842aaaf727f7d7ec9f, type: 3}
   - {fileID: 8300000, guid: aff9a792ab8c98f40873aa33411def7b, type: 3}
@@ -4906,6 +4907,7 @@ MonoBehaviour:
   parryVolume: 1
   rollVolume: 0.917
   comboVolume: 1
+  potionVolume: 1
 --- !u!114 &8546847635247379355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6351,10 +6353,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1090405288437610688}
     m_Modifications:
-    - target: {fileID: 5866666021909216657, guid: 82511c8861221f34683303f7d98c90a6, type: 3}
-      propertyPath: m_ApplyRootMotion
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: -9092670971299470122, guid: e7e2c15356e92b24f96c1a5d7be0fabd, type: 3}
       propertyPath: m_LocalPosition.y
       value: 7.0193577
@@ -7474,6 +7472,10 @@ PrefabInstance:
     - target: {fileID: 8657141172598361129, guid: e7e2c15356e92b24f96c1a5d7be0fabd, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0.023942111
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 82511c8861221f34683303f7d98c90a6, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

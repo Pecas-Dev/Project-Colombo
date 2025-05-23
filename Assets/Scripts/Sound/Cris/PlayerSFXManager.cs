@@ -50,6 +50,9 @@ public class PlayerSFXManager : MonoBehaviour
     public AudioClip maskAbilitySound3;
     public AudioClip maskAbilitySound4;
 
+    [Header("Potion")]
+    public AudioClip potionSound;
+
     //      [COMBO SYSTEM]
     [Header("1st Attack Sounds")]
     public List<AudioClip> firstAttackClips;
@@ -106,6 +109,7 @@ public class PlayerSFXManager : MonoBehaviour
     [Range(0f, 1f)] public float parryVolume = 1f;
     [Range(0f, 1f)] public float rollVolume = 1f;
     [Range(0f, 1f)] public float comboVolume = 1f;
+    [Range(0f, 1f)] public float potionVolume = 1f;
 
     private string ExtractNoteFromClipName(string clipName)
     {
@@ -365,12 +369,14 @@ public class PlayerSFXManager : MonoBehaviour
     {
         CustomEvents.OnDamageDelt += HandleDamageDelt;
         CustomEvents.OnAbilityUsed += HandleAbilityUsed;
+        CustomEvents.OnPotionUsed += HandlePotionUsed;
     }
 
     private void OnDisable()
     {
         CustomEvents.OnDamageDelt -= HandleDamageDelt;
         CustomEvents.OnAbilityUsed -= HandleAbilityUsed;
+        CustomEvents.OnPotionUsed -= HandlePotionUsed;
     }
 
     private void HandleDamageDelt(int damage, GameGlobals.MusicScale scale, bool sameScale, HealthManager enemy, int comboLength)
@@ -440,4 +446,17 @@ public class PlayerSFXManager : MonoBehaviour
     {
         PlayAbilitySound(abilityName);
     }
+
+    private void HandlePotionUsed()
+    {
+        if (potionSound != null)
+        {
+            audioSource.PlayOneShot(potionSound, potionVolume);
+        }
+        else
+        {
+            Debug.LogWarning("Potion use sound is not assigned.");
+        }
+    }
+
 }
