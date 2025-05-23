@@ -246,7 +246,7 @@ public class AudioManager : MonoBehaviour
             {
                 battleMusicLayers[i].clip = battleClips[i];
                 battleMusicLayers[i].volume = 0f;
-                battleMusicLayers[i].Play();
+                //battleMusicLayers[i].Play();
             }
         }
 
@@ -281,30 +281,31 @@ public class AudioManager : MonoBehaviour
 
     private void HandleChamberActivated()
     {
-        if (currentScene == "01_Tutorial")
-            return;
-
-        // Fade in battle layers over 1 second
-        SetBattleBlend(1f, 1f);
+        if (currentScene == "01_Tutorial") return;
 
         musicIntensity = 0.5f;
         currentMusicCategory = currentScene == "05_Church" ? MusicCategory.ChurchFight : MusicCategory.Battle;
 
-        // Make sure all battle layers are playing
+        // Start all clips from the beginning
         for (int i = 0; i < battleMusicLayers.Length; i++)
         {
-            if (battleMusicLayers[i].clip != null && !battleMusicLayers[i].isPlaying)
+            if (battleMusicLayers[i].clip != null)
+            {
+                battleMusicLayers[i].Stop();
                 battleMusicLayers[i].Play();
+                battleMusicLayers[i].volume = 0f;
+            }
         }
+
+        // Begin fading in
+        SetBattleBlend(1f, 1f);
     }
 
     private void HandleChamberFinished()
     {
-        if (currentScene == "01_Tutorial")
-            return;
+        if (currentScene == "01_Tutorial") return;
 
-        // Fade out battle layers over 2 seconds
-        SetBattleBlend(0f, 2f);
+        StartCoroutine(FadeOutAndStopBattleMusic(2f));
 
         if (currentScene == "05_Church")
             PlayExplorationMusic(churchExplorationClip, MusicCategory.ChurchEntrance);
@@ -335,6 +336,26 @@ public class AudioManager : MonoBehaviour
         }
 
         battleBlend = target;
+    }
+
+    private IEnumerator FadeOutAndStopBattleMusic(float duration)
+    {
+        float startBlend = battleBlend;
+        float time = 0f;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            battleBlend = Mathf.Lerp(startBlend, 0f, time / duration);
+            yield return null;
+        }
+
+        // Stop and reset battle music layers
+        for (int i = 0; i < battleMusicLayers.Length; i++)
+        {
+            battleMusicLayers[i].Stop();
+            battleMusicLayers[i].volume = 0f;
+        }
     }
 
     public void SetBattleIntensity(float intensity)
