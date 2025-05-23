@@ -74,7 +74,7 @@ namespace ProjectColombo.Control
 
             // Optionally reset after the animation duration
             float animationLength = animator.GetCurrentAnimatorStateInfo(0).length;
-            StartCoroutine(ResetAnimatorSpeed(animationLength / animationSpeed));
+            //StartCoroutine(ResetAnimatorSpeed(animationLength / animationSpeed));
         }
 
         private IEnumerator ResetAnimatorSpeed(float delay)
@@ -86,7 +86,14 @@ namespace ProjectColombo.Control
         public bool FinishedAttack()
         {
             AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-            return stateInfo.IsName(currentAnimation) && stateInfo.normalizedTime >= 1.0f;
+
+            if (stateInfo.IsName(currentAnimation) && stateInfo.normalizedTime >= 1.0f)
+            {
+                animator.speed = 1f;
+                return true;
+            }
+
+            return false;
         }
 
 
