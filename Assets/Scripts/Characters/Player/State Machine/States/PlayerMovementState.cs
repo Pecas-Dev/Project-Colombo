@@ -13,22 +13,12 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Enter()
         {
-            if (stateMachine.gameInputSO.MovementInput.magnitude < 0.01f)
-            {
-                stateMachine.gameInputSO.ResetMovementInput();
-            }
-
             stateMachine.ParryFrameStop();
             stateMachine.ParryPanaltyStop();
             stateMachine.currentComboString = "";
             stateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Movement);
             stateMachine.myPlayerAnimator.PlayMovementAnimation();
             stateMachine.gameInputSO.EnableAllInputs();
-
-            if (stateMachine.gameInputSO.MovementInput.magnitude < 0.01f)
-            {
-                stateMachine.gameInputSO.ResetMovementInput();
-            }
         }
 
         public override void Tick(float deltaTime)
@@ -43,17 +33,12 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Exit()
         {
-            if (stateMachine.gameInputSO.MovementInput.magnitude < 0.01f)
-            {
-                stateMachine.gameInputSO.ResetMovementInput();
-            }
-
             stateMachine.gameInputSO.EnableAllInputs();
         }
 
         private void HandleMovement(float deltaTime)
         {
-            Vector2 moveInput = stateMachine.gameInputSO.MovementInput;
+            Vector2 moveInput = stateMachine.gameInputSO.GetVector2Input(GameInputSystem.PlayerInputAction.Movement);
             Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
 
             float inputMagnitude = moveDirection.magnitude;
@@ -79,7 +64,7 @@ namespace ProjectColombo.StateMachine.Player
         private void HandleRotation(float deltaTime)
         {
             stateMachine.myRigidbody.angularVelocity = Vector3.zero;
-            Vector2 moveInput = stateMachine.gameInputSO.MovementInput;
+            Vector2 moveInput = stateMachine.gameInputSO.GetVector2Input(GameInputSystem.PlayerInputAction.Movement);
 
             if (moveInput.sqrMagnitude > 0.01f)
             {
@@ -102,7 +87,7 @@ namespace ProjectColombo.StateMachine.Player
 
         void UpdateAnimator()
         {
-            float animationSpeed = stateMachine.gameInputSO.MovementInput.magnitude;
+            float animationSpeed = stateMachine.gameInputSO.GetVector2Input(GameInputSystem.PlayerInputAction.Movement).magnitude;
             bool hasMovementInput = animationSpeed > 0.01f;
 
             stateMachine.myPlayerAnimator.UpdateAnimator(animationSpeed, false, hasMovementInput);

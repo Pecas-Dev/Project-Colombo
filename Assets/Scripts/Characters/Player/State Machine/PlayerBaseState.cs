@@ -22,11 +22,8 @@ namespace ProjectColombo.StateMachine.Player
 
         protected void HandleStateSwitchFromInput()
         {
-
-            stateMachine.StartCoroutine(ResetInputs());
-
             //set attack states
-            if (stateMachine.gameInputSO.MajorAttackPressed && stateMachine.currentState != PlayerStateMachine.PlayerState.Attack)
+            if (stateMachine.gameInputSO.GetInputPressed(GameInputSystem.PlayerInputAction.MajorAttack) && stateMachine.currentState != PlayerStateMachine.PlayerState.Attack)
             {
 
                 if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToAttack)) return;
@@ -35,7 +32,7 @@ namespace ProjectColombo.StateMachine.Player
                 return;
             }
 
-            if (stateMachine.gameInputSO.MinorAttackPressed && stateMachine.currentState != PlayerStateMachine.PlayerState.Attack)
+            if (stateMachine.gameInputSO.GetInputPressed(GameInputSystem.PlayerInputAction.MinorAttack) && stateMachine.currentState != PlayerStateMachine.PlayerState.Attack)
             {
 
                 if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToAttack)) return;
@@ -45,7 +42,7 @@ namespace ProjectColombo.StateMachine.Player
             }
 
             //set defense states
-            if (stateMachine.gameInputSO.RollPressed)
+            if (stateMachine.gameInputSO.GetInputPressed(GameInputSystem.PlayerInputAction.Roll))
             {
                 if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToRoll)) return;
 
@@ -53,35 +50,23 @@ namespace ProjectColombo.StateMachine.Player
                 return;
             }
 
-            if (stateMachine.gameInputSO.BlockPressed() && stateMachine.currentState != PlayerStateMachine.PlayerState.Block)
+            if (stateMachine.gameInputSO.GetInputHeld(GameInputSystem.PlayerInputAction.Block) && stateMachine.currentState != PlayerStateMachine.PlayerState.Block)
             {
                 stateMachine.SwitchState(new PlayerBlockState(stateMachine));
                 return;
             }
 
             //set parry states
-            if (stateMachine.gameInputSO.MajorParryPressed)
+            if (stateMachine.gameInputSO.GetInputPressed(GameInputSystem.PlayerInputAction.MajorParry))
             {
                 stateMachine.SwitchState(new PlayerParryState(stateMachine, GameGlobals.MusicScale.MAJOR));
                 return;
             }
 
-            if (stateMachine.gameInputSO.MinorParryPressed)
+            if (stateMachine.gameInputSO.GetInputPressed(GameInputSystem.PlayerInputAction.MinorParry))
             {
                 stateMachine.SwitchState(new PlayerParryState(stateMachine, GameGlobals.MusicScale.MINOR));
                 return;
-            }
-        }
-
-        IEnumerator ResetInputs()
-        {
-            yield return new WaitForEndOfFrame();
-
-            stateMachine.gameInputSO.ResetAllInputs();
-
-            if (stateMachine.gameInputSO.MovementInput.magnitude < 0.01f)
-            {
-                stateMachine.gameInputSO.ResetMovementInput();
             }
         }
     }

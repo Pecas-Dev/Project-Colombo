@@ -57,12 +57,12 @@ namespace ProjectColombo.UI
 
             if (gameInputSO != null)
             {
-                if (gameInputSO.playerInputActions == null)
+                if (gameInputSO.inputActions == null)
                 {
                     gameInputSO.Initialize();
                 }
 
-                gameInputSO.EnableUIMode();
+                gameInputSO.SwitchToUI();
             }
         }
 

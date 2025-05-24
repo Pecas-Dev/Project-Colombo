@@ -15,21 +15,21 @@ namespace ProjectColombo.StateMachine.Player
         public override void Enter()
         {
             stateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Block);
-            stateMachine.myPlayerAnimator.TriggerBlock();
             Debug.Log("Player entered Blocking State");
 
             stateMachine.isBlocking = true;
-            stateMachine.gameInputSO.DisableAllInputsExcept(
-                InputActionType.Movement,
-                InputActionType.Block,
-                InputActionType.Roll,
-                InputActionType.MajorAttack,
-                InputActionType.MinorAttack,
-                InputActionType.MajorParry,
-                InputActionType.MinorParry,
-                InputActionType.Pause);
+            stateMachine.gameInputSO.DisableAllInputs();
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.Movement);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.Block);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.Roll);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.MajorAttack);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.MinorAttack);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.MajorParry);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.MinorParry);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.Pause);
 
             stateMachine.StartCoroutine(StopMovement());
+            stateMachine.myPlayerAnimator.TriggerBlock();
             stateMachine.myPlayerVFX.blockVFX.Play();
         }
 
@@ -44,9 +44,10 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Tick(float deltaTime)
         {
-            if (stateMachine.gameInputSO.MovementInput.magnitude > 0.01f)
+            Vector2 moveInput = stateMachine.gameInputSO.GetVector2Input(GameInputSystem.PlayerInputAction.Movement);
+
+            if (moveInput.magnitude > 0.01f)
             {
-                Vector2 moveInput = stateMachine.gameInputSO.MovementInput;
                 Vector3 moveDirection = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
 
                 // Convert input to isometric space
@@ -62,7 +63,7 @@ namespace ProjectColombo.StateMachine.Player
 
             HandleStateSwitchFromInput();
 
-            if (!stateMachine.gameInputSO.BlockPressed())
+            if (!stateMachine.gameInputSO.GetInputHeld(PlayerInputAction.Block))
             {
                 stateMachine.SwitchState(new PlayerMovementState(stateMachine));
                 return;
@@ -75,11 +76,6 @@ namespace ProjectColombo.StateMachine.Player
             stateMachine.isBlocking = false;
 
             stateMachine.myPlayerVFX.blockVFX.Stop();
-
-            if (stateMachine.gameInputSO.MovementInput.magnitude < 0.01f)
-            {
-                stateMachine.gameInputSO.ResetMovementInput();
-            }
         }
     }
 }

@@ -214,7 +214,7 @@ namespace ProjectColombo.UI
         {
             bool shouldSubmit = false;
 
-            if (gameInput != null && gameInput.playerInputActions.UI.Submit.WasPressedThisFrame())
+            if (gameInput != null && gameInput.inputActions.UI.Submit.WasPressedThisFrame())
             {
                 shouldSubmit = true;
                 LogDebug("Submit input detected via UI.Submit");
@@ -308,7 +308,7 @@ namespace ProjectColombo.UI
         {
             bool shouldCancel = false;
 
-            if (gameInput != null && gameInput.playerInputActions.UI.Cancel.WasPressedThisFrame())
+            if (gameInput != null && gameInput.inputActions.UI.Cancel.WasPressedThisFrame())
             {
                 shouldCancel = true;
                 LogDebug("Cancel input detected via UI.Cancel");
@@ -590,7 +590,7 @@ namespace ProjectColombo.UI
 
             if (gameInput != null)
             {
-                gameInput.EnableUIMode();
+                gameInput.SwitchToUI();
             }
 
             gameObject.SetActive(true);
@@ -1132,7 +1132,7 @@ namespace ProjectColombo.UI
 
             if (gameInput != null)
             {
-                gameInput.EnableUIMode();
+                gameInput.SwitchToUI();
             }
 
             gameObject.SetActive(true);

@@ -337,26 +337,26 @@ namespace ProjectColombo.UI.Pausescreen
         {
             base.HandleInput();
 
-            if (gameInputSO != null && gameInputSO.playerInputActions != null)
+            if (gameInputSO != null && gameInputSO.inputActions != null)
             {
-                if (gameInputSO.playerInputActions.UI.MoveLeftShoulder.WasPressedThisFrame())
+                if (gameInputSO.inputActions.UI.MoveLeftShoulder.WasPressedThisFrame())
                 {
                     NavigateLeft();
                 }
-                else if (gameInputSO.playerInputActions.UI.MoveRightShoulder.WasPressedThisFrame())
+                else if (gameInputSO.inputActions.UI.MoveRightShoulder.WasPressedThisFrame())
                 {
                     NavigateRight();
                 }
 
                 if (currentTabIndex == 1)
                 {
-                    Vector2 navDirection = gameInputSO.playerInputActions.UI.Navigate.ReadValue<Vector2>();
+                    Vector2 navDirection = gameInputSO.inputActions.UI.Navigate.ReadValue<Vector2>();
 
                     if (navDirection.sqrMagnitude > 0.5f)
                     {
                     }
 
-                    if (gameInputSO.playerInputActions.UI.Submit.WasPressedThisFrame() && currentInventorySlotIndex >= 0 && currentInventorySlotIndex < inventorySlotButtons.Length)
+                    if (gameInputSO.inputActions.UI.Submit.WasPressedThisFrame() && currentInventorySlotIndex >= 0 && currentInventorySlotIndex < inventorySlotButtons.Length)
                     {
                         OnInventorySlotSubmit(currentInventorySlotIndex);
                     }

@@ -15,7 +15,7 @@ namespace ProjectColombo.Objects.Decorations
         {
             if (playerClose)
             {
-                if (GameManager.Instance.gameInput.InteractPressed)
+                if (GameManager.Instance.gameInput.GetInputPressed(GameInputSystem.PlayerInputAction.Interact))
                 {
                     OpenChest();
                 }
@@ -35,7 +35,7 @@ namespace ProjectColombo.Objects.Decorations
         {
             if (other.CompareTag("Player"))
             {
-                GameManager.Instance.gameInput.EnableInput(GameInputSystem.InputActionType.Interact);
+                GameManager.Instance.gameInput.EnableInput(GameInputSystem.PlayerInputAction.Interact);
                 chestCanvas.SetActive(true);
                 playerClose = true;
             }

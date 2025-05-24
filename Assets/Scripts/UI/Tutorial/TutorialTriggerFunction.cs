@@ -14,7 +14,6 @@ public class TutorialTriggerFunction : MonoBehaviour
 
         if (other.CompareTag("Player"))
         {
-            GameManager.Instance.gameInput.ResetMovementInput();
             other.GetComponent<PlayerStateMachine>().SwitchState(new PlayerMovementState(other.GetComponent<PlayerStateMachine>()));
             onTrigger?.Invoke();
             isTriggered = true;

@@ -273,7 +273,7 @@ namespace ProjectColombo.UI.Pausescreen
 
             if (gameInput != null)
             {
-                gameInput.EnableUIMode();
+                gameInput.SwitchToUI();
             }
         }
 
@@ -406,15 +406,15 @@ namespace ProjectColombo.UI.Pausescreen
 
         void HandleTabSwitchInput()
         {
-            if (gameInput != null && gameInput.playerInputActions != null)
+            if (gameInput != null && gameInput.inputActions != null)
             {
-                if (gameInput.playerInputActions.UI.MoveLeftShoulder.WasPressedThisFrame())
+                if (gameInput.inputActions.UI.MoveLeftShoulder.WasPressedThisFrame())
                 {
                     int newTab = (currentTabIndex == 0) ? tabScreens.Length - 1 : currentTabIndex - 1;
                     SwitchToTab(newTab);
                     return;
                 }
-                else if (gameInput.playerInputActions.UI.MoveRightShoulder.WasPressedThisFrame())
+                else if (gameInput.inputActions.UI.MoveRightShoulder.WasPressedThisFrame())
                 {
                     int newTab = (currentTabIndex + 1) % tabScreens.Length;
                     SwitchToTab(newTab);

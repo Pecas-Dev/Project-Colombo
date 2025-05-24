@@ -38,17 +38,9 @@ namespace ProjectColombo.UI.HUD
 
             maskAmountText.text = maskAmount.ToString();
 
-            if (gameInput.InteractPressed)  //map to input this just for testing
+            if (gameInput.GetInputPressed(PlayerInputAction.Interact))  //map to input this just for testing
             {
                 ToggleVisability();
-            }
-        }
-
-        private void LateUpdate()
-        {
-            if (gameInput.InteractPressed)
-            {
-                gameInput.ResetUseItemPressed();
             }
         }
 

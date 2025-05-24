@@ -1,611 +1,213 @@
-using System;
+using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine.InputSystem;
-
-
-
 
 namespace ProjectColombo.GameInputSystem
 {
-    [Flags]
-    public enum InputActionType
+    public enum PlayerInputAction
     {
-        None = 0,
-        Movement = 1 << 0,
-        MajorAttack = 1 << 1,
-        MinorAttack = 1 << 2,
-        UseSpecialAbility = 1 << 3,
-        Interact = 1 << 4,
-        Roll = 1 << 5,
-        Block = 1 << 6,
-        MinorParry = 1 << 7,
-        MajorParry = 1 << 8,
-        Target = 1 << 9,
-        TargetPoint = 1 << 10,
-        UsePotion = 1 << 11,
-        UseCharmAbility = 1 << 12,
-        Pause = 1 << 13,
-        All = ~0
+        Movement,
+        MajorAttack,
+        MinorAttack,
+        Roll,
+        MajorParry,
+        MinorParry,
+        Block,
+        UsePotion,
+        UseCharmAbility,
+        UseSpecialAbility,
+        Interact,
+        Target,
+        TargetPoint,
+        Pause,
+        ActivateRadial
     }
 
-
-
-    [CreateAssetMenu(fileName = "GameInputSO", menuName = "Scriptable Objects/Input/GameInputSO")]
+    [CreateAssetMenu(fileName = "GameInputSO", menuName = "ScriptableObjects/GameInputSO")]
     public class GameInputSO : ScriptableObject
     {
-        public Vector2 MovementInput { get; private set; } = Vector2.zero;
-        public bool MajorAttackPressed { get; private set; } = false;
-        public bool MinorAttackPressed { get; private set; } = false;
-        public bool UseSpecialAbilityPressed { get; private set; } = false;
-        public bool InteractPressed { get; private set; } = false;
-        public bool RollPressed { get; private set; } = false;
-        //public bool BlockPressed { get; private set; } = false;
+        public InputSystem_Actions inputActions;
+        private Dictionary<PlayerInputAction, InputAction> inputMap;
 
-        public bool MinorParryPressed { get; private set; } = false;
-        public bool MajorParryPressed { get; private set; } = false;
-        public bool TargetPressed { get; private set; } = false;
-        public Vector2 TargetPointInput { get; private set; } = Vector2.zero;
-        public bool UsePotionPressed { get; private set; } = false;
-        public bool UseCharmAbilityPressed { get; private set; } = false;
-        public bool PausePressed { get; private set; } = false;
+        private InputActionMap playerMap;
+        private InputActionMap uiMap;
 
+        private HashSet<PlayerInputAction> tutorialLockedInputs = new();
 
-        public bool CharmSwapPausePressed { get; private set; } = false;
+        public bool IsPlayerMapEnabled => playerMap.enabled;
+        public bool IsUIMapEnabled => uiMap.enabled;
 
-
-
-        private Vector2 uiNavigateValue = Vector2.zero;
-        public Vector2 UINavigateValue => uiNavigateValue;
-
-
-
-        InputActionType allowedInputs = InputActionType.All;
-
-        public InputSystem_Actions playerInputActions;
+        public bool CharmSwapPausePressed { get; private set; }
 
         public void Initialize()
         {
-            if (playerInputActions != null)
+            inputActions = new InputSystem_Actions();
+            inputActions.Enable();
+
+            playerMap = inputActions.Player;
+            uiMap = inputActions.UI;
+
+            inputMap = new Dictionary<PlayerInputAction, InputAction>
             {
-                return;
-            }
-
-            playerInputActions = new InputSystem_Actions();
-
-            playerInputActions.Player.Enable();
-
-            playerInputActions.Player.Movement.performed += OnMovePerformed;
-            playerInputActions.Player.Movement.canceled += OnMoveCanceled;
-
-            playerInputActions.Player.MajorAttack.performed += OnMajorAttackPerformed;
-            playerInputActions.Player.MinorAttack.performed += OnMinorAttackPerformed;
-            playerInputActions.Player.UseSpecialAbility.performed += OnUseSpecialAbilityPerformed;
-            playerInputActions.Player.Interact.performed += OnInteractPerformed;
-
-            playerInputActions.Player.Roll.performed += OnRollPerformed;
-            playerInputActions.Player.MajorParry.performed += OnMajorParryPerformed;
-            playerInputActions.Player.MinorParry.performed += OnMinorParryPerformed;
-
-            playerInputActions.Player.Target.performed += OnTargetPerformed;
-            playerInputActions.Player.TargetPoint.performed += OnTargetPointPerformed;
-            playerInputActions.Player.TargetPoint.canceled += OnTargetPointCanceled;
-
-            playerInputActions.Player.UsePotion.performed += OnUsePotionPerformed;
-            playerInputActions.Player.UseCharmAbility.performed += OnUseCharmAbilityPerformed;
-
-            playerInputActions.UI.Navigate.performed += OnNavigatePerformed;
-            playerInputActions.UI.Navigate.canceled += OnNavigateCanceled;
+                { PlayerInputAction.Movement, inputActions.Player.Movement },
+                { PlayerInputAction.MajorAttack, inputActions.Player.MajorAttack },
+                { PlayerInputAction.MinorAttack, inputActions.Player.MinorAttack },
+                { PlayerInputAction.Roll, inputActions.Player.Roll },
+                { PlayerInputAction.MajorParry, inputActions.Player.MajorParry },
+                { PlayerInputAction.MinorParry, inputActions.Player.MinorParry },
+                { PlayerInputAction.Block, inputActions.Player.Block },
+                { PlayerInputAction.UsePotion, inputActions.Player.UsePotion },
+                { PlayerInputAction.UseCharmAbility, inputActions.Player.UseCharmAbility },
+                { PlayerInputAction.UseSpecialAbility, inputActions.Player.UseSpecialAbility },
+                { PlayerInputAction.Interact, inputActions.Player.Interact },
+                { PlayerInputAction.Target, inputActions.Player.Target },
+                { PlayerInputAction.TargetPoint, inputActions.Player.TargetPoint },
+                { PlayerInputAction.ActivateRadial, inputActions.Player.ActivateRadial },
+                { PlayerInputAction.Pause, inputActions.Player.Pause }
+            };
         }
 
         public void Uninitialize()
         {
-            if (playerInputActions == null) return;
-
-            // Make sure to disable both action maps before uninitializing
-            if (playerInputActions.UI.enabled)
-            {
-                playerInputActions.UI.Disable();
-            }
-
-            if (playerInputActions.Player.enabled)
-            {
-                playerInputActions.Player.Disable();
-            }
-
-            playerInputActions.Player.Movement.performed -= OnMovePerformed;
-            playerInputActions.Player.Movement.canceled -= OnMoveCanceled;
-
-            playerInputActions.Player.MajorAttack.performed -= OnMajorAttackPerformed;
-            playerInputActions.Player.MinorAttack.performed -= OnMinorAttackPerformed;
-            playerInputActions.Player.UseSpecialAbility.performed -= OnUseSpecialAbilityPerformed;
-            playerInputActions.Player.Interact.performed -= OnInteractPerformed;
-
-            playerInputActions.Player.Roll.performed -= OnRollPerformed;
-            playerInputActions.Player.MajorParry.performed -= OnMajorParryPerformed;
-            playerInputActions.Player.MinorParry.performed -= OnMinorParryPerformed;
-
-            playerInputActions.Player.Target.performed -= OnTargetPerformed;
-            playerInputActions.Player.TargetPoint.performed -= OnTargetPointPerformed;
-            playerInputActions.Player.TargetPoint.canceled -= OnTargetPointCanceled;
-
-            playerInputActions.Player.UsePotion.performed -= OnUsePotionPerformed;
-            playerInputActions.Player.UseCharmAbility.performed -= OnUseCharmAbilityPerformed;
-
-
-
-            playerInputActions.UI.Navigate.performed -= OnNavigatePerformed;
-            playerInputActions.UI.Navigate.canceled -= OnNavigateCanceled;
-
-
-
-            playerInputActions.Player.Disable();
-            playerInputActions = null;
+            inputActions?.Disable();
+            inputMap?.Clear();
+            tutorialLockedInputs.Clear();
         }
 
-        public void DisableAllInputs()
+        public void EnableInput(PlayerInputAction action)
         {
-            allowedInputs = InputActionType.None;
-            ResetAllInputs();
+            if (inputMap.TryGetValue(action, out var inputAction) && !tutorialLockedInputs.Contains(action))
+                inputAction.Enable();
         }
 
         public void EnableAllInputs()
         {
-            allowedInputs = InputActionType.All;
-        }
-
-        public void DisableInput(InputActionType inputAction)
-        {
-            allowedInputs &= ~inputAction;
-            ResetInput(inputAction);
-        }
-
-        public void EnableInput(InputActionType inputAction)
-        {
-            allowedInputs |= inputAction;
-        }
-
-        public void DisableAllInputsExcept(params InputActionType[] exceptions)
-        {
-            allowedInputs = InputActionType.None;
-
-            // Build the new allowedInputs bitmask
-            foreach (var input in exceptions)
+            foreach (var kvp in inputMap)
             {
-                allowedInputs |= input;
-            }
-
-            // Disable all inputs not in exceptions
-            foreach (InputActionType input in Enum.GetValues(typeof(InputActionType)))
-            {
-                if (input == InputActionType.None)
-                    continue;
-
-                if (input == InputActionType.All)
-                    continue;
-
-                if (!exceptions.Contains(input))
-                {
-                    ResetInput(input); //reset inputs that are now disabled
-                }
+                if (!tutorialLockedInputs.Contains(kvp.Key))
+                    kvp.Value.Enable();
             }
         }
 
-        private void ResetInput(InputActionType input)
+        public void DisableInput(PlayerInputAction action)
         {
-            switch (input)
+            if (inputMap.TryGetValue(action, out var inputAction))
+                inputAction.Disable();
+        }
+
+        public void DisableAllInputs()
+        {
+            foreach (var inputAction in inputMap.Values)
             {
-            case InputActionType.Movement:
-                    ResetMovementInput();
-                        break;
-            case InputActionType.MajorAttack:
-                    ResetMajorAttackPressed();
-                        break;
-            case InputActionType.MinorAttack:
-                    ResetMinorAttackPressed();
-                        break;
-            case InputActionType.UseSpecialAbility:
-                    ResetUseSpecialAbilityPressed();
-                        break;
-            case InputActionType.Interact:
-                    ResetUseItemPressed();
-                        break;
-            case InputActionType.Roll:
-                    ResetRollPressed();
-                        break;
-            case InputActionType.MinorParry:
-                    ResetMinorParryPressed();
-                        break;
-            case InputActionType.MajorParry:
-                    ResetMajorParryPressed();
-                        break;
-            case InputActionType.Target:
-                    ResetTargetPressed();
-                        break;
-            case InputActionType.UsePotion:
-                    ResetUsePotion();
-                        break;
-            case InputActionType.UseCharmAbility:
-                    ResetUseCharmAbility();
-                        break;
+                inputAction.Disable();
             }
         }
 
-
-        public bool IsInputEnabled(InputActionType inputAction)
+        public bool GetInputPressed(PlayerInputAction action)
         {
-            return (allowedInputs & inputAction) != 0;
+            return inputMap.TryGetValue(action, out var inputAction)
+                && inputAction.enabled
+                && !tutorialLockedInputs.Contains(action)
+                && inputAction.WasPressedThisFrame();
         }
 
-        public void ResetMovementInput()
+        public bool GetInputHeld(PlayerInputAction action)
         {
-            MovementInput = Vector2.zero;
+            return inputMap.TryGetValue(action, out var inputAction)
+                && inputAction.enabled
+                && !tutorialLockedInputs.Contains(action)
+                && inputAction.IsPressed();
+        }
+
+        public bool GetInputReleased(PlayerInputAction action)
+        {
+            return inputMap.TryGetValue(action, out var inputAction)
+                && inputAction.enabled
+                && !tutorialLockedInputs.Contains(action)
+                && inputAction.WasReleasedThisFrame();
+        }
+
+        public Vector2 GetVector2Input(PlayerInputAction action)
+        {
+            return inputMap.TryGetValue(action, out var inputAction)
+                && inputAction.enabled
+                && !tutorialLockedInputs.Contains(action)
+                ? inputAction.ReadValue<Vector2>()
+                : Vector2.zero;
         }
 
         public void ResetAllInputs()
         {
-            //MovementInput               = Vector2.zero;
-            MajorAttackPressed = false;
-            MinorAttackPressed = false;
-            UseSpecialAbilityPressed = false;
-            InteractPressed = false;
-            RollPressed = false;
-            //BlockPressed                = false;
-            MinorParryPressed = false;
-            MajorParryPressed = false;
-            TargetPressed = false;
-            TargetPointInput = Vector2.zero;
-            //UsePotionPressed = false;
-            UseCharmAbilityPressed = false;
-            PausePressed = false;
-        }
+            if (inputMap == null) return;
 
-        public bool IsKeyboardInput()
-        {
-            return Keyboard.current != null && Keyboard.current.anyKey.isPressed;
-        }
-
-        public bool IsAnyInputActive()
-        {
-            return
-                MovementInput.sqrMagnitude > 0.01f ||
-                MajorAttackPressed ||
-                MinorAttackPressed ||
-                UseSpecialAbilityPressed ||
-                InteractPressed ||
-                RollPressed ||
-                BlockPressed() ||
-                MinorParryPressed ||
-                MajorParryPressed ||
-                TargetPressed ||
-                TargetPointInput.sqrMagnitude > 0.01f ||
-                UsePotionPressed ||
-                UseCharmAbilityPressed ||
-                PausePressed ||
-                IsKeyboardInput();
-        }
-
-
-
-        // ################### MOVEMENT ##########################
-
-        void OnMovePerformed(InputAction.CallbackContext context)
-        {
-            if (!IsInputEnabled(InputActionType.Movement)) return;
-
-            Vector2 input = context.ReadValue<Vector2>();
-
-            // Clamp stick noise
-            if (input.magnitude < 0.1f)
+            foreach (var action in inputMap.Values)
             {
-                MovementInput = Vector2.zero;
-            }
-            else
-            {
-                MovementInput = input.magnitude > 1f ? input.normalized : input;
+                action.Disable();
+                action.Enable();
             }
         }
 
-
-        void OnMoveCanceled(InputAction.CallbackContext context)
+        public void SwitchToUI()
         {
-            if (!IsInputEnabled(InputActionType.Movement)) return;
+            Debug.Log("SwitchToUI called!");
 
-            MovementInput = Vector2.zero;
-        }
+            playerMap.Disable();
+            uiMap.Enable();
 
-        // ########################################################
-
-
-        //---------------------------------------------------------
-
-
-        // ##################### Attacks ###########################
-        void OnMajorAttackPerformed(InputAction.CallbackContext context)
-        {
-            if (!IsInputEnabled(InputActionType.MajorAttack)) return;
-
-            MajorAttackPressed = true;
-        }
-
-        public void ResetMajorAttackPressed()
-        {
-            MajorAttackPressed = false;
-        }
-
-        void OnMinorAttackPerformed(InputAction.CallbackContext context)
-        {
-            if (!IsInputEnabled(InputActionType.MinorAttack)) return;
-
-            MinorAttackPressed = true;
-        }
-
-        public void ResetMinorAttackPressed()
-        {
-            MinorAttackPressed = false;
-        }
-        // ########################################################
-
-
-        //---------------------------------------------------------
-
-
-        // ##################### Specials ###########################
-        void OnUseSpecialAbilityPerformed(InputAction.CallbackContext context)
-        {
-            if (!IsInputEnabled(InputActionType.UseSpecialAbility)) return;
-
-            UseSpecialAbilityPressed = true;
-        }
-
-        public void ResetUseSpecialAbilityPressed()
-        {
-            UseSpecialAbilityPressed = false;
-        }
-
-        void OnInteractPerformed(InputAction.CallbackContext context)
-        {
-            if (!IsInputEnabled(InputActionType.Interact)) return;
-
-            InteractPressed = true;
-        }
-
-        public void ResetUseItemPressed()
-        {
-            InteractPressed = false;
-        }
-        // ########################################################
-
-
-        //---------------------------------------------------------
-
-
-        // ###################### Defense ############################
-
-        void OnRollPerformed(InputAction.CallbackContext context)
-        {
-            if (!IsInputEnabled(InputActionType.Roll)) return;
-
-            RollPressed = true;
-        }
-
-        public void ResetRollPressed()
-        {
-            RollPressed = false;
-        }
-
-        public bool BlockPressed()
-        {
-            if (!IsInputEnabled(InputActionType.Block)) return false;
-
-            return playerInputActions.Player.Block.IsPressed();
+            Debug.Log($"playerMap.enabled: {playerMap.enabled}, uiMap.enabled: {uiMap.enabled}");
         }
 
 
-        // ########################################################
-
-
-        //---------------------------------------------------------
-
-        // ###################### PARRY ############################
-
-        void OnMinorParryPerformed(InputAction.CallbackContext context)
+        public void SwitchToGameplay()
         {
-            if (!IsInputEnabled(InputActionType.MinorParry)) return;
+            Debug.Log("SwitchToGameplay called!");
 
-            MinorParryPressed = true;
+            uiMap.Disable();
+            playerMap.Enable();
+
+            Debug.Log($"playerMap.enabled: {playerMap.enabled}, uiMap.enabled: {uiMap.enabled}");
         }
 
-        public void ResetMinorParryPressed()
+        public void LockAllInputsViaTutorial()
         {
-            MinorParryPressed = false;
-        }
-        void OnMajorParryPerformed(InputAction.CallbackContext context)
-        {
-            if (!IsInputEnabled(InputActionType.MajorParry)) return;
-
-            MajorParryPressed = true;
+            foreach (var action in inputMap.Keys)
+            {
+                tutorialLockedInputs.Add(action);
+                DisableInput(action);
+            }
         }
 
-        public void ResetMajorParryPressed()
+        public void LockInputViaTutorial(PlayerInputAction action)
         {
-            MajorParryPressed = false;
+            tutorialLockedInputs.Add(action);
+            DisableInput(action);
         }
 
-        // ########################################################
-
-
-        //---------------------------------------------------------
-
-
-        // ##################### TARGET ###########################
-
-        void OnTargetPerformed(InputAction.CallbackContext context)
+        public void UnlockAllInputsViaTutorial()
         {
-            if (!IsInputEnabled(InputActionType.Target)) return;
-
-            TargetPressed = true;
-        }
-
-        public void ResetTargetPressed()
-        {
-            TargetPressed = false;
-        }
-
-        void OnTargetPointPerformed(InputAction.CallbackContext context)
-        {
-            if (!IsInputEnabled(InputActionType.TargetPoint)) return;
-
-            TargetPointInput = context.ReadValue<Vector2>();
-        }
-
-        void OnTargetPointCanceled(InputAction.CallbackContext context)
-        {
-            if (!IsInputEnabled(InputActionType.TargetPoint)) return;
-
-            TargetPointInput = Vector2.zero;
-        }
-
-        // ########################################################
-
-
-        //---------------------------------------------------------
-
-
-        // ##################### Ability/ Item ###########################
-
-        void OnUsePotionPerformed(InputAction.CallbackContext context)
-        {
-            if (!IsInputEnabled(InputActionType.UsePotion)) return;
-
-            UsePotionPressed = true;
-        }
-
-        public void ResetUsePotion()
-        {
-            UsePotionPressed = false;
+            foreach (var action in tutorialLockedInputs)
+            {
+                EnableInput(action);
+            }
+            tutorialLockedInputs.Clear();
         }
 
 
-        void OnUseCharmAbilityPerformed(InputAction.CallbackContext context)
+        public void UnlockInputViaTutorial(PlayerInputAction action)
         {
-            if (!IsInputEnabled(InputActionType.UseCharmAbility)) return;
-
-            UseCharmAbilityPressed = true;
+            tutorialLockedInputs.Remove(action);
+            EnableInput(action);
         }
 
-        public void ResetUseCharmAbility()
+        public void UpdateInputs()
         {
-            UseCharmAbilityPressed = false;
+            CharmSwapPausePressed = GetInputPressed(PlayerInputAction.ActivateRadial)
+                                    || GetInputPressed(PlayerInputAction.Pause);
         }
 
-        void OnPauseCharmSwapPerformed(InputAction.CallbackContext context)
-        {
-            Debug.Log("CLICKEDDDDDDDDDDDDDD");
-            CharmSwapPausePressed = true;
-        }
-
-        public void ResetCharmSwapPausePressed()
+        public void ResetCharmSwapPause()
         {
             CharmSwapPausePressed = false;
-        }
-
-
-
-        // ########################################################
-
-
-        //---------------------------------------------------------
-
-
-        // ###################### UI ############################
-
-
-        void OnNavigatePerformed(InputAction.CallbackContext context)
-        {
-            uiNavigateValue = context.ReadValue<Vector2>();
-
-            if (uiNavigateValue.sqrMagnitude > 0.5f)
-            {
-            }
-        }
-
-        void OnNavigateCanceled(InputAction.CallbackContext context)
-        {
-            uiNavigateValue = Vector2.zero;
-        }
-
-
-        // ########################################################
-
-
-        //---------------------------------------------------------
-
-        public void EnableUIMode()
-        {
-            DisableInput(InputActionType.Movement);
-            ResetAllInputs();
-
-            if (playerInputActions != null)
-            {
-                if (playerInputActions.Player.enabled)
-                {
-                    playerInputActions.Player.Disable();
-                }
-
-                if (!playerInputActions.UI.enabled)
-                {
-                    playerInputActions.UI.Enable();
-                }
-
-                playerInputActions.UI.Navigate.Enable();
-                playerInputActions.UI.Submit.Enable();
-                playerInputActions.UI.MoveLeftShoulder.Enable();
-                playerInputActions.UI.MoveRightShoulder.Enable();
-
-                Debug.Log("<color=#00FFFF>[GameInputSO] UI mode enabled, Player disabled, UI Navigate enabled</color>");
-            }
-            else
-            {
-                Debug.LogWarning("Player input actions not initialized in EnableUIMode");
-                Initialize();
-
-                if (playerInputActions != null)
-                {
-                    if (playerInputActions.Player.enabled)
-                    {
-                        playerInputActions.Player.Disable();
-                    }
-
-                    if (!playerInputActions.UI.enabled)
-                    {
-                        playerInputActions.UI.Enable();
-                    }
-
-                    playerInputActions.UI.Navigate.Enable();
-                    playerInputActions.UI.Submit.Enable();
-                    playerInputActions.UI.MoveLeftShoulder.Enable();
-                    playerInputActions.UI.MoveRightShoulder.Enable();
-                }
-            }
-        }
-
-        public void DisableUIMode()
-        {
-            if (playerInputActions != null)
-            {
-                if (playerInputActions.UI.enabled)
-                {
-                    playerInputActions.UI.Disable();
-                }
-                if (!playerInputActions.Player.enabled)
-                {
-                    playerInputActions.Player.Enable();
-                }
-
-                EnableInput(InputActionType.Movement);
-            }
         }
     }
 }

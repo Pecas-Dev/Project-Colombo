@@ -1,6 +1,5 @@
 using ProjectColombo.GameManagement;
 using ProjectColombo.StateMachine.Player;
-using ProjectColombo.Tutorial;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -16,7 +15,6 @@ namespace ProjectColombo.UI
         public string[] lines;
         public float textSpeed;
         public UnityEvent onDialogComplete;
-        TutorialManager myTutorialManager;
 
         bool isEnabled = false;
         int index;
@@ -24,7 +22,6 @@ namespace ProjectColombo.UI
         private void Start()
         {
             isEnabled = false;
-            myTutorialManager = GameObject.Find("TutorialManager").GetComponent<TutorialManager>();
             dialogCanvas.SetActive(false);
         }
 
@@ -32,7 +29,7 @@ namespace ProjectColombo.UI
         {
             if (!isEnabled) return;
 
-            if (GameManager.Instance.gameInput.InteractPressed)
+            if (GameManager.Instance.gameInput.inputActions.UI.Submit.WasPressedThisFrame())
             {
                 if (textComponent.text == lines[index])
                 {
@@ -79,11 +76,7 @@ namespace ProjectColombo.UI
             isEnabled = true;
 
             StartCoroutine(StopMoving());
-
-            myTutorialManager.allowedInputs = new GameInputSystem.InputActionType[]
-            {
-                GameInputSystem.InputActionType.Interact
-            };
+            GameManager.Instance.gameInput.SwitchToUI();
 
             dialogCanvas.SetActive(true);
             HUDCanvas.SetActive(false);
@@ -97,18 +90,13 @@ namespace ProjectColombo.UI
             yield return new WaitForEndOfFrame();
 
             GameObject player = GameObject.Find("Player");
-            GameManager.Instance.gameInput.ResetMovementInput();
             player.GetComponent<PlayerStateMachine>().SwitchState(new PlayerMovementState(player.GetComponent<PlayerStateMachine>()));
         }
 
         public void DisableDialog()
         {
             isEnabled = false;
-            myTutorialManager.allowedInputs = new GameInputSystem.InputActionType[]
-            {
-                GameInputSystem.InputActionType.Movement,
-                GameInputSystem.InputActionType.Roll
-            };
+            GameManager.Instance.gameInput.SwitchToGameplay();
 
             onDialogComplete.Invoke();
             HUDCanvas.SetActive(true);

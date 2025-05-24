@@ -436,7 +436,7 @@ namespace ProjectColombo.UI
             {
                 if (gameInput != null)
                 {
-                    gameInput.EnableUIMode();
+                    gameInput.SwitchToUI();
                 }
             }
 

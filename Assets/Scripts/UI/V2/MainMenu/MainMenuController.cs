@@ -351,7 +351,7 @@ public class MainMenuController : MenuController
     {
         if (gameInputSO != null)
         {
-            gameInputSO.playerInputActions.UI.Disable();
+            gameInputSO.SwitchToGameplay();
         }
 
         StartCoroutine(ToFirstLevel());

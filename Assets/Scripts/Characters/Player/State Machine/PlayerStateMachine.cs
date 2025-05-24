@@ -81,7 +81,6 @@ namespace ProjectColombo.StateMachine.Player
 
         void Start()
         {
-            gameInputSO.ResetUsePotion();
             LogMissingReferenceErrors();
             SwitchState(new PlayerMovementState(this));
             CustomEvents.OnSuccessfullParry += ApplyParryIFrames;
@@ -138,23 +137,20 @@ namespace ProjectColombo.StateMachine.Player
                 SwitchState(new PlayerDeathState(this));
             }
 
-            if (gameInputSO.UsePotionPressed)
+            if (gameInputSO.GetInputPressed(PlayerInputAction.UsePotion))
             {
-                gameInputSO.ResetUsePotion();
                 myPlayerInventory.UsePotion();
             }
 
-            if (gameInputSO.UseCharmAbilityPressed)
+            if (gameInputSO.GetInputPressed(PlayerInputAction.UseCharmAbility))
             {
                 myPlayerInventory.UseCharmAbility();
             }
 
-            if (gameInputSO.UseSpecialAbilityPressed)
+            if (gameInputSO.GetInputPressed(PlayerInputAction.UseSpecialAbility))
             {
                 myPlayerInventory.UseMaskAbility();
             }
-
-            gameInputSO.ResetAllInputs();
         }
 
         void LogMissingReferenceErrors()

@@ -19,7 +19,9 @@ namespace ProjectColombo.StateMachine.Player
         {
             stateMachine.currentComboString = "";
             stateMachine.myPlayerAnimator.TriggerStagger();
-            stateMachine.gameInputSO.DisableAllInputsExcept(InputActionType.Pause);
+
+            stateMachine.gameInputSO.DisableAllInputs();
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.Pause);
         }
 
         public override void Tick(float deltaTime)
@@ -41,11 +43,6 @@ namespace ProjectColombo.StateMachine.Player
         public override void Exit()
         {
             stateMachine.gameInputSO.EnableAllInputs();
-
-            if (stateMachine.gameInputSO.MovementInput.magnitude < 0.01f)
-            {
-                stateMachine.gameInputSO.ResetMovementInput();
-            }
         }
     }
 }

@@ -1,4 +1,5 @@
 using ProjectColombo.Combat;
+using ProjectColombo.GameInputSystem;
 using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Inventory;
@@ -6,6 +7,7 @@ using ProjectColombo.LevelManagement;
 using ProjectColombo.UI;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Windows;
 
 namespace ProjectColombo.Tutorial
 {
@@ -14,7 +16,7 @@ namespace ProjectColombo.Tutorial
         public List<GameObject> chambers;
         public TutorialSpawner startSpawner;
 
-        [ReadOnlyInspector] public GameInputSystem.InputActionType[] allowedInputs;
+
         public List<TutorialDialogSystem> dialogsInOrder;
         public TutorialDialogSystem afterParry;
         public TutorialDialogSystem afterPickUp;
@@ -32,11 +34,10 @@ namespace ProjectColombo.Tutorial
 
             startSpawner.SpawnEnemy();
 
-            allowedInputs = new GameInputSystem.InputActionType[]
-            {
-                GameInputSystem.InputActionType.Movement,
-                GameInputSystem.InputActionType.Roll
-            };
+            GameInputSO gameInput = GameManager.Instance.gameInput;
+            gameInput.LockAllInputsViaTutorial();
+            gameInput.UnlockInputViaTutorial(PlayerInputAction.Movement);
+            gameInput.UnlockInputViaTutorial(PlayerInputAction.Roll);
 
             TutorialEvents.OnDummyHit += OnDummyHit;
             CustomEvents.OnSuccessfullParry += OnSuccessfullParry;
@@ -56,6 +57,9 @@ namespace ProjectColombo.Tutorial
 
         private void EndTutorial()
         {
+            GameInputSO gameInput = GameManager.Instance.gameInput;
+            gameInput.UnlockAllInputsViaTutorial();
+            
             GameManager.Instance.GetComponent<PlayerInventory>().numberOfPotions = 1;
             GameObject.Find("Player").GetComponent<HealthManager>().Heal(1000);
             CustomEvents.OnLevelChange -= EndTutorial;
@@ -106,11 +110,6 @@ namespace ProjectColombo.Tutorial
             {
                 TutorialEvents.OnDummyHit -= OnDummyHit;
             }
-        }
-
-        private void Update()
-        {
-            GameManager.Instance.gameInput.DisableAllInputsExcept(allowedInputs);
         }
     }
 }

@@ -156,7 +156,7 @@ namespace ProjectColombo.GameManagement
                 }
             }
 
-            if (gameInput.PausePressed)
+            if (gameInput.GetInputPressed(PlayerInputAction.Pause))
             {
                 if (gameIsPaused)
                 {
@@ -168,19 +168,20 @@ namespace ProjectColombo.GameManagement
                 }
             }
 
-            if (gameIsPaused && gameInput.playerInputActions.UI.Cancel.WasPressedThisFrame())
+            if (gameIsPaused && gameInput.inputActions.UI.Cancel.WasPressedThisFrame())
             {
                 ResumeGame();
             }
 
-            if (gameInput.playerInputActions.Player.enabled == true && enableInputActionMapLogs == true)
+            if (gameInput.IsPlayerMapEnabled && enableInputActionMapLogs)
             {
                 Debug.Log("PLAYERRRRRRRRRR!");
             }
-            if (gameInput.playerInputActions.UI.enabled == true && enableInputActionMapLogs == true)
+            if (gameInput.IsUIMapEnabled && enableInputActionMapLogs)
             {
                 Debug.Log("UIIIIIIIIIIIIIIIII!");
             }
+
         }
 
         void OnDestroy()
@@ -250,7 +251,7 @@ namespace ProjectColombo.GameManagement
         {
             LogDebug("PauseGame called");
 
-            gameInput.EnableUIMode();
+            gameInput.SwitchToUI();
             Time.timeScale = 0;
             gameIsPaused = true;
 
@@ -344,7 +345,7 @@ namespace ProjectColombo.GameManagement
 
             if (gameInput != null)
             {
-                gameInput.DisableUIMode();
+                gameInput.SwitchToGameplay();
             }
         }
 
@@ -363,43 +364,47 @@ namespace ProjectColombo.GameManagement
 
         void DisableAllInputs()
         {
-            if (gameInput != null && gameInput.playerInputActions != null)
-            {
-                gameInput.DisableInput(ProjectColombo.GameInputSystem.InputActionType.Pause);
+            gameInput.DisableAllInputs();
+            LogDebug("Temporarily disabled all inputs for reset");
 
-                if (gameInput.playerInputActions.Player.enabled)
-                {
-                    gameInput.playerInputActions.Player.Disable();
-                }
 
-                if (gameInput.playerInputActions.UI.enabled)
-                {
-                    gameInput.playerInputActions.UI.Disable();
-                }
+            //if (gameInput != null && gameInput.inputActions != null)
+            //{
+            //    gameInput.DisableInput(ProjectColombo.GameInputSystem.InputActionType.Pause);
 
-                LogDebug("Temporarily disabled all inputs for reset");
-            }
+            //    if (gameInput.playerInputActions.Player.enabled)
+            //    {
+            //        gameInput.playerInputActions.Player.Disable();
+            //    }
+
+            //    if (gameInput.playerInputActions.UI.enabled)
+            //    {
+            //        gameInput.playerInputActions.UI.Disable();
+            //    }
+
+            //    LogDebug("Temporarily disabled all inputs for reset");
+            //}
         }
 
         void FinishInputReset()
         {
-            if (gameInput != null && gameInput.playerInputActions != null)
+            if (gameInput != null && gameInput.inputActions != null)
             {
-                gameInput.ResetAllInputs();
+                //gameInput.ResetAllInputs();
 
-                gameInput.ResetMovementInput();
+                //gameInput.ResetMovementInput();
 
-                gameInput.playerInputActions.Player.Enable();
+                //gameInput.playerInputActions.Player.Enable();
 
-                gameInput.EnableInput(ProjectColombo.GameInputSystem.InputActionType.Pause);
+                //gameInput.EnableInput(ProjectColombo.GameInputSystem.InputActionType.Pause);
 
                 if (SceneManager.GetActiveScene().name == MAIN_MENU)
                 {
-                    gameInput.EnableUIMode();
+                    gameInput.SwitchToUI();
                 }
                 else
                 {
-                    gameInput.DisableUIMode();
+                    gameInput.SwitchToGameplay();
                     gameInput.EnableAllInputs();
                 }
 

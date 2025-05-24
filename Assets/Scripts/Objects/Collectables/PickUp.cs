@@ -46,10 +46,8 @@ namespace ProjectColombo.Objects
 
         private void Update()
         {
-            if (active && GameManager.Instance.gameInput.InteractPressed)
+            if (active && GameManager.Instance.gameInput.GetInputPressed(GameInputSystem.PlayerInputAction.Interact))
             {
-                GameManager.Instance.gameInput.ResetUseItemPressed();
-
                 CustomEvents.CharmCollected(myCharm);
                 Destroy(this.gameObject);
                 return;

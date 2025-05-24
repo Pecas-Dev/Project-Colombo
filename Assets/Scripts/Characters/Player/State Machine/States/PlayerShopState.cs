@@ -23,7 +23,10 @@ namespace ProjectColombo.StateMachine.Player
             stateMachine.myRigidbody.linearVelocity = Vector3.zero;
             stateMachine.myPlayerAnimator.UpdateAnimator(0, false, false);
             stateMachine.myPlayerAnimator.PlayMovementAnimation();
-            Debug.Log("player entered shop state");
+
+            stateMachine.gameInputSO.DisableAllInputs();
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.Interact);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.MajorAttack);
 
             //InventoryHUD playerInventory = stateMachine.GetComponentInChildren<InventoryHUD>();
 
@@ -53,10 +56,6 @@ namespace ProjectColombo.StateMachine.Player
         {
             stateMachine.gameInputSO.EnableAllInputs();
 
-            if (stateMachine.gameInputSO.MovementInput.magnitude < 0.01f)
-            {
-                stateMachine.gameInputSO.ResetMovementInput();
-            }
             //InventoryHUD playerInventory = stateMachine.GetComponentInChildren<InventoryHUD>();
 
             //if (!playerInventory.visible)

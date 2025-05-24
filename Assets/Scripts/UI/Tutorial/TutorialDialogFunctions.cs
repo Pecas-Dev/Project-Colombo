@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using ProjectColombo.Combat;
 using ProjectColombo.GameManagement;
 using ProjectColombo.Inventory;
+using ProjectColombo.GameInputSystem;
 
 namespace ProjectColombo.Tutorial
 {
@@ -15,7 +16,7 @@ namespace ProjectColombo.Tutorial
         public List<GameObject> setActiveSlot;
         public List<GameObject> setInactiveSlot;
         public List<TutorialDummyBehavior> dummiesToAttack;
-        public GameInputSystem.InputActionType[] input;
+        public GameInputSystem.PlayerInputAction[] input;
 
         public void ActivateChamber()
         {
@@ -65,9 +66,13 @@ namespace ProjectColombo.Tutorial
 
         public void EnableInput()
         {
-            TutorialManager tm = GameObject.Find("TutorialManager").GetComponent<TutorialManager>();
+            GameInputSO gameInput = GameManager.Instance.gameInput;
+            gameInput.LockAllInputsViaTutorial();
 
-            tm.allowedInputs = input;
+            foreach (var i in input)
+            {
+                gameInput.UnlockInputViaTutorial(i);
+            }
         }
 
         public void AddPotion()

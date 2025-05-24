@@ -30,11 +30,11 @@ public class PlayerRollState : PlayerBaseState
         CanQueueRoll = false;
 
         stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.staminaToRoll);
+        Vector2 moveInput = stateMachine.gameInputSO.GetVector2Input(PlayerInputAction.Movement);
 
         //snap to direction
-        if (stateMachine.gameInputSO.MovementInput.magnitude > 0.01f)
+        if (moveInput.magnitude > 0.01f)
         {
-            Vector2 moveInput = stateMachine.gameInputSO.MovementInput;
             Vector3 moveDirection = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
 
             // Convert input to isometric space
@@ -50,7 +50,9 @@ public class PlayerRollState : PlayerBaseState
         stateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Roll);
         SetIgnoreLayers();
 
-        stateMachine.gameInputSO.DisableAllInputsExcept(InputActionType.Pause, InputActionType.Movement);
+        stateMachine.gameInputSO.DisableAllInputs();
+        stateMachine.gameInputSO.EnableInput(PlayerInputAction.Pause);
+
         stateMachine.myPlayerAnimator.TriggerRoll();
 
         stateMachine.StartCoroutine(ApplyPushForce());
@@ -72,12 +74,6 @@ public class PlayerRollState : PlayerBaseState
         ResetIgnoreLayers();
 
         stateMachine.gameInputSO.EnableAllInputs();
-
-        if (stateMachine.gameInputSO.MovementInput.magnitude < 0.01f)
-        {
-            stateMachine.gameInputSO.ResetMovementInput();
-        }
-
         stateMachine.StartCoroutine(RollCooldown());
     }
 

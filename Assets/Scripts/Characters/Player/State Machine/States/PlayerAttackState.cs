@@ -30,11 +30,11 @@ namespace ProjectColombo.StateMachine.Player
         public override void Enter()
         {
             stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.staminaToAttack);
+            Vector2 moveInput = stateMachine.gameInputSO.GetVector2Input(GameInputSystem.PlayerInputAction.Movement);
 
             //snap to direction
-            if (stateMachine.gameInputSO.MovementInput.magnitude > 0.01f)
+            if (moveInput.magnitude > 0.01f)
             {
-                Vector2 moveInput = stateMachine.gameInputSO.MovementInput;
                 Vector3 moveDirection = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
 
                 // Convert input to isometric space
@@ -53,15 +53,15 @@ namespace ProjectColombo.StateMachine.Player
 
             stateMachine.SetCurrentState(PlayerStateMachine.PlayerState.Attack);
 
-            stateMachine.gameInputSO.DisableAllInputsExcept(
-                InputActionType.Roll, 
-                InputActionType.Block, 
-                InputActionType.Movement, 
-                InputActionType.MajorParry, 
-                InputActionType.MinorParry,
-                InputActionType.MajorAttack,
-                InputActionType.MinorAttack, 
-                InputActionType.Pause);
+            stateMachine.gameInputSO.DisableAllInputs();
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.Movement);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.Block);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.Roll);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.MajorAttack);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.MinorAttack);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.MajorParry);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.MinorParry);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.Pause);
 
             stateMachine.myPlayerAnimator.PlayAttackAnimation(stateMachine.currentComboString, 0.1f, stateMachine.myEntityAttributes.attackSpeed);
 
@@ -104,30 +104,26 @@ namespace ProjectColombo.StateMachine.Player
 
 
             //handle inputs
-            if (stateMachine.gameInputSO.MajorAttackPressed)
+            if (stateMachine.gameInputSO.GetInputPressed(PlayerInputAction.MajorAttack))
             {
                 //if (!comboWindowOpened)
                 //{
                 //    tooEarly = true;
                 //    Debug.Log("hit too early");
                 //}
-
-                stateMachine.gameInputSO.ResetMajorAttackPressed();
 
                 hitCombo = true;
                 nextScale = GameGlobals.MusicScale.MAJOR;
                 return;
             }
 
-            if (stateMachine.gameInputSO.MinorAttackPressed)
+            if (stateMachine.gameInputSO.GetInputPressed(PlayerInputAction.MinorAttack))
             {
                 //if (!comboWindowOpened)
                 //{
                 //    tooEarly = true;
                 //    Debug.Log("hit too early");
                 //}
-
-                stateMachine.gameInputSO.ResetMinorAttackPressed();
 
                 hitCombo = true;
                 nextScale = GameGlobals.MusicScale.MINOR;
@@ -163,12 +159,6 @@ namespace ProjectColombo.StateMachine.Player
             stateMachine.myWeaponAttributes.DisableWeaponHitbox();
 
             stateMachine.gameInputSO.EnableAllInputs();
-
-
-            if (stateMachine.gameInputSO.MovementInput.magnitude < 0.01f)
-            {
-                stateMachine.gameInputSO.ResetMovementInput();
-            }
         }
 
         void CheckComboSwitch()

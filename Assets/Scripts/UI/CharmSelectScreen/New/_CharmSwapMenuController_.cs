@@ -352,17 +352,18 @@ namespace ProjectColombo.UI
                 return;
             }
 
-            if (gameInputSO == null || gameInputSO.playerInputActions == null)
+            if (gameInputSO == null || gameInputSO.inputActions == null)
             {
                 LogDebug("HandleInput: Skipping due to missing input references");
                 return;
             }
 
+            gameInputSO.UpdateInputs();
             if (gameInputSO.CharmSwapPausePressed)
             {
                 LogDebug("CharmSwapPausePressed detected!");
 
-                gameInputSO.ResetCharmSwapPausePressed();
+                gameInputSO.ResetCharmSwapPause();
 
                 wasActiveBeforePause = true;
 
@@ -381,7 +382,7 @@ namespace ProjectColombo.UI
                 return;
             }
 
-            if (gameInputSO.playerInputActions.UI.Submit.WasPressedThisFrame())
+            if (gameInputSO.inputActions.UI.Submit.WasPressedThisFrame())
             {
                 ConfirmSwap();
             }

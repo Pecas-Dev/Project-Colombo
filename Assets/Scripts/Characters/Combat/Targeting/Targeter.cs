@@ -76,7 +76,7 @@ namespace ProjectColombo.Combat
 
         void HandleTargetingInput()
         {
-            if (gameInputSO.TargetPressed)
+            if (gameInputSO.GetInputPressed(PlayerInputAction.Target))
             {
                 if (isTargetingActive)
                 {
@@ -95,8 +95,6 @@ namespace ProjectColombo.Combat
                 {
                     Debug.Log("No targets available to lock on. Targeting not activated.");
                 }
-
-                gameInputSO.ResetTargetPressed();
             }
         }
 
@@ -133,7 +131,7 @@ namespace ProjectColombo.Combat
                 return;
             }
 
-            Vector2 inputDirection = gameInputSO.TargetPointInput;
+            Vector2 inputDirection = gameInputSO.GetVector2Input(PlayerInputAction.TargetPoint);
 
             if (inputDirection.magnitude < MIN_INPUT_MAGNITUDE)
             {

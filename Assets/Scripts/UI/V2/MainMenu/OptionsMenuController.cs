@@ -240,7 +240,7 @@ namespace ProjectColombo.UI
 
             if (gameInputSO != null)
             {
-                gameInputSO.EnableUIMode();
+                gameInputSO.SwitchToUI();
             }
 
             RefreshUI();
@@ -289,20 +289,20 @@ namespace ProjectColombo.UI
         {
             base.HandleInput();
 
-            if (gameInputSO != null && gameInputSO.playerInputActions != null)
+            if (gameInputSO != null && gameInputSO.inputActions != null)
             {
-                if (gameInputSO.playerInputActions.UI.MoveLeftShoulder.WasPressedThisFrame() && CanNavigate())
+                if (gameInputSO.inputActions.UI.MoveLeftShoulder.WasPressedThisFrame() && CanNavigate())
                 {
                     NavigateLeft();
                     LogDebug("Left shoulder button pressed - navigating left");
                 }
-                else if (gameInputSO.playerInputActions.UI.MoveRightShoulder.WasPressedThisFrame() && CanNavigate())
+                else if (gameInputSO.inputActions.UI.MoveRightShoulder.WasPressedThisFrame() && CanNavigate())
                 {
                     NavigateRight();
                     LogDebug("Right shoulder button pressed - navigating right");
                 }
 
-                if (gameInputSO.playerInputActions.UI.Cancel.WasPressedThisFrame())
+                if (gameInputSO.inputActions.UI.Cancel.WasPressedThisFrame())
                 {
                     LogDebug("Cancel button pressed - returning to main menu");
                     ReturnToMainMenu();
