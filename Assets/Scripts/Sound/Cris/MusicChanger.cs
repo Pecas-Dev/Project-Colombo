@@ -41,6 +41,7 @@ public class AudioManager : MonoBehaviour
 
     private AudioSource explorationMusic;
     private AudioSource[] battleMusicLayers;
+    private bool canPlayBattleMusic = true;
     private float musicIntensity = 0f;
     private float battleBlend = 0f;
     private int currentComboLevel = 0;
@@ -104,6 +105,10 @@ public class AudioManager : MonoBehaviour
         currentScene = scene.name;
         isInGameplay = true;
 
+        battleBlend = 0f;
+        musicIntensity = 0f;
+        canPlayBattleMusic = false;
+
         switch (currentScene)
         {
             case "00_MainMenu":
@@ -117,9 +122,11 @@ public class AudioManager : MonoBehaviour
             case "03_LevelTwo":
             case "04_LevelThree":
                 PlayGameplayMusic(levelExplorationClip, levelBattleClips);
+                StartCoroutine(EnableBattleMusicAfterDelay(3f));
                 break;
             case "05_Church":
                 PlayGameplayMusic(churchExplorationClip, churchBattleClips);
+                StartCoroutine(EnableBattleMusicAfterDelay(3f));
                 break;
             case "06_WinScene":
             case "07_LooseScene":
@@ -189,6 +196,12 @@ public class AudioManager : MonoBehaviour
         foreach (var layer in battleMusicLayers) layer.Stop();
     }
 
+    private IEnumerator EnableBattleMusicAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        canPlayBattleMusic = true;
+    }
+
     private float GetInitialExplorationVolume()
     {
         float volumeMultiplier = masterVolume;
@@ -250,7 +263,7 @@ public class AudioManager : MonoBehaviour
 
     private void HandleChamberActivated()
     {
-        if (currentScene == "01_Tutorial") return;
+        if (currentScene == "01_Tutorial" || !canPlayBattleMusic) return;
 
         musicIntensity = 0.5f;
         currentMusicCategory = (currentScene == "05_Church") ? MusicCategory.ChurchFight : MusicCategory.Battle;
@@ -307,17 +320,34 @@ public class AudioManager : MonoBehaviour
         float startBlend = battleBlend;
         float time = 0f;
 
+        // Cache initial volumes
+        float[] startVolumes = new float[battleMusicLayers.Length];
+        for (int i = 0; i < battleMusicLayers.Length; i++)
+            startVolumes[i] = battleMusicLayers[i].volume;
+
         while (time < duration)
         {
             time += Time.deltaTime;
-            battleBlend = Mathf.Lerp(startBlend, 0f, time / duration);
+            float t = time / duration;
+            battleBlend = Mathf.Lerp(startBlend, 0f, t);
+
+            for (int i = 0; i < battleMusicLayers.Length; i++)
+            {
+                if (battleMusicLayers[i].clip != null)
+                {
+                    battleMusicLayers[i].volume = Mathf.Lerp(startVolumes[i], 0f, t);
+                }
+            }
+
             yield return null;
         }
 
-        foreach (var layer in battleMusicLayers)
+        // Fully faded out, now stop and reset
+        battleBlend = 0f;
+        for (int i = 0; i < battleMusicLayers.Length; i++)
         {
-            layer.Stop();
-            layer.volume = 0f;
+            battleMusicLayers[i].Stop();
+            battleMusicLayers[i].volume = 0f;
         }
     }
 

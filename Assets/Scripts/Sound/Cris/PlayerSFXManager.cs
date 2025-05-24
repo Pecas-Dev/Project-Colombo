@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using ProjectColombo.GameManagement.Events;
+using UnityEngine.SceneManagement;
 using ProjectColombo.Combat;
 using ProjectColombo;
 using System;
@@ -32,11 +33,14 @@ public class PlayerSFXManager : MonoBehaviour
     [Header("Block")]
     public AudioClip[] blockExecutionSounds;
     public AudioClip[] churchBlockExecutionSounds;
+    public AudioClip[] blockFeedbackSounds;
 
     //      [PARRY]
     [Header("Parry")]
     public AudioClip[] parryExecutionSounds;
     public AudioClip[] churchParryExecutionSounds;
+    public AudioClip[] majorParryFeedbackSound;
+    public AudioClip[] minorParryFeedbackSound;
 
     //      [ROLL]  
     [Header("Roll")]
@@ -50,6 +54,11 @@ public class PlayerSFXManager : MonoBehaviour
     public AudioClip maskAbilitySound3;
     public AudioClip maskAbilitySound4;
 
+    //      [ECHO UNLOCKED]
+    [Header("Echo")]
+    public AudioClip echoUnlockedSound;
+
+    //      [POTION]
     [Header("Potion")]
     public AudioClip potionSound;
 
@@ -110,6 +119,7 @@ public class PlayerSFXManager : MonoBehaviour
     [Range(0f, 1f)] public float rollVolume = 1f;
     [Range(0f, 1f)] public float comboVolume = 1f;
     [Range(0f, 1f)] public float potionVolume = 1f;
+    [Range(0f, 1f)] public float echoVolume = 1f;
 
     private string ExtractNoteFromClipName(string clipName)
     {
@@ -136,6 +146,12 @@ public class PlayerSFXManager : MonoBehaviour
 
     // All the following functions randomize and play one of the sounds for the chosen action.
     // They all count in also the church variations
+
+    private void Start()
+    {
+        UpdateChurchStatus();
+    }
+
 
     public void PlayFootstep()
     {
@@ -367,6 +383,10 @@ public class PlayerSFXManager : MonoBehaviour
 
     private void OnEnable()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        CustomEvents.OnEchoUnlocked += HandleEchoUnlocked;
+        CustomEvents.OnSuccessfullParry += HandleSuccessfulParry;
+        CustomEvents.OnDamageBlocked += HandleDamageBlocked;
         CustomEvents.OnDamageDelt += HandleDamageDelt;
         CustomEvents.OnAbilityUsed += HandleAbilityUsed;
         CustomEvents.OnPotionUsed += HandlePotionUsed;
@@ -374,9 +394,18 @@ public class PlayerSFXManager : MonoBehaviour
 
     private void OnDisable()
     {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        CustomEvents.OnEchoUnlocked -= HandleEchoUnlocked;
+        CustomEvents.OnSuccessfullParry -= HandleSuccessfulParry;
+        CustomEvents.OnDamageBlocked -= HandleDamageBlocked;
         CustomEvents.OnDamageDelt -= HandleDamageDelt;
         CustomEvents.OnAbilityUsed -= HandleAbilityUsed;
         CustomEvents.OnPotionUsed -= HandlePotionUsed;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        UpdateChurchStatus();
     }
 
     private void HandleDamageDelt(int damage, GameGlobals.MusicScale scale, bool sameScale, HealthManager enemy, int comboLength)
@@ -459,4 +488,40 @@ public class PlayerSFXManager : MonoBehaviour
         }
     }
 
+    private void HandleSuccessfulParry(GameGlobals.MusicScale scale, bool sameScale)
+    {
+        List<AudioClip> clipsToPlay = new List<AudioClip>(
+            scale == GameGlobals.MusicScale.MAJOR ? majorParryFeedbackSound : minorParryFeedbackSound
+        );
+
+        PlayRandom(clipsToPlay);
+    }
+
+    private void HandleDamageBlocked(int damage, GameGlobals.MusicScale scale, HealthManager playerHealthManager)
+    {
+        if (blockFeedbackSounds == null || blockFeedbackSounds.Length == 0)
+        {
+            Debug.LogWarning("No block feedback sounds assigned.");
+            return;
+        }
+
+        PlayRandom(blockFeedbackSounds);
+    }
+
+    private void HandleEchoUnlocked()
+    {
+        if (echoUnlockedSound != null)
+        {
+            audioSource.PlayOneShot(echoUnlockedSound, echoVolume);
+        }
+        else
+        {
+            Debug.LogWarning("Echo unlocked sound is not assigned.");
+        }
+    }
+
+    private void UpdateChurchStatus()
+    {
+        isInChurch = SceneManager.GetActiveScene().name == "05_Church";
+    }
 }

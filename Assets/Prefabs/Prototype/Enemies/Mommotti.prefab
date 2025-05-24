@@ -411,6 +411,7 @@ GameObject:
   - component: {fileID: 1789458355428264256}
   - component: {fileID: 2894495123470787704}
   - component: {fileID: 8475050344131627856}
+  - component: {fileID: 1269334664108422290}
   m_Layer: 8
   m_Name: Mommotti
   m_TagString: Enemy
@@ -656,6 +657,32 @@ MonoBehaviour:
   modelRenderer: {fileID: 2463069019301858026}
   weaponRenderer: {fileID: 6665270354008103032}
   accessoryRenderer: {fileID: 1376728662692455595}
+--- !u!114 &1269334664108422290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7150333355011664674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e18d42abefcff2a4ca9d3ac439a4e742, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  walkSounds:
+  - {fileID: 8300000, guid: 19233fb85789d3149bc9bfdf2ed4090d, type: 3}
+  - {fileID: 8300000, guid: 237e8e72a1936da4580d6149d3549ca9, type: 3}
+  - {fileID: 8300000, guid: 7ccfc05268ab6b14e9dd3c26a3f0852b, type: 3}
+  - {fileID: 8300000, guid: d304a5c1bd3cb1c4c8b4378223c23099, type: 3}
+  - {fileID: 8300000, guid: 51d47f51068b1fc47b5949762c4f903b, type: 3}
+  - {fileID: 8300000, guid: 72f5c7459a095e94b8cc71067ac11d25, type: 3}
+  attackSounds:
+  - {fileID: 8300000, guid: 071ed5a293c761e488339b0a25cbf940, type: 3}
+  - {fileID: 8300000, guid: b04477c827aa5f64f8f01ef215f7b4d1, type: 3}
+  - {fileID: 8300000, guid: eaedee62bb44e084c8181cfd3df355db, type: 3}
+  - {fileID: 8300000, guid: 5ba2bf3d2e4651f40a83e9f880127659, type: 3}
+  walkVolume: 0.474
+  attackVolume: 0.615
 --- !u!1 &7453230939432159938
 GameObject:
   m_ObjectHideFlags: 0
