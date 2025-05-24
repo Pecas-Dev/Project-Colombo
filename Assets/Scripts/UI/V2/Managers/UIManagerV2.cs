@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using ProjectColombo.UI.Pausescreen;
+using ProjectColombo.GameInputSystem;
 
 
 namespace ProjectColombo.UI
@@ -29,6 +30,10 @@ namespace ProjectColombo.UI
         [Header("Input Settings")]
         [SerializeField] float inputBufferTime = 0.2f;
         [SerializeField] Key keyboardPauseKey = Key.Escape;
+
+        [Header("Game Input")]
+        [SerializeField] GameInputSO gameInputSO;
+
 
         [Header("Debug")]
         [SerializeField] bool enableDebugLogs = true;
@@ -193,7 +198,7 @@ namespace ProjectColombo.UI
                 pausePressed = true;
             }
 
-            if (gamepad != null && (gamepad.startButton.wasPressedThisFrame || gamepad.selectButton.wasPressedThisFrame))
+            if (gamepad != null && /*(gamepad.startButton.wasPressedThisFrame || gamepad.selectButton.wasPressedThisFrame) ||*/ gameInputSO.inputActions.Player.Pause.WasPressedThisFrame())
             {
                 pausePressed = true;
             }
