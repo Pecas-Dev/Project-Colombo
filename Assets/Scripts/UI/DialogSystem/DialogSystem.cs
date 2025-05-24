@@ -77,6 +77,7 @@ namespace ProjectColombo.UI
 
             StartCoroutine(StopMoving());
             GameManager.Instance.gameInput.SwitchToUI();
+            GameManager.Instance.gameInput.LockAllInputsViaTutorial();
 
             dialogCanvas.SetActive(true);
             HUDCanvas.SetActive(false);
@@ -97,6 +98,7 @@ namespace ProjectColombo.UI
         {
             isEnabled = false;
             GameManager.Instance.gameInput.SwitchToGameplay();
+            GameManager.Instance.gameInput.UnlockAllInputsViaTutorial();
 
 
             onDialogComplete.Invoke();
