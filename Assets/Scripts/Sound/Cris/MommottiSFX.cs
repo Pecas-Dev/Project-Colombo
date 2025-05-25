@@ -1,17 +1,25 @@
 using UnityEngine;
+using ProjectColombo.Combat;
+using static ProjectColombo.Combat.HealthManager;
 
 public class MommottiSFX : MonoBehaviour
 {
     [Header("Audio Clips")]
     public AudioClip[] walkSounds;
     public AudioClip[] attackSounds;
+    public AudioClip[] damagedSounds;
 
     [Header("Volume Controls")]
     [Range(0f, 1f)] public float walkVolume = 1f;
     [Range(0f, 1f)] public float attackVolume = 1f;
+    [Range(0f, 1f)] public float damagedVolume = 1f;
 
     private AudioSource walkAudioSource;
     private AudioSource attackAudioSource;
+    private AudioSource damagedAudioSource;
+
+    private HealthManager healthManager;
+    private int lastHealth;
 
     private void Awake()
     {
@@ -30,6 +38,28 @@ public class MommottiSFX : MonoBehaviour
         attackAudioSource = gameObject.AddComponent<AudioSource>();
         attackAudioSource.playOnAwake = false;
         attackAudioSource.spatialBlend = 0f; // full 2D sound
+
+        // Setup damaged audio source (2D) <-- NEW
+        damagedAudioSource = gameObject.AddComponent<AudioSource>();
+        damagedAudioSource.playOnAwake = false;
+        damagedAudioSource.spatialBlend = 0f;
+
+        healthManager = GetComponent<HealthManager>();
+        if (healthManager != null)
+        {
+            lastHealth = healthManager.CurrentHealth;
+            healthManager.HealthChanged += OnHealthChanged;
+        }
+    }
+
+    private void OnHealthChanged(int current, int max)
+    {
+        if (current < lastHealth)
+        {
+            PlayDamagedSFX();
+        }
+
+        lastHealth = current;
     }
 
     public void PlayWalkSFX()
@@ -40,6 +70,11 @@ public class MommottiSFX : MonoBehaviour
     public void PlayAttackSFX()
     {
         PlayRandomClip(attackSounds, attackVolume, attackAudioSource);
+    }
+
+    public void PlayDamagedSFX()
+    {
+        PlayRandomClip(damagedSounds, damagedVolume, damagedAudioSource);
     }
 
     private void PlayRandomClip(AudioClip[] clips, float maxVolume, AudioSource source)
@@ -53,5 +88,13 @@ public class MommottiSFX : MonoBehaviour
         AudioClip clip = clips[Random.Range(0, clips.Length)];
 
         source.PlayOneShot(clip, maxVolume);
+    }
+
+    private void OnDestroy()
+    {
+        if (healthManager != null)
+        {
+            healthManager.HealthChanged -= OnHealthChanged;
+        }
     }
 }
