@@ -11,6 +11,7 @@ namespace ProjectColombo.Enemies.DropSystem
     {
         public Variant myVariant;
         LevelStats myLevelStats;
+        bool hasDropped = false;
 
         float dropChanceCoins;
         int minAmountOfCoins;
@@ -18,6 +19,7 @@ namespace ProjectColombo.Enemies.DropSystem
         float dropChanceCommonCharm;
         float dropChanceRareCharm;
         float dropChanceLegendaryCharm;
+
 
 
         private void Start()
@@ -61,38 +63,46 @@ namespace ProjectColombo.Enemies.DropSystem
 
         public void DropItem()
         {
-            float random = Random.Range(0, 100);
-            DropManager manager = GameManager.Instance.GetComponent<DropManager>();
+            if (hasDropped) return;
+            hasDropped = true;
 
+            DropManager manager = GameManager.Instance.GetComponent<DropManager>();
             int currentLuck = GameManager.Instance.GetComponent<PlayerInventory>().currentLuck;
 
-            float currentDropChanceCommonCharm = (dropChanceCommonCharm + currentLuck * 0.25f);
-            float currentDropChanceRareCharm = (dropChanceRareCharm + currentLuck * 0.25f);
-            float currentDropChanceLegendaryCharm = (dropChanceLegendaryCharm + currentLuck * 0.25f);
+            float currentCommon = dropChanceCommonCharm + currentLuck * 0.25f;
+            float currentRare = dropChanceRareCharm + currentLuck * 0.25f;
+            float currentLegendary = dropChanceLegendaryCharm + currentLuck * 0.25f;
+            float currentCoins = dropChanceCoins;
 
-            if (random < currentDropChanceCommonCharm)
+            float totalChance = currentCommon + currentRare + currentLegendary + currentCoins;
+
+            float roll = Random.Range(0f, 100f);
+            if (roll > totalChance) return; // No drop
+
+            float weightedRoll = Random.Range(0f, totalChance);
+            float cumulative = 0f;
+
+            Vector3 pos = new Vector3(transform.position.x, 0f, transform.position.z);
+
+            if ((cumulative += currentCommon) >= weightedRoll)
             {
-                Vector3 position = new Vector3(transform.position.x, 0f, transform.position.z);
-                manager.DropRandomCommonCharm(position);
+                manager.DropRandomCommonCharm(pos);
             }
-            else if (random < currentDropChanceRareCharm + currentDropChanceCommonCharm)
+            else if ((cumulative += currentRare) >= weightedRoll)
             {
-                Vector3 position = new Vector3(transform.position.x, 0f, transform.position.z);
-                manager.DropRandomRareCharm(position);
+                manager.DropRandomRareCharm(pos);
             }
-            else if (random < currentDropChanceLegendaryCharm + currentDropChanceRareCharm + currentDropChanceCommonCharm)
+            else if ((cumulative += currentLegendary) >= weightedRoll)
             {
-                Vector3 position = new Vector3(transform.position.x, 0f, transform.position.z);
-                manager.DropRandomLegendaryCharm(position);
+                manager.DropRandomLegendaryCharm(pos);
             }
-            else if (random < dropChanceCoins + currentDropChanceLegendaryCharm + currentDropChanceRareCharm + currentDropChanceCommonCharm)
+            else
             {
-                int rand = Random.Range(minAmountOfCoins, maxAmountOfCoins+1);
+                int rand = Random.Range(minAmountOfCoins, maxAmountOfCoins + 1);
                 rand += 2 * currentLuck;
-
-                Vector3 position = new Vector3(transform.position.x, 0f, transform.position.z);
-                manager.DropCoins(rand, position);
+                manager.DropCoins(rand, pos);
             }
         }
+
     }
 }

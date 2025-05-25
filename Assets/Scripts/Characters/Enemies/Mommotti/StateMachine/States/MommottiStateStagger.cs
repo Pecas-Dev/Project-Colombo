@@ -35,7 +35,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 
             if (timer >= stateMachine.myEntityAttributes.stunnedTime)
             {
-                stateMachine.SwitchState(new MommottiStateChase(stateMachine));
+                stateMachine.SwitchState(new MommottiStateAttack(stateMachine));
             }
         }
 

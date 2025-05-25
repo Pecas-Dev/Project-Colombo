@@ -92,8 +92,9 @@ public class PlayerRollState : PlayerBaseState
         stateMachine.myRigidbody.angularVelocity = Vector3.zero;
 
         // Apply clean impulse for the roll
+        float multiplyer = stateMachine.myEntityAttributes.moveSpeed / stateMachine.defaultSpeed;
         float impulseForce = stateMachine.myEntityAttributes.rollImpulseForce;
-        stateMachine.myRigidbody.AddForce(stateMachine.transform.forward * impulseForce, ForceMode.Impulse);
+        stateMachine.myRigidbody.AddForce(stateMachine.transform.forward * impulseForce * multiplyer, ForceMode.Impulse);
     }
 
     private void SetIgnoreLayers()

@@ -164,7 +164,7 @@ namespace ProjectColombo.Control
         public void TriggerDeath()
         {
             animator.speed = 1f;
-            animator.SetTrigger("death");
+            animator.Play("Death");
         }
 
     }

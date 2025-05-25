@@ -45,6 +45,7 @@ namespace ProjectColombo.Combat
         [HideInInspector] public GameGlobals.MusicScale currentScale = GameGlobals.MusicScale.NONE;
 
         bool doHitstop = true;
+        bool isSlowMo = false;
         List<GameObject> hitObjects = new();
 
         ParticleSystem myParticles;
@@ -226,14 +227,17 @@ namespace ProjectColombo.Combat
                 {
                     if (doHitstop)
                     {
-                        StopTime();
                         ScreenShake();
-                        Rumble(0.1f, 0.5f, 0.1f); // Light buzz
-                        doHitstop = false;
                     }
 
                     if (currentScale != otherAttributes.currentScale)
                     {
+                        if (doHitstop)
+                        {
+                            StopTime();
+                            Rumble(0.1f, 0.5f, 0.1f); // Light buzz
+                        }
+
                         //Debug.Log("..with the opposite scale");
                         sameScale = false;
                         damage = AddTemporaryDamagePercentage(damage, correctAttackScaleBonusPercentage);
@@ -262,6 +266,11 @@ namespace ProjectColombo.Combat
                     attackDirection.y = 0.0f; //could be increased to make the hit entity jump a bit
 
                     otherStateMachine.ApplyKnockback(attackDirection, knockback, currentScale);
+
+                    if (doHitstop)
+                    {
+                        doHitstop = false;
+                    }
                 }
                 else if (otherHealth != null && otherHealth.CurrentHealth > 0)
                 {
@@ -458,8 +467,11 @@ namespace ProjectColombo.Combat
         {
             float pauseDuration = 0.2f; // Adjust the duration of the freeze
 
+            isSlowMo = true;
             Time.timeScale = 0.1f; // Slow down time instead of freezing completely
             yield return new WaitForSecondsRealtime(pauseDuration);
+
+            isSlowMo = false;
             Time.timeScale = 1f; // Resume normal time
         }
 
@@ -524,6 +536,19 @@ namespace ProjectColombo.Combat
         public void ClearCollider()
         {
             hitObjects = new();
+        }
+
+        void OnDisable()
+        {
+            if (isSlowMo)
+            Time.timeScale = 1f; // Ensure game doesn't stay stuck in slow motion
+        }
+
+
+        private void OnDestroy()
+        {
+            if (isSlowMo)
+            Time.timeScale = 1f;
         }
     }
 }

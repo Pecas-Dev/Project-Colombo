@@ -59,6 +59,7 @@ namespace ProjectColombo.StateMachine.Player
         [HideInInspector] public string currentComboString = "";
         [HideInInspector] public ShopKeeper closeShop = null;
         bool activateCharmsAndMask = false;
+        [HideInInspector] public float defaultSpeed = GameManager.Instance.GetComponent<GlobalStats>().defaultPlayerSpeed;
 
         void Awake()
         {

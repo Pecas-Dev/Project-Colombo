@@ -1,5 +1,6 @@
 using ProjectColombo.Combat;
 using ProjectColombo.Enemies;
+using ProjectColombo.GameManagement.Events;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -38,6 +39,28 @@ namespace ProjectColombo.Tutorial
             lastFrameHealth = maxHealth;
 
             myAnimator = GetComponent<Animator>();
+            CustomEvents.OnSuccessfullParry += OnSuccessfullParry;
+        }
+
+        private void OnSuccessfullParry(GameGlobals.MusicScale scale, bool sameScale)
+        {
+            if (!sameScale)
+            {
+                canAttack = false;
+                InterruptAttack();
+            }
+
+            CustomEvents.OnSuccessfullParry -= OnSuccessfullParry;
+        }
+
+        private void OnDisable()
+        {
+            CustomEvents.OnSuccessfullParry -= OnSuccessfullParry;
+        }
+
+        private void OnDestroy()
+        {
+            CustomEvents.OnSuccessfullParry -= OnSuccessfullParry;
         }
 
         private void Update()

@@ -197,6 +197,8 @@ namespace ProjectColombo.GameManagement
 
             ResumeGame();
 
+
+            //WHAT IS THIS??
             if (scene.name == "03_LevelTwo")
             {
                 ResetAllEchoMissions();

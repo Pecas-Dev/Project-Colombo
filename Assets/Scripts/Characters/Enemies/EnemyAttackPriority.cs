@@ -15,11 +15,14 @@ namespace ProjectColombo.Enemies
 
         bool isActive = false;
         int currentAttackerIndex = 0;
-        public float interval = 3f;
+        public float minIntervall = 2;
+        public float maxIntervall = 5;
+        float currentIntervall;
         float timer;
 
         public void Activate()
         {
+            currentIntervall = Random.Range(minIntervall, maxIntervall);
             CustomEvents.OnEnemyAttack += OnEnemyAttack;
             CustomEvents.OnChamberFinished += Finished;
             CustomEvents.OnEnemyDeath += EnemyDied;
@@ -48,7 +51,7 @@ namespace ProjectColombo.Enemies
             {
                 timer += Time.deltaTime;
 
-                if (timer >= interval)
+                if (timer >= currentIntervall)
                 {
                     UpdateAllEnemies();
                     if (allCurrentEnemies.Count == 0)
@@ -56,7 +59,7 @@ namespace ProjectColombo.Enemies
                         isActive = false;
                     }
 
-
+                    currentIntervall = Random.Range(minIntervall, maxIntervall);
                     timer = 0f;
                     SetAttackers();
                 }
@@ -70,6 +73,7 @@ namespace ProjectColombo.Enemies
             if (allCurrentEnemies.Count > 1)
             {
                 SetAttackers();
+                currentIntervall = Random.Range(minIntervall, maxIntervall);
                 timer = 0f;
             }
         }
@@ -78,7 +82,7 @@ namespace ProjectColombo.Enemies
         private void EnemyDied(GameGlobals.MusicScale scale, GameObject enemy)
         {
             RemoveFromEnemies(enemy);
-            timer = interval; //send a new enemy
+            timer = currentIntervall; //send a new enemy
         }
 
         private void Finished()
