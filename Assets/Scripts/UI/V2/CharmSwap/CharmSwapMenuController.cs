@@ -1301,7 +1301,7 @@ namespace ProjectColombo.UI
                 for (int i = 0; i < slotBlockerImages.Length; i++)
                 {
                     if (slotBlockerImages[i] != null)
-                    {
+                   {
                         slotBlockerImages[i].SetActive(false);
                         LogDebug($"Deactivated slot blocker {i}");
                     }
