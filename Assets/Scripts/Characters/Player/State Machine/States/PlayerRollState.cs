@@ -57,8 +57,6 @@ public class PlayerRollState : PlayerBaseState
         stateMachine.gameInputSO.EnableInput(PlayerInputAction.UseSpecialAbility);
 
         stateMachine.myPlayerAnimator.TriggerRoll();
-
-        stateMachine.StartCoroutine(ApplyPushForce());
     }
 
 
@@ -86,7 +84,12 @@ public class PlayerRollState : PlayerBaseState
         CanQueueRoll = true;
     }
 
-    IEnumerator ApplyPushForce()
+    public void OnImpulseForce(float impulseForce)
+    {
+        stateMachine.StartCoroutine(ApplyPushForce(impulseForce));
+    }
+
+    IEnumerator ApplyPushForce(float impulseForce)
     {
         yield return null;
         yield return new WaitForFixedUpdate();
@@ -96,9 +99,7 @@ public class PlayerRollState : PlayerBaseState
         stateMachine.myRigidbody.angularVelocity = Vector3.zero;
 
         // Apply clean impulse for the roll
-        float multiplyer = stateMachine.myEntityAttributes.moveSpeed / stateMachine.defaultSpeed;
-        float impulseForce = stateMachine.myEntityAttributes.rollImpulseForce;
-        stateMachine.myRigidbody.AddForce(stateMachine.transform.forward * impulseForce * multiplyer, ForceMode.Impulse);
+        stateMachine.myRigidbody.AddForce(stateMachine.transform.forward * impulseForce, ForceMode.Impulse);
     }
 
     private void SetIgnoreLayers()

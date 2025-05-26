@@ -30,7 +30,7 @@ namespace ProjectColombo.Objects.Charms
 
             if (rand < chanceForDoubleStamina)
             {
-                if (myPlayerStateMachine.currentComboString.Length > 2 || myPlayerStateMachine.currentState == PlayerStateMachine.PlayerState.Roll)
+                if (myPlayerStateMachine.currentComboString.Length > 2 || myPlayerStateMachine.currentStateEnum == PlayerStateMachine.PlayerState.Roll)
                 {
                     Debug.Log("used extra stamina");
                     myPlayerStateMachine.myStamina.TryConsumeStamina(1);

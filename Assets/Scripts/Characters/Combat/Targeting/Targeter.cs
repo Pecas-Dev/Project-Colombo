@@ -10,7 +10,6 @@ namespace ProjectColombo.Combat
     {
         [Header("References")]
         GameInputSO gameInputSO;
-        EntityAttributes entityAttributes;
 
         [Header("Targeting State")]
         public bool isTargetingActive = false;
@@ -35,7 +34,6 @@ namespace ProjectColombo.Combat
         void Start()
         {
             gameInputSO = GameManager.Instance.gameInput;
-            entityAttributes = GetComponentInParent<EntityAttributes>();
             sphereCollider = GetComponent<SphereCollider>();
         }
 
@@ -250,6 +248,17 @@ namespace ProjectColombo.Combat
                 }
             }
         }
+
+        public bool HasManualTarget()
+        {
+            return isTargetingActive && currentTarget != null;
+        }
+
+        public GameObject GetManualTarget()
+        {
+            return HasManualTarget() ? currentTarget.gameObject : null;
+        }
+
 
         void OnDrawGizmos()
         {

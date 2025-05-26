@@ -41,7 +41,7 @@ namespace ProjectColombo.StateMachine.Player
 
 
         [Header("Player State")]
-        public PlayerState currentState;
+        public PlayerState currentStateEnum;
 
         [HideInInspector] public GameInputSO gameInputSO;
 
@@ -99,7 +99,7 @@ namespace ProjectColombo.StateMachine.Player
         {
             isInvunerable = true;
             yield return new WaitForSeconds(duration);
-            isInvunerable = true;
+            isInvunerable = false;
         }
 
         public void ApplyKnockback(Vector3 direction, float knockbackStrength)
@@ -114,7 +114,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public void SetStaggered()
         {
-            if (currentState == PlayerState.Block) return;
+            if (currentStateEnum == PlayerState.Block) return;
 
             myWeaponAttributes.DisableWeaponHitbox();
             SwitchState(new PlayerStaggerState(this)); //when interrupt switch to stagger
@@ -134,7 +134,7 @@ namespace ProjectColombo.StateMachine.Player
                 activateCharmsAndMask = true;
             }
 
-            if (myHealthManager.CurrentHealth <= 0 && currentState != PlayerState.Dead)
+            if (myHealthManager.CurrentHealth <= 0 && currentStateEnum != PlayerState.Dead)
             {
                 SwitchState(new PlayerDeathState(this));
             }
@@ -233,7 +233,7 @@ namespace ProjectColombo.StateMachine.Player
 
         internal void SetCurrentState(PlayerState newState)
         {
-            currentState = newState;
+            currentStateEnum = newState;
         }
 
         public void StartAttack()
@@ -248,7 +248,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public void EnterShopState(GameObject shop)
         {
-            if (currentState == PlayerState.Movement)
+            if (currentStateEnum == PlayerState.Movement)
             {
                 SwitchState(new PlayerShopState(this, shop));
             }
@@ -256,7 +256,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public void ExitShopState()
         {
-            if (currentState == PlayerState.Shop)
+            if (currentStateEnum == PlayerState.Shop)
             {
                 SwitchState(new PlayerMovementState(this));
             }
@@ -318,6 +318,20 @@ namespace ProjectColombo.StateMachine.Player
         public void PlayWeaponVFX()
         {
             myWeaponAttributes.PlayVFX();
+        }
+
+        public void HandleImpulse(float impulseForce)
+        {
+            float speedFactor = myEntityAttributes.moveSpeed / defaultSpeed;
+
+            if (currentState is PlayerAttackState attackState)
+            {
+                attackState.OnAttackImpulse(impulseForce * speedFactor);
+            }
+            else if (currentState is PlayerRollState rollState)
+            {
+                rollState.OnImpulseForce(impulseForce * speedFactor);
+            }
         }
     }
 }

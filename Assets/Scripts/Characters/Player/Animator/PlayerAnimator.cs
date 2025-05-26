@@ -121,6 +121,11 @@ namespace ProjectColombo.Control
             animator.SetTrigger("Block");
         }
 
+        public void ResetBlock()
+        {
+            animator.ResetTrigger("Block");
+        }
+
         // ---------------------------------------------------------
         // Parry
         // ---------------------------------------------------------

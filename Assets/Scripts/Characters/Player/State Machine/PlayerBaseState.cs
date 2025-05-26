@@ -23,7 +23,7 @@ namespace ProjectColombo.StateMachine.Player
         protected void HandleStateSwitchFromInput()
         {
             //set attack states
-            if (stateMachine.gameInputSO.GetInputPressed(GameInputSystem.PlayerInputAction.MajorAttack) && stateMachine.currentState != PlayerStateMachine.PlayerState.Attack)
+            if (stateMachine.gameInputSO.GetInputPressed(GameInputSystem.PlayerInputAction.MajorAttack) && stateMachine.currentStateEnum != PlayerStateMachine.PlayerState.Attack)
             {
 
                 if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToAttack)) return;
@@ -32,7 +32,7 @@ namespace ProjectColombo.StateMachine.Player
                 return;
             }
 
-            if (stateMachine.gameInputSO.GetInputPressed(GameInputSystem.PlayerInputAction.MinorAttack) && stateMachine.currentState != PlayerStateMachine.PlayerState.Attack)
+            if (stateMachine.gameInputSO.GetInputPressed(GameInputSystem.PlayerInputAction.MinorAttack) && stateMachine.currentStateEnum != PlayerStateMachine.PlayerState.Attack)
             {
 
                 if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToAttack)) return;
@@ -50,7 +50,7 @@ namespace ProjectColombo.StateMachine.Player
                 return;
             }
 
-            if (stateMachine.gameInputSO.GetInputHeld(GameInputSystem.PlayerInputAction.Block) && stateMachine.currentState != PlayerStateMachine.PlayerState.Block)
+            if (stateMachine.gameInputSO.GetInputHeld(GameInputSystem.PlayerInputAction.Block) && stateMachine.currentStateEnum != PlayerStateMachine.PlayerState.Block)
             {
                 stateMachine.SwitchState(new PlayerBlockState(stateMachine));
                 return;

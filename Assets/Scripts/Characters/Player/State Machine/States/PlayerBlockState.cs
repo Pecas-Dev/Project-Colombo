@@ -66,7 +66,7 @@ namespace ProjectColombo.StateMachine.Player
 
             HandleStateSwitchFromInput();
 
-            if (!stateMachine.gameInputSO.GetInputHeld(PlayerInputAction.Block))
+            if (!stateMachine.gameInputSO.GetInputHeld(PlayerInputAction.Block) || stateMachine.gameInputSO.GetInputReleased(PlayerInputAction.Block))
             {
                 stateMachine.SwitchState(new PlayerMovementState(stateMachine));
                 return;
@@ -76,6 +76,7 @@ namespace ProjectColombo.StateMachine.Player
         public override void Exit()
         {
             stateMachine.gameInputSO.EnableAllInputs();
+            stateMachine.myPlayerAnimator.ResetBlock();
             stateMachine.isBlocking = false;
 
             stateMachine.myPlayerVFX.blockVFX.Stop();

@@ -77,11 +77,17 @@ namespace ProjectColombo.StateMachine.Player
 
             var targeter = stateMachine.myTargeter;
 
-            currentTarget = GetClosestTarget();
+            if (targeter.HasManualTarget())
+            {
+                currentTarget = targeter.GetManualTarget(); // Manual lock-on takes priority
+            }
+            else
+            {
+                currentTarget = GetClosestTarget(); // Fallback to auto-target
+            }
+
             targetPosition = currentTarget?.transform.position ??
                 (stateMachine.transform.position + stateMachine.transform.forward * stateMachine.myWeaponAttributes.distanceToActivateForwardImpulse);
-
-            stateMachine.StartCoroutine(ApplyAttackImpulse());
         }
 
         public override void Tick(float deltaTime)
@@ -234,7 +240,12 @@ namespace ProjectColombo.StateMachine.Player
             stateMachine.myRigidbody.transform.rotation = targetRotation;
         }
 
-        IEnumerator ApplyAttackImpulse()
+        public void OnAttackImpulse(float impulseForce)
+        {
+            stateMachine.StartCoroutine(ApplyAttackImpulse(impulseForce));
+        }
+
+        IEnumerator ApplyAttackImpulse(float impulseForce)
         {
             yield return null;
             yield return new WaitForFixedUpdate();
@@ -252,7 +263,7 @@ namespace ProjectColombo.StateMachine.Player
 
             float distanceToTarget = directionToTarget.magnitude;
 
-            float impulseForce = stateMachine.myEntityAttributes.attackImpulseForce;
+            //float impulseForce = stateMachine.myEntityAttributes.attackImpulseForce;
 
             if (myScale == GameGlobals.MusicScale.MINOR) impulseForce *= stabImpulseMultiplier;
 
