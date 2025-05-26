@@ -44,7 +44,8 @@ namespace ProjectColombo.StateMachine.Player
             //set defense states
             if (stateMachine.gameInputSO.GetInputPressed(GameInputSystem.PlayerInputAction.Roll))
             {
-                if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToRoll)) return;
+                //if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToRoll)) return;
+                if (!stateMachine.myStamina.TryConsumeStaminaWithFeedback(stateMachine.myStamina.staminaToRoll)) return;
 
                 stateMachine.SwitchState(new PlayerRollState(stateMachine));
                 return;

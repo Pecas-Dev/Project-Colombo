@@ -1,3 +1,4 @@
+using System;
 using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.GameManagement.Stats;
@@ -22,6 +23,9 @@ namespace ProjectColombo.Combat
         public int staminaToAttack = 1;
 
         [ReadOnlyInspector] public bool exploreMode;
+
+
+        public static Action OnInsufficientStamina;
 
 
 
@@ -137,6 +141,30 @@ namespace ProjectColombo.Combat
                 return true;
             }
 
+            return false;
+        }
+
+        public bool TryConsumeStaminaWithFeedback(float staminaCost)
+        {
+            if (exploreMode) 
+            {
+                return true;
+            }
+
+            if (staminaCost < 0)
+            {
+                currentStamina = Mathf.Min(currentStamina - staminaCost, currentMaxStamina);
+                return true;
+            }
+
+            if (Mathf.FloorToInt(currentStamina) >= staminaCost)
+            {
+                currentStamina -= staminaCost;
+                CustomEvents.StaminaUsed();
+                return true;
+            }
+
+            OnInsufficientStamina?.Invoke();
             return false;
         }
     }

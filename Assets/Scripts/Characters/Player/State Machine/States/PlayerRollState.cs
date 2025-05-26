@@ -29,7 +29,7 @@ public class PlayerRollState : PlayerBaseState
 
         CanQueueRoll = false;
 
-        stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.staminaToRoll);
+        //stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.staminaToRoll);
         Vector2 moveInput = stateMachine.gameInputSO.GetVector2Input(PlayerInputAction.Movement);
 
         //snap to direction

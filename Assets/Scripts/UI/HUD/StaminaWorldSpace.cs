@@ -2,6 +2,7 @@ using UnityEngine;
 using ProjectColombo.Combat;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 
 namespace ProjectColombo.UI.HUD
@@ -27,6 +28,16 @@ namespace ProjectColombo.UI.HUD
         [Header("Positioning")]
         [SerializeField] Vector3 positionOffset = new Vector3(0, 0, 0);
 
+        [Header("Material Blinking")]
+        [SerializeField] Material staminaMaterial;
+        [SerializeField] Color originalBaseColor = Color.black;
+        [SerializeField] Color originalEmissionColor = Color.black;
+        [SerializeField] float originalEmissionIntensity = 0f;
+        [SerializeField] Color alertBaseColor = Color.red;
+        [SerializeField] Color alertEmissionColor = new Color(190f / 255f, 0f, 0f, 1f);
+        [SerializeField] float alertEmissionIntensity = 6f;
+        [SerializeField] float blinkDuration = 0.5f;
+
         [Header("Debug")]
         [SerializeField] bool debugMode = false;
         [SerializeField, Range(1, 10)] int debugMaxStamina = 7;
@@ -38,16 +49,24 @@ namespace ProjectColombo.UI.HUD
         [SerializeField] bool refillStamina = false;
         [SerializeField] bool toggleConsumptionDirection = false;
 
-        readonly List<GameObject> indicators = new();
-
         int lastBuildMaxStamina = -1;
+
+        bool isCurrentlyBlinking = false;
+
+
 
         Transform parentTransform;
 
+        readonly List<GameObject> indicators = new();
+
         Vector3 worldPositionWithoutRotation;
+
+
 
         void Start()
         {
+            SubscribeToStaminaEvents();
+
             parentTransform = transform.parent;
 
             string currentSceneName = SceneManager.GetActiveScene().name;
@@ -69,6 +88,11 @@ namespace ProjectColombo.UI.HUD
             }
 
             BuildLayout();
+        }
+
+        void OnDestroy()
+        {
+            UnsubscribeFromStaminaEvents();
         }
 
         void LateUpdate()
@@ -304,6 +328,105 @@ namespace ProjectColombo.UI.HUD
                 }
             }
         }
+
+        void SubscribeToStaminaEvents()
+        {
+            Stamina.OnInsufficientStamina += TriggerInsufficientStaminaBlink;
+        }
+        void UnsubscribeFromStaminaEvents()
+        {
+            Stamina.OnInsufficientStamina -= TriggerInsufficientStaminaBlink;
+        }
+
+        void TriggerInsufficientStaminaBlink()
+        {
+            if (isCurrentlyBlinking || staminaMaterial == null) return;
+
+            StartCoroutine(BlinkStaminaMaterial());
+        }
+
+        void SetupMaterialIntensity()
+        {
+            if (staminaMaterial != null)
+            {
+                Color baseEmission = originalEmissionColor * Mathf.Pow(2f, 10f);
+
+                if (staminaMaterial.HasProperty("_EmissionColor"))
+                {
+                    staminaMaterial.SetColor("_EmissionColor", baseEmission);
+                    staminaMaterial.EnableKeyword("_EMISSION");
+                }
+                else if (staminaMaterial.HasProperty("_EmissiveColor"))
+                {
+                    staminaMaterial.SetColor("_EmissiveColor", baseEmission);
+                }
+
+                if (staminaMaterial.HasProperty("_BaseColor"))
+                {
+                    staminaMaterial.SetColor("_BaseColor", originalBaseColor);
+                }
+                else if (staminaMaterial.HasProperty("_MainColor"))
+                {
+                    staminaMaterial.SetColor("_MainColor", originalBaseColor);
+                }
+            }
+        }
+
+        IEnumerator BlinkStaminaMaterial()
+        {
+            isCurrentlyBlinking = true;
+
+            Color originalBase = GetMaterialColor("_BaseColor", "_MainColor", originalBaseColor);
+            Color originalEmission = GetMaterialColor("_EmissionColor", "_EmissiveColor", originalEmissionColor);
+
+            SetMaterialColor("_BaseColor", "_MainColor", alertBaseColor);
+
+            Color hdrEmissionColor = alertEmissionColor * Mathf.Pow(2f, alertEmissionIntensity);
+            SetMaterialColor("_EmissionColor", "_EmissiveColor", hdrEmissionColor);
+
+            if (staminaMaterial.HasProperty("_EmissionColor"))
+            {
+                staminaMaterial.EnableKeyword("_EMISSION");
+            }
+
+            yield return new WaitForSeconds(blinkDuration);
+
+            SetMaterialColor("_BaseColor", "_MainColor", originalBase);
+            SetMaterialColor("_EmissionColor", "_EmissiveColor", originalEmission);
+
+            isCurrentlyBlinking = false;
+        }
+
+        Color GetMaterialColor(string primaryProperty, string fallbackProperty, Color defaultColor)
+        {
+            if (staminaMaterial == null) return defaultColor;
+
+            if (staminaMaterial.HasProperty(primaryProperty))
+            {
+                return staminaMaterial.GetColor(primaryProperty);
+            }
+            else if (staminaMaterial.HasProperty(fallbackProperty))
+            {
+                return staminaMaterial.GetColor(fallbackProperty);
+            }
+
+            return defaultColor;
+        }
+
+        void SetMaterialColor(string primaryProperty, string fallbackProperty, Color color)
+        {
+            if (staminaMaterial == null) return;
+
+            if (staminaMaterial.HasProperty(primaryProperty))
+            {
+                staminaMaterial.SetColor(primaryProperty, color);
+            }
+            else if (staminaMaterial.HasProperty(fallbackProperty))
+            {
+                staminaMaterial.SetColor(fallbackProperty, color);
+            }
+        }
+
 
 #if UNITY_EDITOR
         void OnValidate()

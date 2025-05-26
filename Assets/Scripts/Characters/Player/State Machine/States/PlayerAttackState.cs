@@ -29,7 +29,8 @@ namespace ProjectColombo.StateMachine.Player
 
         public override void Enter()
         {
-            stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.staminaToAttack);
+            //stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.staminaToAttack);
+            stateMachine.myStamina.TryConsumeStaminaWithFeedback(stateMachine.myStamina.staminaToAttack);
             Vector2 moveInput = stateMachine.gameInputSO.GetVector2Input(GameInputSystem.PlayerInputAction.Movement);
 
             //snap to direction
@@ -115,7 +116,12 @@ namespace ProjectColombo.StateMachine.Player
             //handle inputs
             if (stateMachine.gameInputSO.GetInputPressed(PlayerInputAction.MajorAttack))
             {
-                if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToAttack)) return;
+                //if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToAttack)) return;
+                if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToAttack))
+                {
+                    stateMachine.myStamina.TryConsumeStaminaWithFeedback(stateMachine.myStamina.staminaToAttack);
+                    return;
+                }
 
                 //if (!comboWindowOpened)
                 //{
@@ -130,7 +136,12 @@ namespace ProjectColombo.StateMachine.Player
 
             if (stateMachine.gameInputSO.GetInputPressed(PlayerInputAction.MinorAttack))
             {
-                if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToAttack)) return;
+                //if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToAttack)) return;
+                if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToAttack))
+                {
+                    stateMachine.myStamina.TryConsumeStaminaWithFeedback(stateMachine.myStamina.staminaToAttack);
+                    return;
+                }
 
                 //if (!comboWindowOpened)
                 //{
