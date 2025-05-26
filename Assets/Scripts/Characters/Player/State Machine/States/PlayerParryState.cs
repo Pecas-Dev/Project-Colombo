@@ -16,6 +16,9 @@ namespace ProjectColombo.StateMachine.Player
 
             stateMachine.gameInputSO.DisableAllInputs();
             stateMachine.gameInputSO.EnableInput(PlayerInputAction.Pause);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.UseCharmAbility);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.UsePotion);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.UseSpecialAbility);
 
 
             stateMachine.myPlayerAnimator.TriggerParry();

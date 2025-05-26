@@ -59,7 +59,7 @@ namespace ProjectColombo.StateMachine.Player
         [HideInInspector] public string currentComboString = "";
         [HideInInspector] public ShopKeeper closeShop = null;
         bool activateCharmsAndMask = false;
-        [HideInInspector] public float defaultSpeed = GameManager.Instance.GetComponent<GlobalStats>().defaultPlayerSpeed;
+        [HideInInspector] public float defaultSpeed;
 
         void Awake()
         {
@@ -87,6 +87,7 @@ namespace ProjectColombo.StateMachine.Player
             CustomEvents.OnSuccessfullParry += ApplyParryIFrames;
             //get current selected weapon
             SwapWeapon();
+            defaultSpeed = GameManager.Instance.GetComponent<GlobalStats>().defaultPlayerSpeed;
         }
 
         private void ApplyParryIFrames(GameGlobals.MusicScale scale, bool sameScale)

@@ -19,6 +19,7 @@ namespace ProjectColombo.Objects.Masks
         {
             CustomEvents.OnShopOpen += OnShopOpen;
             CustomEvents.OnItemPurchase += OnItemPurchase;
+            CustomEvents.AbilityUsed(abilitySoundName);
         }
 
         public override void EndAbility()

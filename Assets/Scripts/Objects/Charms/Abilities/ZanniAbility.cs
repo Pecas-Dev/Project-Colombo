@@ -1,3 +1,4 @@
+using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Inventory;
 using ProjectColombo.StateMachine.Mommotti;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace ProjectColombo.Objects.Masks
         public override void UseAbility()
         {
             GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            CustomEvents.AbilityUsed(abilitySoundName);
 
             foreach (GameObject e in enemies)
             {

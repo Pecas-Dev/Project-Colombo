@@ -27,6 +27,9 @@ namespace ProjectColombo.StateMachine.Player
             stateMachine.gameInputSO.EnableInput(PlayerInputAction.MajorParry);
             stateMachine.gameInputSO.EnableInput(PlayerInputAction.MinorParry);
             stateMachine.gameInputSO.EnableInput(PlayerInputAction.Pause);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.UseCharmAbility);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.UsePotion);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.UseSpecialAbility);
 
             stateMachine.StartCoroutine(StopMovement());
             stateMachine.myPlayerAnimator.TriggerBlock();

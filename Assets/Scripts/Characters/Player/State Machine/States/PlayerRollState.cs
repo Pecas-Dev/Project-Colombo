@@ -43,7 +43,7 @@ public class PlayerRollState : PlayerBaseState
             if (isometricDirection.sqrMagnitude > 0.001f)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(isometricDirection);
-                stateMachine.myRigidbody.rotation = targetRotation;
+                stateMachine.myRigidbody.MoveRotation(targetRotation);
             }
         }
 
@@ -52,6 +52,9 @@ public class PlayerRollState : PlayerBaseState
 
         stateMachine.gameInputSO.DisableAllInputs();
         stateMachine.gameInputSO.EnableInput(PlayerInputAction.Pause);
+        stateMachine.gameInputSO.EnableInput(PlayerInputAction.UseCharmAbility);
+        stateMachine.gameInputSO.EnableInput(PlayerInputAction.UsePotion);
+        stateMachine.gameInputSO.EnableInput(PlayerInputAction.UseSpecialAbility);
 
         stateMachine.myPlayerAnimator.TriggerRoll();
 
@@ -85,6 +88,7 @@ public class PlayerRollState : PlayerBaseState
 
     IEnumerator ApplyPushForce()
     {
+        yield return null;
         yield return new WaitForFixedUpdate();
 
         //reset velocities

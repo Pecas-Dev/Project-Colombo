@@ -43,7 +43,7 @@ namespace ProjectColombo.StateMachine.Player
                 if (isometricDirection.sqrMagnitude > 0.001f)
                 {
                     Quaternion targetRotation = Quaternion.LookRotation(isometricDirection);
-                    stateMachine.transform.rotation = targetRotation;
+                    stateMachine.myRigidbody.MoveRotation(targetRotation);
                 }
             }
 
@@ -62,6 +62,9 @@ namespace ProjectColombo.StateMachine.Player
             stateMachine.gameInputSO.EnableInput(PlayerInputAction.MajorParry);
             stateMachine.gameInputSO.EnableInput(PlayerInputAction.MinorParry);
             stateMachine.gameInputSO.EnableInput(PlayerInputAction.Pause);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.UseCharmAbility);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.UsePotion);
+            stateMachine.gameInputSO.EnableInput(PlayerInputAction.UseSpecialAbility);
 
             stateMachine.myPlayerAnimator.PlayAttackAnimation(stateMachine.currentComboString, 0.1f, stateMachine.myEntityAttributes.attackSpeed);
 
@@ -106,6 +109,8 @@ namespace ProjectColombo.StateMachine.Player
             //handle inputs
             if (stateMachine.gameInputSO.GetInputPressed(PlayerInputAction.MajorAttack))
             {
+                if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToAttack)) return;
+
                 //if (!comboWindowOpened)
                 //{
                 //    tooEarly = true;
@@ -119,6 +124,8 @@ namespace ProjectColombo.StateMachine.Player
 
             if (stateMachine.gameInputSO.GetInputPressed(PlayerInputAction.MinorAttack))
             {
+                if (!stateMachine.myStamina.HasEnoughStamina(stateMachine.myStamina.staminaToAttack)) return;
+
                 //if (!comboWindowOpened)
                 //{
                 //    tooEarly = true;
@@ -168,37 +175,6 @@ namespace ProjectColombo.StateMachine.Player
                 stateMachine.SwitchState(new PlayerAttackState(stateMachine, nextScale));
                 return;
             }
-        }
-
-        void FaceLockedTarget(float deltaTime)
-        {
-            Transform target = null;
-            var targeter = stateMachine.myTargeter;
-
-            if (targeter != null && targeter.isTargetingActive && targeter.currentTarget != null)
-            {
-                target = targeter.currentTarget.transform;
-            }
-            else if (currentTarget != null)
-            {
-                target = currentTarget.transform;
-            }
-
-            if (target == null) return;
-
-            Vector3 toTarget = target.position - stateMachine.myRigidbody.position;
-            toTarget.y = 0f;
-
-            if (toTarget.sqrMagnitude < 0.0001f) return;
-
-            toTarget.Normalize();
-            Quaternion targetRotation = Quaternion.LookRotation(toTarget);
-
-            stateMachine.myRigidbody.rotation = Quaternion.RotateTowards(
-                stateMachine.myRigidbody.rotation,
-                targetRotation,
-                stateMachine.myEntityAttributes.rotationSpeedPlayer * deltaTime
-            );
         }
 
         GameObject GetClosestTarget()
@@ -260,6 +236,7 @@ namespace ProjectColombo.StateMachine.Player
 
         IEnumerator ApplyAttackImpulse()
         {
+            yield return null;
             yield return new WaitForFixedUpdate();
 
             //reset velocities

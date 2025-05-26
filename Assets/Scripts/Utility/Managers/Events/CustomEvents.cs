@@ -32,6 +32,7 @@ namespace ProjectColombo.GameManagement.Events
         public static event Action<int> OnComboMeterLevelIncrease;
         public static event Action<int> OnComboMeterLevelDecrease;
         public static event Action OnPotionUsed;
+        public static event Action OnCharmFirstTimeEquipped;
 
         public static void DamageDelt(int damage, GameGlobals.MusicScale scale, bool sameScale, HealthManager enemyHealthManager, int comboLength)
         {
@@ -154,6 +155,12 @@ namespace ProjectColombo.GameManagement.Events
         public static void PotionUsed()
         {
             OnPotionUsed?.Invoke();
+        }
+
+        public static void CharmFirstTimeEquipped()
+        {
+            Debug.Log("charm first time equipped event");
+            OnCharmFirstTimeEquipped?.Invoke();
         }
     }
 }

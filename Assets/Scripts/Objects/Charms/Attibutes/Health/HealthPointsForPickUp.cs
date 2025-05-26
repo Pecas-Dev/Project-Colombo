@@ -15,10 +15,10 @@ namespace ProjectColombo.Objects.Charms
         {
             myHealthManager = GameObject.Find("Player").GetComponent<HealthManager>();
             CustomEvents.OnMaskCollected += OnMaskCollected;
-            CustomEvents.OnCharmCollected += OnCharmCollected;
+            CustomEvents.OnCharmFirstTimeEquipped += OnCharmCollected;
         }
 
-        private void OnCharmCollected(GameObject obj)
+        private void OnCharmCollected()
         {
             if (eventHandled) return;
             eventHandled = true;
@@ -45,7 +45,7 @@ namespace ProjectColombo.Objects.Charms
         public override void Disable()
         {
             CustomEvents.OnMaskCollected -= OnMaskCollected;
-            CustomEvents.OnCharmCollected -= OnCharmCollected;
+            CustomEvents.OnCharmFirstTimeEquipped -= OnCharmCollected;
         }
     }
 }

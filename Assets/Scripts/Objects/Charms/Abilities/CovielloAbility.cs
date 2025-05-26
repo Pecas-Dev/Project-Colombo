@@ -30,6 +30,7 @@ namespace ProjectColombo.Objects.Masks
 
             staminaCounter = 0;
 
+            CustomEvents.AbilityUsed(abilitySoundName);
             CustomEvents.OnStaminaUsed += OnStaminaUsed;
             CustomEvents.OnDamageDelt += OnDamageDelt;
         }

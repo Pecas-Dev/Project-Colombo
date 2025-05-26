@@ -1,5 +1,5 @@
 
-using System.Collections.Generic;
+using ProjectColombo.GameManagement.Events;
 using UnityEngine;
 
 namespace ProjectColombo.Objects.Charms
@@ -14,12 +14,20 @@ namespace ProjectColombo.Objects.Charms
         [TextArea] public string charmLore;
 
         public GameObject abilityObject;
+        bool firstTimeEquiped = false;
 
         BaseAttributes[] myAttributes;
 
 
         public void Equip()
         {
+            if (!firstTimeEquiped)
+            {
+                firstTimeEquiped = true;
+                CustomEvents.CharmFirstTimeEquipped();
+            }
+
+
             myAttributes = GetComponents<BaseAttributes>();
 
             foreach (BaseAttributes attrib in myAttributes)

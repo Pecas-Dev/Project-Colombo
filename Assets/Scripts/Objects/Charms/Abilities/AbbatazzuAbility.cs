@@ -1,3 +1,4 @@
+using ProjectColombo.GameManagement.Events;
 using UnityEngine;
 
 namespace ProjectColombo.Objects.Masks
@@ -8,6 +9,7 @@ namespace ProjectColombo.Objects.Masks
         public override void UseAbility()
         {
             myPlayerStateMachine.myHealthManager.ignoreDamage = true;
+            CustomEvents.AbilityUsed(abilitySoundName);
         }
 
         public override void EndAbility()

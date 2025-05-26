@@ -64,10 +64,10 @@ namespace ProjectColombo.Objects.Masks
                     return false;
                 }
 
+                Debug.Log("ability used");
                 UseAbility();
                 available = false;
                 active = true;
-                CustomEvents.AbilityUsed(abilitySoundName);
                 return true;
             }
 
@@ -82,7 +82,7 @@ namespace ProjectColombo.Objects.Masks
                 timer += Time.deltaTime;
             }
 
-            if (timer > cooldownInSeconds)
+            if (timer >= cooldownInSeconds)
             {
                 available = true;
             }

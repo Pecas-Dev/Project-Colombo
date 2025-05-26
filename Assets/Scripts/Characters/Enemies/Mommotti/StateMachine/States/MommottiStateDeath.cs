@@ -21,7 +21,7 @@ namespace ProjectColombo.StateMachine.Mommotti
         public override void Enter()
         {
             stateMachine.myAnimator.SetTrigger("Death");
-            stateMachine.GetComponent<Collider>().enabled = false;
+            //stateMachine.GetComponent<Collider>().enabled = false;
             stateMachine.tag = "Default";
             CustomEvents.EnemyDied(causedScale, stateMachine.gameObject);
 

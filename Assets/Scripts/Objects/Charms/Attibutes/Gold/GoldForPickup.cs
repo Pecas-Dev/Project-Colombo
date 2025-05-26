@@ -18,10 +18,10 @@ namespace ProjectColombo.Objects.Charms
             myPlayerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
             CustomEvents.OnCoinsCollected += OnCoinsCollected;
             CustomEvents.OnMaskCollected += OnMaskCollected;
-            CustomEvents.OnCharmCollected += OnCharmCollected;
+            CustomEvents.OnCharmFirstTimeEquipped += OnCharmCollected;
         }
 
-        private void OnCharmCollected(GameObject obj)
+        private void OnCharmCollected()
         {
             if (eventHandled) return;
             eventHandled = true;
@@ -64,7 +64,7 @@ namespace ProjectColombo.Objects.Charms
         {
             CustomEvents.OnCoinsCollected -= OnCoinsCollected;
             CustomEvents.OnMaskCollected -= OnMaskCollected;
-            CustomEvents.OnCharmCollected -= OnCharmCollected;
+            CustomEvents.OnCharmFirstTimeEquipped -= OnCharmCollected;
         }
     }
 }

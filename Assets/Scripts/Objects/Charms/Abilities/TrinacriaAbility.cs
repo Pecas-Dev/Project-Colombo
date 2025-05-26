@@ -1,3 +1,4 @@
+using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Objects.Charms;
 using System.Collections;
 using UnityEngine;
@@ -13,6 +14,7 @@ namespace ProjectColombo.Objects.Masks
         public override void UseAbility()
         {
             myAttributes = attribs.GetComponents<BaseAttributes>();
+            CustomEvents.AbilityUsed(abilitySoundName);
 
             StartCoroutine(FirstStep());
         }
