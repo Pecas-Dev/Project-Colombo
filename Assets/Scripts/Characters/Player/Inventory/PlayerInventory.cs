@@ -203,18 +203,20 @@ namespace ProjectColombo.Inventory
 
             if (charm.scene.IsValid())
             {
+                Debug.Log("charm not instantiated -> good");
                 charmObject = charm;
             }
             else
             {
+                Debug.Log("charm instatiated -> bad (except shop");
                 charmObject = Instantiate(charm);
             }
 
             BaseCharm charmComponent = charmObject.GetComponent<BaseCharm>();
             RARITY newCharmRarity = charmComponent.charmRarity;
 
-            Debug.Log($"AddCharm called: {charmComponent.charmName} (Rarity: {newCharmRarity})");
-            Debug.Log($"Current inventory state - Amount: {currentCharmAmount}/{maxCharms}, HasLegendary: {HasLegendaryCharmEquipped()}");
+            //Debug.Log($"AddCharm called: {charmComponent.charmName} (Rarity: {newCharmRarity})");
+            //Debug.Log($"Current inventory state - Amount: {currentCharmAmount}/{maxCharms}, HasLegendary: {HasLegendaryCharmEquipped()}");
 
             if (currentCharmAmount >= maxCharms)
             {
@@ -390,9 +392,9 @@ namespace ProjectColombo.Inventory
 
             Transform player = GameObject.Find("Player").transform;
             Vector3 position = new Vector3(player.position.x, 0f, player.position.z);
-            dropManager.DropCharm(charm.GetComponent<BaseCharm>(), position);
+            dropManager.DropCharm(charm, position);
 
-            Destroy(charm);
+            //Destroy(charm);
         }
 
 

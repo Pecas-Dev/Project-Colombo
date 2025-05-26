@@ -48,8 +48,10 @@ namespace ProjectColombo.Objects
         {
             if (active && GameManager.Instance.gameInput.GetInputPressed(GameInputSystem.PlayerInputAction.Interact))
             {
-                CustomEvents.CharmCollected(myCharm);
-                Destroy(this.gameObject);
+                GameObject charm = GetComponentInChildren<BaseCharm>().gameObject;
+                CustomEvents.CharmCollected(charm);
+                gameObject.SetActive(false);
+                //Destroy(this.gameObject);
                 return;
             }
         }

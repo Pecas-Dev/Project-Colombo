@@ -16,9 +16,9 @@ public class DropManager : MonoBehaviour
     public GameObject pickup;
     public GameObject coins;
 
-    public void DropCharm(BaseCharm charmInfo, Vector3 position)
+    public void DropCharm(GameObject charm, Vector3 position)
     {
-        string name = charmInfo.charmName;
+        string name = charm.GetComponent<BaseCharm>().charmName;
         Quaternion rotation = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
 
         foreach (GameObject c in commonCharms)
@@ -26,7 +26,8 @@ public class DropManager : MonoBehaviour
             if (name == c.GetComponent<BaseCharm>().charmName)
             {
                 GameObject instance = Instantiate(pickup, position, rotation);
-                instance.GetComponent<PickUp>().SetCharm(c);
+                charm.transform.SetParent(instance.transform);
+                instance.GetComponent<PickUp>().SetCharm(charm);
                 Instantiate(commonCharmVFX, instance.transform);
                 return;
             }
@@ -37,7 +38,8 @@ public class DropManager : MonoBehaviour
             if (name == c.GetComponent<BaseCharm>().charmName)
             {
                 GameObject instance = Instantiate(pickup, position, rotation);
-                instance.GetComponent<PickUp>().SetCharm(c);
+                charm.transform.SetParent(instance.transform);
+                instance.GetComponent<PickUp>().SetCharm(charm);
                 Instantiate(rareCharmVFX, instance.transform);
                 return;
             }
@@ -48,7 +50,8 @@ public class DropManager : MonoBehaviour
             if (name == c.GetComponent<BaseCharm>().charmName)
             {
                 GameObject instance = Instantiate(pickup, position, rotation);
-                instance.GetComponent<PickUp>().SetCharm(c);
+                charm.transform.SetParent(instance.transform);
+                instance.GetComponent<PickUp>().SetCharm(charm);
                 Instantiate(legendaryCharmVFX, instance.transform);
                 return;
             }
@@ -61,7 +64,8 @@ public class DropManager : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
 
         GameObject instance = Instantiate(pickup, position, rotation);
-        instance.GetComponent<PickUp>().SetCharm(commonCharms[rand]);
+        GameObject charm = Instantiate(commonCharms[rand], instance.transform);
+        instance.GetComponent<PickUp>().SetCharm(charm);
         Instantiate(commonCharmVFX, instance.transform);
     }
 
@@ -71,7 +75,8 @@ public class DropManager : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
 
         GameObject instance = Instantiate(pickup, position, rotation);
-        instance.GetComponent<PickUp>().SetCharm(rareCharms[rand]);
+        GameObject charm = Instantiate(rareCharms[rand], instance.transform);
+        instance.GetComponent<PickUp>().SetCharm(charm);
         Instantiate(rareCharmVFX, instance.transform);
     }
 
@@ -81,7 +86,8 @@ public class DropManager : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
 
         GameObject instance = Instantiate(pickup, position, rotation);
-        instance.GetComponent<PickUp>().SetCharm(legendaryCharms[rand]);
+        GameObject charm = Instantiate(legendaryCharms[rand], instance.transform);
+        instance.GetComponent<PickUp>().SetCharm(charm);
         Instantiate(legendaryCharmVFX, instance.transform);
     }
 

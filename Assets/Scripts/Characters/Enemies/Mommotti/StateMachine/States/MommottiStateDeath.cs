@@ -22,7 +22,7 @@ namespace ProjectColombo.StateMachine.Mommotti
         {
             stateMachine.myAnimator.SetTrigger("Death");
             //stateMachine.GetComponent<Collider>().enabled = false;
-            stateMachine.tag = "Default";
+            stateMachine.tag = "Untagged";
             CustomEvents.EnemyDied(causedScale, stateMachine.gameObject);
 
             fadeMaterial = stateMachine.myFadeOutSkin.material;

@@ -678,9 +678,9 @@ namespace ProjectColombo.UI
                 return;
             }
 
-            dropManager.DropCharm(charmComponent, dropPosition);
+            dropManager.DropCharm(charmObject, dropPosition);
 
-            Destroy(charmObject);
+            //Destroy(charmObject);
 
             LogDebug($"Successfully dropped charm '{charmComponent.charmName}' back into world at position {dropPosition}");
         }

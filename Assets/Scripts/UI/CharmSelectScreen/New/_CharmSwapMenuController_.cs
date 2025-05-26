@@ -738,7 +738,7 @@ namespace ProjectColombo.UI
                         if (charmComponent != null)
                         {
                             LogDebug("Dropping charm via DropManager: " + charmComponent.charmName);
-                            dropManager.DropCharm(charmComponent, dropPosition);
+                            dropManager.DropCharm(newCharm, dropPosition);
                         }
                     }
                     else
@@ -751,7 +751,7 @@ namespace ProjectColombo.UI
                             if (charmComponent != null)
                             {
                                 LogDebug("Dropping charm via found DropManager: " + charmComponent.charmName);
-                                dropManager.DropCharm(charmComponent, dropPosition);
+                                dropManager.DropCharm(newCharm, dropPosition);
                             }
                         }
                         else
