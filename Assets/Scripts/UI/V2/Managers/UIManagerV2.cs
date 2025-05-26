@@ -198,7 +198,7 @@ namespace ProjectColombo.UI
                 pausePressed = true;
             }
 
-            if (gamepad != null && /*(gamepad.startButton.wasPressedThisFrame || gamepad.selectButton.wasPressedThisFrame) ||*/ gameInputSO.inputActions.Player.Pause.WasPressedThisFrame())
+            if (gamepad != null && (gamepad.startButton.wasPressedThisFrame || gamepad.selectButton.wasPressedThisFrame) || gameInputSO.inputActions.Player.Pause.WasPressedThisFrame())
             {
                 pausePressed = true;
             }
