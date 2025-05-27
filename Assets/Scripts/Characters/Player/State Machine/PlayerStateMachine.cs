@@ -9,6 +9,7 @@ using ProjectColombo.GameManagement.Events;
 using ProjectColombo.GameManagement.Stats;
 using System.Collections;
 using ProjectColombo.VFX;
+using UnityEngine.Rendering;
 
 
 namespace ProjectColombo.StateMachine.Player
@@ -332,6 +333,12 @@ namespace ProjectColombo.StateMachine.Player
             {
                 rollState.OnImpulseForce(impulseForce * speedFactor);
             }
+        }
+
+        public void SetDamage(int damage)
+        {
+            myWeaponAttributes.defaultMinorDamage = damage;
+            myWeaponAttributes.defaultMajorDamage = damage;
         }
     }
 }
