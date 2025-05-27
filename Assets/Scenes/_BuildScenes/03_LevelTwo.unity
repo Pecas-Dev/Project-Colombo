@@ -381,7 +381,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
       propertyPath: dropChanceRareCharmVase
-      value: 0.4
+      value: 36
       objectReference: {fileID: 0}
     - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
       propertyPath: maxAmountOfCoinsEnemies
@@ -401,7 +401,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
       propertyPath: dropChanceCommonCharmVase
-      value: 1.1
+      value: 44
       objectReference: {fileID: 0}
     - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
       propertyPath: dropChanceCommonCharmChest
@@ -417,7 +417,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
       propertyPath: dropChanceLegendaryCharmVase
-      value: 0.085
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7918839380679449149, guid: abf84a0e03b50374ab91b12b63d46403, type: 3}
       propertyPath: dropChanceLegendaryCharmChest
@@ -480,6 +480,86 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3076555964993878941, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: rareClip
+      value: 
+      objectReference: {fileID: 8300000, guid: e9460a1995f0db949a29b605821c7bb2, type: 3}
+    - target: {fileID: 3076555964993878941, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: commonClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 5045a48940bad7f4bb6e9f2535745c16, type: 3}
+    - target: {fileID: 3076555964993878941, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: rareVolume
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3076555964993878941, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: commonVolume
+      value: 0.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 3076555964993878941, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: legendaryClip
+      value: 
+      objectReference: {fileID: 8300000, guid: b0ff54e8767b96d408b184d0926fa4f7, type: 3}
+    - target: {fileID: 3076555964993878941, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: legendaryVolume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3076555964993878941, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: charmAudioSource
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5602202210280750219, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: MaxDistance
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 5602202210280750219, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: MinDistance
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 5602202210280750219, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: rolloffMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5602202210280750219, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: rolloffCustomCurve.m_Curve.Array.data[0].time
+      value: 0.00022222221
+      objectReference: {fileID: 0}
+    - target: {fileID: 5602202210280750219, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: panLevelCustomCurve.m_Curve.Array.data[0].value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5602202210280750219, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: rolloffCustomCurve.m_Curve.Array.data[0].inSlope
+      value: -69.11555
+      objectReference: {fileID: 0}
+    - target: {fileID: 5602202210280750219, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: rolloffCustomCurve.m_Curve.Array.data[1].inSlope
+      value: -86.42117
+      objectReference: {fileID: 0}
+    - target: {fileID: 5602202210280750219, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: rolloffCustomCurve.m_Curve.Array.data[0].inWeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5602202210280750219, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: rolloffCustomCurve.m_Curve.Array.data[0].outSlope
+      value: -69.11555
+      objectReference: {fileID: 0}
+    - target: {fileID: 5602202210280750219, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: rolloffCustomCurve.m_Curve.Array.data[1].inWeight
+      value: 0.01032576
+      objectReference: {fileID: 0}
+    - target: {fileID: 5602202210280750219, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: rolloffCustomCurve.m_Curve.Array.data[1].outSlope
+      value: -86.42117
+      objectReference: {fileID: 0}
+    - target: {fileID: 5602202210280750219, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: rolloffCustomCurve.m_Curve.Array.data[0].outWeight
+      value: 0.0039080363
+      objectReference: {fileID: 0}
+    - target: {fileID: 5602202210280750219, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
+      propertyPath: rolloffCustomCurve.m_Curve.Array.data[1].outWeight
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6657307741488687647, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.0016149879
@@ -529,7 +609,8 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 3248656632759737354, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6828bbf65b3fd9f4f9251d9badaea9fe, type: 3}

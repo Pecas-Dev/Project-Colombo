@@ -793,7 +793,7 @@ GameObject:
   - component: {fileID: 7556958141834768514}
   - component: {fileID: 1970268062408432595}
   - component: {fileID: 5834838224763796464}
-  - component: {fileID: 801929592639954558}
+  - component: {fileID: 4449913768786978359}
   m_Layer: 0
   m_Name: PickUp
   m_TagString: Collectable
@@ -855,7 +855,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &801929592639954558
+--- !u!114 &4449913768786978359
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -864,13 +864,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 7109980893497795781}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79033eb335c54764e82b5ba126ed6449, type: 3}
+  m_Script: {fileID: 11500000, guid: 6aef2474dec1a004fa82387fa7972da9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  commonClip: {fileID: 8300000, guid: 5045a48940bad7f4bb6e9f2535745c16, type: 3}
-  rareClip: {fileID: 8300000, guid: e9460a1995f0db949a29b605821c7bb2, type: 3}
-  legendaryClip: {fileID: 8300000, guid: b0ff54e8767b96d408b184d0926fa4f7, type: 3}
-  rarityTag: {fileID: 0}
+  maxDistance: 3
+  minDistance: 15
+  pickupSound: {fileID: 8300000, guid: e9460a1995f0db949a29b605821c7bb2, type: 3}
 --- !u!1 &8593855452858585303
 GameObject:
   m_ObjectHideFlags: 0

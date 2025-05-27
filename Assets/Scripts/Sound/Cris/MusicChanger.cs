@@ -120,16 +120,15 @@ public class AudioManager : MonoBehaviour
                 PlayMusic(tutorialMusicClip, MusicCategory.Exploration);
                 break;
             case "03_LevelTwo":
-            case "04_LevelThree":
                 PlayGameplayMusic(levelExplorationClip, levelBattleClips);
                 StartCoroutine(EnableBattleMusicAfterDelay(3f));
                 break;
-            case "05_Church":
+            case "04_Church":
                 PlayGameplayMusic(churchExplorationClip, churchBattleClips);
                 StartCoroutine(EnableBattleMusicAfterDelay(3f));
                 break;
-            case "06_WinScene":
-            case "07_LooseScene":
+            case "05_WinScene":
+            case "06_LooseScene":
                 StopAllMusic();
                 isInGameplay = false;
                 break;
@@ -187,7 +186,7 @@ public class AudioManager : MonoBehaviour
             }
         }
 
-        currentMusicCategory = currentScene == "05_Church" ? MusicCategory.ChurchEntrance : MusicCategory.Exploration;
+        currentMusicCategory = currentScene == "04_Church" ? MusicCategory.ChurchEntrance : MusicCategory.Exploration;
     }
 
     private void StopAllMusic()
@@ -266,7 +265,7 @@ public class AudioManager : MonoBehaviour
         if (currentScene == "01_Tutorial" || !canPlayBattleMusic) return;
 
         musicIntensity = 0.5f;
-        currentMusicCategory = (currentScene == "05_Church") ? MusicCategory.ChurchFight : MusicCategory.Battle;
+        currentMusicCategory = (currentScene == "04_Church") ? MusicCategory.ChurchFight : MusicCategory.Battle;
 
         for (int i = 0; i < battleMusicLayers.Length; i++)
         {
@@ -287,8 +286,8 @@ public class AudioManager : MonoBehaviour
 
         StartCoroutine(FadeOutAndStopBattleMusic(2f));
 
-        AudioClip clip = (currentScene == "05_Church") ? churchExplorationClip : levelExplorationClip;
-        MusicCategory category = (currentScene == "05_Church") ? MusicCategory.ChurchEntrance : MusicCategory.Exploration;
+        AudioClip clip = (currentScene == "04_Church") ? churchExplorationClip : levelExplorationClip;
+        MusicCategory category = (currentScene == "04_Church") ? MusicCategory.ChurchEntrance : MusicCategory.Exploration;
         PlayMusic(clip, category);
     }
 

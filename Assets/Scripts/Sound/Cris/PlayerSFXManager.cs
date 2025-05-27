@@ -490,11 +490,14 @@ public class PlayerSFXManager : MonoBehaviour
 
     private void HandleSuccessfulParry(GameGlobals.MusicScale scale, bool sameScale)
     {
-        List<AudioClip> clipsToPlay = new List<AudioClip>(
+        if(sameScale == false)
+        {
+              List<AudioClip> clipsToPlay = new List<AudioClip>(
             scale == GameGlobals.MusicScale.MAJOR ? majorParryFeedbackSound : minorParryFeedbackSound
         );
 
         PlayRandom(clipsToPlay);
+        }    
     }
 
     private void HandleDamageBlocked(int damage, GameGlobals.MusicScale scale, HealthManager playerHealthManager)
