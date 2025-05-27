@@ -34,11 +34,20 @@ namespace ProjectColombo.Combat
             CustomEvents.OnLevelChange += SaveCurrentStats;
             CustomEvents.OnChamberActivated += ActivateFightingMode;
             CustomEvents.OnChamberFinished += ActivateExploreMode;
+            CustomEvents.OnSuccessfullParry += RestoreOnGoodParry;
 
             exploreMode = true;
             myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
             GetCurrentStats();
             //GetComponentInChildren<StaminaHUD>().Reset();
+        }
+
+        private void RestoreOnGoodParry(GameGlobals.MusicScale scale, bool sameScale)
+        {
+            if (!sameScale)
+            {
+                RestoreStamina(1);
+            }
         }
 
         private void ActivateExploreMode()
@@ -56,6 +65,7 @@ namespace ProjectColombo.Combat
             CustomEvents.OnLevelChange -= SaveCurrentStats;
             CustomEvents.OnChamberActivated -= ActivateFightingMode;
             CustomEvents.OnChamberFinished -= ActivateExploreMode;
+            CustomEvents.OnSuccessfullParry -= RestoreOnGoodParry;
         }
 
         private void SaveCurrentStats()
@@ -116,6 +126,15 @@ namespace ProjectColombo.Combat
             //GetComponentInChildren<StaminaHUD>().Reset();
         }
 
+        public void RestoreStamina(int amount)
+        {
+            currentStamina += amount;
+
+            if (currentStamina > currentMaxStamina)
+            {
+                currentStamina = currentMaxStamina;
+            }
+        }
 
         public bool HasEnoughStamina(float staminaCost)
         {
