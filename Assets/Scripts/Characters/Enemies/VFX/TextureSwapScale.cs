@@ -14,22 +14,21 @@ namespace ProjectColombo.Enemies
 
         public SkinnedMeshRenderer modelRenderer;
         public MeshRenderer weaponRenderer;
-        public MeshRenderer accessoryRenderer;
 
         public void SetMaterials(GameGlobals.MusicScale scale)
         {
             if (scale == GameGlobals.MusicScale.MAJOR)
             {
-                modelRenderer.material = mainMajorMaterial;
+                // Set both materials: index 0 = main, index 1 = accessory
+                modelRenderer.materials = new Material[] { mainMajorMaterial, accessoryMajorMaterial };
                 weaponRenderer.material = weaponMajorMaterial;
-                accessoryRenderer.material = accessoryMajorMaterial;
             }
             else if (scale == GameGlobals.MusicScale.MINOR)
             {
-                modelRenderer.material = mainMinorMaterial;
+                modelRenderer.materials = new Material[] { mainMinorMaterial, accessoryMinorMaterial };
                 weaponRenderer.material = weaponMinorMaterial;
-                accessoryRenderer.material = accessoryMinorMaterial;
             }
         }
+
     }
 }
