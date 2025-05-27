@@ -140,6 +140,17 @@ namespace ProjectColombo.Tutorial
             }
         }
 
+        public void StopAttacker()
+        {
+            canAttack = false;
+            myHealthManager.ignoreDamage = false;
+
+            while (myHealthManager.currentHealth < myHealthManager.MaxHealth)
+            {
+                myHealthManager.Heal(maxHealth);
+            }
+        }
+
         public void SetStaggered()
         {
             InterruptAttack();

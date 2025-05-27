@@ -64,6 +64,14 @@ namespace ProjectColombo.Tutorial
             }
         }
 
+        public void DummiesStopAttack()
+        {
+            foreach (var e in dummiesToAttack)
+            {
+                e.StopAttacker();
+            }
+        }
+
         public void EnableInput()
         {
             GameInputSO gameInput = GameManager.Instance.gameInput;

@@ -14,6 +14,7 @@ namespace ProjectColombo.UI
         public GameObject HUDCanvas;
         public string[] lines;
         public float textSpeed;
+        public UnityEvent onDialogStart;
         public UnityEvent onDialogComplete;
 
         bool isEnabled = false;
@@ -77,9 +78,9 @@ namespace ProjectColombo.UI
 
             StartCoroutine(StopMoving());
             GameManager.Instance.gameInput.SwitchToUI();
-            GameManager.Instance.gameInput.LockInputViaTutorial(GameInputSystem.PlayerInputAction.Movement);
-            GameManager.Instance.gameInput.LockInputViaTutorial(GameInputSystem.PlayerInputAction.Roll);
+            GameManager.Instance.gameInput.LockAllInputsViaTutorial();
 
+            onDialogStart.Invoke();
             dialogCanvas.SetActive(true);
             HUDCanvas.SetActive(false);
             index = 0;
@@ -100,7 +101,7 @@ namespace ProjectColombo.UI
             isEnabled = false;
             GameManager.Instance.gameInput.SwitchToGameplay();
             GameManager.Instance.gameInput.UnlockInputViaTutorial(GameInputSystem.PlayerInputAction.Movement);
-            GameManager.Instance.gameInput.UnlockInputViaTutorial(GameInputSystem.PlayerInputAction.Roll);
+            GameManager.Instance.gameInput.UnlockInputViaTutorial(GameInputSystem.PlayerInputAction.Pause);
 
             onDialogComplete.Invoke();
             HUDCanvas.SetActive(true);

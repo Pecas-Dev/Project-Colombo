@@ -94,7 +94,7 @@ namespace ProjectColombo.Tutorial
         {
             counter++;
 
-            if (counter >= 4)
+            if (counter >= 2)
             {
                 ShowDialog(dialogAfterAttackMajorWithMajor);
                 TutorialEvents.OnDummyHit -= AttackMajorWithMajor;
@@ -177,8 +177,10 @@ namespace ProjectColombo.Tutorial
 
         void ResetPlayerState()
         {
-            //PlayerStateMachine sm = player.GetComponent<PlayerStateMachine>();
-            //sm.SwitchState(new PlayerMovementState(sm));
+            PlayerStateMachine sm = player.GetComponent<PlayerStateMachine>();
+            sm.myPlayerAnimator.PlayMovementAnimation();
+            sm.RollInvincibleFrameStop();
+            sm.InterruptAttack();
         }
     }
 }
