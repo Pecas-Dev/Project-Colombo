@@ -1,5 +1,6 @@
 using ProjectColombo.Combat;
 using ProjectColombo.GameInputSystem;
+using ProjectColombo.GameManagement.Events;
 using ProjectColombo.StateMachine.Player;
 using System.Collections;
 using UnityEngine;
@@ -28,6 +29,7 @@ public class PlayerRollState : PlayerBaseState
         }
 
         CanQueueRoll = false;
+        CustomEvents.PlayerRoll();
 
         //stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.staminaToRoll);
         Vector2 moveInput = stateMachine.gameInputSO.GetVector2Input(PlayerInputAction.Movement);
