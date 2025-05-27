@@ -177,8 +177,8 @@ namespace ProjectColombo.Tutorial
 
         void ResetPlayerState()
         {
-            PlayerStateMachine sm = player.GetComponent<PlayerStateMachine>();
-            sm.SwitchState(new PlayerMovementState(sm));
+            //PlayerStateMachine sm = player.GetComponent<PlayerStateMachine>();
+            //sm.SwitchState(new PlayerMovementState(sm));
         }
     }
 }

@@ -92,7 +92,7 @@ namespace ProjectColombo.StateMachine.Player
 
         private void ApplyParryIFrames(GameGlobals.MusicScale scale, bool sameScale)
         {
-            StartCoroutine(SetInvincible(0.1f));
+            StartCoroutine(SetInvincible(0.2f));
         }
 
         IEnumerator SetInvincible(float duration)
@@ -280,7 +280,7 @@ namespace ProjectColombo.StateMachine.Player
 
         public void RollInvincibleFrameStart()
         {
-            isInvunerable = true;
+            StartCoroutine(SetInvincible(0.3f));
         }
 
         public void RollInvincibleFrameStop()
