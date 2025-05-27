@@ -170,8 +170,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a24b44ebd5ebf24a9a4714e04825db9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  majorDamagePercentage: 16
-  minorDamagePercentage: 16
+  majorDamagePercentage: 25
+  minorDamagePercentage: 25
 --- !u!114 &5029487309967558800
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,7 +184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8507c39341f7bbe4faf9aa7f0ffe6c55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageMissingHealth: 0
+  damageMissingHealth: 10
   forHowManyMissingHealth: 50
 --- !u!114 &161221077718355006
 MonoBehaviour:
@@ -198,8 +198,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 521362f5fbc274143bcb8c02f8304ba4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  majorDamagePercentage: 12
-  minorDamagePercentage: 12
+  majorDamagePercentage: 35
+  minorDamagePercentage: 35
 --- !u!114 &7817691963787159420
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,7 +212,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51323258caef5d3489f14b673e013f50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damgePercentage: 0.32
+  damgePercentage: 3
   perHowManyMaxHealth: 100
 --- !u!114 &3747225413034033066
 MonoBehaviour:
@@ -227,7 +227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damgePercentageSameScale: 0
-  damgePercentageOppScale: 0.125
+  damgePercentageOppScale: 12
   perHowManyMaxHealth: 200
 --- !u!114 &5295297729534049582
 MonoBehaviour:
@@ -241,7 +241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20e89445ad428534bb0b29288a9c1023, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  extraHealthPoints: 200
+  extraHealthPoints: 250
 --- !u!1 &9007149414703718239
 GameObject:
   m_ObjectHideFlags: 0
@@ -313,7 +313,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maskName: Mask of Coviello
   maskPicture: {fileID: 21300000, guid: ecb3c18886fc71a4c94ce5fa3c468fd1, type: 3}
-  maskDescription: '+20% total attack damage (increases based on missing health)
+  maskDescription: '+20% damage dealt (increases based on missing health)
 
     +30%
     received damage from all sources (increses based on max health)
@@ -322,7 +322,8 @@ MonoBehaviour:
     received damage for failed parry based on max health
 
     + 100 max health points'
-  echoDescription: Deal a total of 4000 damage
+  maskDescriptionAfterEcho: 
+  echoDescription: Deal a total of 2000 damage
   maskLore: lore missing
   echoUnlocked: 0
   attribBeforeEcho: {fileID: 1139000407451441167}
@@ -341,4 +342,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afede9e2d95480e4ab596f71e893f525, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageToDeal: 4000
+  damageToDeal: 2000

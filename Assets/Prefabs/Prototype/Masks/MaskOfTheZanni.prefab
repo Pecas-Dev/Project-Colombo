@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 680bca3fdf1007c4cbf52df948f719d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damagePercentageLuck: 160
+  damagePercentageLuck: 180
   forHowManyLuck: 1
 --- !u!114 &8401997991766263146
 MonoBehaviour:
@@ -119,7 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4f3f14eb1344e14498f563fc416cbfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  extraLuck: 20
+  extraLuck: 15
 --- !u!1 &1969649022979653137
 GameObject:
   m_ObjectHideFlags: 0
@@ -191,21 +191,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maskName: Mask of the Zanni
   maskPicture: {fileID: 21300000, guid: 3c8a387d66fb9dd49974a7e2d051f2b3, type: 3}
-  maskDescription: '+18% major scale damage dealt (increases with luck)
+  maskDescription: '+18% Dur scale damage dealt (increases with luck)
 
-    -24%
-    minor scale damage dealt
+    -24% Moll
+    scale damage dealt
 
     +12% received damage from all sources
 
-    +20%
-    samina regen speed
+    +20% samina
+    regen speed
 
     +50% chance of using 2 stamina points (reduces with luck)
 
-    +15
+    +10
     luck points'
-  echoDescription: Kill 12 enemies with Major Attacks
+  maskDescriptionAfterEcho: 
+  echoDescription: Kill 8 enemies with Dur Attacks
   maskLore: lore missing
   echoUnlocked: 0
   attribBeforeEcho: {fileID: 4353097595655089777}
@@ -224,7 +225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 660ada8379e6d654db81eb9b35bc7c9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  majorKillsToDo: 12
+  majorKillsToDo: 8
 --- !u!1 &4353097595655089777
 GameObject:
   m_ObjectHideFlags: 0
@@ -275,7 +276,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a24b44ebd5ebf24a9a4714e04825db9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  majorDamagePercentage: 16
+  majorDamagePercentage: 18
   minorDamagePercentage: -24
 --- !u!114 &4925203911259083679
 MonoBehaviour:
@@ -289,7 +290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 680bca3fdf1007c4cbf52df948f719d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damagePercentageLuck: 120
+  damagePercentageLuck: 140
   forHowManyLuck: 1
 --- !u!114 &2805913791286166190
 MonoBehaviour:
@@ -358,4 +359,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4f3f14eb1344e14498f563fc416cbfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  extraLuck: 15
+  extraLuck: 10
