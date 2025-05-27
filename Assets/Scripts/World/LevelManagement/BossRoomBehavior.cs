@@ -1,4 +1,6 @@
+using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
+using ProjectColombo.Inventory;
 using UnityEngine;
 
 namespace ProjectColombo.LevelManagement
@@ -11,6 +13,8 @@ namespace ProjectColombo.LevelManagement
         {
             CustomEvents.OnEnemyDeath += EndBossFight;
             CustomEvents.ChamberActivated();
+            GameManager.Instance.GetComponent<PlayerInventory>().ActivateCharms();
+            GameManager.Instance.GetComponent<PlayerInventory>().ActivateMask();
         }
 
         private void EndBossFight(GameGlobals.MusicScale arg1, GameObject arg2)
