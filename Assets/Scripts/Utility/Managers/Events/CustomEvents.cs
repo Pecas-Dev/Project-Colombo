@@ -34,6 +34,7 @@ namespace ProjectColombo.GameManagement.Events
         public static event Action OnPotionUsed;
         public static event Action OnCharmFirstTimeEquipped;
         public static event Action OnPlayerRoll;
+        public static event Action<GameObject, int> OnDisplayDamageNumber;
 
         public static void DamageDelt(int damage, GameGlobals.MusicScale scale, bool sameScale, HealthManager enemyHealthManager, int comboLength)
         {
@@ -166,6 +167,11 @@ namespace ProjectColombo.GameManagement.Events
         public static void PlayerRoll()
         {
             OnPlayerRoll?.Invoke();
+        }
+
+        public static void DisplayDamageNumber(GameObject damagedEnemy, int amount)
+        {
+            OnDisplayDamageNumber?.Invoke(damagedEnemy, amount);
         }
     }
 }

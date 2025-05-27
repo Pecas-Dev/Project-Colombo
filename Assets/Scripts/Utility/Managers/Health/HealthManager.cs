@@ -27,6 +27,11 @@ namespace ProjectColombo.Combat
         public delegate void OnHealthChanged(int currentHealth, int maxHealth);
         public event OnHealthChanged HealthChanged;
 
+        //for damage number display
+        int damageThisFrame = 0;
+        bool damageAppliedThisFrame = false;
+
+
         void Awake()
         {
             CustomEvents.OnLevelChange += SaveCurrentStats;
@@ -93,6 +98,9 @@ namespace ProjectColombo.Combat
         {
             if (isDead) return;
 
+            damageThisFrame += damageAmount;
+            damageAppliedThisFrame = true;
+
             currentHealth -= damageAmount;
             currentHealth = Mathf.Max(currentHealth, 0); 
 
@@ -102,6 +110,16 @@ namespace ProjectColombo.Combat
             {
                 Die();
             }
+        }
+
+        private void LateUpdate()
+        {
+            if (!damageAppliedThisFrame) return;
+
+            Debug.Log("damaged event send");
+            CustomEvents.DisplayDamageNumber(this.gameObject, damageThisFrame);
+            damageAppliedThisFrame = false;
+            damageThisFrame = 0;
         }
 
         public void Heal(int healAmount)
