@@ -6,7 +6,8 @@ namespace ProjectColombo.VFX
 {
     public class PlayerVFXManager : MonoBehaviour
     {
-        public VisualEffect rollVFX;
+        public VisualEffect rollDustVFX;
+        public VisualEffect rollLinesVFX;
         public VisualEffect stepVFX;
         public VisualEffect majorStunIndicatorVFX;
         public VisualEffect minorStunIndicatorVFX;
@@ -61,9 +62,14 @@ namespace ProjectColombo.VFX
             CustomEvents.OnAbilityUsed -= PlayAbilityUsedVFX;
         }
 
-        public void PlayRollVFX()
+        public void PlayRollDustVFX()
         {
-            rollVFX.Play();
+            rollDustVFX.Play();
+        }
+
+        public void PlayRollLineVFX()
+        {
+            rollLinesVFX.Play();
         }
 
         public void PlayStepVFX()
