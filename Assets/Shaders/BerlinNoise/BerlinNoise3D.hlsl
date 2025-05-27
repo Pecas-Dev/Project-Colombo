@@ -50,7 +50,7 @@ void BerlinNoise3D_float(float3 Position, float Size, out float output)
     // Control frequency of spots
     float noiseVal = noise3D(distortedPos * Size);
 
-    float wearBias = 1.0 - (Position.y * 0.08); // tweakable
+    float wearBias = 1.0 - (Position.y * 0.05); // tweakable
 
     output = noiseVal * wearBias;
 }
