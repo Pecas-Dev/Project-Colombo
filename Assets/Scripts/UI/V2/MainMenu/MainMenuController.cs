@@ -25,7 +25,7 @@ public class MainMenuController : MenuController
 
     static int lastSelectedButtonIndex = 0;
 
-    bool hasBeenInitialized = false;
+    public bool hasBeenInitialized = false;
 
 
     Coroutine[] sizeAnimationCoroutines;
@@ -38,24 +38,21 @@ public class MainMenuController : MenuController
 
     void OnEnable()
     {
+        string currentScene = SceneManager.GetActiveScene().name;
+        LogDebug($"OnEnable called in scene: {currentScene}");
 
-        if (hasBeenInitialized)
+        if (currentScene != "00_MainMenu")
         {
-            SelectButton(lastSelectedButtonIndex);
-            RefreshAnimations();
-        }
-        else
-        {
-            Initialize();
-            hasBeenInitialized = true;
+            LogDebug("Not in main menu scene - deactivating");
+            gameObject.SetActive(false);
+            return;
         }
 
-        UIInputSwitcher inputSwitcher = FindFirstObjectByType<UIInputSwitcher>();
+        LogDebug("In main menu scene - ensuring activation");
 
-        if (inputSwitcher != null)
-        {
-            StartCoroutine(ForceButtonSelection(inputSwitcher));
-        }
+        hasBeenInitialized = false;
+
+        StartCoroutine(DelayedShow());
     }
 
     public override void Initialize()
@@ -190,15 +187,61 @@ public class MainMenuController : MenuController
 
     public override void Show()
     {
+        LogDebug("Show() called - FORCING main menu display");
+
+        hasBeenInitialized = false;
+        currentSelectedIndex = -1;
+
         base.Show();
 
         if (menuContainer != null)
         {
             menuContainer.SetActive(true);
+            LogDebug("Menu container ACTIVATED");
         }
 
-        RefreshAnimations();
+        LogDebug("FORCING initialization");
+
+        Initialize();
+        hasBeenInitialized = true;
+
+        if (gameInputSO != null)
+        {
+            gameInputSO.SwitchToUI();
+            LogDebug("Switched to UI input");
+        }
+
+        if (buttons != null && buttons.Length > 0)
+        {
+            lastSelectedButtonIndex = 0;
+            SelectButton(0);
+
+            if (EventSystem.current != null)
+            {
+                EventSystem.current.SetSelectedGameObject(buttons[0].gameObject);
+                LogDebug("Set EventSystem selection to first button");
+            }
+
+            UIInputSwitcher inputSwitcher = FindFirstObjectByType<UIInputSwitcher>();
+
+            if (inputSwitcher != null)
+            {
+                inputSwitcher.SetFirstSelectedButton(buttons[0].gameObject);
+                inputSwitcher.ForceSelectButton(buttons[0].gameObject);
+                LogDebug("Setup input switcher");
+            }
+        }
+
+        LogDebug("Main menu Show() COMPLETED - should be fully active now");
     }
+    IEnumerator DelayedShow()
+    {
+        yield return new WaitForEndOfFrame();
+
+        LogDebug("Delayed show triggering");
+        Show();
+    }
+
 
     void RefreshAnimations()
     {

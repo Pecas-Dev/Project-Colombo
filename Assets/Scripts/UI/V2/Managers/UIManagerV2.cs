@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using System.Collections;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using ProjectColombo.UI.Pausescreen;
@@ -81,38 +82,103 @@ namespace ProjectColombo.UI
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (mainMenuCanvas != null)
+            LogDebug($"Scene loaded: {scene.name}");
+
+            if (scene.name == "00_MainMenu")
             {
-                bool isMainMenuScene = scene.name == "00_MainMenu";
-                mainMenuCanvas.SetActive(isMainMenuScene);
-
-                if (isMainMenuScene)
+                LogDebug("Main menu scene detected - activating main menu");
+                StartCoroutine(ActivateMainMenuForScene());
+            }
+            else
+            {
+                LogDebug($"Non-main menu scene ({scene.name}) - hiding main menu");
+                if (mainMenuCanvas != null)
                 {
-                    if (mainMenu != null)
-                    {
-                        mainMenu.SetActive(true);
-                    }
-
-                    if (optionsMenu != null)
-                    {
-                        optionsMenu.SetActive(false);
-                    }
-
-                    MainMenuController mainMenuController = mainMenu?.GetComponent<MainMenuController>();
-                    if (mainMenuController != null)
-                    {
-                        mainMenuController.Show();
-                    }
+                    mainMenuCanvas.SetActive(false);
                 }
             }
         }
 
+        IEnumerator ActivateMainMenuForScene()
+        {
+            LogDebug("Starting main menu activation for scene");
+
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForSecondsRealtime(0.1f);
+
+            InitializeReferences();
+
+            yield return new WaitForEndOfFrame();
+
+            if (mainMenuCanvas != null)
+            {
+                LogDebug("Activating MainMenuCanvas");
+                mainMenuCanvas.SetActive(true);
+
+                if (mainMenu != null)
+                {
+                    LogDebug("Activating MainMenu");
+                    mainMenu.SetActive(true);
+
+                    MainMenuController controller = mainMenu.GetComponent<MainMenuController>();
+                    if (controller != null)
+                    {
+                        LogDebug("Calling Show() on MainMenuController");
+                        controller.Show();
+                    }
+                    else
+                    {
+                        LogDebug("MainMenuController component not found!");
+                    }
+                }
+                else
+                {
+                    LogDebug("MainMenu reference is null!");
+                }
+
+                // Hide options menu
+                if (optionsMenu != null)
+                {
+                    optionsMenu.SetActive(false);
+                    LogDebug("Options menu hidden");
+                }
+            }
+            else
+            {
+                LogDebug("MainMenuCanvas reference is null!");
+            }
+
+            if (navigationManager != null)
+            {
+                navigationManager.SetNavigationState(UINavigationState.MainMenu);
+                LogDebug("Navigation state set to MainMenu");
+            }
+
+            LogDebug("Main menu activation completed");
+        }
+
         public void ShowMainMenu()
         {
+            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            if (currentScene != "00_MainMenu")
+            {
+                LogDebug($"ShowMainMenu called but current scene is {currentScene} - ignoring request");
+                return;
+            }
+
+            LogDebug("ShowMainMenu called - forcing main menu activation");
+
             if (mainMenuCanvas == null || mainMenu == null)
             {
-                LogDebug("Error: Main Menu Canvas or Main Menu reference missing");
-                return;
+                LogDebug("Error: Main Menu Canvas or Main Menu reference missing - attempting to find references");
+
+                InitializeReferences();
+
+                if (mainMenuCanvas == null || mainMenu == null)
+                {
+                    LogDebug("Still missing references after initialization attempt");
+                    return;
+                }
             }
 
             mainMenuCanvas.SetActive(true);
@@ -133,7 +199,11 @@ namespace ProjectColombo.UI
             if (mainMenuController != null)
             {
                 mainMenuController.Show();
-                LogDebug("Called Show() on MainMenuController");
+                LogDebug("Successfully called Show() on MainMenuController");
+            }
+            else
+            {
+                LogDebug("MainMenuController component not found on main menu GameObject!");
             }
         }
 
@@ -346,79 +416,135 @@ namespace ProjectColombo.UI
 
         public void InitializeReferences()
         {
-            if (pauseInventoryCanvas == null)
-            {
-                pauseInventoryCanvas = GameObject.Find("PauseInventoryCanvas");
-                if (pauseInventoryCanvas == null)
-                {
-                    LogDebug("Could not find PauseInventoryCanvas");
-                }
-            }
+            LogDebug("Initializing UI references - looking for children of GameManager");
 
-            if (inventoryTab == null && pauseInventoryCanvas != null)
-            {
-                inventoryTab = FindChildWithName(pauseInventoryCanvas, "InventoryTab");
-                if (inventoryTab == null)
-                {
-                    LogDebug("Could not find InventoryTab");
-                }
-            }
+            GameObject gameManagerObj = GameObject.Find("GameManager");
 
-            if (settingsTab == null && pauseInventoryCanvas != null)
+            if (gameManagerObj == null)
             {
-                settingsTab = FindChildWithName(pauseInventoryCanvas, "SettingsTab");
-                if (settingsTab == null)
-                {
-                    LogDebug("Could not find SettingsTab");
-                }
+                LogDebug("GameManager object not found!");
+                return;
             }
 
             if (mainMenuCanvas == null)
             {
-                mainMenuCanvas = GameObject.Find("MainMenuCanvas");
-                if (mainMenuCanvas == null)
+                Transform mainMenuCanvasTransform = gameManagerObj.transform.Find("MainMenuCanvas");
+                if (mainMenuCanvasTransform != null)
                 {
-                    LogDebug("Could not find MainMenuCanvas");
+                    mainMenuCanvas = mainMenuCanvasTransform.gameObject;
+                    LogDebug("Found MainMenuCanvas as child of GameManager");
+                }
+                else
+                {
+                    LogDebug("MainMenuCanvas not found as child of GameManager!");
                 }
             }
 
-            if (mainMenu == null && mainMenuCanvas != null)
+            if (mainMenuCanvas != null)
             {
-                mainMenu = FindChildWithName(mainMenuCanvas, "MainMenu");
                 if (mainMenu == null)
                 {
-                    LogDebug("Could not find MainMenu");
+                    Transform mainMenuTransform = mainMenuCanvas.transform.Find("MainMenu");
+                    if (mainMenuTransform != null)
+                    {
+                        mainMenu = mainMenuTransform.gameObject;
+                        LogDebug("Found MainMenu as child of MainMenuCanvas");
+                    }
+                    else
+                    {
+                        LogDebug("MainMenu not found as child of MainMenuCanvas!");
+                    }
+                }
+
+                if (optionsMenu == null)
+                {
+                    Transform optionsMenuTransform = mainMenuCanvas.transform.Find("OptionsMenu");
+                    if (optionsMenuTransform != null)
+                    {
+                        optionsMenu = optionsMenuTransform.gameObject;
+                        LogDebug("Found OptionsMenu as child of MainMenuCanvas");
+                    }
+                    else
+                    {
+                        LogDebug("OptionsMenu not found as child of MainMenuCanvas!");
+                    }
                 }
             }
 
-            if (optionsMenu == null && mainMenuCanvas != null)
+            if (pauseInventoryCanvas == null)
             {
-                optionsMenu = FindChildWithName(mainMenuCanvas, "OptionsMenu");
-                if (optionsMenu == null)
+                Transform pauseCanvasTransform = gameManagerObj.transform.Find("PauseInventoryCanvas");
+                if (pauseCanvasTransform != null)
                 {
-                    LogDebug("Could not find OptionsMenu");
+                    pauseInventoryCanvas = pauseCanvasTransform.gameObject;
+                    LogDebug("Found PauseInventoryCanvas as child of GameManager");
+                }
+                else
+                {
+                    LogDebug("PauseInventoryCanvas not found as child of GameManager!");
+                }
+            }
+
+            if (pauseInventoryCanvas != null)
+            {
+                if (inventoryTab == null)
+                {
+                    Transform inventoryTabTransform = pauseInventoryCanvas.transform.Find("PauseInventory");
+                    if (inventoryTabTransform != null)
+                    {
+                        inventoryTab = inventoryTabTransform.gameObject;
+                        LogDebug("Found InventoryTab (PauseInventory) as child of PauseInventoryCanvas");
+                    }
+                    else
+                    {
+                        LogDebug("PauseInventory not found as child of PauseInventoryCanvas!");
+                    }
+                }
+
+                if (settingsTab == null)
+                {
+                    Transform settingsTabTransform = pauseInventoryCanvas.transform.Find("PauseSettings");
+                    if (settingsTabTransform != null)
+                    {
+                        settingsTab = settingsTabTransform.gameObject;
+                        LogDebug("Found SettingsTab (PauseSettings) as child of PauseInventoryCanvas");
+                    }
+                    else
+                    {
+                        LogDebug("PauseSettings not found as child of PauseInventoryCanvas!");
+                    }
                 }
             }
 
             if (charmSwapCanvas == null)
             {
-                charmSwapCanvas = GameObject.Find("CharmSwapCanvas");
-                if (charmSwapCanvas == null)
+                Transform charmSwapCanvasTransform = gameManagerObj.transform.Find("CharmSwapCanvas");
+                if (charmSwapCanvasTransform != null)
                 {
-                    LogDebug("Could not find CharmSwapCanvas");
+                    charmSwapCanvas = charmSwapCanvasTransform.gameObject;
+                    LogDebug("Found CharmSwapCanvas as child of GameManager");
+                }
+                else
+                {
+                    LogDebug("CharmSwapCanvas not found as child of GameManager!");
                 }
             }
 
             if (charmSwapScreen == null && charmSwapCanvas != null)
             {
-                charmSwapScreen = FindChildWithName(charmSwapCanvas, "CharmSwapController");
-                if (charmSwapScreen == null)
+                Transform charmSwapScreenTransform = charmSwapCanvas.transform.Find("CharmSwapController");
+                if (charmSwapScreenTransform != null)
                 {
-                    LogDebug("Could not find CharmSwapController");
+                    charmSwapScreen = charmSwapScreenTransform.gameObject;
+                    LogDebug("Found CharmSwapController as child of CharmSwapCanvas");
+                }
+                else
+                {
+                    LogDebug("CharmSwapController not found as child of CharmSwapCanvas!");
                 }
             }
 
-            LogDebug("UI references initialized");
+            LogDebug("UI references initialization completed");
         }
 
         GameObject FindChildWithName(GameObject parent, string name)

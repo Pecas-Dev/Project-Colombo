@@ -51,6 +51,12 @@ namespace ProjectColombo.UI
         [SerializeField] Color rareSelectorColor = new Color(0.0f, 0.5f, 1.0f, 1f);
         [SerializeField] Color legendarySelectorColor = new Color(1.0f, 0.84f, 0.0f, 1f);
 
+        [Header("Text Rarity Colors")]
+        [SerializeField] Color defaultTextColor = Color.white;
+        [SerializeField] Color commonTextColor = new Color(0.8f, 0.8f, 0.8f, 1f);
+        [SerializeField] Color rareTextColor = new Color(0.0f, 0.5f, 1.0f, 1f);
+        [SerializeField] Color legendaryTextColor = new Color(1.0f, 0.84f, 0.0f, 1f);
+
         [Header("Input Settings")]
         [SerializeField] GameInputSO gameInput;
 
@@ -354,9 +360,16 @@ namespace ProjectColombo.UI
 
             if (charmButton == null || charmButton.charmObject == null)
             {
+                if (selectedCharmNameText != null)
+                {
+                    selectedCharmNameText.text = "";
+                }
+                if (selectedCharmDescriptionText != null)
+                {
+                    selectedCharmDescriptionText.text = "";
+                }
                 return;
             }
-
 
             BaseCharm charm = charmButton.charmObject.GetComponent<BaseCharm>();
 
@@ -372,7 +385,13 @@ namespace ProjectColombo.UI
 
             if (selectedCharmNameText != null)
             {
-                selectedCharmNameText.text = charm.charmName;
+                string rarityText = GetRarityDisplayName(charm.charmRarity);
+                string fullTitle = $"{charm.charmName} ({rarityText})";
+
+                selectedCharmNameText.text = fullTitle;
+                selectedCharmNameText.color = GetRarityTextColor(charm.charmRarity);
+
+                LogDebug($"Set selected charm title to: {fullTitle}");
             }
 
             if (selectedCharmDescriptionText != null)
@@ -380,7 +399,37 @@ namespace ProjectColombo.UI
                 selectedCharmDescriptionText.text = charm.charmDescription;
             }
 
-            LogDebug($"Updated selected charm display: {charm.charmName}");
+            LogDebug($"Updated selected charm display: {charm.charmName} ({GetRarityDisplayName(charm.charmRarity)})");
+        }
+
+        string GetRarityDisplayName(RARITY rarity)
+        {
+            switch (rarity)
+            {
+                case RARITY.COMMON:
+                    return "Common";
+                case RARITY.RARE:
+                    return "Rare";
+                case RARITY.LEGENDARY:
+                    return "Legendary";
+                default:
+                    return "Unknown";
+            }
+        }
+
+        Color GetRarityTextColor(RARITY rarity)
+        {
+            switch (rarity)
+            {
+                case RARITY.COMMON:
+                    return commonTextColor;
+                case RARITY.RARE:
+                    return rareTextColor;
+                case RARITY.LEGENDARY:
+                    return legendaryTextColor;
+                default:
+                    return defaultTextColor;
+            }
         }
 
         void UpdateFromInventory()
@@ -996,7 +1045,13 @@ namespace ProjectColombo.UI
 
             if (newCharmNameText != null)
             {
-                newCharmNameText.text = newCharmInfo.charmName;
+                string rarityText = GetRarityDisplayName(newCharmInfo.charmRarity);
+                string fullTitle = $"{newCharmInfo.charmName} ({rarityText})";
+
+                newCharmNameText.text = fullTitle;
+                newCharmNameText.color = GetRarityTextColor(newCharmInfo.charmRarity);
+
+                LogDebug($"Set new charm title to: {fullTitle}");
             }
 
             if (newCharmDescriptionText != null)
@@ -1004,7 +1059,7 @@ namespace ProjectColombo.UI
                 newCharmDescriptionText.text = newCharmInfo.charmDescription;
             }
 
-            LogDebug($"Updated new charm display: {newCharmInfo.charmName}");
+            LogDebug($"Updated new charm display: {newCharmInfo.charmName} ({GetRarityDisplayName(newCharmInfo.charmRarity)})");
         }
 
         void SetInitialSelection()

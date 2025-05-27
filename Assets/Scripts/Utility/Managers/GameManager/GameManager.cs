@@ -1,12 +1,12 @@
 using UnityEngine;
 using ProjectColombo.UI;
+using System.Collections;
 using ProjectColombo.Inventory;
 using UnityEngine.SceneManagement;
 using ProjectColombo.Objects.Masks;
 using ProjectColombo.UI.Pausescreen;
 using ProjectColombo.GameInputSystem;
 using ProjectColombo.GameManagement.Stats;
-
 
 
 namespace ProjectColombo.GameManagement
@@ -197,8 +197,28 @@ namespace ProjectColombo.GameManagement
 
             ResumeGame();
 
+            if (scene.name == "00_MainMenu")
+            {
+                LogDebug("Main menu scene loaded - forcing UI manager initialization");
 
-            //WHAT IS THIS??
+                if (uiManagerV2 != null)
+                {
+                    uiManagerV2.InitializeReferences();
+
+                    StartCoroutine(ForceShowMainMenuAfterDelay());
+                }
+                else
+                {
+                    LogDebug("UIManagerV2 is null!");
+                }
+
+                if (gameInput != null)
+                {
+                    gameInput.SwitchToUI();
+                    LogDebug("Switched to UI input for main menu");
+                }
+            }
+
             if (scene.name == "03_LevelTwo")
             {
                 ResetAllEchoMissions();
@@ -244,6 +264,8 @@ namespace ProjectColombo.GameManagement
         {
             if (transition != null)
             {
+                transition.updateMode = AnimatorUpdateMode.UnscaledTime;
+
                 transition.Play("Close");
                 LogDebug("Playing Close transition animation");
             }
@@ -368,37 +390,12 @@ namespace ProjectColombo.GameManagement
         {
             gameInput.DisableAllInputs();
             LogDebug("Temporarily disabled all inputs for reset");
-
-
-            //if (gameInput != null && gameInput.inputActions != null)
-            //{
-            //    gameInput.DisableInput(ProjectColombo.GameInputSystem.InputActionType.Pause);
-
-            //    if (gameInput.playerInputActions.Player.enabled)
-            //    {
-            //        gameInput.playerInputActions.Player.Disable();
-            //    }
-
-            //    if (gameInput.playerInputActions.UI.enabled)
-            //    {
-            //        gameInput.playerInputActions.UI.Disable();
-            //    }
-
-            //    LogDebug("Temporarily disabled all inputs for reset");
-            //}
         }
 
         void FinishInputReset()
         {
             if (gameInput != null && gameInput.inputActions != null)
             {
-                //gameInput.ResetAllInputs();
-
-                //gameInput.ResetMovementInput();
-
-                //gameInput.playerInputActions.Player.Enable();
-
-                //gameInput.EnableInput(ProjectColombo.GameInputSystem.InputActionType.Pause);
 
                 if (SceneManager.GetActiveScene().name == MAIN_MENU)
                 {
@@ -513,6 +510,19 @@ namespace ProjectColombo.GameManagement
             else
             {
                 LogDebug("Could not find PauseMenuInventoryTabController to reset charm button colors");
+            }
+        }
+
+        IEnumerator ForceShowMainMenuAfterDelay()
+        {
+            yield return new WaitForSecondsRealtime(0.3f);
+
+            LogDebug("Forcing main menu show after delay");
+
+            if (uiManagerV2 != null)
+            {
+                uiManagerV2.ShowMainMenu();
+                LogDebug("Called ShowMainMenu on UIManagerV2");
             }
         }
 

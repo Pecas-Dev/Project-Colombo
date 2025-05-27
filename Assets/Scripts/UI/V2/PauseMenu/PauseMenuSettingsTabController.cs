@@ -5,6 +5,7 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using ProjectColombo.GameManagement;
 using ProjectColombo.GameInputSystem;
+using UnityEngine.SceneManagement;
 
 
 namespace ProjectColombo.UI.Pausescreen
@@ -165,16 +166,14 @@ namespace ProjectColombo.UI.Pausescreen
                 });
             }
 
-            // Return to Hub button
+            // Return to Hub button - FIXED VERSION
             if (returnToHubButton != null)
             {
                 returnToHubButton.onClick.RemoveAllListeners();
                 returnToHubButton.onClick.AddListener(() =>
                 {
                     LogDebug("Return to Hub button clicked");
-                    GameManager.Instance.ResumeGame();
-                    UnityEngine.SceneManagement.SceneManager.LoadScene("00_MainMenu");
-                    //UnityEngine.SceneManagement.SceneManager.LoadScene("03_LevelTwo");
+                    StartCoroutine(ReturnToHubSequence());
                 });
             }
 
@@ -192,6 +191,21 @@ namespace ProjectColombo.UI.Pausescreen
 #endif
                 });
             }
+        }
+
+        IEnumerator ReturnToHubSequence()
+        {
+            LogDebug("Starting return to hub sequence");
+
+            GameManager gameManager = GameManager.Instance;
+
+            gameManager.PlayCloseTransition();
+            LogDebug("Playing close transition");
+
+            yield return new WaitForSecondsRealtime(2.5f);
+
+            SceneManager.LoadScene("00_MainMenu");
+
         }
 
         public void SelectButton(int buttonIndex)

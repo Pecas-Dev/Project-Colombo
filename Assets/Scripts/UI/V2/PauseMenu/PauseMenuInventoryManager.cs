@@ -45,8 +45,8 @@ namespace ProjectColombo.UI.Pausescreen
         [SerializeField] Color legendaryRarityColor = new Color(1.0f, 0.84f, 0.0f);
 
         [Header("Mask Colors")]
-        [SerializeField] Color normalMaskColor = new Color(0.6f, 0.8f, 1.0f); 
-        [SerializeField] Color echoMaskColor = new Color(1.0f, 0.6f, 0.8f);   
+        [SerializeField] Color normalMaskColor = new Color(0.6f, 0.8f, 1.0f);
+        [SerializeField] Color echoMaskColor = new Color(1.0f, 0.6f, 0.8f);
 
         [Header("Debug Settings")]
         [SerializeField] bool enableDebugLogs = true;
@@ -385,8 +385,13 @@ namespace ProjectColombo.UI.Pausescreen
 
             if (charmTitleText != null)
             {
-                charmTitleText.text = charmInfo.charmName;
+                string rarityText = GetRarityDisplayName(charmInfo.charmRarity);
+                string fullTitle = $"{charmInfo.charmName} ({rarityText})";
+
+                charmTitleText.text = fullTitle;
                 charmTitleText.color = GetRarityColor(charmInfo.charmRarity);
+
+                LogDebug($"Set charm title to: {fullTitle}");
             }
 
             if (charmDescriptionText != null)
@@ -400,6 +405,21 @@ namespace ProjectColombo.UI.Pausescreen
             }
 
             LogDebug($"Updated charm info display for: {charmInfo.charmName} (Rarity: {charmInfo.charmRarity})");
+        }
+
+        string GetRarityDisplayName(RARITY rarity)
+        {
+            switch (rarity)
+            {
+                case RARITY.COMMON:
+                    return "Common";
+                case RARITY.RARE:
+                    return "Rare";
+                case RARITY.LEGENDARY:
+                    return "Legendary";
+                default:
+                    return "Unknown";
+            }
         }
 
         public void ShowEmptyWeaponInfo()
