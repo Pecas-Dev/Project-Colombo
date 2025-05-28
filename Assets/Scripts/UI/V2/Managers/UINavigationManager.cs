@@ -20,7 +20,8 @@ namespace ProjectColombo.UI
         PauseSettingsTab,
         MaskSelection,
         HUD,
-        CharmSwapScreen
+        CharmSwapScreen,
+        PickUpScreen
     }
 
     public class UINavigationManager : MonoBehaviour

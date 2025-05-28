@@ -20,6 +20,10 @@ namespace ProjectColombo.UI
         [SerializeField] GameObject charmSwapCanvas;
         [SerializeField] GameObject charmSwapScreen;
 
+        [Header("Pick Up Screen References")]
+        [SerializeField] GameObject pickUpCanvas;
+        [SerializeField] GameObject pickUpScreen;
+
         [Header("Main Menu References")]
         [SerializeField] GameObject mainMenuCanvas;
         [SerializeField] GameObject mainMenu;
@@ -406,6 +410,58 @@ namespace ProjectColombo.UI
             LogDebug("Charm swap screen hidden");
         }
 
+        public void ShowPickUpScreen(GameObject charmObject)
+        {
+            if (pickUpCanvas == null)
+            {
+                LogDebug("Error: Pick Up Canvas reference missing");
+                return;
+            }
+
+            pickUpCanvas.SetActive(true);
+
+            if (pickUpScreen != null)
+            {
+                pickUpScreen.SetActive(true);
+            }
+
+            if (navigationManager != null)
+            {
+                navigationManager.SetNavigationState(UINavigationState.PickUpScreen);
+            }
+
+            PickUpScreenController pickUpController = pickUpScreen?.GetComponent<PickUpScreenController>();
+            if (pickUpController != null)
+            {
+                pickUpController.ShowPickUpScreen(charmObject);
+                LogDebug("Called ShowPickUpScreen on PickUpScreenController");
+            }
+
+            LogDebug("Pick up screen shown");
+        }
+
+        public void HidePickUpScreen()
+        {
+            if (pickUpCanvas != null)
+            {
+                PickUpScreenController pickUpController = pickUpScreen?.GetComponent<PickUpScreenController>();
+                if (pickUpController != null)
+                {
+                    pickUpController.Hide();
+                    LogDebug("Called Hide() on PickUpScreenController");
+                }
+
+                if (pickUpScreen != null)
+                {
+                    pickUpScreen.SetActive(false);
+                }
+
+                pickUpCanvas.SetActive(false);
+            }
+
+            LogDebug("Pick up screen hidden");
+        }
+
         void LogDebug(string message)
         {
             if (enableDebugLogs)
@@ -541,6 +597,34 @@ namespace ProjectColombo.UI
                 else
                 {
                     LogDebug("CharmSwapController not found as child of CharmSwapCanvas!");
+                }
+            }
+
+            if (pickUpCanvas == null)
+            {
+                Transform pickUpCanvasTransform = gameManagerObj.transform.Find("PickUpCanvas");
+                if (pickUpCanvasTransform != null)
+                {
+                    pickUpCanvas = pickUpCanvasTransform.gameObject;
+                    LogDebug("Found PickUpCanvas as child of GameManager");
+                }
+                else
+                {
+                    LogDebug("PickUpCanvas not found as child of GameManager!");
+                }
+            }
+
+            if (pickUpScreen == null && pickUpCanvas != null)
+            {
+                Transform pickUpScreenTransform = pickUpCanvas.transform.Find("PickUpContainer");
+                if (pickUpScreenTransform != null)
+                {
+                    pickUpScreen = pickUpScreenTransform.gameObject;
+                    LogDebug("Found PickUpContainer as child of PickUpCanvas");
+                }
+                else
+                {
+                    LogDebug("PickUpContainer not found as child of PickUpCanvas!");
                 }
             }
 

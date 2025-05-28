@@ -38,12 +38,12 @@ namespace ProjectColombo.UI
         [SerializeField] float selectorMinAlpha = 0.5f;
         [SerializeField] float selectorMaxAlpha = 1f;
 
-        [Header("Animation Settings")]
-        [SerializeField] Animator transitionAnimator;
-        [SerializeField] string openAnimationName = "BrushIn";
-        [SerializeField] string closeAnimationName = "BrushOut";
-        [SerializeField] float animationDuration = 1f;
-        [SerializeField] bool useAnimations = true;
+        //[Header("Animation Settings")]
+        //[SerializeField] Animator transitionAnimator;
+        //[SerializeField] string openAnimationName = "BrushIn";
+        //[SerializeField] string closeAnimationName = "BrushOut";
+        //[SerializeField] float animationDuration = 1f;
+        //[SerializeField] bool useAnimations = true;
 
         [Header("Selector Colors")]
         [SerializeField] Color defaultSelectorColor = Color.black;
@@ -70,6 +70,7 @@ namespace ProjectColombo.UI
         bool isActive = false;
         bool wasActiveBeforePause = false;
         bool isPlayingAnimation = false;
+        bool cameFromPickUpScreen = false;
         public bool isLegendaryReplacementMode = false;
 
 
@@ -83,6 +84,7 @@ namespace ProjectColombo.UI
         GameObject lastSelectedGameObject;
 
         UINavigationManager navigationManager;
+        PickUpScreenController pickUpScreenController;
 
         public bool WasActiveBeforePause => wasActiveBeforePause;
 
@@ -482,6 +484,19 @@ namespace ProjectColombo.UI
             LogDebug("Updated charm swap display from inventory with correct slot mapping");
         }
 
+        public void SetPendingCharm(GameObject charmObject)
+        {
+            currentNewCharm = charmObject;
+            cameFromPickUpScreen = true;
+
+            if (pickUpScreenController == null)
+            {
+                pickUpScreenController = GameManager.Instance.PickUpScreenCtrl;
+            }
+
+            LogDebug($"Set pending charm from pickup screen: {charmObject.GetComponent<BaseCharm>().charmName}");
+        }
+
         void SetButtonColorForCharm(Button button, GameObject charmObject)
         {
             if (button == null || charmObject == null) return;
@@ -541,27 +556,27 @@ namespace ProjectColombo.UI
 
             LogDebug($"Processing charm replacement for button {buttonIndex} in normal mode");
 
-            if (useAnimations && transitionAnimator != null)
-            {
-                GameObject charmToReplace = charmButton.charmObject;
+            //if (useAnimations && transitionAnimator != null)
+            //{
+            //    GameObject charmToReplace = charmButton.charmObject;
 
-                if (charmSwapCanvas != null)
-                {
-                    charmSwapCanvas.SetActive(false);
-                }
+            //    if (charmSwapCanvas != null)
+            //    {
+            //        charmSwapCanvas.SetActive(false);
+            //    }
 
-                isPlayingAnimation = true;
-                transitionAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
-                transitionAnimator.Play(closeAnimationName);
+            //    isPlayingAnimation = true;
+            //    transitionAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+            //    transitionAnimator.Play(closeAnimationName);
 
-                Invoke("CompleteCharmSwap", animationDuration);
+            //    Invoke("CompleteCharmSwap", animationDuration);
 
-                tempCharmToReplace = charmToReplace;
-            }
-            else
-            {
-                AddCharm(charmButton.charmObject);
-            }
+            //    tempCharmToReplace = charmToReplace;
+            //}
+            //else
+            //{
+            AddCharm(charmButton.charmObject);
+            //}
 
             LogDebug($"Initiated charm replacement for slot {buttonIndex}");
         }
@@ -585,27 +600,27 @@ namespace ProjectColombo.UI
 
             LogDebug("Processing legendary charm replacement");
 
-            if (useAnimations && transitionAnimator != null)
-            {
-                GameObject charmToReplace = charmButton.charmObject;
+            //if (useAnimations && transitionAnimator != null)
+            //{
+            //    GameObject charmToReplace = charmButton.charmObject;
 
-                if (charmSwapCanvas != null)
-                {
-                    charmSwapCanvas.SetActive(false);
-                }
+            //    if (charmSwapCanvas != null)
+            //    {
+            //        charmSwapCanvas.SetActive(false);
+            //    }
 
-                isPlayingAnimation = true;
-                transitionAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
-                transitionAnimator.Play(closeAnimationName);
+            //    isPlayingAnimation = true;
+            //    transitionAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+            //    transitionAnimator.Play(closeAnimationName);
 
-                Invoke("CompleteCharmSwap", animationDuration);
+            //    Invoke("CompleteCharmSwap", animationDuration);
 
-                tempCharmToReplace = charmToReplace;
-            }
-            else
-            {
-                AddCharm(charmButton.charmObject);
-            }
+            //    tempCharmToReplace = charmToReplace;
+            //}
+            //else
+            //{
+            AddCharm(charmButton.charmObject);
+            //}
 
             LogDebug("Initiated legendary charm replacement");
         }
@@ -645,7 +660,7 @@ namespace ProjectColombo.UI
             gameObject.SetActive(true);
             if (charmSwapCanvas != null)
             {
-                charmSwapCanvas.SetActive(false); 
+                charmSwapCanvas.SetActive(false);
             }
             LogDebug("CharmSwapController GameObject activated in normal mode");
 
@@ -666,15 +681,15 @@ namespace ProjectColombo.UI
                 LogDebug("Navigation refreshed for normal mode");
             }
 
-            if (useAnimations && transitionAnimator != null)
-            {
-                PlayOpeningAnimationSequence();
-            }
-            else
-            {
-                ShowCharmSwapUI();
-                Invoke("SetInitialSelectionDelayed", 0.1f);
-            }
+            //if (useAnimations && transitionAnimator != null)
+            //{
+            //    PlayOpeningAnimationSequence();
+            //}
+            //else
+            //{
+            ShowCharmSwapUI();
+            Invoke("SetInitialSelectionDelayed", 0.1f);
+            //}
 
             LogDebug("CharmSwapScreen normal mode activation started");
         }
@@ -683,14 +698,14 @@ namespace ProjectColombo.UI
         {
             LogDebug("DeactivateScreen called");
 
-            if (useAnimations && transitionAnimator != null)
-            {
-                PlayClosingAnimationSequence();
-            }
-            else
-            {
-                PerformActualDeactivation();
-            }
+            //if (useAnimations && transitionAnimator != null)
+            //{
+            //    PlayClosingAnimationSequence();
+            //}
+            //else
+            //{
+            PerformActualDeactivation();
+            //}
         }
 
         void DropCharmIntoWorld(GameObject charmObject)
@@ -1135,6 +1150,7 @@ namespace ProjectColombo.UI
 
             inventory.ReplaceCharm(charmToRemove, currentNewCharm);
 
+            cameFromPickUpScreen = false;
             currentNewCharm = null;
 
             DeactivateScreen();
@@ -1154,7 +1170,7 @@ namespace ProjectColombo.UI
             else
             {
                 LogError("tempCharmToReplace is null! Cannot complete swap.");
-                PerformActualDeactivation(); 
+                PerformActualDeactivation();
             }
         }
 
@@ -1193,7 +1209,7 @@ namespace ProjectColombo.UI
             gameObject.SetActive(true);
             if (charmSwapCanvas != null)
             {
-                charmSwapCanvas.SetActive(false); 
+                charmSwapCanvas.SetActive(false);
             }
             LogDebug("CharmSwapController GameObject activated in legendary mode");
 
@@ -1211,15 +1227,15 @@ namespace ProjectColombo.UI
                 navExtension.RefreshNavigationForMode();
             }
 
-            if (useAnimations && transitionAnimator != null)
-            {
-                PlayOpeningAnimationSequence();
-            }
-            else
-            {
-                ShowCharmSwapUI();
-                Invoke("SetInitialSelectionDelayed", 0.1f);
-            }
+            //if (useAnimations && transitionAnimator != null)
+            //{
+            //    PlayOpeningAnimationSequence();
+            //}
+            //else
+            //{
+            ShowCharmSwapUI();
+            Invoke("SetInitialSelectionDelayed", 0.1f);
+            //}
 
             LogDebug("CharmSwapScreen legendary mode activation started");
         }
@@ -1304,25 +1320,24 @@ namespace ProjectColombo.UI
 
             isPlayingAnimation = true;
 
-            if (transitionAnimator != null)
-            {
-                if (!transitionAnimator.gameObject.activeInHierarchy)
-                {
-                    transitionAnimator.gameObject.SetActive(true);
-                }
+            //if (transitionAnimator != null)
+            //{
+            //    if (!transitionAnimator.gameObject.activeInHierarchy)
+            //    {
+            //        transitionAnimator.gameObject.SetActive(true);
+            //    }
 
-                transitionAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+            //    transitionAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
 
-                transitionAnimator.Play(openAnimationName);
-                LogDebug($"Playing opening animation: {openAnimationName}");
+            //    transitionAnimator.Play(openAnimationName);
+            //    LogDebug($"Playing opening animation: {openAnimationName}");
 
-                Invoke("OnOpeningAnimationComplete", animationDuration);
-            }
-            else
-            {
-                LogError("Transition Animator is null! Please assign an Animator component.");
-                OnOpeningAnimationComplete();
-            }
+            //    Invoke("OnOpeningAnimationComplete", animationDuration);
+            //}
+            //else
+            //{
+            OnOpeningAnimationComplete();
+            //}
         }
 
         void OnOpeningAnimationComplete()
@@ -1356,7 +1371,7 @@ namespace ProjectColombo.UI
                 for (int i = 0; i < slotBlockerImages.Length; i++)
                 {
                     if (slotBlockerImages[i] != null)
-                   {
+                    {
                         slotBlockerImages[i].SetActive(false);
                         LogDebug($"Deactivated slot blocker {i}");
                     }
@@ -1384,25 +1399,24 @@ namespace ProjectColombo.UI
                 LogDebug("CharmSwapCanvas hidden for closing animation");
             }
 
-            if (transitionAnimator != null)
-            {
-                if (!transitionAnimator.gameObject.activeInHierarchy)
-                {
-                    transitionAnimator.gameObject.SetActive(true);
-                }
+            //if (transitionAnimator != null)
+            //{
+            //    if (!transitionAnimator.gameObject.activeInHierarchy)
+            //    {
+            //        transitionAnimator.gameObject.SetActive(true);
+            //    }
 
-                transitionAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+            //    transitionAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
 
-                transitionAnimator.Play(closeAnimationName);
-                LogDebug($"Playing closing animation: {closeAnimationName}");
+            //    transitionAnimator.Play(closeAnimationName);
+            //    LogDebug($"Playing closing animation: {closeAnimationName}");
 
-                Invoke("OnClosingAnimationComplete", animationDuration);
-            }
-            else
-            {
-                LogError("Transition Animator is null! Please assign an Animator component.");
-                OnClosingAnimationComplete();
-            }
+            //    Invoke("OnClosingAnimationComplete", animationDuration);
+            //}
+            //else
+            //{
+            OnClosingAnimationComplete();
+            //}
         }
 
         void OnClosingAnimationComplete()
@@ -1450,11 +1464,26 @@ namespace ProjectColombo.UI
 
             if (currentNewCharm != null)
             {
-                LogDebug($"Player cancelled without swapping - dropping charm: {currentNewCharm.name}");
-                DropCharmIntoWorld(currentNewCharm);
+                if (cameFromPickUpScreen)
+                {
+                    LogDebug($"Player cancelled charm swap that came from pickup screen - dropping charm and closing both screens");
+
+                    DropCharmIntoWorld(currentNewCharm);
+
+                    if (pickUpScreenController != null)
+                    {
+                        pickUpScreenController.ForceHidePickUpScreen();
+                    }
+                }
+                else
+                {
+                    LogDebug($"Player cancelled without swapping - dropping charm: {currentNewCharm.name}");
+                    DropCharmIntoWorld(currentNewCharm);
+                }
             }
 
             currentNewCharm = null;
+            cameFromPickUpScreen = false;
             lastSelectedGameObject = null;
 
             gameObject.SetActive(false);

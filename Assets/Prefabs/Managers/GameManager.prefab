@@ -2312,6 +2312,7 @@ MonoBehaviour:
   pauseMenuUI: {fileID: 5008676995159746912}
   newPauseMenuCanvas: {fileID: 5030348156804525041}
   newCharmSwapCanvas: {fileID: 2477171661735246403}
+  pickUpCanvas: {fileID: 6310802089329792378}
   transition: {fileID: 1802622847604617918}
   gameIsPaused: 0
 --- !u!114 &3205656012161248344
@@ -2366,6 +2367,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d82b4fb3a43706409971ccecc4154a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pickUpCanvas: {fileID: 0}
   currencyAmount: 0
   currentLuck: 0
   maskSlot: {fileID: 4315652088349865405}
@@ -2444,6 +2446,8 @@ MonoBehaviour:
   settingsTab: {fileID: 4329098108307614701}
   charmSwapCanvas: {fileID: 2477171661735246403}
   charmSwapScreen: {fileID: 2012389625096613299}
+  pickUpCanvas: {fileID: 6310802089329792378}
+  pickUpScreen: {fileID: 4086303726569332106}
   mainMenuCanvas: {fileID: 4849524828342106165}
   mainMenu: {fileID: 9040999036960897932}
   optionsMenu: {fileID: 6174026178696437697}
@@ -3813,5 +3817,15 @@ PrefabInstance:
 --- !u!224 &3864145453494062537 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9146829584424207205, guid: e77d35f397f004344b6d7ca8fe565be3, type: 3}
+  m_PrefabInstance: {fileID: 5426875873151667884}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4086303726569332106 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8351174870038663974, guid: e77d35f397f004344b6d7ca8fe565be3, type: 3}
+  m_PrefabInstance: {fileID: 5426875873151667884}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6310802089329792378 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2072882655885286358, guid: e77d35f397f004344b6d7ca8fe565be3, type: 3}
   m_PrefabInstance: {fileID: 5426875873151667884}
   m_PrefabAsset: {fileID: 0}

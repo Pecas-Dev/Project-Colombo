@@ -13,6 +13,9 @@ namespace ProjectColombo.Inventory
 {
     public class PlayerInventory : MonoBehaviour
     {
+        [Header("Pick Up Screen System")]
+        [SerializeField] GameObject pickUpCanvas;
+
         GlobalStats myGlobalStats;
         public int currencyAmount = 0;
         public int currentLuck = 0;
@@ -38,6 +41,8 @@ namespace ProjectColombo.Inventory
         bool hasInitialized = false;
 
         DropManager dropManager;
+        PickUpScreenController pickUpScreenController;
+
 
 
         private void Start()
@@ -60,6 +65,19 @@ namespace ProjectColombo.Inventory
 
             hasInitialized = true;
             CheckSystemPreference();
+
+            if (pickUpCanvas == null)
+            {
+                pickUpCanvas = GameObject.Find("PickUpCanvas");
+                if (pickUpCanvas != null)
+                {
+                    Transform pickUpContainerTransform = pickUpCanvas.transform.Find("PickUpContainer");
+                    if (pickUpContainerTransform != null)
+                    {
+                        pickUpScreenController = pickUpContainerTransform.GetComponent<PickUpScreenController>();
+                    }
+                }
+            }
         }
 
         private void ShopClosed()
@@ -137,69 +155,22 @@ namespace ProjectColombo.Inventory
 
         public void AddCharm(GameObject charm)
         {
-            /*GameObject charmObject;
+            GameObject charmObject;
 
             if (charm.scene.IsValid())
             {
+                Debug.Log("charm not instantiated -> good");
                 charmObject = charm;
             }
             else
             {
+                Debug.Log("charm instatiated -> bad (except shop)");
                 charmObject = Instantiate(charm);
             }
 
-            BaseCharm charmComponent = charmObject.GetComponent<BaseCharm>();
-            RARITY newCharmRarity = charmComponent.charmRarity;
+            ShowPickUpScreen(charmObject);
 
-            if (newCharmRarity == RARITY.LEGENDARY)
-            {
-                if (legendaryCharmSlot.transform.childCount > 0)
-                {
-                    RemoveCharm(legendaryCharmSlot.transform.GetChild(0).gameObject);
-                }
-
-                if (charmComponent.GetAbility() != null)
-                {
-                    charmComponent.abilityObject = Instantiate(charmComponent.GetAbility(), legendaryCharmAbilitySlot.transform);
-                }
-
-                charmObject.transform.SetParent(legendaryCharmSlot.transform);
-                charmComponent.Equip();
-                currentCharmAmount++;
-                legendaryCharms.Add(charmObject);
-            }
-            else
-            {
-                if (currentCharmAmount >= maxCharms)
-                {
-                    OpenCharmSelectScreen(charmObject);
-                    return;
-                }
-                else
-                {
-                    if (charmSlot.transform.childCount < maxCharms - 1)
-                    {
-                        charmObject.transform.SetParent(charmSlot.transform);
-                        charmComponent.Equip();
-                        currentCharmAmount++;
-                        charms.Add(charmObject);
-                    }
-                    else if (legendaryCharmSlot.transform.childCount == 0)
-                    {
-                        charmObject.transform.SetParent(legendaryCharmSlot.transform);
-                        charmComponent.Equip();
-                        currentCharmAmount++;
-                        legendaryCharms.Add(charmObject);
-                    }
-                    else
-                    {
-                        OpenCharmSelectScreen(charmObject);
-                        return;
-                    }
-                }
-            }*/
-
-            GameObject charmObject;
+            /*GameObject charmObject;
 
             if (charm.scene.IsValid())
             {
@@ -299,10 +270,94 @@ namespace ProjectColombo.Inventory
                 }
             }
 
+            Debug.Log($"Final inventory state - Amount: {currentCharmAmount}/{maxCharms}");*/
+        }
+
+        void ShowPickUpScreen(GameObject charmObject)
+        {
+            if (inShop)
+            {
+                currentShopKeeper.CloseShopScreen();
+            }
+
+            if (pickUpScreenController != null)
+            {
+                GameManager.Instance.PauseGame(false);
+                pickUpScreenController.ShowPickUpScreen(charmObject);
+                Debug.Log($"Showing pick up screen for charm: {charmObject.GetComponent<BaseCharm>().charmName}");
+            }
+            else
+            {
+                Debug.LogError("PickUpScreenController not found! Falling back to direct add.");
+                // Fallback to direct add if pick up screen is not available
+                AddCharmDirectly(charmObject);
+            }
+        }
+
+        public void AddCharmDirectly(GameObject charmObject)
+        {
+            BaseCharm charmComponent = charmObject.GetComponent<BaseCharm>();
+            RARITY newCharmRarity = charmComponent.charmRarity;
+
+            Debug.Log($"AddCharmDirectly called: {charmComponent.charmName} (Rarity: {newCharmRarity})");
+            Debug.Log($"Current inventory state - Amount: {currentCharmAmount}/{maxCharms}, HasLegendary: {HasLegendaryCharmEquipped()}");
+
+            if (currentCharmAmount >= maxCharms)
+            {
+                Debug.LogError("AddCharmDirectly called with full inventory - this should not happen!");
+                return;
+            }
+
+            if (newCharmRarity == RARITY.LEGENDARY)
+            {
+                // Handle legendary charm addition
+                if (legendaryCharmSlot.transform.childCount > 0)
+                {
+                    GameObject oldCharm = legendaryCharmSlot.transform.GetChild(0).gameObject;
+                    Debug.Log($"Removing non-legendary charm from legendary slot: {oldCharm.GetComponent<BaseCharm>().charmName}");
+                    RemoveCharm(oldCharm);
+                }
+
+                if (charmComponent.GetAbility() != null)
+                {
+                    charmComponent.abilityObject = Instantiate(charmComponent.GetAbility(), legendaryCharmAbilitySlot.transform);
+                }
+
+                charmObject.transform.SetParent(legendaryCharmSlot.transform);
+                charmComponent.Equip();
+                currentCharmAmount++;
+                legendaryCharms.Add(charmObject);
+                Debug.Log("Legendary charm added directly to legendary slot");
+            }
+            else
+            {
+                // Handle regular charm addition
+                if (charmSlot.transform.childCount < maxCharms - 1)
+                {
+                    charmObject.transform.SetParent(charmSlot.transform);
+                    charmComponent.Equip();
+                    currentCharmAmount++;
+                    charms.Add(charmObject);
+                    Debug.Log("Regular charm added to regular slot");
+                }
+                else if (legendaryCharmSlot.transform.childCount == 0)
+                {
+                    charmObject.transform.SetParent(legendaryCharmSlot.transform);
+                    charmComponent.Equip();
+                    currentCharmAmount++;
+                    charms.Add(charmObject);
+                    Debug.Log("Regular charm added to legendary slot");
+                }
+                else
+                {
+                    Debug.LogWarning("Unexpected state: inventory not full but no slots available!");
+                }
+            }
+
             Debug.Log($"Final inventory state - Amount: {currentCharmAmount}/{maxCharms}");
         }
 
-        bool HasLegendaryCharmEquipped()
+        public bool HasLegendaryCharmEquipped()
         {
             if (legendaryCharmSlot.transform.childCount == 0)
             {
@@ -337,6 +392,35 @@ namespace ProjectColombo.Inventory
             }
 
             return legendaryCharmSlot.transform.GetChild(0).gameObject;
+        }
+
+        public void OpenCharmSelectScreen(GameObject newCharm)
+        {
+            if (inShop)
+            {
+                currentShopKeeper.CloseShopScreen();
+            }
+
+            GameManager manager = GameManager.Instance;
+
+            if (manager != null)
+            {
+                CharmSwapMenuController swapController = manager.CharmSwapMenuCtrl;
+
+                if (swapController != null)
+                {
+                    GameManager.Instance.PauseGame(false);
+                    swapController.ActivateScreen(newCharm);
+                }
+                else
+                {
+                    Debug.LogError("CharmSwapMenuController not found! Make sure it's properly setup.");
+                }
+            }
+            else
+            {
+                Debug.LogError("GameManager instance not found!");
+            }
         }
 
         public void OpenCharmSelectScreenLegendaryMode(GameObject newLegendaryCharm)
@@ -401,36 +485,7 @@ namespace ProjectColombo.Inventory
         public void ReplaceCharm(GameObject charmToRemove, GameObject charmToAdd)
         {
             RemoveCharm(charmToRemove);
-            AddCharm(charmToAdd);
-        }
-
-        public void OpenCharmSelectScreen(GameObject newCharm)
-        {
-            if (inShop)
-            {
-                currentShopKeeper.CloseShopScreen();
-            }
-
-            GameManager manager = GameManager.Instance;
-
-            if (manager != null)
-            {
-                CharmSwapMenuController swapController = manager.CharmSwapMenuCtrl;
-
-                if (swapController != null)
-                {
-                    GameManager.Instance.PauseGame(false);
-                    swapController.ActivateScreen(newCharm);
-                }
-                else
-                {
-                    Debug.LogError("CharmSwapMenuController not found! Make sure it's properly setup.");
-                }
-            }
-            else
-            {
-                Debug.LogError("GameManager instance not found!");
-            }
+            AddCharmDirectly(charmToAdd);
         }
 
         public void ActivateMask()

@@ -34,6 +34,10 @@ namespace ProjectColombo.GameManagement
         [Header("Charm Swap System")]
         [SerializeField] GameObject newCharmSwapCanvas;
 
+        [Header("Pick Up Screen System")]
+        [SerializeField] GameObject pickUpCanvas;
+
+
 
         [Header("Transition")]
         [SerializeField] Animator transition;
@@ -56,10 +60,17 @@ namespace ProjectColombo.GameManagement
         protected CharmSwapMenuController charmSwapMenuController;
         protected GameObject directCharmSwapMenuReference;
 
+        protected PickUpScreenController pickUpScreenController;
+        protected GameObject directPickUpScreenReference;
+
+
         // New UI Manager v2 reference
         private UIManagerV2 uiManagerV2;
 
         public CharmSwapMenuController CharmSwapMenuCtrl => charmSwapMenuController;
+        public PickUpScreenController PickUpScreenCtrl => pickUpScreenController;
+
+
 
         void Awake()
         {
@@ -98,6 +109,7 @@ namespace ProjectColombo.GameManagement
             }
 
             EnsureCorrectCharmSwapSystemActive();
+            EnsurePickUpSystemActive();
 
             if (uiManagerV2 != null)
             {
@@ -171,6 +183,10 @@ namespace ProjectColombo.GameManagement
             if (gameIsPaused && gameInput.inputActions.UI.Cancel.WasPressedThisFrame())
             {
                 ResumeGame();
+            }
+
+            if (pickUpScreenController != null && pickUpScreenController.gameObject.activeInHierarchy)
+            {
             }
 
             if (gameInput.IsPlayerMapEnabled && enableInputActionMapLogs)
@@ -253,6 +269,7 @@ namespace ProjectColombo.GameManagement
             }
 
             EnsureCorrectCharmSwapSystemActive();
+            EnsurePickUpSystemActive();
 
             if (uiManagerV2 != null)
             {
@@ -470,6 +487,41 @@ namespace ProjectColombo.GameManagement
 
         }
 
+        void EnsurePickUpSystemActive()
+        {
+            if (pickUpCanvas == null)
+            {
+                pickUpCanvas = GameObject.Find("PickUpCanvas");
+                LogDebug("Found PickUpCanvas: " + (pickUpCanvas != null));
+            }
+
+            if (pickUpScreenController == null && pickUpCanvas != null)
+            {
+                Transform pickUpContainerTransform = pickUpCanvas.transform.Find("PickUpContainer");
+                if (pickUpContainerTransform != null)
+                {
+                    pickUpScreenController = pickUpContainerTransform.GetComponent<PickUpScreenController>();
+                    directPickUpScreenReference = pickUpContainerTransform.gameObject;
+                    LogDebug("Found PickUpScreenController: " + (pickUpScreenController != null));
+                }
+                else
+                {
+                    LogDebug("PickUpContainer not found as child of PickUpCanvas!");
+                }
+            }
+
+            if (pickUpCanvas != null)
+            {
+                pickUpCanvas.SetActive(true);
+                LogDebug("PickUpCanvas activated");
+
+                if (directPickUpScreenReference != null)
+                {
+                    directPickUpScreenReference.SetActive(false);
+                    LogDebug("PickUpContainer initially hidden");
+                }
+            }
+        }
         void ResetAllEchoMissions()
         {
             if (GetComponent<PlayerInventory>() != null)
