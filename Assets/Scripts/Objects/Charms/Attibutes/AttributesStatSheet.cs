@@ -9,7 +9,8 @@ namespace ProjectColombo.Objects.Charms
         [ReadOnlyInspector] public float minorDamagePercentage = 0;
 
         //defense
-        [ReadOnlyInspector] public float damageResistPercentage = 0;
+        [ReadOnlyInspector] public float incomingMajorDamagePercentage = 0;
+        [ReadOnlyInspector] public float incomingMinorDamagePercentage = 0;
         [ReadOnlyInspector] public float blockPercentage = 0;
         [ReadOnlyInspector] public float extraDamageMissedParryDifferentScalePercentage = 0;
         [ReadOnlyInspector] public float extraDamageMissedParrySameScalePercentage = 0;
@@ -28,7 +29,8 @@ namespace ProjectColombo.Objects.Charms
             majorDamagePercentage = 0;
             minorDamagePercentage = 0;
 
-            damageResistPercentage = 0;
+            incomingMajorDamagePercentage = 0; 
+            incomingMinorDamagePercentage = 0;            
             blockPercentage = 0;
             extraDamageMissedParryDifferentScalePercentage = 0;
             extraDamageMissedParrySameScalePercentage = 0;

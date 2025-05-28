@@ -21,7 +21,8 @@ namespace ProjectColombo.Objects.Charms
 
             int multiplyer = Mathf.FloorToInt(myPlayerInventory.currencyAmount / perHowManyGold);
 
-            stats.damageResistPercentage += damgePercentage * multiplyer;
+            stats.incomingMajorDamagePercentage += damgePercentage * multiplyer;
+            stats.incomingMinorDamagePercentage += damgePercentage * multiplyer;
         }
 
         public override void Enable()

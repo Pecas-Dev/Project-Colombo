@@ -11,8 +11,8 @@ namespace ProjectColombo.Objects.Charms
 
         public override void UpdateStatSheed(AttributesStatSheet stats)
         {
-            stats.majorDamagePercentage += majorDamagePercentage;
-            stats.minorDamagePercentage += minorDamagePercentage;
+            stats.incomingMajorDamagePercentage += majorDamagePercentage;
+            stats.incomingMinorDamagePercentage += minorDamagePercentage;
         }
 
         public override void Enable()

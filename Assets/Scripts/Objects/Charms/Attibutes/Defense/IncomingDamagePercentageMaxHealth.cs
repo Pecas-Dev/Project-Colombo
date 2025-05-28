@@ -18,7 +18,8 @@ namespace ProjectColombo.Objects.Charms
 
             int multiplyer = Mathf.FloorToInt(myHealthManager.MaxHealth / perHowManyMaxHealth);
 
-            stats.damageResistPercentage += multiplyer * damgePercentage;
+            stats.incomingMajorDamagePercentage += multiplyer * damgePercentage;
+            stats.incomingMinorDamagePercentage += multiplyer * damgePercentage;
         }
 
         public override void Enable()
