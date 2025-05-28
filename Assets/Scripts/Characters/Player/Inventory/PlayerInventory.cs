@@ -168,39 +168,42 @@ namespace ProjectColombo.Inventory
                 charmObject = Instantiate(charm);
             }
 
+            if (IsTutorialScene())
+            {
+                Debug.Log("Tutorial scene detected - bypassing pickup screen and adding charm directly");
+                AddCharmDirectlyWithLogic(charmObject);
+                return;
+            }
+
             ShowPickUpScreen(charmObject);
+        }
 
-            /*GameObject charmObject;
+        bool IsTutorialScene()
+        {
+            string currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            int currentSceneIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
 
-            if (charm.scene.IsValid())
-            {
-                Debug.Log("charm not instantiated -> good");
-                charmObject = charm;
-            }
-            else
-            {
-                Debug.Log("charm instatiated -> bad (except shop");
-                charmObject = Instantiate(charm);
-            }
+            return currentSceneName == "01_Tutorial" || currentSceneIndex == 1;
+        }
 
+        void AddCharmDirectlyWithLogic(GameObject charmObject)
+        {
             BaseCharm charmComponent = charmObject.GetComponent<BaseCharm>();
             RARITY newCharmRarity = charmComponent.charmRarity;
 
-            //Debug.Log($"AddCharm called: {charmComponent.charmName} (Rarity: {newCharmRarity})");
-            //Debug.Log($"Current inventory state - Amount: {currentCharmAmount}/{maxCharms}, HasLegendary: {HasLegendaryCharmEquipped()}");
+            Debug.Log($"AddCharmDirectlyWithLogic called: {charmComponent.charmName} (Rarity: {newCharmRarity})");
+            Debug.Log($"Current inventory state - Amount: {currentCharmAmount}/{maxCharms}, HasLegendary: {HasLegendaryCharmEquipped()}");
 
             if (currentCharmAmount >= maxCharms)
             {
                 Debug.Log("Inventory is full, checking for legendary replacement scenarios...");
 
-                // SCENARIO 5: Inventory Full + Have Legendary + Find Legendary = LEGENDARY MODE
                 if (newCharmRarity == RARITY.LEGENDARY && HasLegendaryCharmEquipped())
                 {
                     Debug.Log("SCENARIO 5: Full inventory + Legendary equipped + New legendary = LEGENDARY MODE");
                     OpenCharmSelectScreenLegendaryMode(charmObject);
                     return;
                 }
-                // SCENARIO 4 & 6: Inventory Full + Any other combination = NORMAL MODE
                 else
                 {
                     Debug.Log($"SCENARIO 4/6: Full inventory + Other combination = NORMAL MODE (New: {newCharmRarity}, HasLegendary: {HasLegendaryCharmEquipped()})");
@@ -211,14 +214,12 @@ namespace ProjectColombo.Inventory
 
             if (newCharmRarity == RARITY.LEGENDARY)
             {
-                // SCENARIO 2: Not Full + Have Legendary + Find Legendary = LEGENDARY MODE
                 if (HasLegendaryCharmEquipped())
                 {
                     Debug.Log("SCENARIO 2: Not full + Legendary equipped + New legendary = LEGENDARY MODE");
                     OpenCharmSelectScreenLegendaryMode(charmObject);
                     return;
                 }
-                // SCENARIO 1 & 3: Not Full + No Legendary OR Non-Legendary in slot = Direct Add
                 else
                 {
                     Debug.Log("SCENARIO 1/3: Not full + No legendary OR non-legendary in slot = Direct add legendary");
@@ -244,7 +245,6 @@ namespace ProjectColombo.Inventory
             }
             else
             {
-                // Regular charm (Common/Rare) - SCENARIO 1: Not Full + Add to available slot
                 Debug.Log("SCENARIO 1: Not full + Regular charm = Add to available slot");
 
                 if (charmSlot.transform.childCount < maxCharms - 1)
@@ -270,7 +270,7 @@ namespace ProjectColombo.Inventory
                 }
             }
 
-            Debug.Log($"Final inventory state - Amount: {currentCharmAmount}/{maxCharms}");*/
+            Debug.Log($"Final inventory state - Amount: {currentCharmAmount}/{maxCharms}");
         }
 
         void ShowPickUpScreen(GameObject charmObject)
@@ -289,7 +289,6 @@ namespace ProjectColombo.Inventory
             else
             {
                 Debug.LogError("PickUpScreenController not found! Falling back to direct add.");
-                // Fallback to direct add if pick up screen is not available
                 AddCharmDirectly(charmObject);
             }
         }
@@ -310,7 +309,6 @@ namespace ProjectColombo.Inventory
 
             if (newCharmRarity == RARITY.LEGENDARY)
             {
-                // Handle legendary charm addition
                 if (legendaryCharmSlot.transform.childCount > 0)
                 {
                     GameObject oldCharm = legendaryCharmSlot.transform.GetChild(0).gameObject;
@@ -331,7 +329,6 @@ namespace ProjectColombo.Inventory
             }
             else
             {
-                // Handle regular charm addition
                 if (charmSlot.transform.childCount < maxCharms - 1)
                 {
                     charmObject.transform.SetParent(charmSlot.transform);
