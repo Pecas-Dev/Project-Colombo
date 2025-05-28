@@ -3,6 +3,7 @@ using ProjectColombo.Combat;
 using ProjectColombo.Enemies;
 using ProjectColombo.Enemies.Pathfinding;
 using ProjectColombo.Enemies.Pulcinella;
+using ProjectColombo.GameManagement.Events;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -24,8 +25,9 @@ namespace ProjectColombo.StateMachine.Pulcinella
         public WeaponAttributes leftHand;
         public GameObject leftHandCanvas;
 
-        public PulcinellaState currentState;
+        public PulcinellaState currentStateEnum;
         [ReadOnlyInspector] public Transform playerRef;
+        [ReadOnlyInspector] public bool extraDamage = false;
 
         public GameObject impactSphere;
 
@@ -45,14 +47,39 @@ namespace ProjectColombo.StateMachine.Pulcinella
 
             playerRef = GameObject.FindGameObjectWithTag("Player").transform;
             SwitchState(new PulcinellaStateIdle(this));
+            myEntityAttributes.SetScale(GameGlobals.MusicScale.MAJOR);
             leftHandCanvas.SetActive(false);
+
+            CustomEvents.OnSuccessfullParry += OnSuccessfullParry;
+            CustomEvents.OnDamageDelt += OnDamageDelt;
 
             myPathfindingAlgorythm.gridManager = GameObject.Find("GridManager").GetComponent<GridManager>();
         }
 
+        private void OnDamageDelt(int amount, GameGlobals.MusicScale scale, bool sameScale, HealthManager healthmanager, int combolength)
+        {
+            if (!extraDamage) return;
+
+            healthmanager.TakeDamage((int)((myPulcinellaAttributes.damageMultiplier - 1f) * amount));
+        }
+
+        private void OnSuccessfullParry(GameGlobals.MusicScale scale, bool sameScale)
+        {
+            StartCoroutine(ApplyExtraDamage());
+        }
+
+        IEnumerator ApplyExtraDamage()
+        {
+            extraDamage = true;
+
+            yield return new WaitForSeconds(myPulcinellaAttributes.extraDamageDuration);
+
+            extraDamage = false;
+        }
+
         private void FixedUpdate()
         {
-            if (myHealthManager.CurrentHealth <= 0 && currentState != PulcinellaState.DEAD)
+            if (myHealthManager.CurrentHealth <= 0 && currentStateEnum != PulcinellaState.DEAD)
             {
                 SwitchState(new PulcinellaStateDeath(this));
             }
@@ -105,7 +132,7 @@ namespace ProjectColombo.StateMachine.Pulcinella
 
         internal void SetCurrentState(PulcinellaState newState)
         {
-            currentState = newState;
+            currentStateEnum = newState;
         }
 
         private void Reset()
@@ -171,6 +198,18 @@ namespace ProjectColombo.StateMachine.Pulcinella
             ScreenShake();
         }
 
+        public void SwitchScale()
+        {
+            if (myEntityAttributes.currentScale == GameGlobals.MusicScale.MAJOR)
+            {
+                myEntityAttributes.SetScale(GameGlobals.MusicScale.MINOR);
+            }
+            else if (myEntityAttributes.currentScale == GameGlobals.MusicScale.MINOR)
+            {
+                myEntityAttributes.SetScale(GameGlobals.MusicScale.MAJOR);
+            }
+        }
+
         void Rumble(float big, float small, float duration)
         {
             var gamepad = Gamepad.current;
@@ -201,6 +240,13 @@ namespace ProjectColombo.StateMachine.Pulcinella
         private void ScreenShake()
         {
             FindFirstObjectByType<ScreenShakeManager>().Shake(0.4f);
+        }
+
+        private void OnDestroy()
+        {
+
+            CustomEvents.OnSuccessfullParry -= OnSuccessfullParry;
+            CustomEvents.OnDamageDelt -= OnDamageDelt;
         }
     }
 }

@@ -8,6 +8,9 @@ namespace ProjectColombo.Enemies.Pulcinella
         public float targetDistance;
         public float idleTimeAfterAttack;
 
+        public float extraDamageDuration;
+        public float damageMultiplier;
+
         [Header("Attacks")]
 
         public float minTimeBetweenAttacks;

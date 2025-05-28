@@ -20,15 +20,16 @@ namespace ProjectColombo.StateMachine.Pulcinella
             switch (attackMode)
             {
                 case 0:
-
-                stateMachine.myAnimator.Play("CursedSlash");
+                    stateMachine.myAnimator.Play("CursedSlash");
                     break;
                 case 1:
-
-                stateMachine.myAnimator.Play("RagefullImpact");
+                    stateMachine.myAnimator.Play("RagefullImpact");
                     break;
                 case 2:
                     stateMachine.myAnimator.Play("CursedLeap");
+                    break;
+                case 3:
+                    stateMachine.myAnimator.Play("CursedNote");
                     break;
             }
         }

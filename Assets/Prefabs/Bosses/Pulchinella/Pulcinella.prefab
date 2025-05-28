@@ -243,8 +243,9 @@ MonoBehaviour:
   myPulcinellaAttributes: {fileID: 0}
   leftHand: {fileID: 7059556346348840029}
   leftHandCanvas: {fileID: 6343587897246188458}
-  currentState: 0
+  currentStateEnum: 0
   playerRef: {fileID: 0}
+  extraDamage: 0
   impactSphere: {fileID: 1194077765331791584, guid: 67b1ce4184878bf428444dbd2187247d, type: 3}
 --- !u!114 &1555078992334337259
 MonoBehaviour:
@@ -260,6 +261,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetDistance: 3
   idleTimeAfterAttack: 1
+  extraDamageDuration: 2
+  damageMultiplier: 1.5
   minTimeBetweenAttacks: 2
   maxTimeBetweenAttacks: 5
   distanceToSlash: 4

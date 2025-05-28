@@ -44,18 +44,18 @@ namespace ProjectColombo.StateMachine.Pulcinella
                 }
                 else
                 {
-                    //int rand = Random.Range(0, 101);
+                    int rand = Random.Range(0, 101);
 
-                    //if (rand < stateMachine.myPulcinellaAttributes.chanceToLeap)
-                    //{
+                    if (rand < stateMachine.myPulcinellaAttributes.chanceToLeap)
+                    {
                         stateMachine.SwitchState(new PulcinellaStateAttack(stateMachine, 2));
                         return;
-                    //}
-                    //else
-                    //{
-                        //stateMachine.SwitchState(new PulcinellaStateAttack(stateMachine, 3));
-                        //return;
-                    //}
+                    }
+                    else
+                    {
+                        stateMachine.SwitchState(new PulcinellaStateAttack(stateMachine, 3));
+                        return;
+                    }
                 }
             }
         }

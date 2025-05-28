@@ -278,8 +278,24 @@ namespace ProjectColombo.Combat
                     {
                         StopTime();
                         ScreenShake();
-                        Rumble(0.1f, 0.5f, 0.1f); // Light buzz
-                        doHitstop = false;
+                        //Rumble(0.1f, 0.5f, 0.1f); // Light buzz
+                    }
+
+                    if (currentScale != otherAttributes.currentScale)
+                    {
+                        if (doHitstop)
+                        {
+                            Rumble(0.1f, 0.5f, 0.1f); // Light buzz
+                        }
+
+                        //Debug.Log("..with the opposite scale");
+                        sameScale = false;
+                        damage = AddTemporaryDamagePercentage(damage, correctAttackScaleBonusPercentage);
+                    }
+                    else
+                    {
+                        sameScale = true;
+                        //Debug.Log("..but not the opposite scale");
                     }
 
                     int rand = Random.Range(0, 101);
@@ -293,6 +309,7 @@ namespace ProjectColombo.Combat
                     int comboLength = GetComponentInParent<PlayerStateMachine>().currentComboString.Length;
                     CustomEvents.DamageDelt(damage, currentScale, sameScale, otherHealth, comboLength);
                     otherHealth.TakeDamage(damage);
+                    doHitstop = false;
                 }
                 else if (otherHealth != null) //for tutorial dummy
                 {
