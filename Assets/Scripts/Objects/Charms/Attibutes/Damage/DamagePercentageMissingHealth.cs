@@ -16,10 +16,11 @@ namespace ProjectColombo.Objects.Charms
         {
             myHealthManager = GameObject.Find("Player").GetComponent<HealthManager>();
 
-            int multiplyer = Mathf.FloorToInt((myHealthManager.MaxHealth - myHealthManager.currentHealth) / forHowManyMissingHealth);
+            int multiplier = Mathf.FloorToInt((float)(myHealthManager.MaxHealth - myHealthManager.currentHealth) / forHowManyMissingHealth);
+            int value = (int)(multiplier * damageMissingHealth);
 
-            stats.majorDamagePercentage += multiplyer * damageMissingHealth;
-            stats.minorDamagePercentage += multiplyer * damageMissingHealth;
+            stats.majorDamagePercentage += value;
+            stats.minorDamagePercentage += value;
         }
 
         public override void Enable()
@@ -34,8 +35,8 @@ namespace ProjectColombo.Objects.Charms
             eventHandled = true;
             StartCoroutine(ResetEventHandled());
 
-            int multiplyer = Mathf.FloorToInt((myHealthManager.MaxHealth - myHealthManager.currentHealth) / forHowManyMissingHealth);
-            int value = (int)(multiplyer * damageMissingHealth);
+            int multiplier = Mathf.FloorToInt((float)(myHealthManager.MaxHealth - myHealthManager.currentHealth) / forHowManyMissingHealth);
+            int value = (int)(multiplier * damageMissingHealth);
 
             Debug.Log("dealt " + value + " extra damage for missing health: " + (myHealthManager.MaxHealth - myHealthManager.currentHealth));
 

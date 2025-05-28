@@ -16,10 +16,11 @@ namespace ProjectColombo.Objects.Charms
         {
             myPlayerInventroy = GameManager.Instance.GetComponent<PlayerInventory>();
 
-            int multiplyer = Mathf.FloorToInt(myPlayerInventroy.currencyAmount / forHowManyGold);
+            int multiplyer = Mathf.FloorToInt((float)(myPlayerInventroy.currencyAmount / forHowManyGold));
+            int value = (int)(multiplyer * damagePercentageGold / 100f);
 
-            stats.majorDamagePercentage += multiplyer * damagePercentageGold;
-            stats.minorDamagePercentage += multiplyer * damagePercentageGold;
+            stats.majorDamagePercentage += value;
+            stats.minorDamagePercentage += value;
         }
 
         public override void Enable()
@@ -34,7 +35,7 @@ namespace ProjectColombo.Objects.Charms
             eventHandled = true;
             StartCoroutine(ResetEventHandled());
 
-            int multiplyer = Mathf.FloorToInt(myPlayerInventroy.currencyAmount / forHowManyGold);
+            int multiplyer = Mathf.FloorToInt((float)(myPlayerInventroy.currencyAmount / forHowManyGold));
             int value = (int)(multiplyer * damagePercentageGold / 100f);
 
             Debug.Log("dealt " + value + " extra damage for carried gold: " + myPlayerInventroy.currencyAmount);

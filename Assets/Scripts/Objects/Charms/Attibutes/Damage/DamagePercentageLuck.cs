@@ -17,10 +17,11 @@ namespace ProjectColombo.Objects.Charms
         {
             myPlayerInventroy = GameManager.Instance.GetComponent<PlayerInventory>();
 
-            int multiplyer = Mathf.FloorToInt(myPlayerInventroy.currentLuck / forHowManyLuck);
+            int multiplyer = Mathf.FloorToInt((float)(myPlayerInventroy.currentLuck / forHowManyLuck));
+            int value = (int)(multiplyer * damagePercentageLuck / 100f);
 
-            stats.majorDamagePercentage += multiplyer * damagePercentageLuck;
-            stats.minorDamagePercentage += multiplyer * damagePercentageLuck;
+            stats.majorDamagePercentage += value;
+            stats.minorDamagePercentage += value;
         }
 
         public override void Enable()
@@ -35,7 +36,7 @@ namespace ProjectColombo.Objects.Charms
             eventHandled = true;
             StartCoroutine(ResetEventHandled());
 
-            int multiplyer = Mathf.FloorToInt(myPlayerInventroy.currentLuck / forHowManyLuck);
+            int multiplyer = Mathf.FloorToInt((float)(myPlayerInventroy.currentLuck / forHowManyLuck));
             int value = (int)(multiplyer * damagePercentageLuck / 100f);
 
             Debug.Log("dealt " + value + " extra damage for luck: " + myPlayerInventroy.currentLuck);

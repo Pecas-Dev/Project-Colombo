@@ -31,21 +31,6 @@ namespace ProjectColombo.Objects.Masks
             attribAfterEchoList = attribAfterEcho.GetComponents<BaseAttributes>(); 
             myStats = GetComponent<AttributesStatSheet>();
             myStats.ResetStats();
-
-            if (!echoUnlocked)
-            {
-                foreach (var attrib in attribBeforeEchoList)
-                {
-                    attrib.UpdateStatSheed(myStats);
-                }
-            }
-            else
-            {
-                foreach (var attrib in attribAfterEchoList)
-                {
-                    attrib.UpdateStatSheed(myStats);
-                }
-            }
         }
 
         public AttributesStatSheet GetStats()
