@@ -15,6 +15,8 @@ namespace ProjectColombo.Shop
         bool isActive;
         Animator myAnimator;
 
+        [SerializeField] Color unavailableColor;
+
         public void SetUp(ItemToSell itemStruct, Vector3 position, float discount)
         {
             myAnimator = GetComponent<Animator>();
@@ -67,7 +69,7 @@ namespace ProjectColombo.Shop
 
             isActive = item.price <= GetComponentInParent<ShopScreen>().GetCurrency();
 
-            referenceImage.color = isActive ? Color.white : Color.red;
+            referenceImage.color = isActive ? Color.white : unavailableColor;
         }
 
 

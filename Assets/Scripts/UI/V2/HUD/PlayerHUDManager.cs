@@ -161,6 +161,24 @@ namespace ProjectColombo.UI
 
         void Update()
         {
+            if (IsTutorialScene())
+            {
+                if (echoMissionTitleText != null && echoMissionTitleText.color.a > 0)
+                {
+                    Color titleColor = echoMissionTitleText.color;
+                    titleColor.a = 0f;
+                    echoMissionTitleText.color = titleColor;
+                }
+
+                if (echoMissionProgressText != null && echoMissionProgressText.color.a > 0)
+                {
+                    Color progressColor = echoMissionProgressText.color;
+                    progressColor.a = 0f;
+                    echoMissionProgressText.color = progressColor;
+                }
+                return; 
+            }
+
             bool isLevelOne = SceneManager.GetActiveScene().name == "03_LevelTwo";
 
             if (isChangingLevel)
@@ -459,6 +477,11 @@ namespace ProjectColombo.UI
 
         void RefreshMissionDisplay()
         {
+            if (IsTutorialScene() || isChangingLevel)
+            {
+                return;
+            }
+
             if (isChangingLevel)
             {
                 return;
@@ -801,6 +824,11 @@ namespace ProjectColombo.UI
             lastEventTime = Time.time;
 
             DebugLog("Forced mission text visible after Level One load");
+        }
+
+        bool IsTutorialScene()
+        {
+            return SceneManager.GetActiveScene().name == "01_Tutorial" || SceneManager.GetActiveScene().buildIndex == 1;
         }
 
         void DebugLog(string message)

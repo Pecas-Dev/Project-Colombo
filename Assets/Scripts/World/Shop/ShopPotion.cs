@@ -14,7 +14,7 @@ public class ShopPotion : MonoBehaviour
         PlayerInventory playerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
         if (playerInventory.currencyAmount < price) return;
 
-        GetComponent<Button>().interactable = false;
+        //GetComponent<Button>().interactable = false;
         playerInventory.numberOfPotions++;
         playerInventory.currencyAmount -= price;
         CustomEvents.ItemPurchased(price);
