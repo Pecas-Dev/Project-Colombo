@@ -59,6 +59,18 @@ namespace ProjectColombo.StateMachine.Mommotti
                 return false;
             }
 
+            if (pathIndex < 0 || pathIndex >= currentPath.Count)
+            {
+                stateMachine.myAnimator.SetFloat("Speed", 0);
+                return false;
+            }
+
+            if (currentPath[pathIndex] == null)
+            {
+                stateMachine.myAnimator.SetFloat("Speed", 0);
+                return false;
+            }
+
             Vector3 nextNodePos = currentPath[pathIndex].worldPosition;
             Vector3 toNextNode = nextNodePos - stateMachine.transform.position;
             toNextNode.y = 0;

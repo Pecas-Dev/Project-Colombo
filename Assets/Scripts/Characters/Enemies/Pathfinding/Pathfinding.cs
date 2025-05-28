@@ -1,4 +1,5 @@
 using ProjectColombo.Enemies.Mommotti;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,6 +17,14 @@ namespace ProjectColombo.Enemies.Pathfinding
             {
                 Debug.Log("Pathfinding Grid manager == null");
             }
+
+            StartCoroutine(UpdateGrid());
+        }
+
+        IEnumerator UpdateGrid()
+        {
+            yield return new WaitForSecondsRealtime(0.1f);
+            gridManager.CreateGrid();
         }
 
         public List<Node> FindPath(Vector3 startPos, Vector3 targetPos)
