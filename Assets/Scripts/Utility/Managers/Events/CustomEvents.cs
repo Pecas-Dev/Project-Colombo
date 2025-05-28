@@ -36,6 +36,12 @@ namespace ProjectColombo.GameManagement.Events
         public static event Action OnPlayerRoll;
         public static event Action<GameObject, int> OnDisplayDamageNumber;
 
+
+        // PLAYSTATION LIGHT BAR COLORS 
+        public static event Action<GameGlobals.MusicScale> OnMinorAttackPerformed;
+        public static event Action<GameGlobals.MusicScale> OnMajorAttackPerformed;
+        public static event Action<Color> OnLightbarColorChangeRequested;
+
         public static void DamageDelt(int damage, GameGlobals.MusicScale scale, bool sameScale, HealthManager enemyHealthManager, int comboLength)
         {
             OnDamageDelt?.Invoke(damage, scale, sameScale, enemyHealthManager, comboLength);
@@ -172,6 +178,23 @@ namespace ProjectColombo.GameManagement.Events
         public static void DisplayDamageNumber(GameObject damagedEnemy, int amount)
         {
             OnDisplayDamageNumber?.Invoke(damagedEnemy, amount);
+        }
+
+
+        // PLAYSTATION LIGHT BAR COLORS 
+        public static void MinorAttackPerformed(GameGlobals.MusicScale scale)
+        {
+            OnMinorAttackPerformed?.Invoke(scale);
+        }
+
+        public static void MajorAttackPerformed(GameGlobals.MusicScale scale)
+        {
+            OnMajorAttackPerformed?.Invoke(scale);
+        }
+
+        public static void RequestLightbarColorChange(Color newColor)
+        {
+            OnLightbarColorChangeRequested?.Invoke(newColor);
         }
     }
 }

@@ -7,6 +7,8 @@ using ProjectColombo.Objects.Masks;
 using ProjectColombo.UI.Pausescreen;
 using ProjectColombo.GameInputSystem;
 using ProjectColombo.GameManagement.Stats;
+using ProjectColombo.InputSystem.Controllers;
+using ProjectColombo.GameManagement.Events;
 
 
 namespace ProjectColombo.GameManagement
@@ -63,12 +65,15 @@ namespace ProjectColombo.GameManagement
         protected PickUpScreenController pickUpScreenController;
         protected GameObject directPickUpScreenReference;
 
+        PlayStationControllerLightbarManager lightbarManager;
+
 
         // New UI Manager v2 reference
         private UIManagerV2 uiManagerV2;
 
         public CharmSwapMenuController CharmSwapMenuCtrl => charmSwapMenuController;
         public PickUpScreenController PickUpScreenCtrl => pickUpScreenController;
+        public PlayStationControllerLightbarManager LightbarManager => lightbarManager;
 
 
 
@@ -95,6 +100,15 @@ namespace ProjectColombo.GameManagement
                 LogDebug("Added UIManagerV2 component");
             }
 
+            lightbarManager = GetComponent<PlayStationControllerLightbarManager>();
+            lightbarManager.enabled = true;
+
+            if (lightbarManager == null)
+            {
+                lightbarManager = gameObject.AddComponent<PlayStationControllerLightbarManager>();
+                LogDebug("Added PlayStationControllerLightbarManager component");
+            }
+
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
@@ -115,6 +129,8 @@ namespace ProjectColombo.GameManagement
             {
                 uiManagerV2.InitializeReferences();
             }
+
+            lightbarManager.enabled = true;
         }
 
         void EnsureCorrectCharmSwapSystemActive()
@@ -187,6 +203,18 @@ namespace ProjectColombo.GameManagement
 
             if (pickUpScreenController != null && pickUpScreenController.gameObject.activeInHierarchy)
             {
+            }
+
+            if (lightbarManager != null && !gameIsPaused)
+            {
+                if (gameInput.GetInputPressed(PlayerInputAction.MinorAttack))
+                {
+                    CustomEvents.MinorAttackPerformed(GameGlobals.MusicScale.MINOR);
+                }
+                else if (gameInput.GetInputPressed(PlayerInputAction.MajorAttack))
+                {
+                    CustomEvents.MajorAttackPerformed(GameGlobals.MusicScale.MAJOR);
+                }
             }
 
             if (gameInput.IsPlayerMapEnabled && enableInputActionMapLogs)

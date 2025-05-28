@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.VisualScripting;
 using System.Collections.Generic;
 using System.Collections;
+using ProjectColombo.GameManagement.Events;
 
 
 namespace ProjectColombo.StateMachine.Player
@@ -32,6 +33,19 @@ namespace ProjectColombo.StateMachine.Player
             //stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.staminaToAttack);
             stateMachine.myStamina.TryConsumeStaminaWithFeedback(stateMachine.myStamina.staminaToAttack);
             Vector2 moveInput = stateMachine.gameInputSO.GetVector2Input(GameInputSystem.PlayerInputAction.Movement);
+
+            stateMachine.myWeaponAttributes.currentScale = myScale;
+
+            if (myScale == GameGlobals.MusicScale.MINOR)
+            {
+                CustomEvents.MinorAttackPerformed(myScale);
+                Debug.Log("Minor attack performed - lightbar event triggered");
+            }
+            else if (myScale == GameGlobals.MusicScale.MAJOR)
+            {
+                CustomEvents.MajorAttackPerformed(myScale);
+                Debug.Log("Major attack performed - lightbar event triggered");
+            }
 
             //snap to direction
             if (moveInput.magnitude > 0.01f)
