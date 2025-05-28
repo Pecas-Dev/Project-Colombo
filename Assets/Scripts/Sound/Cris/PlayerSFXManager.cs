@@ -525,6 +525,6 @@ public class PlayerSFXManager : MonoBehaviour
 
     private void UpdateChurchStatus()
     {
-        isInChurch = SceneManager.GetActiveScene().name == "05_Church";
+        isInChurch = SceneManager.GetActiveScene().name == "04_Church";
     }
 }

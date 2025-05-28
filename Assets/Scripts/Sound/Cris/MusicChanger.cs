@@ -30,13 +30,15 @@ public class AudioManager : MonoBehaviour
     public AudioClip[] levelBattleClips;
 
     [Header("Church Music Set")]
-    public AudioClip churchExplorationClip;
-    public AudioClip[] churchBattleClips;
+    public AudioClip bossExplorationClip;
+
+    [Header("Boss Music Set")]
+    public AudioClip[] bossBattleClips;
 
     [Header("Ending Music")]
     public AudioClip endingSongClip;
 
-    private enum MusicCategory { None, MainMenu, Exploration, Battle, ChurchEntrance, ChurchFight, Ending }
+    private enum MusicCategory { None, MainMenu, Exploration, Battle, ChurchEntrance, BossBattle, Ending }
     private MusicCategory currentMusicCategory = MusicCategory.None;
 
     private AudioSource explorationMusic;
@@ -47,8 +49,10 @@ public class AudioManager : MonoBehaviour
     private int currentComboLevel = 0;
     private string currentScene = "";
     private bool isInGameplay = false;
-
     private Coroutine battleBlendCoroutine;
+
+    public bool hasBossFightBegun = false;
+    public bool hasBossDied = false;
 
     private void Awake()
     {
@@ -93,7 +97,19 @@ public class AudioManager : MonoBehaviour
 
     private void Update()
     {
-        if (explorationMusic.clip == null || !explorationMusic.isPlaying) return;
+        if (hasBossDied)
+        {
+            StopAllMusic();
+            return;
+        }
+
+        if (hasBossFightBegun && currentMusicCategory != MusicCategory.Battle)
+        {
+            return;
+        }
+
+        if (explorationMusic.clip == null || !explorationMusic.isPlaying)
+            return;
 
         UpdateExplorationVolume();
         UpdateBattleVolume();
@@ -108,6 +124,20 @@ public class AudioManager : MonoBehaviour
         battleBlend = 0f;
         musicIntensity = 0f;
         canPlayBattleMusic = false;
+
+        if (hasBossDied)
+        {
+            StopAllMusic();
+            return;
+        }
+
+        if (hasBossFightBegun && currentMusicCategory != MusicCategory.BossBattle)
+        {
+            PlayGameplayMusic(null, bossBattleClips, true); // Keep exploration if any
+            currentMusicCategory = MusicCategory.BossBattle;
+            SetBattleBlend(1f, 1f);
+            return;
+        }
 
         switch (currentScene)
         {
@@ -124,7 +154,7 @@ public class AudioManager : MonoBehaviour
                 StartCoroutine(EnableBattleMusicAfterDelay(3f));
                 break;
             case "04_Church":
-                PlayGameplayMusic(churchExplorationClip, churchBattleClips);
+                PlayGameplayMusic(bossExplorationClip, bossBattleClips);
                 StartCoroutine(EnableBattleMusicAfterDelay(3f));
                 break;
             case "05_WinScene":
@@ -137,9 +167,6 @@ public class AudioManager : MonoBehaviour
                 isInGameplay = false;
                 break;
         }
-
-        battleBlend = 0f;
-        musicIntensity = 0f;
     }
 
     private void PlayMusic(AudioClip clip, MusicCategory category)
@@ -210,7 +237,7 @@ public class AudioManager : MonoBehaviour
             case MusicCategory.MainMenu: volumeMultiplier *= mainMenuVolume; break;
             case MusicCategory.Exploration: volumeMultiplier *= explorationVolume; break;
             case MusicCategory.ChurchEntrance: volumeMultiplier *= churchEntranceVolume; break;
-            case MusicCategory.ChurchFight: volumeMultiplier *= churchFightVolume; break;
+            case MusicCategory.BossBattle: volumeMultiplier *= churchFightVolume; break;
             case MusicCategory.Ending: volumeMultiplier *= endingSongVolume; break;
         }
 
@@ -220,7 +247,9 @@ public class AudioManager : MonoBehaviour
     private float GetBattleLayerVolume(int index)
     {
         float baseVolume = masterVolume * battleBlend * Mathf.Clamp01(musicIntensity);
-        float categoryMultiplier = (currentMusicCategory == MusicCategory.ChurchFight) ? churchFightVolume : explorationVolume;
+        float categoryMultiplier =
+            currentMusicCategory == MusicCategory.BossBattle || currentMusicCategory == MusicCategory.BossBattle
+             ? churchFightVolume : explorationVolume;
         return baseVolume * battleLayerVolumes[index] * categoryMultiplier;
     }
 
@@ -244,7 +273,7 @@ public class AudioManager : MonoBehaviour
     private void UpdateBattleMusicLayers()
     {
         float baseVolume = battleBlend * Mathf.Clamp01(musicIntensity) * masterVolume;
-        float categoryMultiplier = currentMusicCategory == MusicCategory.ChurchFight ? churchFightVolume : explorationVolume;
+        float categoryMultiplier = currentMusicCategory == MusicCategory.BossBattle ? churchFightVolume : explorationVolume;
 
         for (int i = 0; i < battleMusicLayers.Length; i++)
         {
@@ -265,7 +294,7 @@ public class AudioManager : MonoBehaviour
         if (currentScene == "01_Tutorial" || !canPlayBattleMusic) return;
 
         musicIntensity = 0.5f;
-        currentMusicCategory = (currentScene == "04_Church") ? MusicCategory.ChurchFight : MusicCategory.Battle;
+        currentMusicCategory = (currentScene == "04_Church") ? MusicCategory.BossBattle : MusicCategory.Battle;
 
         for (int i = 0; i < battleMusicLayers.Length; i++)
         {
@@ -286,7 +315,7 @@ public class AudioManager : MonoBehaviour
 
         StartCoroutine(FadeOutAndStopBattleMusic(2f));
 
-        AudioClip clip = (currentScene == "04_Church") ? churchExplorationClip : levelExplorationClip;
+        AudioClip clip = (currentScene == "04_Church") ? bossExplorationClip : levelExplorationClip;
         MusicCategory category = (currentScene == "04_Church") ? MusicCategory.ChurchEntrance : MusicCategory.Exploration;
         PlayMusic(clip, category);
     }
@@ -353,6 +382,12 @@ public class AudioManager : MonoBehaviour
     private void HandleComboChange(int newLevel)
     {
         currentComboLevel = Mathf.Clamp(newLevel, 0, 3);
+        UpdateBattleMusicLayers();
+    }
+
+    private void HandleBossComboChange(int level)
+    {
+        currentComboLevel = Mathf.Clamp(level, 0, bossBattleClips.Length - 1);
         UpdateBattleMusicLayers();
     }
 
