@@ -1,6 +1,8 @@
+using ProjectColombo.Combat;
 using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Inventory;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -12,6 +14,15 @@ namespace ProjectColombo.Objects.Charms
         public int perHowManyGold;
 
         PlayerInventory myPlayerInventory;
+
+        public override void UpdateStatSheed(AttributesStatSheet stats)
+        {
+            myPlayerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
+
+            int multiplyer = Mathf.FloorToInt(myPlayerInventory.currencyAmount / perHowManyGold);
+
+            stats.damageResistPercentage += damgePercentage * multiplyer;
+        }
 
         public override void Enable()
         {

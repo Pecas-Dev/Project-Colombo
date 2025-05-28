@@ -11,6 +11,11 @@ namespace ProjectColombo.Objects.Charms
         float staminaRegenTimeValue;
         Stamina myStamina;
 
+        public override void UpdateStatSheed(AttributesStatSheet stats)
+        {
+            stats.staminaRegenSpeedPercentage += staminaRegenTimePercentage;
+        }
+
         public override void Enable()
         {
             myStamina = GameObject.Find("Player").GetComponent<PlayerStateMachine>().myStamina;

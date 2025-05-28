@@ -1,3 +1,4 @@
+using ProjectColombo.Combat;
 using ProjectColombo.GameManagement.Events;
 using UnityEngine;
 
@@ -9,6 +10,18 @@ namespace ProjectColombo.Objects.Charms
         public float damgePercentageSameScale;
         public float damgePercentageOppScale;
         public int perHowManyMaxHealth;
+
+        HealthManager myHealthManager;
+
+        public override void UpdateStatSheed(AttributesStatSheet stats)
+        {
+            myHealthManager = GameObject.Find("Player").GetComponent<HealthManager>();
+
+            int multiplyer = Mathf.FloorToInt(myHealthManager.MaxHealth / perHowManyMaxHealth);
+
+            stats.extraDamageMissedParrySameScalePercentage += multiplyer * damgePercentageSameScale;
+            stats.extraDamageMissedParryDifferentScalePercentage += multiplyer * damgePercentageOppScale;
+        }
 
         public override void Enable()
         {

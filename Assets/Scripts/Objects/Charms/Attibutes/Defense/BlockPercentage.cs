@@ -1,3 +1,4 @@
+using ProjectColombo.Combat;
 using ProjectColombo.GameManagement.Events;
 using UnityEngine;
 
@@ -6,6 +7,11 @@ namespace ProjectColombo.Objects.Charms
     public class BlockPercentage : BaseAttributes
     {
         public float extraBlockDamagePercentage;
+
+        public override void UpdateStatSheed(AttributesStatSheet stats)
+        {
+            stats.blockPercentage += extraBlockDamagePercentage;
+        }
 
         public override void Enable()
         {

@@ -10,6 +10,11 @@ namespace ProjectColombo.Objects.Charms
 
         HealthManager myHealthmanager;
 
+        public override void UpdateStatSheed(AttributesStatSheet stats)
+        {
+
+        }
+
         public override void Enable()
         {
             CustomEvents.OnDamageDelt += OnDamageDelt;

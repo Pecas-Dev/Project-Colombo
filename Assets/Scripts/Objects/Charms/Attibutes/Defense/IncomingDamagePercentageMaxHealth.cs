@@ -1,3 +1,4 @@
+using ProjectColombo.Combat;
 using ProjectColombo.GameManagement.Events;
 using UnityEngine;
 
@@ -9,12 +10,23 @@ namespace ProjectColombo.Objects.Charms
         public float damgePercentage;
         public int perHowManyMaxHealth;
 
+        HealthManager myHealthManager;
+
+        public override void UpdateStatSheed(AttributesStatSheet stats)
+        {
+            myHealthManager = GameObject.Find("Player").GetComponent<HealthManager>();
+
+            int multiplyer = Mathf.FloorToInt(myHealthManager.MaxHealth / perHowManyMaxHealth);
+
+            stats.damageResistPercentage += multiplyer * damgePercentage;
+        }
+
         public override void Enable()
         {
             CustomEvents.OnDamageReceived += OnDamageReceived;
         }
 
-        private void OnDamageReceived(int amount, GameGlobals.MusicScale scale, Combat.HealthManager healthmanager)
+        private void OnDamageReceived(int amount, GameGlobals.MusicScale scale, HealthManager healthmanager)
         {
             if (eventHandled) return;
             eventHandled = true;

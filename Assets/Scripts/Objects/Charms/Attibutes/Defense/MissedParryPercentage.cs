@@ -1,3 +1,4 @@
+using ProjectColombo.Combat;
 using ProjectColombo.GameManagement.Events;
 using UnityEngine;
 
@@ -7,6 +8,12 @@ namespace ProjectColombo.Objects.Charms
     {
         public float extraDamageMissedParrySameScalePercentage;
         public float extraDamageMissedParryDifferentScalePercentage;
+
+        public override void UpdateStatSheed(AttributesStatSheet stats)
+        {
+            stats.extraDamageMissedParrySameScalePercentage += extraDamageMissedParryDifferentScalePercentage;
+            stats.extraDamageMissedParryDifferentScalePercentage += extraDamageMissedParryDifferentScalePercentage;
+        }
 
         public override void Enable()
         {

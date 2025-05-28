@@ -13,6 +13,7 @@ namespace ProjectColombo.Objects.Charms
             eventHandled = false;
         }
 
+        public abstract void UpdateStatSheed(AttributesStatSheet stats);
         public abstract void Enable();
         public abstract void Disable();
     }

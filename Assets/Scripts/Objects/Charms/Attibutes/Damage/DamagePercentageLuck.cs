@@ -13,6 +13,16 @@ namespace ProjectColombo.Objects.Charms
 
         PlayerInventory myPlayerInventroy;
 
+        public override void UpdateStatSheed(AttributesStatSheet stats)
+        {
+            myPlayerInventroy = GameManager.Instance.GetComponent<PlayerInventory>();
+
+            int multiplyer = Mathf.FloorToInt(myPlayerInventroy.currentLuck / forHowManyLuck);
+
+            stats.majorDamagePercentage += multiplyer * damagePercentageLuck;
+            stats.minorDamagePercentage += multiplyer * damagePercentageLuck;
+        }
+
         public override void Enable()
         {
             CustomEvents.OnDamageDelt += OnDamageDelt;

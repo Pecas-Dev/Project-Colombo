@@ -10,6 +10,11 @@ namespace ProjectColombo.Objects.Charms
 
         Stamina myStamina;
 
+        public override void UpdateStatSheed(AttributesStatSheet stats)
+        {
+
+        }
+
         public override void Enable()
         {
             myStamina = GameObject.Find("Player").GetComponent<PlayerStateMachine>().myStamina;

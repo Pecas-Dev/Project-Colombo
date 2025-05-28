@@ -12,6 +12,16 @@ namespace ProjectColombo.Objects.Charms
 
         HealthManager myHealthManager;
 
+        public override void UpdateStatSheed(AttributesStatSheet stats)
+        {
+            myHealthManager = GameObject.Find("Player").GetComponent<HealthManager>();
+
+            int multiplyer = Mathf.FloorToInt((myHealthManager.MaxHealth - myHealthManager.currentHealth) / forHowManyMissingHealth);
+
+            stats.majorDamagePercentage += multiplyer * damageMissingHealth;
+            stats.minorDamagePercentage += multiplyer * damageMissingHealth;
+        }
+
         public override void Enable()
         {
             CustomEvents.OnDamageDelt += OnDamageDelt;

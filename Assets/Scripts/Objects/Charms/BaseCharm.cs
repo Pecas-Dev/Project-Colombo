@@ -16,8 +16,32 @@ namespace ProjectColombo.Objects.Charms
         public GameObject abilityObject;
         bool firstTimeEquiped = false;
 
+        AttributesStatSheet myStats;
         BaseAttributes[] myAttributes;
 
+        private void Start()
+        {
+            myAttributes = GetComponents<BaseAttributes>();
+            myStats = GetComponent<AttributesStatSheet>();
+            myStats.ResetStats();
+
+            foreach (var attrib in myAttributes)
+            {
+                attrib.UpdateStatSheed(myStats);
+            }
+        }
+
+        public AttributesStatSheet GetStats()
+        {
+            myStats.ResetStats();
+
+            foreach (var attrib in myAttributes)
+            {
+                attrib.UpdateStatSheed(myStats);
+            }
+
+            return myStats;
+        }
 
         public void Equip()
         {
@@ -28,7 +52,6 @@ namespace ProjectColombo.Objects.Charms
             }
 
 
-            myAttributes = GetComponents<BaseAttributes>();
 
             foreach (BaseAttributes attrib in myAttributes)
             {

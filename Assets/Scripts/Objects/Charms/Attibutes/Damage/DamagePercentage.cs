@@ -8,6 +8,12 @@ namespace ProjectColombo.Objects.Charms
         public float majorDamagePercentage;
         public float minorDamagePercentage;
 
+        public override void UpdateStatSheed(AttributesStatSheet stats)
+        {
+            stats.majorDamagePercentage += majorDamagePercentage;
+            stats.minorDamagePercentage += minorDamagePercentage;
+        }
+
         public override void Enable()
         {
             CustomEvents.OnDamageDelt += OnDamageDelt;

@@ -10,6 +10,11 @@ namespace ProjectColombo.Objects.Charms
 
         PlayerInventory myPlayerInventory;
 
+        public override void UpdateStatSheed(AttributesStatSheet stats)
+        {
+
+        }
+
         public override void Enable()
         {
             myPlayerInventory = GameManager.Instance.GetComponent<PlayerInventory>();

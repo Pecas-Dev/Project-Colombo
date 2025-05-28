@@ -1,3 +1,4 @@
+using ProjectColombo.Combat;
 using ProjectColombo.GameManagement.Events;
 using UnityEngine;
 
@@ -6,6 +7,11 @@ namespace ProjectColombo.Objects.Charms
     public class EvadeChance : BaseAttributes
     {
         public float evadeChancePercentage;
+
+        public override void UpdateStatSheed(AttributesStatSheet stats)
+        {
+            stats.evadeChancePercentage += evadeChancePercentage;
+        }
 
         public override void Enable()
         {

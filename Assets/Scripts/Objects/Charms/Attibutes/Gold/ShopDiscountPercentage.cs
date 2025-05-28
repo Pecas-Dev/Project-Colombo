@@ -8,6 +8,11 @@ namespace ProjectColombo.Objects.Charms
     {
         public int discountPercentage;
 
+        public override void UpdateStatSheed(AttributesStatSheet stats)
+        {
+
+        }
+
         public override void Enable()
         {
             CustomEvents.OnShopOpen += OnShopOpen;

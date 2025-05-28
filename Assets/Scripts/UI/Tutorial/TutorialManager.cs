@@ -15,7 +15,7 @@ namespace ProjectColombo.Tutorial
     {
         public List<GameObject> chambers;
         GameObject player;
-        public TutorialSpawner startSpawner;
+        //public TutorialSpawner startSpawner;
         int counter;
 
         public TutorialDialogSystem dialogAfterAttackMinorEnemy;
@@ -39,7 +39,7 @@ namespace ProjectColombo.Tutorial
                 chamber.GetComponent<TileWorldChamber>().Initialize(new Vector2(0,0));
             }
 
-            startSpawner.SpawnEnemy();
+            //startSpawner.SpawnEnemy();
 
             GameInputSO gameInput = GameManager.Instance.gameInput;
             gameInput.LockAllInputsViaTutorial();

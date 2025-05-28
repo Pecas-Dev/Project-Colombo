@@ -13,6 +13,11 @@ namespace ProjectColombo.Objects.Charms
 
         PlayerStateMachine myPlayerStateMachine;
 
+        public override void UpdateStatSheed(AttributesStatSheet stats)
+        {
+
+        }
+
         public override void Enable()
         {
             myPlayerStateMachine = GameObject.Find("Player").GetComponent<PlayerStateMachine>();

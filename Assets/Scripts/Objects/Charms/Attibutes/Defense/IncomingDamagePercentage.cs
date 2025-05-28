@@ -1,3 +1,4 @@
+using ProjectColombo.Combat;
 using ProjectColombo.GameManagement.Events;
 using UnityEngine;
 
@@ -7,6 +8,12 @@ namespace ProjectColombo.Objects.Charms
     {
         public float majorDamagePercentage;
         public float minorDamagePercentage;
+
+        public override void UpdateStatSheed(AttributesStatSheet stats)
+        {
+            stats.majorDamagePercentage += majorDamagePercentage;
+            stats.minorDamagePercentage += minorDamagePercentage;
+        }
 
         public override void Enable()
         {

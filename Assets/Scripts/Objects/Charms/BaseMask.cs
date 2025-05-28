@@ -1,5 +1,6 @@
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Objects.Charms;
+using System.Xml.Serialization;
 using UnityEngine;
 
 namespace ProjectColombo.Objects.Masks
@@ -19,14 +20,59 @@ namespace ProjectColombo.Objects.Masks
         public GameObject attribAfterEcho;
         BaseAttributes[] attribBeforeEchoList;
         BaseAttributes[] attribAfterEchoList;
+        AttributesStatSheet myStats;
 
         public BaseEchoMissions echoMission;
         public GameObject abilityObject;
 
-        public void Equip()
+        private void Start()
         {
             attribBeforeEchoList = attribBeforeEcho.GetComponents<BaseAttributes>();
-            attribAfterEchoList = attribAfterEcho.GetComponents<BaseAttributes>();
+            attribAfterEchoList = attribAfterEcho.GetComponents<BaseAttributes>(); 
+            myStats = GetComponent<AttributesStatSheet>();
+            myStats.ResetStats();
+
+            if (!echoUnlocked)
+            {
+                foreach (var attrib in attribBeforeEchoList)
+                {
+                    attrib.UpdateStatSheed(myStats);
+                }
+            }
+            else
+            {
+                foreach (var attrib in attribAfterEchoList)
+                {
+                    attrib.UpdateStatSheed(myStats);
+                }
+            }
+        }
+
+        public AttributesStatSheet GetStats()
+        {
+            myStats.ResetStats();
+
+            if (!echoUnlocked)
+            {
+                foreach (var attrib in attribBeforeEchoList)
+                {
+                    attrib.UpdateStatSheed(myStats);
+                }
+            }
+            else
+            {
+                foreach (var attrib in attribAfterEchoList)
+                {
+                    attrib.UpdateStatSheed(myStats);
+                }
+            }
+
+            return myStats;
+        }
+
+        public void Equip()
+        {
+
 
             if (!echoUnlocked)
             {

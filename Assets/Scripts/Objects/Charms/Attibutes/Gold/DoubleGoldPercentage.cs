@@ -9,6 +9,13 @@ namespace ProjectColombo.Objects.Charms
     {
         public float doubleGoldOnPickUpPercentage;
         PlayerInventory myPlayerInventory;
+
+
+        public override void UpdateStatSheed(AttributesStatSheet stats)
+        {
+
+        }
+
         public override void Enable()
         {
             CustomEvents.OnCoinsCollected += OnCoinsCollected;

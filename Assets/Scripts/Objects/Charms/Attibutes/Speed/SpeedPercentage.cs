@@ -9,6 +9,11 @@ namespace ProjectColombo.Objects.Charms
         float speedIncreaseValue;
         EntityAttributes myEntityAttributes;
 
+        public override void UpdateStatSheed(AttributesStatSheet stats)
+        {
+            stats.moveSpeedPercentage += speedIncreasePercentage;
+        }
+
         public override void Enable()
         {
             myEntityAttributes = GameObject.Find("Player").GetComponent<EntityAttributes>();

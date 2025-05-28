@@ -11,6 +11,11 @@ namespace ProjectColombo.Objects.Charms
 
         HealthManager myHealthManager;
 
+        public override void UpdateStatSheed(AttributesStatSheet stats)
+        {
+
+        }
+
         public override void Enable()
         {
             myHealthManager = GameObject.Find("Player").GetComponent<HealthManager>();
