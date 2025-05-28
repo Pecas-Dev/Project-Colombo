@@ -1,15 +1,16 @@
-using TMPro;
-using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
 using ProjectColombo.Combat;
-using ProjectColombo.Inventory;
-using UnityEngine.SceneManagement;
 using ProjectColombo.GameManagement;
-using ProjectColombo.Objects.Charms;
-using ProjectColombo.StateMachine.Player;
 using ProjectColombo.GameManagement.Stats;
-
+using ProjectColombo.Inventory;
+using ProjectColombo.Objects.Charms;
+using ProjectColombo.Objects.Masks;
+using ProjectColombo.StateMachine.Player;
+using System.Collections;
+using TMPro;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace ProjectColombo.UI.Pausescreen
 {
@@ -23,13 +24,13 @@ namespace ProjectColombo.UI.Pausescreen
         [SerializeField] GameObject graphLines;
 
         [Header("Player References (Real-Time Stats)")]
-        [SerializeField] PlayerStateMachine playerStateMachine;
-        [SerializeField] EntityAttributes playerEntityAttributes;
-        [SerializeField] HealthManager playerHealthManager;
-        [SerializeField] PlayerInventory playerInventory;
+        [SerializeField] GlobalStats myGlobalStats;
+        [SerializeField] PlayerInventory myPlayerInventory;
 
-        [Header("Global Stats Reference")]
-        [SerializeField] GlobalStats globalStats;
+
+        [Header("Graph Baseline Settings")]
+        [SerializeField] float statBarBaseline = 0f;
+        [SerializeField] float statBarMaxRange = 100f;
 
         [Header("Debug Settings")]
         [SerializeField] bool enableDebugLogs = true;
@@ -37,12 +38,20 @@ namespace ProjectColombo.UI.Pausescreen
         Coroutine[] statBarAnimations;
         bool isInitialized = false;
 
+        // Stat values
+        [ReadOnlyInspector] public float currentMajorAttackPercentage = 0;
+        [ReadOnlyInspector] public float currentMinorAttackPercentage = 0;
+        [ReadOnlyInspector] public float currentIncomingDamagePercentage = 0;
+        [ReadOnlyInspector] public float currentMoveSpeedPercentage = 0;
+        [ReadOnlyInspector] public float currentAttackSpeedPercentage = 0;
+        [ReadOnlyInspector] public float currentCritChancePercentage = 0;
+        [ReadOnlyInspector] public float currentEvadeChancePercentage = 0;
+        [ReadOnlyInspector] public float currentLuckPoints = 0;
+
         void Awake()
         {
             if (!isInitialized)
-            {
                 Initialize();
-            }
         }
 
         void OnEnable()
@@ -54,295 +63,114 @@ namespace ProjectColombo.UI.Pausescreen
 
         public void Initialize()
         {
-            LogDebug("Initializing Stats Tab with real-time player references");
-
-            GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-
-            if (playerObject != null)
-            {
-                playerStateMachine = playerObject.GetComponent<PlayerStateMachine>();
-                playerEntityAttributes = playerObject.GetComponent<EntityAttributes>();
-                playerHealthManager = playerObject.GetComponent<HealthManager>();
-                LogDebug("Found Player GameObject with real-time components");
-            }
-            else
-            {
-                LogDebug("Player GameObject not found - stats may not be real-time!", true);
-            }
-
             if (GameManager.Instance != null)
             {
-                playerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
-                globalStats = GameManager.Instance.GetComponent<GlobalStats>();
-                LogDebug("Found GameManager components (PlayerInventory and GlobalStats)");
-            }
-            else
-            {
-                LogDebug("GameManager.Instance not found!", true);
+                myGlobalStats = GameManager.Instance.GetComponent<GlobalStats>();
+                myPlayerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
+                LogDebug("Found GameManager components");
             }
 
-            if (statBarImages != null)
-            {
-                statBarAnimations = new Coroutine[statBarImages.Length];
-            }
-
+            statBarAnimations = new Coroutine[statBarImages.Length];
             isInitialized = true;
+        }
+
+        public void ResetStatNumbers()
+        {
+            currentMajorAttackPercentage = 100;
+            currentMinorAttackPercentage = 100;
+            currentIncomingDamagePercentage = 100;
+            currentMoveSpeedPercentage = 100;
+            currentAttackSpeedPercentage = 100;
+            currentLuckPoints = 0;
+            currentCritChancePercentage = 0;
+            currentEvadeChancePercentage = 0;
+        }
+
+        public void UpdateStatNumbers()
+        {
+            ResetStatNumbers();
+
+            foreach (var charm in myPlayerInventory.charms)
+            {
+                AttributesStatSheet stats = charm.GetComponent<BaseCharm>().GetStats();
+                AddStats(stats);
+            }
+
+            foreach (var charm in myPlayerInventory.legendaryCharms)
+            {
+                AttributesStatSheet stats = charm.GetComponent<BaseCharm>().GetStats();
+                AddStats(stats);
+            }
+
+            if (myPlayerInventory.maskSlot.transform.childCount != 0)
+            {
+                var stats = myPlayerInventory.maskSlot.GetComponentInChildren<BaseMask>().GetStats();
+                AddStats(stats);
+            }
+
+            currentLuckPoints = myPlayerInventory.currentLuck;
+            currentCritChancePercentage = Mathf.RoundToInt(currentLuckPoints / 2f);
+            currentEvadeChancePercentage += Mathf.RoundToInt(currentLuckPoints / 5f);
+        }
+
+        void AddStats(AttributesStatSheet stats)
+        {
+            currentMajorAttackPercentage += stats.majorDamagePercentage;
+            currentMinorAttackPercentage += stats.minorDamagePercentage;
+            currentIncomingDamagePercentage -= ((stats.incomingMajorDamagePercentage + stats.incomingMinorDamagePercentage)/2);
+            currentMoveSpeedPercentage += stats.moveSpeedPercentage;
+            currentAttackSpeedPercentage += stats.attackSpeedPercentage;
+            currentEvadeChancePercentage += stats.evadeChancePercentage;
         }
 
         public void UpdateStats()
         {
             LogDebug("Updating stats with real-time values");
 
-            bool shouldResetStats = (SceneManager.GetActiveScene().buildIndex == 1);
-
-            if (statValueTexts != null && statValueTexts.Length >= 5)
+            if (SceneManager.GetActiveScene().buildIndex == 1)
             {
-                if (shouldResetStats)
-                {
-                    LogDebug("Scene build index is 1 - setting all stats to 0");
-
-                    statValueTexts[0].text = "Damage (0%)";
-                    statValueTexts[1].text = "Defense (0%)";
-                    statValueTexts[2].text = "Attack Speed (0%)";
-                    statValueTexts[3].text = "Move Speed (0%)";
-                    statValueTexts[4].text = "Luck (0%)";
-                    statValueTexts[5].text = "Critical Chance (0%)";
-                    statValueTexts[6].text = "Evade Chance (0%)";
-                }
-                else
-                {
-
-                    // 1. Damage (calculate estimated damage boost from charms + base multiplier)
-                    float damagePercent = GetEstimatedDamageBoostPercent();
-                    statValueTexts[0].text = "Damage (" + Mathf.RoundToInt(damagePercent).ToString() + "%)";
-                    LogDebug($"Updated Damage: {damagePercent}%");
-
-                    // 2. Defense (calculate estimated damage reduction from charms + base block)
-                    float defensePercent = GetEstimatedDefensePercent();
-                    statValueTexts[1].text = "Defense (" + Mathf.RoundToInt(defensePercent).ToString() + "%)";
-                    LogDebug($"Updated Defense: {defensePercent}%");
-
-                    // 3. Attack Speed (percentage increase from base)
-                    float attackSpeedPercent = GetAttackSpeedIncreasePercent();
-                    statValueTexts[2].text = "Attack Speed (" + Mathf.RoundToInt(attackSpeedPercent).ToString() + "%)";
-                    LogDebug($"Updated Attack Speed: {attackSpeedPercent}%");
-
-                    // 4. Movement Speed (percentage increase from base)
-                    float movementSpeedPercent = GetMovementSpeedIncreasePercent();
-                    statValueTexts[3].text = "Move Speed (" + Mathf.RoundToInt(movementSpeedPercent).ToString() + "%)";
-                    LogDebug($"Updated Movement Speed: {movementSpeedPercent}%");
-
-                    // 5. Luck (each point = 1%)
-                    int luckPercent = GetRealTimeLuck();
-                    statValueTexts[4].text = "Luck (" + luckPercent.ToString() + "%)";
-                    LogDebug($"Updated Luck: {luckPercent}%");
-
-                    // 6. Critical Chance 
-                    if (statValueTexts.Length > 5)
-                    {
-                        int criticalChance = GetCriticalChancePercent();
-                        statValueTexts[5].text = "Critical Chance (" + criticalChance.ToString() + "%)";
-                        LogDebug($"Updated Critical Chance: {criticalChance}%");
-                    }
-
-                    // 7. Evade Chance 
-                    if (statValueTexts.Length > 6)
-                    {
-                        int evadeChance = GetEvadeChancePercent();
-                        statValueTexts[6].text = "Evade Chance (" + evadeChance.ToString() + "%)";
-                        LogDebug($"Updated Evade Chance: {evadeChance}%");
-                    }
-                }
+                ResetStatNumbers();
             }
             else
             {
-                LogDebug("WARNING: statValueTexts array is null or has insufficient elements!", true);
+                UpdateStatNumbers();
             }
-        }
 
-        float GetMovementSpeedIncreasePercent()
-        {
-            if (playerEntityAttributes != null && globalStats != null)
+            if (statValueTexts == null || statValueTexts.Length < 8)
             {
-                float currentSpeed = playerEntityAttributes.moveSpeed;
-                float baseSpeed = globalStats.defaultPlayerSpeed;
-                return ((currentSpeed - baseSpeed) / baseSpeed) * 100f;
-            }
-            return 0f;
-        }
-
-        float GetAttackSpeedIncreasePercent()
-        {
-            if (playerEntityAttributes != null && globalStats != null)
-            {
-                float currentAttackSpeed = playerEntityAttributes.attackSpeed;
-                float baseAttackSpeed = globalStats.defaultPlayerAttackSpeed;
-                return ((currentAttackSpeed - baseAttackSpeed) / baseAttackSpeed) * 100f;
-            }
-            return 0f;
-        }
-
-        int GetRealTimeLuck()
-        {
-            if (playerInventory != null)
-            {
-                return playerInventory.currentLuck;
+                LogDebug("WARNING: statValueTexts array is null or insufficient!", true);
+                return;
             }
 
-            if (globalStats != null)
-            {
-                return globalStats.currentLuckPoints;
-            }
-
-            return 0;
-        }
-
-        int GetCriticalChancePercent()
-        {
-            int currentLuck = GetRealTimeLuck();
-            return Mathf.RoundToInt(currentLuck / 2f);
-        }
-
-        int GetEvadeChancePercent()
-        {
-            int currentLuck = GetRealTimeLuck();
-            return Mathf.RoundToInt(currentLuck / 5f);
-        }
-
-        float GetEstimatedDamageBoostPercent()
-        {
-            float totalDamageBoost = 0f;
-
-            if (globalStats != null)
-            {
-                float baseDamageMultiplier = globalStats.currentMajorDamageMultiplyer;
-                totalDamageBoost += (baseDamageMultiplier - 1.0f) * 100f;
-            }
-
-            if (playerInventory != null)
-            {
-                foreach (GameObject charm in playerInventory.charms)
-                {
-                    if (charm != null)
-                    {
-                        totalDamageBoost += GetCharmDamageBonus(charm);
-                    }
-                }
-                foreach (GameObject legendaryCharm in playerInventory.legendaryCharms)
-                {
-                    if (legendaryCharm != null)
-                    {
-                        totalDamageBoost += GetCharmDamageBonus(legendaryCharm);
-                    }
-                }
-            }
-
-            return Mathf.Max(0f, totalDamageBoost);
-        }
-
-        float GetEstimatedDefensePercent()
-        {
-            float totalDefense = 0f;
-
-            if (globalStats != null)
-            {
-                totalDefense += globalStats.currentBlockReductionPercent;
-            }
-
-            if (playerInventory != null)
-            {
-                foreach (GameObject charm in playerInventory.charms)
-                {
-                    if (charm != null)
-                    {
-                        totalDefense += GetCharmDefenseBonus(charm);
-                    }
-                }
-
-                foreach (GameObject legendaryCharm in playerInventory.legendaryCharms)
-                {
-                    if (legendaryCharm != null)
-                    {
-                        totalDefense += GetCharmDefenseBonus(legendaryCharm);
-                    }
-                }
-            }
-
-            return Mathf.Max(0f, totalDefense);
-        }
-
-        float GetCharmDamageBonus(GameObject charm)
-        {
-            if (charm == null) return 0f;
-
-            float damageBonus = 0f;
-
-            DamagePercentage damagePercentage = charm.GetComponent<DamagePercentage>();
-
-            if (damagePercentage != null)
-            {
-                damageBonus += damagePercentage.majorDamagePercentage;
-            }
-
-            DamagePercentageLuck damageLuck = charm.GetComponent<DamagePercentageLuck>();
-            if (damageLuck != null && playerInventory != null)
-            {
-                int luckMultiplier = Mathf.FloorToInt(playerInventory.currentLuck / damageLuck.forHowManyLuck);
-                damageBonus += luckMultiplier * damageLuck.damagePercentageLuck;
-            }
-
-            return damageBonus;
-        }
-
-        float GetCharmDefenseBonus(GameObject charm)
-        {
-            if (charm == null) return 0f;
-
-            float defenseBonus = 0f;
-
-            BlockPercentage blockPercentage = charm.GetComponent<BlockPercentage>();
-
-            if (blockPercentage != null)
-            {
-                defenseBonus += blockPercentage.extraBlockDamagePercentage;
-            }
-
-            return defenseBonus;
+            statValueTexts[0].text = $"Dur Damage ({Mathf.RoundToInt(currentMajorAttackPercentage)}%)";
+            statValueTexts[1].text = $"Moll Damage ({Mathf.RoundToInt(currentMinorAttackPercentage)}%)";
+            statValueTexts[2].text = $"Resistance ({Mathf.RoundToInt(currentIncomingDamagePercentage)}%)";
+            statValueTexts[3].text = $"Move Speed ({Mathf.RoundToInt(currentMoveSpeedPercentage)}%)";
+            statValueTexts[4].text = $"Attack Speed ({Mathf.RoundToInt(currentAttackSpeedPercentage)}%)";
+            statValueTexts[5].text = $"Crit Chance ({Mathf.RoundToInt(currentCritChancePercentage)}%)";
+            statValueTexts[6].text = $"Evade Chance ({Mathf.RoundToInt(currentEvadeChancePercentage)}%)";
+            statValueTexts[7].text = $"Luck ({Mathf.RoundToInt(currentLuckPoints)}%)";
         }
 
         void AnimateStatBars()
         {
             if (statBarImages == null)
             {
-                LogDebug("Cannot animate stat bars: statBarImages array is null");
+                LogDebug("Cannot animate stat bars: statBarImages is null");
                 return;
             }
 
-            bool shouldResetStats = (SceneManager.GetActiveScene().buildIndex == 1);
-
-            float[] statValues;
-
-            if (shouldResetStats)
+            float[] statValues = new float[]
             {
-                statValues = new float[statBarImages.Length];
-                for (int i = 0; i < statValues.Length; i++)
-                {
-                    statValues[i] = 0f;
-                }
-            }
-            else
-            {
-                statValues = new float[]
-                {
-                    Mathf.Clamp01(GetEstimatedDamageBoostPercent() / 100f), // Damage 
-                    Mathf.Clamp01(GetEstimatedDefensePercent() / 100f), // Defense 
-                    Mathf.Clamp01(GetAttackSpeedIncreasePercent() / 100f), // Attack Speed 
-                    Mathf.Clamp01(GetMovementSpeedIncreasePercent() / 100f), // Movement Speed 
-                    Mathf.Clamp01(GetRealTimeLuck() / 100f), // Luck 
-                    Mathf.Clamp01(GetCriticalChancePercent() / 100f), // Critical Chance 
-                    Mathf.Clamp01(GetEvadeChancePercent() / 100f) // Evade Chance 
-                };
-            }
+                currentMajorAttackPercentage,
+                currentMinorAttackPercentage,
+                currentIncomingDamagePercentage,
+                currentMoveSpeedPercentage,
+                currentAttackSpeedPercentage,
+                currentCritChancePercentage,
+                currentEvadeChancePercentage,
+                currentLuckPoints
+            };
 
             for (int i = 0; i < statBarImages.Length; i++)
             {
@@ -357,34 +185,46 @@ namespace ProjectColombo.UI.Pausescreen
                     StopCoroutine(statBarAnimations[i]);
                 }
 
-                float targetValue = (i < statValues.Length) ? statValues[i] : 0f;
+                float rawValue = i < statValues.Length ? statValues[i] : 0f;
+                float normalized;
 
-                statBarAnimations[i] = StartCoroutine(AnimateStatBar(statBarImages[i], targetValue));
+                if (i >= 5) //so crit, evade, luck
+                {
+                    normalized = Mathf.Clamp01(rawValue / 100f); // 100% = full fill
+                }
+                else
+                {
+                    normalized = Mathf.Clamp01(rawValue / 200f); // 100% = 0.5 fill, 200% = full fill
+                }
 
-                LogDebug($"Animating stat bar {i} to value: {targetValue} (percentage: {targetValue * 100f}%)");
+                statBarAnimations[i] = StartCoroutine(AnimateStatBar(statBarImages[i], normalized));
+                LogDebug($"Animating stat bar {i}: raw={rawValue}, normalized={normalized}");
             }
         }
+
 
         IEnumerator AnimateStatBar(Image statBar, float targetValue)
         {
             float duration = 1.0f;
             float elapsed = 0f;
 
-            if (statBar == null)
-            {
-                LogDebug("Cannot animate: statBar is null");
-                yield break;
-            }
-
-            statBar.fillAmount = 0f;
+            float initialValue = statBar.fillAmount;
 
             while (elapsed < duration)
             {
                 float t = elapsed / duration;
                 float smoothT = t * t * (3f - 2f * t);
+                statBar.fillAmount = Mathf.Lerp(initialValue, targetValue, smoothT);
 
-                float newFill = Mathf.Lerp(0f, targetValue, smoothT);
-                statBar.fillAmount = newFill;
+                //maybe but then carefull with crit, evade and luck
+                //if (statBar.fillAmount < 0.5f)
+                //{
+                //    statBar.color = Color.red;
+                //}
+                //else
+                //{
+                //    statBar.color = Color.black;
+                //}
 
                 elapsed += Time.unscaledDeltaTime;
                 yield return null;
@@ -395,17 +235,11 @@ namespace ProjectColombo.UI.Pausescreen
 
         void LogDebug(string message, bool isWarning = false)
         {
-            if (enableDebugLogs)
-            {
-                if (isWarning)
-                {
-                    Debug.LogWarning($"[StatsTabController] {message}");
-                }
-                else
-                {
-                    Debug.Log($"<color=#33AAFF>[StatsTabController] {message}</color>");
-                }
-            }
+            if (!enableDebugLogs) return;
+            if (isWarning)
+                Debug.LogWarning($"[StatsTabController] {message}");
+            else
+                Debug.Log($"<color=#33AAFF>[StatsTabController] {message}</color>");
         }
     }
 }
