@@ -1,6 +1,7 @@
 using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Inventory;
+using System.Collections;
 using UnityEngine;
 
 namespace ProjectColombo.LevelManagement
@@ -12,9 +13,17 @@ namespace ProjectColombo.LevelManagement
         private void Start()
         {
             CustomEvents.OnEnemyDeath += EndBossFight;
-            CustomEvents.ChamberActivated();
+            StartCoroutine(StartDelay());
+        }
+
+        IEnumerator StartDelay()
+        {
+            yield return new WaitForSecondsRealtime(0.1f);
+            GameManager.Instance.GetComponent<PlayerInventory>().DeactivateCharms();
+            GameManager.Instance.GetComponent<PlayerInventory>().DeactivateMask();
             GameManager.Instance.GetComponent<PlayerInventory>().ActivateCharms();
             GameManager.Instance.GetComponent<PlayerInventory>().ActivateMask();
+            CustomEvents.ChamberActivated();
         }
 
         private void EndBossFight(GameGlobals.MusicScale arg1, GameObject arg2)

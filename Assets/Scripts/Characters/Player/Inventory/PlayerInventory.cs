@@ -496,7 +496,7 @@ namespace ProjectColombo.Inventory
             maskSlot.transform.GetChild(0).gameObject.GetComponent<BaseMask>().Equip();
         }
 
-        void DeactivateMask()
+        public void DeactivateMask()
         {
             if (maskSlot.transform.childCount == 0)
             {
@@ -515,7 +515,7 @@ namespace ProjectColombo.Inventory
             }
         }
 
-        void DeactivateCharms()
+        public void DeactivateCharms()
         {
             foreach (GameObject charm in charms)
             {
