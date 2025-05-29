@@ -42,6 +42,8 @@ namespace ProjectColombo.GameManagement.Events
         // PLAYSTATION LIGHT BAR COLORS 
         public static event Action<GameGlobals.MusicScale> OnMinorAttackPerformed;
         public static event Action<GameGlobals.MusicScale> OnMajorAttackPerformed;
+        public static event Action<GameGlobals.MusicScale> OnMinorParryPerformed;
+        public static event Action<GameGlobals.MusicScale> OnMajorParryPerformed;
         public static event Action<Color> OnLightbarColorChangeRequested;
 
         public static void DamageDelt(int damage, GameGlobals.MusicScale scale, bool sameScale, HealthManager enemyHealthManager, int comboLength)
@@ -198,6 +200,18 @@ namespace ProjectColombo.GameManagement.Events
         {
             OnLightbarColorChangeRequested?.Invoke(newColor);
         }
+
+        public static void MinorParryPerformed(GameGlobals.MusicScale scale)
+        {
+            OnMinorParryPerformed?.Invoke(scale);
+        }
+
+        public static void MajorParryPerformed(GameGlobals.MusicScale scale)
+        {
+            OnMajorParryPerformed?.Invoke(scale);
+        }
+
+        //----
 
         public static void StartBossfight()
         {

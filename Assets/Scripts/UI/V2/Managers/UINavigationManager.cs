@@ -21,7 +21,8 @@ namespace ProjectColombo.UI
         MaskSelection,
         HUD,
         CharmSwapScreen,
-        PickUpScreen
+        PickUpScreen,
+        Shop
     }
 
     public class UINavigationManager : MonoBehaviour

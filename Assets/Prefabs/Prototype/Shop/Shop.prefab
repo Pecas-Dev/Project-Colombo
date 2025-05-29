@@ -19,7 +19,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &578439660265856976
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1704,6 +1704,8 @@ GameObject:
   - component: {fileID: 1330738495245623568}
   - component: {fileID: 2201737147928508672}
   - component: {fileID: 6920766157091878934}
+  - component: {fileID: 5621055033748941791}
+  - component: {fileID: 178910057912136642}
   m_Layer: 0
   m_Name: Shopscreen
   m_TagString: Untagged
@@ -1833,6 +1835,39 @@ MonoBehaviour:
   pickUpPrefab: {fileID: 7109980893497795781, guid: 929b90f19122898449c45a3918bd04c9, type: 3}
   potionButton: {fileID: 7828939813179882897}
   exitShopButton: {fileID: 18583667243858894}
+--- !u!114 &5621055033748941791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4328659890831117210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac6654d0b8752424fb794d79236c0c02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hookButton: {fileID: 4018544516507042896}
+  shopButtons: []
+  enableDebugLogs: 1
+  navigationCooldown: 0.2
+  gameInput: {fileID: 0}
+--- !u!114 &178910057912136642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4328659890831117210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0794d4f5c2a3c1246ad740782ced0678, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firstSelectedObject: {fileID: 4018544516507042896}
+  autoRegisterOnEnable: 1
+  registrationDelay: 0.1
+  enableDebugLogs: 0
 --- !u!1 &4581275902008772390
 GameObject:
   m_ObjectHideFlags: 0
@@ -2158,6 +2193,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shopScreen: {fileID: 4328659890831117210}
   shopIndicator: {fileID: 4824230066728957847}
+  navigationController: {fileID: 5621055033748941791}
+  navigationExtension: {fileID: 178910057912136642}
+  enableDebugLogs: 1
 --- !u!1 &4824230066728957847
 GameObject:
   m_ObjectHideFlags: 0
@@ -2356,7 +2394,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.61547923, y: 0}
   m_AnchorMax: {x: 0.61547923, y: 0}
-  m_AnchoredPosition: {x: 99, y: 46.8}
+  m_AnchoredPosition: {x: 99, y: 46.80005}
   m_SizeDelta: {x: 190.2086, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1354534098011970716
@@ -2685,7 +2723,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.66756296, y: 0}
   m_AnchorMax: {x: 0.66756296, y: 0}
-  m_AnchoredPosition: {x: 125.6, y: 48.799988}
+  m_AnchoredPosition: {x: 125.599976, y: 48.80005}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3352579499084642661

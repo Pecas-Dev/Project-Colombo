@@ -32,7 +32,7 @@ namespace ProjectColombo.Shop
         List<int> noDuplicates = new();
         float discount = 0;
         public Button potionButton;
-        public GameObject exitShopButton;
+        //public GameObject exitShopButton;
 
         private void Start()
         {
@@ -79,7 +79,7 @@ namespace ProjectColombo.Shop
             // Wait until the end of the frame to ensure UI is fully active
             yield return new WaitForEndOfFrame();
 
-            EventSystem.current.SetSelectedGameObject(exitShopButton);
+            //EventSystem.current.SetSelectedGameObject(exitShopButton);
         }
 
         private void Update()

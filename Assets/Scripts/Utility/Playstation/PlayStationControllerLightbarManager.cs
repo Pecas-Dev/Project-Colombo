@@ -14,6 +14,9 @@ namespace ProjectColombo.InputSystem.Controllers
         [SerializeField] Color minorAttackColor = new Color(0.5f, 0f, 1f, 1f); 
         [SerializeField] Color majorAttackColor = Color.yellow;
 
+        [SerializeField] Color minorParryColor = new Color(0.5f, 0f, 1f, 1f); 
+        [SerializeField] Color majorParryColor = Color.yellow;
+
         [Header("Lightbar Settings")]
         [SerializeField] float colorDuration = 0.5f;
         [SerializeField] bool debugMode = false;
@@ -43,6 +46,8 @@ namespace ProjectColombo.InputSystem.Controllers
         {
             CustomEvents.OnMinorAttackPerformed += HandleMinorAttackPerformed;
             CustomEvents.OnMajorAttackPerformed += HandleMajorAttackPerformed;
+            CustomEvents.OnMinorParryPerformed += HandleMinorParryPerformed;
+            CustomEvents.OnMajorParryPerformed += HandleMajorParryPerformed;
             CustomEvents.OnLightbarColorChangeRequested += HandleColorChangeRequest;
         }
 
@@ -50,6 +55,8 @@ namespace ProjectColombo.InputSystem.Controllers
         {
             CustomEvents.OnMinorAttackPerformed -= HandleMinorAttackPerformed;
             CustomEvents.OnMajorAttackPerformed -= HandleMajorAttackPerformed;
+            CustomEvents.OnMinorParryPerformed -= HandleMinorParryPerformed;
+            CustomEvents.OnMajorParryPerformed -= HandleMajorParryPerformed;
             CustomEvents.OnLightbarColorChangeRequested -= HandleColorChangeRequest;
         }
 
@@ -103,6 +110,16 @@ namespace ProjectColombo.InputSystem.Controllers
                 SetAttackColor(majorAttackColor);
                 LogDebug("Major attack input detected - lightbar set to yellow");
             }
+            else if (gameInputSO.GetInputPressed(PlayerInputAction.MinorParry))
+            {
+                SetAttackColor(minorParryColor);
+                LogDebug("Minor parry input detected - lightbar set to purple");
+            }
+            else if (gameInputSO.GetInputPressed(PlayerInputAction.MajorParry))
+            {
+                SetAttackColor(majorParryColor);
+                LogDebug("Major parry input detected - lightbar set to yellow");
+            }
         }
 
         void HandleRealtimeColorTesting()
@@ -152,6 +169,18 @@ namespace ProjectColombo.InputSystem.Controllers
             SetAttackColor(majorAttackColor);
             LogDebug("Major attack event received - lightbar set to yellow");
         }
+        void HandleMinorParryPerformed(GameGlobals.MusicScale scale)
+        {
+            SetAttackColor(minorParryColor);
+            LogDebug("Minor parry event received - lightbar set to purple");
+        }
+
+        void HandleMajorParryPerformed(GameGlobals.MusicScale scale)
+        {
+            SetAttackColor(majorParryColor);
+            LogDebug("Major parry event received - lightbar set to yellow");
+        }
+
 
         void HandleColorChangeRequest(Color requestedColor)
         {
@@ -169,8 +198,6 @@ namespace ProjectColombo.InputSystem.Controllers
                 isLightbarActive = true;
             }
         }
-
-     
 
         void ReturnToDefaultColor()
         {
@@ -246,6 +273,19 @@ namespace ProjectColombo.InputSystem.Controllers
             LogDebug($"Major attack color changed to: {newMajorAttackColor}");
         }
 
+        public void SetMinorParryColor(Color newMinorParryColor)
+        {
+            minorParryColor = newMinorParryColor;
+            LogDebug($"Minor parry color changed to: {newMinorParryColor}");
+        }
+
+        public void SetMajorParryColor(Color newMajorParryColor)
+        {
+            majorParryColor = newMajorParryColor;
+            LogDebug($"Major parry color changed to: {newMajorParryColor}");
+        }
+
+
         public void SetColorDuration(float newDuration)
         {
             colorDuration = newDuration;
@@ -281,6 +321,18 @@ namespace ProjectColombo.InputSystem.Controllers
         void TestMajorAttackColor()
         {
             SetAttackColor(majorAttackColor);
+        }
+
+        [ContextMenu("Test Minor Parry Color")]
+        void TestMinorParryColor()
+        {
+            SetAttackColor(minorParryColor);
+        }
+
+        [ContextMenu("Test Major Parry Color")]
+        void TestMajorParryColor()
+        {
+            SetAttackColor(majorParryColor);
         }
 
         [ContextMenu("Reset to Default Color")]
