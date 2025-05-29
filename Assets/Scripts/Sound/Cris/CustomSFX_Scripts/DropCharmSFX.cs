@@ -1,16 +1,19 @@
 using UnityEngine;
+using UnityEngine.Audio;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(AudioSource))]
 public class PickUpAudio : MonoBehaviour
 {
+    [Header("Audio Settings")]
     public float maxDistance = 1f; // Distance at which audio is 0
     public float minDistance = 20f;  // Distance at which audio is full volume
 
+    public AudioClip pickupSound;
+    public AudioMixerGroup sfxMixerGroup;
+
     private AudioSource audioSource;
     private Transform player;
-
-    public AudioClip pickupSound;
 
     private static List<PickUpAudio> activePickUps = new List<PickUpAudio>();
 
@@ -31,6 +34,11 @@ public class PickUpAudio : MonoBehaviour
         audioSource.loop = true;
         audioSource.spatialBlend = 1f;
         audioSource.playOnAwake = false;
+
+        if (sfxMixerGroup != null)
+        {
+            audioSource.outputAudioMixerGroup = sfxMixerGroup;
+        }
 
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
 

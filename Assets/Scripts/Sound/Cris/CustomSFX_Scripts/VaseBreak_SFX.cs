@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace ProjectColombo.Objects.SFX
 {
@@ -9,8 +10,10 @@ namespace ProjectColombo.Objects.SFX
         [Range(0f, 1f)]
         public float volume = 1f;
 
-        private static AudioSource sfxAudioSource;
+        [Header("Audio Mixer")]
+        public AudioMixerGroup sfxMixerGroup;
 
+        private static AudioSource sfxAudioSource;
         private static float nextPlayTime = 0f;
 
         public void PlaySFX()
@@ -28,12 +31,17 @@ namespace ProjectColombo.Objects.SFX
                     GameObject sfxObj = new GameObject("SFXAudioSource");
                     sfxAudioSource = sfxObj.AddComponent<AudioSource>();
                     sfxAudioSource.playOnAwake = false;
+                    sfxAudioSource.spatialBlend = 0f;
                     DontDestroyOnLoad(sfxObj);
+                }
+
+                if (sfxAudioSource.outputAudioMixerGroup != sfxMixerGroup)
+                {
+                    sfxAudioSource.outputAudioMixerGroup = sfxMixerGroup;
                 }
 
                 sfxAudioSource.clip = sfxClip;
                 sfxAudioSource.volume = volume;
-                sfxAudioSource.spatialBlend = 0f;
                 sfxAudioSource.Play();
 
                 nextPlayTime = Time.time + 0.4f;

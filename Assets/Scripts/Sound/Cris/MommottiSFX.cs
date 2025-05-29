@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio; // Required for AudioMixer
 using ProjectColombo.Combat;
 using static ProjectColombo.Combat.HealthManager;
 
@@ -14,6 +15,9 @@ public class MommottiSFX : MonoBehaviour
     [Range(0f, 1f)] public float attackVolume = 1f;
     [Range(0f, 1f)] public float damagedVolume = 1f;
 
+    [Header("Audio Mixer")]
+    public AudioMixerGroup sfxMixerGroup; // Assign this in the Inspector
+
     private AudioSource walkAudioSource;
     private AudioSource attackAudioSource;
     private AudioSource damagedAudioSource;
@@ -28,27 +32,36 @@ public class MommottiSFX : MonoBehaviour
         if (walkAudioSource == null)
             walkAudioSource = gameObject.AddComponent<AudioSource>();
 
-        walkAudioSource.playOnAwake = false;
-        walkAudioSource.spatialBlend = 1f;
-        walkAudioSource.minDistance = 1f;
-        walkAudioSource.maxDistance = 20f;
-        walkAudioSource.rolloffMode = AudioRolloffMode.Logarithmic;
+        SetupAudioSource(walkAudioSource, 1f, sfxMixerGroup);
 
         // Setup attack audio source (2D)
         attackAudioSource = gameObject.AddComponent<AudioSource>();
-        attackAudioSource.playOnAwake = false;
-        attackAudioSource.spatialBlend = 0f; // full 2D sound
+        SetupAudioSource(attackAudioSource, 0f, sfxMixerGroup);
 
-        // Setup damaged audio source (2D) <-- NEW
+        // Setup damaged audio source (2D)
         damagedAudioSource = gameObject.AddComponent<AudioSource>();
-        damagedAudioSource.playOnAwake = false;
-        damagedAudioSource.spatialBlend = 0f;
+        SetupAudioSource(damagedAudioSource, 0f, sfxMixerGroup);
 
+        // HealthManager setup
         healthManager = GetComponent<HealthManager>();
         if (healthManager != null)
         {
             lastHealth = healthManager.CurrentHealth;
             healthManager.HealthChanged += OnHealthChanged;
+        }
+    }
+
+    private void SetupAudioSource(AudioSource source, float spatialBlend, AudioMixerGroup mixerGroup)
+    {
+        source.playOnAwake = false;
+        source.spatialBlend = spatialBlend;
+        source.outputAudioMixerGroup = mixerGroup;
+
+        if (spatialBlend > 0f)
+        {
+            source.minDistance = 1f;
+            source.maxDistance = 20f;
+            source.rolloffMode = AudioRolloffMode.Logarithmic;
         }
     }
 
@@ -86,7 +99,6 @@ public class MommottiSFX : MonoBehaviour
         }
 
         AudioClip clip = clips[Random.Range(0, clips.Length)];
-
         source.PlayOneShot(clip, maxVolume);
     }
 
