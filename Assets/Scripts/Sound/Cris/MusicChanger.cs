@@ -12,37 +12,27 @@ public class AudioManager : MonoBehaviour
     [Range(0f, 1f)] public float mainMenuVolume = 1f;
     [Range(0f, 1f)] public float explorationVolume = 0.5f;
     [Range(0f, 1f)] public float churchEntranceVolume = 0.5f;
-    [Range(0f, 1f)] public float churchFightVolume = 0.5f;
+    [Range(0f, 1f)] public float[] bossBattleLayerVolumes = new float[4] { 1f, 1f, 1f, 1f };
     [Range(0f, 1f)] public float endingSongVolume = 0.5f;
     [Range(0f, 1f)] public float[] battleLayerVolumes = new float[4] { 1f, 1f, 1f, 1f };
 
     [Header("General Music Settings")]
     public float fadeSpeed = 1f;
 
-    [Header("Menu Music")]
+    [Header("Music Clips")]
     public AudioClip menuMusicClip;
-
-    [Header("Tutorial Music")]
     public AudioClip tutorialMusicClip;
-
-    [Header("Exploration Sets")]
     public AudioClip levelExplorationClip;
     public AudioClip[] levelBattleClips;
-
-    [Header("Church Music Set")]
     public AudioClip bossExplorationClip;
-
-    [Header("Boss Music Set")]
     public AudioClip[] bossBattleClips;
-
-    [Header("Ending Music")]
     public AudioClip endingSongClip;
 
     private enum MusicCategory { None, MainMenu, Exploration, Battle, ChurchEntrance, BossBattle, Ending }
     private MusicCategory currentMusicCategory = MusicCategory.None;
 
     private AudioSource explorationMusic;
-    private AudioSource[] battleMusicLayers;
+    private AudioSource[] battleMusicLayers = new AudioSource[4];
     private bool canPlayBattleMusic = true;
     private float musicIntensity = 0f;
     private float battleBlend = 0f;
@@ -51,9 +41,6 @@ public class AudioManager : MonoBehaviour
     private bool isInGameplay = false;
     private Coroutine battleBlendCoroutine;
 
-    public bool hasBossFightBegun = false;
-    public bool hasBossDied = false;
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -61,7 +48,6 @@ public class AudioManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         Instance = this;
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -69,8 +55,7 @@ public class AudioManager : MonoBehaviour
         explorationMusic = gameObject.AddComponent<AudioSource>();
         explorationMusic.loop = true;
 
-        battleMusicLayers = new AudioSource[4];
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < battleMusicLayers.Length; i++)
         {
             battleMusicLayers[i] = gameObject.AddComponent<AudioSource>();
             battleMusicLayers[i].loop = true;
@@ -84,6 +69,7 @@ public class AudioManager : MonoBehaviour
         CustomEvents.OnChamberFinished += HandleChamberFinished;
         CustomEvents.OnComboMeterLevelIncrease += HandleComboChange;
         CustomEvents.OnComboMeterLevelDecrease += HandleComboChange;
+        CustomEvents.OnBossFightStarted += HandleBossFightStarted;
     }
 
     private void OnDestroy()
@@ -92,52 +78,27 @@ public class AudioManager : MonoBehaviour
         CustomEvents.OnChamberFinished -= HandleChamberFinished;
         CustomEvents.OnComboMeterLevelIncrease -= HandleComboChange;
         CustomEvents.OnComboMeterLevelDecrease -= HandleComboChange;
+        CustomEvents.OnBossFightStarted -= HandleBossFightStarted;
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void Update()
     {
-        if (hasBossDied)
+        if (explorationMusic.clip != null && explorationMusic.isPlaying)
         {
-            StopAllMusic();
-            return;
+            UpdateExplorationVolume();
+            UpdateBattleVolume();
+            UpdateBattleMusicLayers();
         }
-
-        if (hasBossFightBegun && currentMusicCategory != MusicCategory.Battle)
-        {
-            return;
-        }
-
-        if (explorationMusic.clip == null || !explorationMusic.isPlaying)
-            return;
-
-        UpdateExplorationVolume();
-        UpdateBattleVolume();
-        UpdateBattleMusicLayers();
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         currentScene = scene.name;
         isInGameplay = true;
-
         battleBlend = 0f;
         musicIntensity = 0f;
         canPlayBattleMusic = false;
-
-        if (hasBossDied)
-        {
-            StopAllMusic();
-            return;
-        }
-
-        if (hasBossFightBegun && currentMusicCategory != MusicCategory.BossBattle)
-        {
-            PlayGameplayMusic(null, bossBattleClips, true); // Keep exploration if any
-            currentMusicCategory = MusicCategory.BossBattle;
-            SetBattleBlend(1f, 1f);
-            return;
-        }
 
         switch (currentScene)
         {
@@ -173,47 +134,30 @@ public class AudioManager : MonoBehaviour
     {
         StopAllMusic();
         if (clip == null) return;
-
         currentMusicCategory = category;
         explorationMusic.clip = clip;
         explorationMusic.volume = GetInitialExplorationVolume();
         explorationMusic.Play();
     }
 
-    private void PlayGameplayMusic(AudioClip explorationClip, AudioClip[] battleClips, bool preserve = false)
+    private void PlayGameplayMusic(AudioClip explorationClip, AudioClip[] battleClips)
     {
-        if (preserve && explorationMusic.clip == explorationClip)
-        {
-            if (!explorationMusic.isPlaying)
-                explorationMusic.Play();
-            return;
-        }
-
         StopAllMusic();
+        if (explorationClip == null) return;
 
-        if (explorationClip == null)
-        {
-            Debug.LogWarning("Exploration clip is null!");
-            return;
-        }
-
-        // Assign and play exploration music
         explorationMusic.clip = explorationClip;
         explorationMusic.volume = 0f;
         explorationMusic.Play();
 
-        // Assign battle music layers but DO NOT play them yet
         for (int i = 0; i < battleMusicLayers.Length; i++)
         {
             if (battleClips != null && i < battleClips.Length && battleClips[i] != null)
             {
                 battleMusicLayers[i].clip = battleClips[i];
                 battleMusicLayers[i].volume = 0f;
-                // DO NOT call Play() here
             }
         }
-
-        currentMusicCategory = currentScene == "04_Church" ? MusicCategory.ChurchEntrance : MusicCategory.Exploration;
+        currentMusicCategory = (currentScene == "04_Church") ? MusicCategory.ChurchEntrance : MusicCategory.Exploration;
     }
 
     private void StopAllMusic()
@@ -230,27 +174,29 @@ public class AudioManager : MonoBehaviour
 
     private float GetInitialExplorationVolume()
     {
-        float volumeMultiplier = masterVolume;
-
+        float volume = masterVolume;
         switch (currentMusicCategory)
         {
-            case MusicCategory.MainMenu: volumeMultiplier *= mainMenuVolume; break;
-            case MusicCategory.Exploration: volumeMultiplier *= explorationVolume; break;
-            case MusicCategory.ChurchEntrance: volumeMultiplier *= churchEntranceVolume; break;
-            case MusicCategory.BossBattle: volumeMultiplier *= churchFightVolume; break;
-            case MusicCategory.Ending: volumeMultiplier *= endingSongVolume; break;
+            case MusicCategory.MainMenu: volume *= mainMenuVolume; break;
+            case MusicCategory.Exploration: volume *= explorationVolume; break;
+            case MusicCategory.ChurchEntrance: volume *= churchEntranceVolume; break;
+            case MusicCategory.Ending: volume *= endingSongVolume; break;
         }
-
-        return (1f - battleBlend) * volumeMultiplier;
+        return (1f - battleBlend) * volume;
     }
 
     private float GetBattleLayerVolume(int index)
     {
         float baseVolume = masterVolume * battleBlend * Mathf.Clamp01(musicIntensity);
-        float categoryMultiplier =
-            currentMusicCategory == MusicCategory.BossBattle || currentMusicCategory == MusicCategory.BossBattle
-             ? churchFightVolume : explorationVolume;
-        return baseVolume * battleLayerVolumes[index] * categoryMultiplier;
+
+        if (currentMusicCategory == MusicCategory.BossBattle)
+        {
+            return baseVolume * bossBattleLayerVolumes[index];
+        }
+        else
+        {
+            return baseVolume * battleLayerVolumes[index] * explorationVolume;
+        }
     }
 
     private void UpdateExplorationVolume()
@@ -261,29 +207,31 @@ public class AudioManager : MonoBehaviour
 
     private void UpdateBattleVolume()
     {
-        if (!isInGameplay || battleMusicLayers[0].clip == null) return;
+        if (!isInGameplay) return;
 
         for (int i = 0; i < battleMusicLayers.Length; i++)
         {
-            float targetVol = GetBattleLayerVolume(i);
-            battleMusicLayers[i].volume = Mathf.Lerp(battleMusicLayers[i].volume, targetVol, Time.deltaTime * fadeSpeed);
+            if (battleMusicLayers[i].clip != null)
+            {
+                float targetVol = GetBattleLayerVolume(i);
+                battleMusicLayers[i].volume = Mathf.Lerp(battleMusicLayers[i].volume, targetVol, Time.deltaTime * fadeSpeed);
+            }
         }
     }
 
     private void UpdateBattleMusicLayers()
     {
         float baseVolume = battleBlend * Mathf.Clamp01(musicIntensity) * masterVolume;
-        float categoryMultiplier = currentMusicCategory == MusicCategory.BossBattle ? churchFightVolume : explorationVolume;
+        float categoryMultiplier = (currentMusicCategory == MusicCategory.BossBattle) ? 1f : explorationVolume;
 
         for (int i = 0; i < battleMusicLayers.Length; i++)
         {
             if (battleMusicLayers[i].clip == null) continue;
-
-            bool isActiveLayer = (i == currentComboLevel);
-            float targetVol = (battleBlend > 0f && isActiveLayer) ? baseVolume * battleLayerVolumes[i] * categoryMultiplier : 0f;
+            bool isActive = (i == currentComboLevel);
+            float targetVol = (battleBlend > 0f && isActive) ? baseVolume * battleLayerVolumes[i] * categoryMultiplier : 0f;
 
             if (battleBlend > 0f && !battleMusicLayers[i].isPlaying)
-                battleMusicLayers[i].Play(); // Only play if we're blending into battle
+                battleMusicLayers[i].Play();
 
             battleMusicLayers[i].volume = Mathf.MoveTowards(battleMusicLayers[i].volume, targetVol, Time.deltaTime * fadeSpeed);
         }
@@ -314,10 +262,8 @@ public class AudioManager : MonoBehaviour
         if (currentScene == "01_Tutorial") return;
 
         StartCoroutine(FadeOutAndStopBattleMusic(2f));
-
-        AudioClip clip = (currentScene == "04_Church") ? bossExplorationClip : levelExplorationClip;
-        MusicCategory category = (currentScene == "04_Church") ? MusicCategory.ChurchEntrance : MusicCategory.Exploration;
-        PlayMusic(clip, category);
+        PlayMusic((currentScene == "04_Church") ? bossExplorationClip : levelExplorationClip,
+                  (currentScene == "04_Church") ? MusicCategory.ChurchEntrance : MusicCategory.Exploration);
     }
 
     public void SetBattleBlend(float target, float duration)
@@ -332,14 +278,12 @@ public class AudioManager : MonoBehaviour
     {
         float start = battleBlend;
         float time = 0f;
-
         while (time < duration)
         {
             time += Time.deltaTime;
             battleBlend = Mathf.Lerp(start, target, time / duration);
             yield return null;
         }
-
         battleBlend = target;
     }
 
@@ -347,8 +291,6 @@ public class AudioManager : MonoBehaviour
     {
         float startBlend = battleBlend;
         float time = 0f;
-
-        // Cache initial volumes
         float[] startVolumes = new float[battleMusicLayers.Length];
         for (int i = 0; i < battleMusicLayers.Length; i++)
             startVolumes[i] = battleMusicLayers[i].volume;
@@ -358,56 +300,125 @@ public class AudioManager : MonoBehaviour
             time += Time.deltaTime;
             float t = time / duration;
             battleBlend = Mathf.Lerp(startBlend, 0f, t);
+            for (int i = 0; i < battleMusicLayers.Length; i++)
+                if (battleMusicLayers[i].clip != null)
+                    battleMusicLayers[i].volume = Mathf.Lerp(startVolumes[i], 0f, t);
+            yield return null;
+        }
 
+        battleBlend = 0f;
+        foreach (var layer in battleMusicLayers)
+        {
+            layer.Stop();
+            layer.volume = 0f;
+        }
+    }
+
+    private void HandleComboChange(int level)
+    {
+        currentComboLevel = Mathf.Clamp(level, 0, 3);
+        UpdateBattleMusicLayers();
+    }
+
+    public void UpdateVolumeSettings(float newMaster, float newMainMenu, float newExploration,
+                                     float newChurchEntrance, float newEnding,
+                                     float[] newBattleLayerVolumes, float[] newBossBattleLayerVolumes)
+    {
+        masterVolume = newMaster;
+        mainMenuVolume = newMainMenu;
+        explorationVolume = newExploration;
+        churchEntranceVolume = newChurchEntrance;
+        endingSongVolume = newEnding;
+
+        for (int i = 0; i < battleLayerVolumes.Length && i < newBattleLayerVolumes.Length; i++)
+            battleLayerVolumes[i] = newBattleLayerVolumes[i];
+
+        for (int i = 0; i < bossBattleLayerVolumes.Length && i < newBossBattleLayerVolumes.Length; i++)
+            bossBattleLayerVolumes[i] = newBossBattleLayerVolumes[i];
+    }
+
+    private void HandleBossFightStarted()
+    {
+        if (currentScene != "04_Church") return;
+
+        if (explorationMusic.isPlaying)
+            StartCoroutine(CrossfadeExplorationToBattle(1f));
+        else
+        {
+            currentMusicCategory = MusicCategory.BossBattle;
+            currentComboLevel = 0;
+            musicIntensity = 1f;
+            battleBlend = 1f;
+            canPlayBattleMusic = true;
+
+            for (int i = 0; i < battleMusicLayers.Length; i++)
+            {
+                if (i < bossBattleClips.Length && bossBattleClips[i] != null)
+                {
+                    battleMusicLayers[i].clip = bossBattleClips[i];
+                    battleMusicLayers[i].volume = (i == currentComboLevel) ? GetBattleLayerVolume(i) : 0f;
+                    battleMusicLayers[i].Play();
+                }
+                else
+                {
+                    battleMusicLayers[i].Stop();
+                }
+            }
+        }
+
+        Debug.Log("Boss fight started - Playing music");
+        Debug.Log($"Battle clip[0]: {bossBattleClips[0]?.name}");
+        Debug.Log($"Current Combo Level: {currentComboLevel}");
+    }
+
+    private IEnumerator CrossfadeExplorationToBattle(float duration)
+    {
+        float startVolume = explorationMusic.volume;
+        float time = 0f;
+
+        // Prepare battle music layers
+        for (int i = 0; i < battleMusicLayers.Length; i++)
+        {
+            if (i < bossBattleClips.Length && bossBattleClips[i] != null)
+            {
+                battleMusicLayers[i].clip = bossBattleClips[i];
+                battleMusicLayers[i].volume = 0f;
+                battleMusicLayers[i].Play();
+            }
+            else
+            {
+                battleMusicLayers[i].Stop();
+            }
+        }
+
+        currentComboLevel = 0;
+        musicIntensity = 1f;
+        battleBlend = 1f;
+        currentMusicCategory = MusicCategory.BossBattle;
+        canPlayBattleMusic = true;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float t = time / duration;
+
+            // Fade out exploration music
+            explorationMusic.volume = Mathf.Lerp(startVolume, 0f, t);
+
+            // Fade in current combo battle music layer
             for (int i = 0; i < battleMusicLayers.Length; i++)
             {
                 if (battleMusicLayers[i].clip != null)
                 {
-                    battleMusicLayers[i].volume = Mathf.Lerp(startVolumes[i], 0f, t);
+                    float targetVol = (i == currentComboLevel) ? GetBattleLayerVolume(i) : 0f;
+                    battleMusicLayers[i].volume = Mathf.Lerp(0f, targetVol, t);
                 }
             }
 
             yield return null;
         }
 
-        // Fully faded out, now stop and reset
-        battleBlend = 0f;
-        for (int i = 0; i < battleMusicLayers.Length; i++)
-        {
-            battleMusicLayers[i].Stop();
-            battleMusicLayers[i].volume = 0f;
-        }
-    }
-
-    private void HandleComboChange(int newLevel)
-    {
-        currentComboLevel = Mathf.Clamp(newLevel, 0, 3);
-        UpdateBattleMusicLayers();
-    }
-
-    private void HandleBossComboChange(int level)
-    {
-        currentComboLevel = Mathf.Clamp(level, 0, bossBattleClips.Length - 1);
-        UpdateBattleMusicLayers();
-    }
-
-    public void UpdateVolumeSettings(
-        float newMaster,
-        float newMainMenu,
-        float newExploration,
-        float newChurchEntrance,
-        float newChurchFight,
-        float newEnding,
-        float[] newBattleLayerVolumes)
-    {
-        masterVolume = newMaster;
-        mainMenuVolume = newMainMenu;
-        explorationVolume = newExploration;
-        churchEntranceVolume = newChurchEntrance;
-        churchFightVolume = newChurchFight;
-        endingSongVolume = newEnding;
-
-        for (int i = 0; i < battleLayerVolumes.Length && i < newBattleLayerVolumes.Length; i++)
-            battleLayerVolumes[i] = newBattleLayerVolumes[i];
+        explorationMusic.Stop();
+        explorationMusic.volume = 0f;
     }
 }

@@ -48,7 +48,11 @@ MonoBehaviour:
   mainMenuVolume: 0.4
   explorationVolume: 0.34
   churchEntranceVolume: 0.5
-  churchFightVolume: 0.5
+  bossBattleLayerVolumes:
+  - 0.73
+  - 0.73
+  - 0.73
+  - 0.73
   endingSongVolume: 0.5
   battleLayerVolumes:
   - 0.73
@@ -57,7 +61,7 @@ MonoBehaviour:
   - 0.73
   fadeSpeed: 1.25
   menuMusicClip: {fileID: 8300000, guid: 3ad373f67961e7e4f91bc3a914019675, type: 3}
-  tutorialMusicClip: {fileID: 0}
+  tutorialMusicClip: {fileID: 8300000, guid: 36725ae9f710d8c4e86b124ce6f97ca7, type: 3}
   levelExplorationClip: {fileID: 8300000, guid: 36725ae9f710d8c4e86b124ce6f97ca7, type: 3}
   levelBattleClips:
   - {fileID: 8300000, guid: 61c3c51ff69e2d844aa0a222fc2a70f4, type: 3}
@@ -71,5 +75,3 @@ MonoBehaviour:
   - {fileID: 8300000, guid: a0919c9bb4bae294a93172caf704140a, type: 3}
   - {fileID: 8300000, guid: b67d7d2b2a66a774db7a353eea2b4c5d, type: 3}
   endingSongClip: {fileID: 0}
-  hasBossFightBegun: 0
-  hasBossDied: 0
