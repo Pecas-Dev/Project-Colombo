@@ -15,7 +15,6 @@ namespace ProjectColombo.Tutorial
     {
         public List<GameObject> chambers;
         GameObject player;
-        //public TutorialSpawner startSpawner;
         int counter;
 
         public TutorialDialogSystem dialogAfterAttackMinorEnemy;
@@ -38,8 +37,6 @@ namespace ProjectColombo.Tutorial
             {
                 chamber.GetComponent<TileWorldChamber>().Initialize(new Vector2(0,0));
             }
-
-            //startSpawner.SpawnEnemy();
 
             GameInputSO gameInput = GameManager.Instance.gameInput;
             gameInput.LockAllInputsViaTutorial();
@@ -82,9 +79,9 @@ namespace ProjectColombo.Tutorial
 
             if (counter >= 4)
             {
-                ShowDialog(dialogAfterAttackMinorEnemy);
                 TutorialEvents.OnDummyHit -= AttackMinorEnemy;
                 TutorialEvents.OnDummyHit += AttackMajorWithMajor;
+                ShowDialog(dialogAfterAttackMinorEnemy);
                 ResetPlayerState();
                 counter = 0;
             }
@@ -96,9 +93,9 @@ namespace ProjectColombo.Tutorial
 
             if (counter >= 2)
             {
-                ShowDialog(dialogAfterAttackMajorWithMajor);
                 TutorialEvents.OnDummyHit -= AttackMajorWithMajor;
                 TutorialEvents.OnDummyHit += AttackMajorWithMinor;
+                ShowDialog(dialogAfterAttackMajorWithMajor);
                 ResetPlayerState();
                 counter = 0;
             }
@@ -110,9 +107,9 @@ namespace ProjectColombo.Tutorial
 
             if (counter >= 4)
             {
-                ShowDialog(dialogAfterAttackMajorWithMinor);
                 TutorialEvents.OnDummyHit -= AttackMajorWithMinor;
                 CustomEvents.OnPlayerRoll += PlayerRolled;
+                ShowDialog(dialogAfterAttackMajorWithMinor);
                 ResetPlayerState();
                 counter = 0;
             }
@@ -124,9 +121,9 @@ namespace ProjectColombo.Tutorial
 
             if (counter >= 2)
             {
-                ShowDialog(dialogAfterPlayerRoll);
                 CustomEvents.OnPlayerRoll -= PlayerRolled;
                 CustomEvents.OnDamageBlocked += PlayerBlocked;
+                ShowDialog(dialogAfterPlayerRoll);
                 ResetPlayerState();
                 counter = 0;
             }
@@ -134,37 +131,37 @@ namespace ProjectColombo.Tutorial
 
         private void PlayerBlocked(int arg1, GameGlobals.MusicScale arg2, HealthManager arg3)
         {
-            ShowDialog(dialogAfterPlayerBlocked);
             CustomEvents.OnDamageBlocked -= PlayerBlocked;
             CustomEvents.OnSuccessfullParry += OnSuccessfullParry;
+            ShowDialog(dialogAfterPlayerBlocked);
             ResetPlayerState();
         }
 
         private void OnCoinsCollected(int obj)
         {
-            ShowDialog(dialogAfterGoldPickUp);
             CustomEvents.OnCoinsCollected -= OnCoinsCollected;
+            ShowDialog(dialogAfterGoldPickUp);
         }
 
         private void OnCharmCollected(GameObject obj)
         {
-            ShowDialog(dialogAfterPickUp);
             CustomEvents.OnCharmCollected -= OnCharmCollected;
+            ShowDialog(dialogAfterPickUp);
         }
 
         private void OnPotionUsed()
         {
+            CustomEvents.OnPotionUsed -= OnPotionUsed;
             potionText.SetActive(false);
             fightingChamber.GetComponent<TileWorldChamber>().DeactivateChamber();
-            CustomEvents.OnPotionUsed -= OnPotionUsed;
         }
 
         private void OnSuccessfullParry(GameGlobals.MusicScale scale, bool sameScale)
         {
             if (!sameScale)
             {
-                ShowDialog(dialogAfterParry);
                 CustomEvents.OnSuccessfullParry -= OnSuccessfullParry;
+                ShowDialog(dialogAfterParry);
             }
         }
 

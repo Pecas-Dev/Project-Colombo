@@ -74,6 +74,8 @@ namespace ProjectColombo.UI
 
         public void EnableDialog()
         {
+            if (isEnabled) return;
+
             isEnabled = true;
 
             StartCoroutine(StopMoving());
