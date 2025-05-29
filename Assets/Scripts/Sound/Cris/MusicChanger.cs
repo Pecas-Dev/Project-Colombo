@@ -223,7 +223,7 @@ public class AudioManager : MonoBehaviour
 
         if (currentMusicCategory == MusicCategory.BossBattle)
         {
-            return baseVolume * bossBattleLayerVolumes[index];
+            return baseVolume * bossBattleLayerVolumes[index] * 0.65f;
         }
         else
         {
@@ -373,16 +373,17 @@ public class AudioManager : MonoBehaviour
     {
         if (currentScene != "04_Church") return;
 
+        currentMusicCategory = MusicCategory.BossBattle;
+        musicIntensity = 1f;
+        battleBlend = 1f;
+        canPlayBattleMusic = true;
+
         if (explorationMusic.isPlaying)
+        {
             StartCoroutine(CrossfadeExplorationToBattle(1f));
+        }
         else
         {
-            currentMusicCategory = MusicCategory.BossBattle;
-            currentComboLevel = 0;
-            musicIntensity = 1f;
-            battleBlend = 1f;
-            canPlayBattleMusic = true;
-
             for (int i = 0; i < battleMusicLayers.Length; i++)
             {
                 if (i < bossBattleClips.Length && bossBattleClips[i] != null)
@@ -408,6 +409,11 @@ public class AudioManager : MonoBehaviour
         float startVolume = explorationMusic.volume;
         float time = 0f;
 
+        currentMusicCategory = MusicCategory.BossBattle;
+        musicIntensity = 1f;
+        battleBlend = 1f;
+        canPlayBattleMusic = true;
+
         for (int i = 0; i < battleMusicLayers.Length; i++)
         {
             if (i < bossBattleClips.Length && bossBattleClips[i] != null)
@@ -421,12 +427,6 @@ public class AudioManager : MonoBehaviour
                 battleMusicLayers[i].Stop();
             }
         }
-
-        currentComboLevel = 0;
-        musicIntensity = 1f;
-        battleBlend = 1f;
-        currentMusicCategory = MusicCategory.BossBattle;
-        canPlayBattleMusic = true;
 
         while (time < duration)
         {
