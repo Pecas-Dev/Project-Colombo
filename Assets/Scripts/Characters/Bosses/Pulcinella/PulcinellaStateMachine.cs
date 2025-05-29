@@ -24,6 +24,7 @@ namespace ProjectColombo.StateMachine.Pulcinella
         public HealthManager myHealthManager;
         public PulcinellaAttributes myPulcinellaAttributes;
         public WeaponAttributes leftHand;
+        public SkinnedMeshRenderer mySkin;
 
         public PulcinellaState currentStateEnum;
         [ReadOnlyInspector] public Transform playerRef;
@@ -45,6 +46,7 @@ namespace ProjectColombo.StateMachine.Pulcinella
             myPathfindingAlgorythm = GetComponent<Pathfinding>();
             myHealthManager = GetComponent<HealthManager>();
             myPulcinellaAttributes = GetComponent<PulcinellaAttributes>();
+            StartCoroutine(SwitchSkinColor());
         }
 
         void Start()
@@ -202,6 +204,10 @@ namespace ProjectColombo.StateMachine.Pulcinella
             inAir = true;
         }
 
+        public void StopMovingOnLeap()
+        {
+            inAir = false;
+        }
 
         public void SpawnCursedNoteSphere()
         {
@@ -227,6 +233,18 @@ namespace ProjectColombo.StateMachine.Pulcinella
             {
                 myEntityAttributes.SetScale(GameGlobals.MusicScale.MAJOR);
             }
+
+            StartCoroutine(SwitchSkinColor());
+        }
+
+        IEnumerator SwitchSkinColor()
+        {
+            mySkin.material.SetFloat("_Blend", 1f);
+
+            yield return new WaitForSeconds(0.5f);
+
+            mySkin.material.SetFloat("_Blend", 0f);
+            mySkin.material.SetFloat("_Maj_Min", myEntityAttributes.currentScale == GameGlobals.MusicScale.MINOR ? 1f : 0f);
         }
 
         void Rumble(float big, float small, float duration)
