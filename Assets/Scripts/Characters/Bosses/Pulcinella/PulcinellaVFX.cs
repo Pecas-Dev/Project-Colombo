@@ -4,7 +4,7 @@ using UnityEngine.VFX;
 
 namespace ProjectColombo.VFX
 {
-    public class PlayVFXOnEvent : MonoBehaviour
+    public class PulcinellaVFX : MonoBehaviour
     {
         public VisualEffect majorSlash;
         public VisualEffect minorSlash;
