@@ -13,9 +13,12 @@ namespace ProjectColombo.StateMachine.Pulcinella
 
         public override void Enter()
         {
+            stateMachine.myAnimator.Play("Death");
+            stateMachine.GetComponent<Collider>().enabled = false;
+            stateMachine.tag = "Untagged";
             CustomEvents.EnemyDied(GameGlobals.MusicScale.MAJOR,stateMachine.gameObject);
             CustomEvents.EndBossfight();
-            stateMachine.myEntityAttributes.Destroy();
+            //stateMachine.myEntityAttributes.Destroy();
         }
 
         public override void Tick(float deltaTime)
