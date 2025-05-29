@@ -15,6 +15,8 @@ namespace ProjectColombo.VFX
         public VisualEffect majorAttack;
         public VisualEffect minorAttack;
         public VisualEffect stepVFX;
+        public VisualEffect stepRightVFX;
+        public VisualEffect stepLeftVFX;
 
         private void Start()
         {
@@ -74,6 +76,16 @@ namespace ProjectColombo.VFX
         public void PlayStepVFX()
         {
             stepVFX.Play();
+        }
+
+        public void PlayStepRightVFX()
+        {
+            stepRightVFX.Play();
+        }
+
+        public void PlayStepLeftVFX()
+        {
+            stepLeftVFX.Play();
         }
 
         private void OnDestroy()
