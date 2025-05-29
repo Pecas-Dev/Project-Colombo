@@ -18,9 +18,11 @@ namespace ProjectColombo.Objects.Charms
             myHealthManager = GameObject.Find("Player").GetComponent<HealthManager>();
 
             int multiplyer = Mathf.FloorToInt(myHealthManager.MaxHealth / perHowManyMaxHealth);
+            int valueSS = (int)(multiplyer * damgePercentageSameScale);
+            int valueOS = (int)(multiplyer * damgePercentageOppScale);
 
-            stats.extraDamageMissedParrySameScalePercentage += multiplyer * damgePercentageSameScale;
-            stats.extraDamageMissedParryDifferentScalePercentage += multiplyer * damgePercentageOppScale;
+            stats.extraDamageMissedParrySameScalePercentage += valueSS;
+            stats.extraDamageMissedParryDifferentScalePercentage += valueOS;
         }
 
         public override void Enable()

@@ -20,9 +20,10 @@ namespace ProjectColombo.Objects.Charms
             myPlayerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
 
             int multiplyer = Mathf.FloorToInt(myPlayerInventory.currencyAmount / perHowManyGold);
+            int value = (int)(multiplyer * damgePercentage);
 
-            stats.incomingMajorDamagePercentage += damgePercentage * multiplyer;
-            stats.incomingMinorDamagePercentage += damgePercentage * multiplyer;
+            stats.incomingMajorDamagePercentage += value;
+            stats.incomingMinorDamagePercentage += value;
         }
 
         public override void Enable()
