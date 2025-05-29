@@ -23,10 +23,16 @@ namespace ProjectColombo.StateMachine.Pulcinella
             timer += deltaTime;
             currentDistance = Vector3.Distance(stateMachine.playerRef.transform.position, stateMachine.transform.position);
 
+            // Estimate speed from distance to target (or use your own velocity logic if available)
+            float speed = 0f;
+
             if (currentDistance > stateMachine.myPulcinellaAttributes.targetDistance)
             {
+                speed = stateMachine.myEntityAttributes.moveSpeed;
                 MoveToTarget(stateMachine.playerRef.transform.position, deltaTime, stateMachine.myEntityAttributes.moveSpeed);
             }
+
+            stateMachine.myAnimator.SetFloat("Speed", speed);
 
             RotateTowardsTarget(stateMachine.playerRef.position, deltaTime, 120f);
 

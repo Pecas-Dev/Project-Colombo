@@ -1,4 +1,5 @@
 using ProjectColombo.StateMachine.Player;
+using System.Drawing;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -7,12 +8,12 @@ namespace ProjectColombo.Combat
     public class CursedNoteWave : MonoBehaviour
     {
         public int damage;
-        //public float expansionSpeed;
         public float timeTillDelete;
         float timer;
         public Collider myCollider;
         bool hit = false;
 
+        bool isMajor;
         public VisualEffect majorVFX;
         public VisualEffect minorVFX;
 
@@ -30,22 +31,28 @@ namespace ProjectColombo.Combat
                 Destroy(this.gameObject);
             }
 
-            //float vfxRadius = majorVFX.GetFloat("Radius");
-            //((SphereCollider)myCollider).radius = vfxRadius;
-        }
+            float vfxRadius = isMajor ? majorVFX.GetFloat("Size") : minorVFX.GetFloat("Size");
 
+            if (myCollider is SphereCollider sphere)
+            {
+                sphere.radius = vfxRadius;
+            }
+        }
 
         public void SetVFX(GameGlobals.MusicScale scale)
         {
             if (scale == GameGlobals.MusicScale.MAJOR)
             {
+                isMajor = true;
                 majorVFX.Play();
             }
             else if (scale == GameGlobals.MusicScale.MINOR)
             {
+                isMajor = false;
                 minorVFX.Play();
             }
         }
+
 
         private void OnTriggerEnter(Collider other)
         {

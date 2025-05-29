@@ -21,6 +21,10 @@ namespace ProjectColombo.StateMachine.Pulcinella
             timer += deltaTime;
             RotateTowardsTarget(stateMachine.playerRef.position, deltaTime, 120f);
 
+            float speed = 0;
+            stateMachine.myAnimator.SetFloat("Speed", speed);
+
+
             if (timer >= stateMachine.myPulcinellaAttributes.idleTimeAfterAttack)
             {
                 stateMachine.SwitchState(new PulcinellaStateMovement(stateMachine));
