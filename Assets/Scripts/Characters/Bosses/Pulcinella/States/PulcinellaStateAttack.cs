@@ -36,13 +36,13 @@ namespace ProjectColombo.StateMachine.Pulcinella
 
         public override void Tick(float deltaTime)
         {
-            if (attackMode == 2)
+            if (attackMode == 2 && stateMachine.inAir)
             {
                 currentDistance = Vector3.Distance(stateMachine.playerRef.transform.position, stateMachine.transform.position);
 
                 if (currentDistance > stateMachine.myPulcinellaAttributes.targetDistance)
                 {
-                    MoveToTarget(stateMachine.playerRef.transform.position, deltaTime, stateMachine.myEntityAttributes.moveSpeed * 3);
+                    MoveToTarget(stateMachine.playerRef.transform.position, deltaTime, stateMachine.myEntityAttributes.moveSpeed * 5);
                 }
 
                 RotateTowardsTarget(stateMachine.playerRef.position, deltaTime, 120f);

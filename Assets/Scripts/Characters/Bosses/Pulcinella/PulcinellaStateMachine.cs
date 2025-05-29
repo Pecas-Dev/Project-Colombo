@@ -32,6 +32,7 @@ namespace ProjectColombo.StateMachine.Pulcinella
         [ReadOnlyInspector] public int lastAttack = -1;
         [ReadOnlyInspector] public int consecutiveAttackCount = 0;
 
+        [ReadOnlyInspector] public bool inAir = false;
 
         public GameObject impactSphere;
         public GameObject cursedNoteSphere;
@@ -169,6 +170,7 @@ namespace ProjectColombo.StateMachine.Pulcinella
 
         public void OnAttackAnimationEnd()
         {
+            DisableLeftHand();
             SwitchState(new PulcinellaStateIdle(this));
         }
 
@@ -184,20 +186,29 @@ namespace ProjectColombo.StateMachine.Pulcinella
 
         public void DoSlash()
         {
+            inAir = false;
             SwitchState(new PulcinellaStateAttack(this, 0));
         }
 
         public void SpawnRageFullImpactSphere()
         {
-            Vector3 pos = new(transform.position.x, 1, transform.position.z);
+            Vector3 pos = transform.position + transform.forward * 0.5f;
+            pos.y = 0;
             Instantiate(impactSphere, pos, transform.rotation);
+        }
+
+        public void StartMovingOnLeap()
+        {
+            inAir = true;
         }
 
 
         public void SpawnCursedNoteSphere()
         {
-            Vector3 pos = new(transform.position.x, 1, transform.position.z);
-            Instantiate(cursedNoteSphere, pos, transform.rotation);
+            Vector3 pos = transform.position + transform.forward * 0.5f;
+            pos.y = 0;
+            GameObject sphere = Instantiate(cursedNoteSphere, pos, transform.rotation);
+            sphere.GetComponent<CursedNoteWave>().SetVFX(myEntityAttributes.currentScale);
         }
 
         public void ImpactFeedback()
