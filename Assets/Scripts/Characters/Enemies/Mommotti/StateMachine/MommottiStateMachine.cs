@@ -23,7 +23,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         public SkinnedMeshRenderer myFadeOutSkin;
 
-        public MommottiState currentState;
+        public MommottiState currentStateEnum;
         GameGlobals.MusicScale hitByScale;
 
         //set speed for animator
@@ -55,7 +55,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         private void FixedUpdate()
         {
-            if (myHealthManager.CurrentHealth <= 0 && currentState != MommottiState.DEAD)
+            if (myHealthManager.CurrentHealth <= 0 && currentStateEnum != MommottiState.DEAD)
             {
                 SwitchState(new MommottiStateDeath(this, hitByScale));
             }
@@ -74,7 +74,7 @@ namespace ProjectColombo.StateMachine.Mommotti
             // Update position
             positionLastFrame = transform.position;
 
-            if (myMommottiAttributes.playerPosition.gameObject.GetComponent<HealthManager>().CurrentHealth <= 0 && currentState != MommottiState.PATROL)
+            if (myMommottiAttributes.playerPosition.gameObject.GetComponent<HealthManager>().CurrentHealth <= 0 && currentStateEnum != MommottiState.PATROL)
             {
                 SwitchState(new MommottiStatePatrol(this));
             }
@@ -140,7 +140,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 
         internal void SetCurrentState(MommottiState newState)
         {
-            currentState = newState;
+            currentStateEnum = newState;
         }
 
         private void Reset()

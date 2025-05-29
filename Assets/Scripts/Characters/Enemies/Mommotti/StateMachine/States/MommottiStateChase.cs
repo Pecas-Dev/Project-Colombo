@@ -112,7 +112,7 @@ namespace ProjectColombo.StateMachine.Mommotti
                 if (m == stateMachine.gameObject) continue;
 
                 MommottiStateMachine otherSM = m.GetComponent<MommottiStateMachine>();
-                if (otherSM == null || otherSM.currentState == MommottiStateMachine.MommottiState.ATTACK) continue;
+                if (otherSM == null || otherSM.currentStateEnum == MommottiStateMachine.MommottiState.ATTACK) continue;
 
                 float dist = Vector3.Distance(stateMachine.transform.position, m.transform.position);
                 if (dist < closestEnemyDistance)

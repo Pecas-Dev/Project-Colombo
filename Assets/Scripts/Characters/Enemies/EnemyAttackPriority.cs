@@ -114,7 +114,7 @@ namespace ProjectColombo.Enemies
                 var sm = e.GetComponent<MommottiStateMachine>();
                 if (sm != null)
                 {
-                    if (sm.currentState == MommottiStateMachine.MommottiState.CHASE)
+                    if (sm.currentStateEnum == MommottiStateMachine.MommottiState.CHASE)
                     {
                         currentChasingEnemies.Add(e);
                     }
@@ -134,7 +134,7 @@ namespace ProjectColombo.Enemies
                 }
 
                 var sm = enemy.GetComponent<MommottiStateMachine>();
-                if (sm == null || sm.currentState != MommottiStateMachine.MommottiState.ATTACK)
+                if (sm == null || sm.currentStateEnum != MommottiStateMachine.MommottiState.ATTACK)
                 {
                     currentAttackerEnemies.RemoveAt(i);
                 }

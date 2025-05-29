@@ -11,7 +11,7 @@ namespace ProjectColombo.StateMachine.Mommotti
         float timer;
         public MommottiStateStagger(MommottiStateMachine stateMachine) : base(stateMachine)
         {
-            stateMachine.currentState = MommottiStateMachine.MommottiState.STUNNED;
+            stateMachine.currentStateEnum = MommottiStateMachine.MommottiState.STUNNED;
         }
 
         public override void Enter()
