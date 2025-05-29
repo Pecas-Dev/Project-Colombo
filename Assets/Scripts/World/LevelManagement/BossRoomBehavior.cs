@@ -23,5 +23,10 @@ namespace ProjectColombo.LevelManagement
             endLevelTrigger.SetActive(true);
             CustomEvents.OnEnemyDeath -= EndBossFight;
         }
+
+        public void StartBossFight()
+        {
+            CustomEvents.StartBossfight();
+        }
     }
 }

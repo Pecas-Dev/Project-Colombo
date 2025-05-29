@@ -35,6 +35,8 @@ namespace ProjectColombo.GameManagement.Events
         public static event Action OnCharmFirstTimeEquipped;
         public static event Action OnPlayerRoll;
         public static event Action<GameObject, int> OnDisplayDamageNumber;
+        public static event Action OnBossFightStarted;
+        public static event Action OnBossFightEnded;
 
 
         // PLAYSTATION LIGHT BAR COLORS 
@@ -195,6 +197,16 @@ namespace ProjectColombo.GameManagement.Events
         public static void RequestLightbarColorChange(Color newColor)
         {
             OnLightbarColorChangeRequested?.Invoke(newColor);
+        }
+
+        public static void StartBossfight()
+        {
+            OnBossFightStarted?.Invoke();
+        }
+
+        public static void EndBossfight()
+        {
+            OnBossFightEnded?.Invoke();
         }
     }
 }

@@ -14,6 +14,7 @@ namespace ProjectColombo.StateMachine.Pulcinella
         public override void Enter()
         {
             CustomEvents.EnemyDied(GameGlobals.MusicScale.MAJOR,stateMachine.gameObject);
+            CustomEvents.EndBossfight();
             stateMachine.myEntityAttributes.Destroy();
         }
 
