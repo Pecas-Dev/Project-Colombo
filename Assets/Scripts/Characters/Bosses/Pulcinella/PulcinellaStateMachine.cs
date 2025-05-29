@@ -24,7 +24,6 @@ namespace ProjectColombo.StateMachine.Pulcinella
         public HealthManager myHealthManager;
         public PulcinellaAttributes myPulcinellaAttributes;
         public WeaponAttributes leftHand;
-        public GameObject leftHandCanvas;
 
         public PulcinellaState currentStateEnum;
         [ReadOnlyInspector] public Transform playerRef;
@@ -54,7 +53,6 @@ namespace ProjectColombo.StateMachine.Pulcinella
             playerRef = GameObject.FindGameObjectWithTag("Player").transform;
             SwitchState(new PulcinellaStateIdle(this));
             myEntityAttributes.SetScale(GameGlobals.MusicScale.MAJOR);
-            leftHandCanvas.SetActive(false);
 
             CustomEvents.OnSuccessfullParry += OnSuccessfullParry;
             CustomEvents.OnDamageDelt += OnDamageDelt;
@@ -177,13 +175,11 @@ namespace ProjectColombo.StateMachine.Pulcinella
         public void EnableLeftHand()
         {
             leftHand.EnableWeaponHitbox();
-            leftHandCanvas.SetActive(true);
         }
 
         public void DisableLeftHand()
         {
             leftHand.DisableWeaponHitbox();
-            leftHandCanvas.SetActive(false);
         }
 
         public void DoSlash()

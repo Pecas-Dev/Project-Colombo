@@ -6,15 +6,9 @@ namespace ProjectColombo.VFX
 {
     public class PulcinellaVFX : MonoBehaviour
     {
-        public VisualEffect majorSlash;
-        public VisualEffect minorSlash;
         public VisualEffect ragefullImpactSlam;
         public VisualEffect cursedLeapLand;
 
-        public void PlaySlashVFX()
-        {
-
-        }
 
         public void PlayRI_ImpactVFX()
         {
