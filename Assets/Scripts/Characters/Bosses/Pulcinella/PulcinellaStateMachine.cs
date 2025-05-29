@@ -15,6 +15,7 @@ namespace ProjectColombo.StateMachine.Pulcinella
     {
         public enum PulcinellaState { IDLE, MOVE, ATTACK, DEAD };
 
+
         [Header("Component References")]
         public Rigidbody myRigidbody;
         public Animator myAnimator;
@@ -29,7 +30,12 @@ namespace ProjectColombo.StateMachine.Pulcinella
         [ReadOnlyInspector] public Transform playerRef;
         [ReadOnlyInspector] public bool extraDamage = false;
 
+        [ReadOnlyInspector] public int lastAttack = -1;
+        [ReadOnlyInspector] public int consecutiveAttackCount = 0;
+
+
         public GameObject impactSphere;
+        public GameObject cursedNoteSphere;
 
         private void Awake()
         {
@@ -191,6 +197,12 @@ namespace ProjectColombo.StateMachine.Pulcinella
             Instantiate(impactSphere, pos, transform.rotation);
         }
 
+
+        public void SpawnCursedNoteSphere()
+        {
+            Vector3 pos = new(transform.position.x, 1, transform.position.z);
+            Instantiate(cursedNoteSphere, pos, transform.rotation);
+        }
 
         public void ImpactFeedback()
         {

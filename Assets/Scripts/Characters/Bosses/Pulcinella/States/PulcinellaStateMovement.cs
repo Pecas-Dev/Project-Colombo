@@ -1,4 +1,4 @@
-using Unity.VisualScripting;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProjectColombo.StateMachine.Pulcinella
@@ -34,29 +34,30 @@ namespace ProjectColombo.StateMachine.Pulcinella
             {
                 if (currentDistance <= stateMachine.myPulcinellaAttributes.distanceToSlash)
                 {
-                    stateMachine.SwitchState(new PulcinellaStateAttack(stateMachine, 0));
+                    PerformAttack(0); // Exception attack
                     return;
                 }
-                else if (currentDistance <= stateMachine.myPulcinellaAttributes.distanceToRageImpact)
+
+                int nextAttack = -1;
+
+                if (currentDistance <= stateMachine.myPulcinellaAttributes.distanceToRageImpact)
                 {
-                    stateMachine.SwitchState(new PulcinellaStateAttack(stateMachine, 1));
-                    return;
+                    nextAttack = 1;
                 }
                 else
                 {
                     int rand = Random.Range(0, 101);
-
-                    if (rand < stateMachine.myPulcinellaAttributes.chanceToLeap)
-                    {
-                        stateMachine.SwitchState(new PulcinellaStateAttack(stateMachine, 2));
-                        return;
-                    }
-                    else
-                    {
-                        stateMachine.SwitchState(new PulcinellaStateAttack(stateMachine, 3));
-                        return;
-                    }
+                    nextAttack = (rand < stateMachine.myPulcinellaAttributes.chanceToLeap) ? 2 : 3;
                 }
+
+                // Check if same attack has been used twice already
+                if (nextAttack != 0 && nextAttack == stateMachine.lastAttack && stateMachine.consecutiveAttackCount >= 2)
+                {
+                    // Force a different attack
+                    nextAttack = GetDifferentAttack(nextAttack);
+                }
+
+                PerformAttack(nextAttack);
             }
         }
 
@@ -64,5 +65,28 @@ namespace ProjectColombo.StateMachine.Pulcinella
         {
             timer = 0;
         }
+
+        void PerformAttack(int attackIndex)
+        {
+            if (attackIndex == stateMachine.lastAttack)
+            {
+                stateMachine.consecutiveAttackCount++;
+            }
+            else
+            {
+                stateMachine.consecutiveAttackCount = 1;
+                stateMachine.lastAttack = attackIndex;
+            }
+
+            stateMachine.SwitchState(new PulcinellaStateAttack(stateMachine, attackIndex));
+        }
+
+        int GetDifferentAttack(int last)
+        {
+            List<int> options = new List<int> { 0, 1, 2, 3 };
+            options.Remove(last);
+            return options[Random.Range(0, options.Count)];
+        }
+
     }
 }
