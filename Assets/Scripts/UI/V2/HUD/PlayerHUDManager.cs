@@ -426,7 +426,7 @@ namespace ProjectColombo.UI
                     if (equippedMask.maskPicture != currentMaskSprite)
                     {
                         RectTransform rectTransform = maskImage.rectTransform;
-                        rectTransform.sizeDelta = new Vector2(110, 110);
+                        rectTransform.sizeDelta = new Vector2(80, 80);
 
                         currentMaskSprite = equippedMask.maskPicture;
                         maskImage.sprite = currentMaskSprite;
