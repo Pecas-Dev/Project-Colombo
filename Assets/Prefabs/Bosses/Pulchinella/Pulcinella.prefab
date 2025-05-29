@@ -249,6 +249,7 @@ MonoBehaviour:
   extraDamage: 0
   lastAttack: -1
   consecutiveAttackCount: 0
+  inAir: 0
   impactSphere: {fileID: 1194077765331791584, guid: 67b1ce4184878bf428444dbd2187247d, type: 3}
   cursedNoteSphere: {fileID: 1194077765331791584, guid: e918561caaff701409293f9da3c6a0a7, type: 3}
 --- !u!114 &1555078992334337259
@@ -271,7 +272,7 @@ MonoBehaviour:
   maxTimeBetweenAttacks: 5
   distanceToSlash: 4
   distanceToRageImpact: 8
-  chanceToLeap: 100
+  chanceToLeap: 60
 --- !u!114 &3020111551455153591
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -436,9 +437,8 @@ GameObject:
   - component: {fileID: 4355376791846210283}
   - component: {fileID: 2018111534886119953}
   - component: {fileID: 1551437072054579589}
-  - component: {fileID: 112979639385309603}
-  - component: {fileID: 268970013727156326}
   - component: {fileID: 7059556346348840029}
+  - component: {fileID: 4784315672635934501}
   m_Layer: 0
   m_Name: LeftHandHitbox
   m_TagString: Untagged
@@ -515,49 +515,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &112979639385309603
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3179425842588279468}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 1.07
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!95 &268970013727156326
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3179425842588279468}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 75ebc32d8079b8c41ac0b772b7cffa3d, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &7059556346348840029
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -590,6 +547,29 @@ MonoBehaviour:
   minorParryVFX: {fileID: 0}
   successfullMajorParryVFX: {fileID: 0}
   successfullMinorParryVFX: {fileID: 0}
+--- !u!136 &4784315672635934501
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3179425842588279468}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.89
+  m_Height: 4.93
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.21, z: 0}
 --- !u!1 &4741693548093798590
 GameObject:
   m_ObjectHideFlags: 0
