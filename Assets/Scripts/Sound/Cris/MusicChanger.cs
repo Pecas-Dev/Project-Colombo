@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System.Collections.Generic;
 using ProjectColombo.GameManagement.Events;
 
 public class AudioManager : MonoBehaviour
@@ -70,6 +71,37 @@ public class AudioManager : MonoBehaviour
         CustomEvents.OnComboMeterLevelIncrease += HandleComboChange;
         CustomEvents.OnComboMeterLevelDecrease += HandleComboChange;
         CustomEvents.OnBossFightStarted += HandleBossFightStarted;
+
+        StartCoroutine(PreloadAllAudioClips());
+    }
+
+    private IEnumerator PreloadAllAudioClips()
+    {
+        List<AudioClip> clipsToPreload = new List<AudioClip>
+    {
+        menuMusicClip,
+        tutorialMusicClip,
+        levelExplorationClip,
+        bossExplorationClip,
+        endingSongClip
+    };
+
+        clipsToPreload.AddRange(levelBattleClips);
+        clipsToPreload.AddRange(bossBattleClips);
+
+        foreach (var clip in clipsToPreload)
+        {
+            if (clip == null || clip.loadState == AudioDataLoadState.Loaded)
+                continue;
+
+            clip.LoadAudioData(); // Asynchronous
+            float timer = 0f;
+            while (clip.loadState == AudioDataLoadState.Loading && timer < 2f)
+            {
+                timer += Time.unscaledDeltaTime;
+                yield return null; // Wait until clip finishes loading
+            }
+        }
     }
 
     private void OnDestroy()
@@ -376,7 +408,6 @@ public class AudioManager : MonoBehaviour
         float startVolume = explorationMusic.volume;
         float time = 0f;
 
-        // Prepare battle music layers
         for (int i = 0; i < battleMusicLayers.Length; i++)
         {
             if (i < bossBattleClips.Length && bossBattleClips[i] != null)
@@ -402,10 +433,8 @@ public class AudioManager : MonoBehaviour
             time += Time.deltaTime;
             float t = time / duration;
 
-            // Fade out exploration music
             explorationMusic.volume = Mathf.Lerp(startVolume, 0f, t);
 
-            // Fade in current combo battle music layer
             for (int i = 0; i < battleMusicLayers.Length; i++)
             {
                 if (battleMusicLayers[i].clip != null)
