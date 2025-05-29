@@ -18,6 +18,9 @@ namespace ProjectColombo.InputSystem.Controllers
         [SerializeField] float colorDuration = 0.5f;
         [SerializeField] bool debugMode = false;
 
+        [Header("Debug Controls")]
+        [SerializeField] bool enableKeyboardDebugTriggers = true;
+
         [Header("Real-Time Debug Testing")]
         [SerializeField] bool enableRealtimeColorTesting = false;
         [SerializeField] Color debugTestColor = Color.white;
@@ -59,11 +62,16 @@ namespace ProjectColombo.InputSystem.Controllers
 
             SetLightbarColor(defaultColor);
             previousDebugColor = debugTestColor;
-            LogDebug("PlayStation Controller Lightbar Manager initialized");
+            LogDebug("PlayStation Controller Lightbar Manager initialized with DualSense support");
         }
 
         void Update()
         {
+            if (Time.frameCount % 60 == 0) 
+            {
+                RefreshControllerDetection();
+            }
+
             if (isLightbarActive)
             {
                 colorTimer -= Time.deltaTime;
@@ -111,19 +119,24 @@ namespace ProjectColombo.InputSystem.Controllers
 
         void DetectPlayStationController()
         {
-            dualShockController = DualShockGamepad.current;
-            dualSenseController = (DualSenseGamepadHID)DualSenseGamepadHID.current;
+            var currentController = DualShockGamepad.current;
 
-            if (dualShockController != null)
+            if (currentController is DualSenseGamepadHID dualSense)
             {
-                LogDebug("DualShock controller detected");
+                dualSenseController = dualSense;
+                dualShockController = null;
+                LogDebug("DualSense (PS5) controller detected");
             }
-            else if (dualSenseController != null)
+            else if (currentController != null)
             {
-                LogDebug("DualSense controller detected");
+                dualShockController = currentController;
+                dualSenseController = null;
+                LogDebug("DualShock 4 controller detected");
             }
             else
             {
+                dualShockController = null;
+                dualSenseController = null;
                 LogDebug("No PlayStation controller detected - lightbar functionality will be inactive");
             }
         }
@@ -157,6 +170,8 @@ namespace ProjectColombo.InputSystem.Controllers
             }
         }
 
+     
+
         void ReturnToDefaultColor()
         {
             if (!enableRealtimeColorTesting)
@@ -170,13 +185,40 @@ namespace ProjectColombo.InputSystem.Controllers
 
         void SetLightbarColor(Color color)
         {
-            if (dualShockController != null)
+            bool colorSet = false;
+
+            if (dualSenseController != null)
             {
-                dualShockController.SetLightBarColor(color);
+                try
+                {
+                    dualSenseController.SetLightBarColor(color);
+                    colorSet = true;
+                    LogDebug($"DualSense lightbar color set to: {color}");
+                }
+                catch (System.Exception e)
+                {
+                    LogDebug($"Failed to set DualSense color: {e.Message}");
+                }
             }
-            else if (dualSenseController != null)
+            else if (dualShockController != null)
             {
-                dualSenseController.SetLightBarColor(color);
+                try
+                {
+                    dualShockController.SetLightBarColor(color);
+                    colorSet = true;
+                    LogDebug($"DualShock 4 lightbar color set to: {color}");
+
+                    LogDebug($"PS4 Controller Info - Name: {dualShockController.name}, Description: {dualShockController.description}");
+                }
+                catch (System.Exception e)
+                {
+                    LogDebug($"Failed to set DualShock 4 color: {e.Message}");
+                }
+            }
+
+            if (!colorSet)
+            {
+                LogDebug($"WARNING: No controller available to set color {color}");
             }
         }
 
@@ -210,9 +252,17 @@ namespace ProjectColombo.InputSystem.Controllers
             LogDebug($"Color duration changed to: {newDuration} seconds");
         }
 
+
         public void RefreshControllerDetection()
         {
+            LogDebug("=== REFRESHING CONTROLLER DETECTION ===");
             DetectPlayStationController();
+
+            if (dualShockController != null || dualSenseController != null)
+            {
+                LogDebug("Controller detected - testing with default color");
+                SetLightbarColor(defaultColor);
+            }
         }
 
         public void ForceColor(Color color)
