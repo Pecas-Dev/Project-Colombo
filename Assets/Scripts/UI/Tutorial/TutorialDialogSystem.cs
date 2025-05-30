@@ -104,6 +104,8 @@ namespace ProjectColombo.UI
             GameManager.Instance.gameInput.SwitchToGameplay();
             GameManager.Instance.gameInput.UnlockInputViaTutorial(GameInputSystem.PlayerInputAction.Movement);
             GameManager.Instance.gameInput.UnlockInputViaTutorial(GameInputSystem.PlayerInputAction.Pause);
+            GameManager.Instance.gameInput.UnlockInputViaTutorial(GameInputSystem.PlayerInputAction.Roll);
+
 
             onDialogComplete.Invoke();
             HUDCanvas.SetActive(true);

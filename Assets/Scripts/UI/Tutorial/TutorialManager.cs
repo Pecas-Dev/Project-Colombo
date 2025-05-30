@@ -39,7 +39,7 @@ namespace ProjectColombo.Tutorial
             }
 
             GameInputSO gameInput = GameManager.Instance.gameInput;
-            gameInput.LockAllInputsViaTutorial();
+            //gameInput.LockAllInputsViaTutorial();
             gameInput.UnlockInputViaTutorial(PlayerInputAction.Movement);
 
             TutorialEvents.OnDummyHit += AttackMinorEnemy;
@@ -67,7 +67,7 @@ namespace ProjectColombo.Tutorial
         private void EndTutorial()
         {
             GameInputSO gameInput = GameManager.Instance.gameInput;
-            gameInput.UnlockAllInputsViaTutorial();
+            //gameInput.UnlockAllInputsViaTutorial();
             
             GameManager.Instance.GetComponent<PlayerInventory>().numberOfPotions = 1;
             player.GetComponent<HealthManager>().Heal(1000);

@@ -40,6 +40,11 @@ namespace ProjectColombo.UI
         [Tooltip("The color to transition to when echo is unlocked")]
         [SerializeField] Color echoUnlockedColor = Color.red;
 
+        [Header("Things")]
+        [SerializeField] GameObject weapon;
+        [SerializeField] GameObject potion;
+        [SerializeField] GameObject mask;
+
 
         string lastMissionProgressText = "";
 
@@ -61,7 +66,6 @@ namespace ProjectColombo.UI
 
         Coroutine fadeCoroutine;
         Sprite currentMaskSprite = null;
-
 
 
         void Awake()
@@ -99,6 +103,8 @@ namespace ProjectColombo.UI
                 color.a = 1f;
                 echoMissionProgressText.color = color;
             }
+
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
         void Start()
@@ -130,7 +136,26 @@ namespace ProjectColombo.UI
             CustomEvents.OnEnemyDeath -= HandleEnemyDeath;
             CustomEvents.OnDamageDelt -= HandleDamageDelt;
 
+
+            SceneManager.sceneLoaded -= OnSceneLoaded;
         }
+
+        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            if (scene.name == "01_Tutorial" || SceneManager.GetActiveScene().buildIndex == 1)
+            {
+                weapon.SetActive(false);
+                potion.SetActive(false);
+                mask.SetActive(false);
+            }
+            else
+            {
+                weapon.SetActive(true);
+                potion.SetActive(true);
+                mask.SetActive(true);
+            }
+        }
+
 
         void FindPlayerReferences()
         {

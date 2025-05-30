@@ -7,6 +7,7 @@ using ProjectColombo.Objects.Charms;
 using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Stats;
 using ProjectColombo.GameManagement.Events;
+using UnityEngine.SceneManagement;
 
 
 namespace ProjectColombo.Inventory
@@ -44,6 +45,10 @@ namespace ProjectColombo.Inventory
         PickUpScreenController pickUpScreenController;
 
 
+        void Awake()
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
 
         private void Start()
         {
@@ -80,6 +85,13 @@ namespace ProjectColombo.Inventory
             }
         }
 
+        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            if ((scene.name == "05_WinScene" || SceneManager.GetActiveScene().buildIndex == 5) || (scene.name == "06_LooseScene" || SceneManager.GetActiveScene().buildIndex == 6))
+            {
+                Destroy(this);
+            }
+        }
         private void ShopClosed()
         {
             inShop = false;
@@ -135,6 +147,7 @@ namespace ProjectColombo.Inventory
         {
             CustomEvents.OnCharmCollected -= AddCharm;
             CustomEvents.OnLevelChange -= LevelChange;
+            SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
         void GetCurrentStats()
