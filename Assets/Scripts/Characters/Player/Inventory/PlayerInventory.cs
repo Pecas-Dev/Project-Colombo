@@ -47,7 +47,7 @@ namespace ProjectColombo.Inventory
 
         void Awake()
         {
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            //SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
         private void Start()
@@ -57,6 +57,7 @@ namespace ProjectColombo.Inventory
             CustomEvents.OnShopOpen += ShopOpened;
             CustomEvents.OnShopClose += ShopClosed;
             CustomEvents.OnEchoUnlocked += EnableMaskAbility;
+            CustomEvents.OnGameReset += Reset;
             dropManager = GameManager.Instance.GetComponent<DropManager>();
             myGlobalStats = GameManager.Instance.GetComponent<GlobalStats>();
 
@@ -85,13 +86,14 @@ namespace ProjectColombo.Inventory
             }
         }
 
-        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            if ((scene.name == "05_WinScene" || SceneManager.GetActiveScene().buildIndex == 5) || (scene.name == "06_LooseScene" || SceneManager.GetActiveScene().buildIndex == 6))
-            {
-                Destroy(this);
-            }
-        }
+
+        //void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        //{
+        //    if ((scene.name == "05_WinScene" || SceneManager.GetActiveScene().buildIndex == 5) || (scene.name == "06_LooseScene" || SceneManager.GetActiveScene().buildIndex == 6))
+        //    {
+        //        Destroy(this);
+        //    }
+        //}
         private void ShopClosed()
         {
             inShop = false;
@@ -147,7 +149,12 @@ namespace ProjectColombo.Inventory
         {
             CustomEvents.OnCharmCollected -= AddCharm;
             CustomEvents.OnLevelChange -= LevelChange;
-            SceneManager.sceneLoaded -= OnSceneLoaded;
+            CustomEvents.OnShopOpen -= ShopOpened;
+            CustomEvents.OnShopClose -= ShopClosed;
+            CustomEvents.OnEchoUnlocked -= EnableMaskAbility;
+            CustomEvents.OnGameReset -= Reset;
+
+            //SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
         void GetCurrentStats()

@@ -1,3 +1,4 @@
+using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Inventory;
 using System.Collections.Generic;
 using System.IO;
@@ -61,8 +62,10 @@ namespace ProjectColombo.GameManagement.Stats
         private void Awake()
         {
             //set all default stats when starting the game
+            CustomEvents.OnGameReset += ResetStats;
             ResetStats();
         }
+
 
         public void ResetStats()
         {
@@ -86,6 +89,11 @@ namespace ProjectColombo.GameManagement.Stats
 
             PlayerInventory myInventory = GetComponent<PlayerInventory>();
             myInventory.Reset();
+        }
+
+        private void OnDestroy()
+        {
+            CustomEvents.OnGameReset -= ResetStats;
         }
 
 

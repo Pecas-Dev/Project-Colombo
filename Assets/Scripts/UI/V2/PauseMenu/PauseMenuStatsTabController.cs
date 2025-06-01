@@ -90,6 +90,8 @@ namespace ProjectColombo.UI.Pausescreen
         {
             ResetStatNumbers();
 
+            if (myPlayerInventory == null) return;
+
             foreach (var charm in myPlayerInventory.charms)
             {
                 AttributesStatSheet stats = charm.GetComponent<BaseCharm>().GetStats();

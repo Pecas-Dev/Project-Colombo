@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using ProjectColombo.Combat;
 using ProjectColombo.Shop;
+using UnityEditor;
 
 namespace ProjectColombo.GameManagement.Events
 {
@@ -37,6 +38,7 @@ namespace ProjectColombo.GameManagement.Events
         public static event Action<GameObject, int> OnDisplayDamageNumber;
         public static event Action OnBossFightStarted;
         public static event Action OnBossFightEnded;
+        public static event Action OnGameReset;
 
 
         // PLAYSTATION LIGHT BAR COLORS 
@@ -221,6 +223,11 @@ namespace ProjectColombo.GameManagement.Events
         public static void EndBossfight()
         {
             OnBossFightEnded?.Invoke();
+        }
+
+        public static void GameReset()
+        {
+            OnGameReset?.Invoke();
         }
     }
 }

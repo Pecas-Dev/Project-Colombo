@@ -236,8 +236,10 @@ namespace ProjectColombo.GameManagement
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            GlobalStats globalStats = GetComponent<GlobalStats>();
-            globalStats.enabled = true;
+            if (SceneManager.GetActiveScene().buildIndex == 0)
+            {
+                CustomEvents.GameReset();
+            }
 
             ResumeGame();
 
@@ -279,10 +281,6 @@ namespace ProjectColombo.GameManagement
             gameInput.Initialize();
             gameInput.EnableAllInputs();
 
-            if (SceneManager.GetActiveScene().buildIndex == 0)
-            {
-                GetComponent<GlobalStats>().ResetStats();
-            }
 
             if (useNewPauseMenu)
             {

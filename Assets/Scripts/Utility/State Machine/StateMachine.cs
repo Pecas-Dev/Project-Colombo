@@ -14,7 +14,7 @@ namespace ProjectColombo.StateMachine
             currentState?.Enter();
         }
 
-        void Update()
+        public void Update()
         {
             currentState?.Tick(Time.deltaTime);
         }

@@ -126,8 +126,10 @@ namespace ProjectColombo.StateMachine.Player
             gameInputSO.Uninitialize();
         }
 
-        private void FixedUpdate()
+        new private void Update()
         {
+            base.Update();
+
             if (!activateCharmsAndMask)
             {
                 myPlayerInventory.ActivateMask();
