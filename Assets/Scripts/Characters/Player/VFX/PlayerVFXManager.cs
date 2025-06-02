@@ -1,4 +1,7 @@
+using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
+using ProjectColombo.Inventory;
+using ProjectColombo.Objects.Masks;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -15,6 +18,7 @@ namespace ProjectColombo.VFX
         public VisualEffect successfullBlockVFX;
         public VisualEffect potionVFX;
         public VisualEffect maskAbilityVFX;
+        public VisualEffect maskAbilityStunVFX;
 
         private void Start()
         {
@@ -27,6 +31,11 @@ namespace ProjectColombo.VFX
         private void PlayAbilityUsedVFX(string obj)
         {
             maskAbilityVFX.Play();
+
+            if (GameManager.Instance.GetComponentInChildren<BaseMask>().maskName == "Mask of the Zanni")
+            {
+                maskAbilityStunVFX.Play();
+            }
         }
 
         private void PlayPotionVFX()

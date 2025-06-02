@@ -37,6 +37,7 @@ namespace ProjectColombo.Combat.ComboMeter
 
         void Start()
         {
+            CustomEvents.OnGameReset += Reset;
             CustomEvents.OnDamageDelt += OnDamageDelt;
             CustomEvents.OnSuccessfullParry += OnSuccessfullParry;
             CustomEvents.OnEnemyDeath += OnEnemyDeath;
@@ -54,6 +55,14 @@ namespace ProjectColombo.Combat.ComboMeter
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
+            FindAndConnectUI();
+        }
+
+        private void Reset()
+        {
+            currentLevel = 0;
+            currentPoints = 0;
+
             FindAndConnectUI();
         }
 
@@ -210,6 +219,17 @@ namespace ProjectColombo.Combat.ComboMeter
             {
                 attrib.Disable();
             }
+        }
+
+        private void OnDestroy()
+        {
+            CustomEvents.OnGameReset -= Reset;
+            CustomEvents.OnDamageDelt -= OnDamageDelt;
+            CustomEvents.OnSuccessfullParry -= OnSuccessfullParry;
+            CustomEvents.OnEnemyDeath -= OnEnemyDeath;
+            CustomEvents.OnDamageReceived -= OnDamageReceived;
+            CustomEvents.OnParryFailed -= OnParryFailed;
+            SceneManager.sceneLoaded -= OnSceneLoaded;
         }
     }
 }

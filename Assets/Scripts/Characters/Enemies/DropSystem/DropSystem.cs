@@ -69,9 +69,9 @@ namespace ProjectColombo.Enemies.DropSystem
             DropManager manager = GameManager.Instance.GetComponent<DropManager>();
             int currentLuck = GameManager.Instance.GetComponent<PlayerInventory>().currentLuck;
 
-            float currentCommon = dropChanceCommonCharm + currentLuck * 0.25f;
-            float currentRare = dropChanceRareCharm + currentLuck * 0.25f;
-            float currentLegendary = dropChanceLegendaryCharm + currentLuck * 0.25f;
+            float currentCommon = dropChanceCommonCharm + currentLuck * 0.04f;
+            float currentRare = dropChanceRareCharm + currentLuck * 0.04f;
+            float currentLegendary = dropChanceLegendaryCharm + currentLuck * 0.04f;
             float currentCoins = dropChanceCoins;
 
             float totalChance = currentCommon + currentRare + currentLegendary + currentCoins;
