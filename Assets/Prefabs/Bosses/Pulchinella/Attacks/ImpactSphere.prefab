@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5457907205870713366}
   - component: {fileID: 8279358390245534449}
   - component: {fileID: 8083968441904546082}
-  - component: {fileID: 1549779599460439509}
   - component: {fileID: 3654531531366595098}
   m_Layer: 0
   m_Name: ImpactSphere
@@ -106,38 +105,6 @@ MonoBehaviour:
   speed: 15
   timeTillDelete: 1
   myCollider: {fileID: 3654531531366595098}
---- !u!114 &1549779599460439509
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1194077765331791584}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20d82b5050cdf024e8fd43a3486b8824, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weaponSprite: {fileID: 0}
-  defaultMajorDamage: 0
-  defaultMinorDamage: 0
-  knockback: 0
-  cooldown: 0
-  reach: 0
-  distanceToActivateForwardImpulse: 3
-  maxDistanceAfterImpulse: 1
-  minDistanceAfterImpulse: 0.5
-  stunArea: 2
-  ownerTag: 
-  onCooldown: 0
-  isAttacking: 0
-  currentScale: 0
-  majorVFX: {fileID: 0}
-  minorVFX: {fileID: 0}
-  majorParryVFX: {fileID: 0}
-  minorParryVFX: {fileID: 0}
-  successfullMajorParryVFX: {fileID: 0}
-  successfullMinorParryVFX: {fileID: 0}
 --- !u!135 &3654531531366595098
 SphereCollider:
   m_ObjectHideFlags: 0

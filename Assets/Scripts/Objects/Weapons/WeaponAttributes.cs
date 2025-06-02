@@ -285,7 +285,7 @@ namespace ProjectColombo.Combat
                     {
                         if (doHitstop)
                         {
-                            Rumble(0.1f, 0.5f, 0.1f); // Light buzz
+                            Rumble(0.1f, 0.5f, 0.2f); // Light buzz
                         }
 
                         //Debug.Log("..with the opposite scale");
@@ -317,7 +317,7 @@ namespace ProjectColombo.Combat
                     {
                         StopTime();
                         ScreenShake();
-                        Rumble(0.1f, 0.5f, 0.1f); // Light buzz
+                        Rumble(0.1f, 0.5f, 0.2f); // Light buzz
                         doHitstop = false;
                     }
 
@@ -377,7 +377,7 @@ namespace ProjectColombo.Combat
 
                         if (doHitstop)
                         {
-                            Rumble(0.1f, 0.5f, 0.1f); // Light buzz
+                            Rumble(0.1f, 0.5f, 0.2f); // Light buzz
                         }
                     }
                     else if (otherStateMachine.isParrying)
@@ -399,7 +399,7 @@ namespace ProjectColombo.Combat
 
                         if (doHitstop)
                         {
-                            Rumble(0.1f, 0.5f, 0.1f); // Light buzz
+                            Rumble(0.1f, 0.5f, 0.2f); // Light buzz
                         }
 
                         otherAttributes.GetComponent<PlayerStateMachine>().myWeaponAttributes.PlayStunVFX(otherAttributes.currentScale);
@@ -428,13 +428,16 @@ namespace ProjectColombo.Combat
                     }
                     else
                     {
-
                         if (doHitstop)
                         {
                             Rumble(1.0f, 0.5f, 0.5f); // Big buzz
                         }
 
-                        otherStateMachine.SetStaggered();
+                        if (otherStateMachine.isInvunerable)
+                        {
+                            otherStateMachine.SetStaggered();
+                        }
+
                         CustomEvents.DamageReceived(damage, currentScale, otherHealth);
                     }
 
@@ -558,14 +561,24 @@ namespace ProjectColombo.Combat
         void OnDisable()
         {
             if (isSlowMo)
-            Time.timeScale = 1f; // Ensure game doesn't stay stuck in slow motion
+                Time.timeScale = 1f; // Ensure game doesn't stay stuck in slow motion
+
+            var gamepad = Gamepad.current;
+            if (gamepad == null) return;
+
+            gamepad.SetMotorSpeeds(0f, 0f);
         }
 
 
         private void OnDestroy()
         {
             if (isSlowMo)
-            Time.timeScale = 1f;
+                Time.timeScale = 1f;
+
+            var gamepad = Gamepad.current;
+            if (gamepad == null) return;
+
+            gamepad.SetMotorSpeeds(0f, 0f);
         }
     }
 }

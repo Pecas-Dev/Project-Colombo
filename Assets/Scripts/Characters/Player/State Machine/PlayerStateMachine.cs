@@ -50,9 +50,8 @@ namespace ProjectColombo.StateMachine.Player
         [SerializeField, Range(0.0f, 90.0f)] float angle = 45.0f;
         public float Angle => angle;
 
-        [HideInInspector] public bool isBlocking = false;
-        [HideInInspector] public bool isInvunerable = false;
-        //[HideInInspector] 
+        public bool isBlocking = false;
+        public bool isInvunerable = false;
         public bool isParrying = false;
         [HideInInspector] public bool tryParrying = false;
         [HideInInspector] public bool isInRoll = false;

@@ -30,7 +30,7 @@ public class PlayerRollState : PlayerBaseState
 
         CanQueueRoll = false;
         CustomEvents.PlayerRoll();
-
+        stateMachine.isInvunerable = true;
         //stateMachine.myStamina.TryConsumeStamina(stateMachine.myStamina.staminaToRoll);
         Vector2 moveInput = stateMachine.gameInputSO.GetVector2Input(PlayerInputAction.Movement);
 
@@ -76,6 +76,7 @@ public class PlayerRollState : PlayerBaseState
     {
         ResetIgnoreLayers();
 
+        stateMachine.isInvunerable = false;
         stateMachine.gameInputSO.EnableAllInputs();
         stateMachine.StartCoroutine(RollCooldown());
     }
