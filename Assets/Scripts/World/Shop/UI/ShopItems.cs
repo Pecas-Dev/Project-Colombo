@@ -1,3 +1,4 @@
+using DG.Tweening;
 using ProjectColombo.Objects.Charms;
 using TMPro;
 using UnityEngine;
@@ -139,20 +140,19 @@ namespace ProjectColombo.Shop
             if (!isActive)
             {
                 referenceImage.color = unavailableColor;
-
-                if (selectionAnimator != null)
-                {
-                }
+                Debug.Log($"Item {item.name} set to unavailable color");
             }
             else if (wasActive != isActive)
             {
                 if (selectionAnimator != null)
                 {
                     selectionAnimator.RefreshColorState();
+                    Debug.Log($"Item {item.name} became available - refreshing selection state");
                 }
                 else
                 {
                     referenceImage.color = Color.white;
+                    Debug.Log($"Item {item.name} set to white (no animator)");
                 }
             }
         }

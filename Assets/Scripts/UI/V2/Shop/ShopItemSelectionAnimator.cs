@@ -1,6 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
+using System.Collections;
 using ProjectColombo.Inventory;
 using UnityEngine.EventSystems;
 using ProjectColombo.GameManagement;
@@ -24,14 +25,20 @@ namespace ProjectColombo.Shop
         [SerializeField] Image targetImage;
 
         Vector3 originalScale;
-        Color originalColor;
+
+        Color originalColor = Color.white;
+
         Tween currentScaleTween;
         Tween currentColorTween;
+
+
         bool isInitialized = false;
         bool isSelected = false;
 
+
         ShopItems shopItems;
         ShopPotion shopPotion;
+
 
         #region Unity Lifecycle
 
@@ -46,6 +53,8 @@ namespace ProjectColombo.Shop
             {
                 InitializeComponent();
             }
+
+            Invoke(nameof(SetInitialColorStateDelayed), 0.1f);
         }
 
         void OnDestroy()
@@ -71,10 +80,6 @@ namespace ProjectColombo.Shop
             if (targetImage != null)
             {
                 originalScale = targetImage.transform.localScale;
-                originalColor = targetImage.color;
-
-                SetInitialColorState();
-
                 isInitialized = true;
                 LogDebug($"Initialized with target image: {targetImage.name}");
             }
@@ -99,10 +104,7 @@ namespace ProjectColombo.Shop
 
             foreach (Image image in images)
             {
-                if (image.name.ToLower().Contains("reference") ||
-                    image.name.ToLower().Contains("icon") ||
-                    image.name.ToLower().Contains("item") ||
-                    image.name.ToLower().Contains("potion"))
+                if (image.name.ToLower().Contains("reference") ||image.name.ToLower().Contains("icon") || image.name.ToLower().Contains("item") ||image.name.ToLower().Contains("potion"))
                 {
                     targetImage = image;
                     LogDebug($"Found target image by name: {image.name}");
@@ -122,22 +124,19 @@ namespace ProjectColombo.Shop
             }
         }
 
-        void SetInitialColorState()
+        void SetInitialColorStateDelayed()
         {
-            if (!enableColorChange)
+            if (!enableColorChange || !isInitialized) 
             {
-                return;
+return;
             }
 
             bool isAvailable = IsItemAvailable();
 
-            if (!isAvailable)
-            {
-                return;
-            }
-            else
+            if (isAvailable)
             {
                 targetImage.color = unselectedColor;
+                LogDebug("Set initial state to unselected color for available item");
             }
         }
 
@@ -155,13 +154,10 @@ namespace ProjectColombo.Shop
             }
 
             targetImage = image;
+
             if (targetImage != null)
             {
                 originalScale = targetImage.transform.localScale;
-                originalColor = targetImage.color;
-
-                SetInitialColorState();
-
                 isInitialized = true;
                 LogDebug($"Target image set to: {targetImage.name}");
             }
@@ -185,25 +181,28 @@ namespace ProjectColombo.Shop
 
         public void RefreshColorState()
         {
-            if (!isInitialized || !enableColorChange)
+            if (!isInitialized || !enableColorChange) 
             {
-                return;
+return;
             }
 
             bool isAvailable = IsItemAvailable();
 
             if (!isAvailable)
             {
+                LogDebug("Item unavailable - not refreshing color state");
                 return;
             }
 
             if (isSelected)
             {
                 SetColorImmediate(originalColor);
+                LogDebug("Refreshed to original color (selected available item)");
             }
             else
             {
                 SetColorImmediate(unselectedColor);
+                LogDebug("Refreshed to unselected color (unselected available item)");
             }
         }
 
@@ -221,8 +220,14 @@ namespace ProjectColombo.Shop
             if (targetImage != null)
             {
                 isSelected = true;
-                AnimateToSelected();
-                LogDebug("Button selected - animating to selected state");
+
+                if (shopItems != null)
+                {
+                    shopItems.CheckActive(); 
+                }
+
+                StartCoroutine(DelayedAnimateToSelected());
+                LogDebug("Button selected - scheduling delayed animation");
             }
         }
 
@@ -231,8 +236,14 @@ namespace ProjectColombo.Shop
             if (targetImage != null && isInitialized)
             {
                 isSelected = false;
-                AnimateToDeselected();
-                LogDebug("Button deselected - animating to original state");
+
+                if (shopItems != null)
+                {
+                    shopItems.CheckActive(); 
+                }
+
+                StartCoroutine(DelayedAnimateToDeselected());
+                LogDebug("Button deselected - scheduling delayed animation");
             }
         }
 
@@ -240,30 +251,61 @@ namespace ProjectColombo.Shop
 
         #region Animation Methods
 
+        IEnumerator DelayedAnimateToSelected()
+        {
+            yield return null; 
+            AnimateToSelected();
+        }
+
+        IEnumerator DelayedAnimateToDeselected()
+        {
+            yield return null; 
+            AnimateToDeselected();
+        }
+
         void AnimateToSelected()
         {
+            if (!IsItemAvailable())
+            {
+                LogDebug("Item unavailable after forced check - only animating scale");
+                currentScaleTween?.Kill();
+                Vector3 _targetScale = originalScale * selectedScale;
+                currentScaleTween = targetImage.transform.DOScale(_targetScale, animationDuration).SetEase(animationEase) .SetUpdate(true);
+                return;
+            }
+
             currentScaleTween?.Kill();
             currentColorTween?.Kill();
 
             Vector3 targetScale = originalScale * selectedScale;
-            currentScaleTween = targetImage.transform.DOScale(targetScale, animationDuration).SetEase(animationEase).SetUpdate(true);
+            currentScaleTween = targetImage.transform   .DOScale(targetScale, animationDuration)  .SetEase(animationEase)  .SetUpdate(true);
 
-            if (enableColorChange && IsItemAvailable())
+            if (enableColorChange)
             {
-                currentColorTween = targetImage.DOColor(originalColor, animationDuration).SetEase(animationEase).SetUpdate(true);
+                currentColorTween = targetImage  .DOColor(originalColor, animationDuration)   .SetEase(animationEase) .SetUpdate(true);
+                LogDebug("Animating to selected state (available item)");
             }
         }
 
         void AnimateToDeselected()
         {
+            if (!IsItemAvailable())
+            {
+                LogDebug("Item unavailable after forced check - only animating scale");
+                currentScaleTween?.Kill();
+                currentScaleTween = targetImage.transform.DOScale(originalScale, animationDuration) .SetEase(animationEase)  .SetUpdate(true);
+                return;
+            }
+
             currentScaleTween?.Kill();
             currentColorTween?.Kill();
 
-            currentScaleTween = targetImage.transform.DOScale(originalScale, animationDuration).SetEase(animationEase).SetUpdate(true);
+            currentScaleTween = targetImage.transform .DOScale(originalScale, animationDuration).SetEase(animationEase) .SetUpdate(true);
 
-            if (enableColorChange && IsItemAvailable())
+            if (enableColorChange)
             {
                 currentColorTween = targetImage.DOColor(unselectedColor, animationDuration).SetEase(animationEase).SetUpdate(true);
+                LogDebug("Animating to deselected state (available item)");
             }
         }
 
@@ -287,7 +329,9 @@ namespace ProjectColombo.Shop
                 ShopScreen shopScreen = shopItems.GetComponentInParent<ShopScreen>();
                 if (shopScreen != null)
                 {
-                    return shopItems.item.price <= shopScreen.GetCurrency();
+                    bool available = shopItems.item.price <= shopScreen.GetCurrency();
+                    LogDebug($"ShopItems availability check: {available} (price: {shopItems.item.price}, currency: {shopScreen.GetCurrency()})");
+                    return available;
                 }
             }
 
@@ -296,10 +340,13 @@ namespace ProjectColombo.Shop
                 PlayerInventory playerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
                 if (playerInventory != null)
                 {
-                    return playerInventory.currencyAmount >= shopPotion.price;
+                    bool available = playerInventory.currencyAmount >= shopPotion.price;
+                    LogDebug($"ShopPotion availability check: {available} (price: {shopPotion.price}, currency: {playerInventory.currencyAmount})");
+                    return available;
                 }
             }
 
+            LogDebug("No shop component found - defaulting to available");
             return true;
         }
 
