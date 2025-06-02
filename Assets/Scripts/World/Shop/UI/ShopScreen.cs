@@ -34,6 +34,9 @@ namespace ProjectColombo.Shop
         public Button potionButton;
         //public GameObject exitShopButton;
 
+        [Header("Selection Animation")]
+        [SerializeField] bool enableSelectionAnimation = true;
+
         private void Start()
         {
             potionButton.interactable = true;
@@ -56,7 +59,7 @@ namespace ProjectColombo.Shop
 
                 int rand = Random.Range(0, itemsToSell.Count);
 
-                while(noDuplicates.Contains(rand))
+                while (noDuplicates.Contains(rand))
                 {
                     rand = Random.Range(0, itemsToSell.Count);
                 }
@@ -64,6 +67,20 @@ namespace ProjectColombo.Shop
                 shopItem.SetUp(itemsToSell[rand], position, discount);
                 prefab.GetComponent<RectTransform>().localPosition = position;
                 noDuplicates.Add(rand);
+
+                if (enableSelectionAnimation)
+                {
+                    ShopItemSelectionAnimator animator = prefab.GetComponent<ShopItemSelectionAnimator>();
+                    if (animator == null)
+                    {
+                        animator = prefab.AddComponent<ShopItemSelectionAnimator>();
+                    }
+
+                    if (shopItem.referenceImage != null)
+                    {
+                        animator.SetTargetImage(shopItem.referenceImage);
+                    }
+                }
 
                 positionX += spacing;
             }

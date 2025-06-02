@@ -15,7 +15,21 @@ namespace ProjectColombo.Shop
         bool isActive;
         Animator myAnimator;
 
+        [Header("Sold Out Display")]
+        [SerializeField] TMP_Text soldOutText;
+        [SerializeField] bool autoFindSoldOutText = true;
         [SerializeField] Color unavailableColor;
+
+
+        ShopItemSelectionAnimator selectionAnimator;
+
+        void Awake()
+        {
+            if (autoFindSoldOutText && soldOutText == null)
+            {
+                FindSoldOutText();
+            }
+        }
 
         public void SetUp(ItemToSell itemStruct, Vector3 position, float discount)
         {
@@ -35,6 +49,13 @@ namespace ProjectColombo.Shop
             // Set up the button click listener
             shopButton.onClick.RemoveAllListeners();  // Remove any existing listeners
             shopButton.onClick.AddListener(() => BuyItem(item)); // Add a new listener that passes the item to BuyItem
+
+            selectionAnimator = GetComponent<ShopItemSelectionAnimator>();
+
+            if (selectionAnimator != null && referenceImage != null)
+            {
+                selectionAnimator.SetTargetImage(referenceImage);
+            }
         }
 
         private void BuyItem(ItemToSell item)
@@ -62,16 +83,78 @@ namespace ProjectColombo.Shop
             itemPrice.text = item.price.ToString();
         }
 
+        void FindSoldOutText()
+        {
+            TMP_Text[] textComponents = GetComponentsInChildren<TMP_Text>();
+
+            foreach (TMP_Text text in textComponents)
+            {
+                if (text.name.ToLower().Contains("sold") ||
+                    text.name.ToLower().Contains("out") ||
+                    text.name.ToLower().Contains("unavailable"))
+                {
+                    soldOutText = text;
+                    Debug.Log($"Found sold out text: {soldOutText.name}");
+                    break;
+                }
+            }
+
+            if (soldOutText == null && textComponents.Length > 0)
+            {
+                foreach (TMP_Text text in textComponents)
+                {
+                    if (text != itemPrice && text != nameText)
+                    {
+                        soldOutText = text;
+                        Debug.Log($"Using text component as sold out display: {soldOutText.name}");
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void SetSoldOutText(TMP_Text text)
+        {
+            soldOutText = text;
+        }
+
         public void CheckActive()
         {
             ShopScreen currentScreen = GetComponentInParent<ShopScreen>();
             if (currentScreen == null) return;
 
+            bool wasActive = isActive;
             isActive = item.price <= GetComponentInParent<ShopScreen>().GetCurrency();
 
-            referenceImage.color = isActive ? Color.white : unavailableColor;
+            if (soldOutText != null)
+            {
+                soldOutText.gameObject.SetActive(!isActive);
+            }
+
+            if (shopButton != null)
+            {
+                shopButton.interactable = true;
+            }
+
+            if (!isActive)
+            {
+                referenceImage.color = unavailableColor;
+
+                if (selectionAnimator != null)
+                {
+                }
+            }
+            else if (wasActive != isActive)
+            {
+                if (selectionAnimator != null)
+                {
+                    selectionAnimator.RefreshColorState();
+                }
+                else
+                {
+                    referenceImage.color = Color.white;
+                }
+            }
         }
-
-
     }
 }
