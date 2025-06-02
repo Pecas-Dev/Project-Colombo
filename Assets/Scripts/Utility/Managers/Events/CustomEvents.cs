@@ -39,6 +39,7 @@ namespace ProjectColombo.GameManagement.Events
         public static event Action OnBossFightStarted;
         public static event Action OnBossFightEnded;
         public static event Action OnGameReset;
+        public static event Action OnGamePause;
 
 
         // PLAYSTATION LIGHT BAR COLORS 
@@ -228,6 +229,11 @@ namespace ProjectColombo.GameManagement.Events
         public static void GameReset()
         {
             OnGameReset?.Invoke();
+        }
+
+        public static void GamePaused()
+        {
+            OnGamePause?.Invoke();
         }
     }
 }

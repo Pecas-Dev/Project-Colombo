@@ -27,6 +27,7 @@ namespace ProjectColombo.Tutorial
         public TutorialDialogSystem dialogAfterGoldPickUp;
 
         public GameObject fightingChamber;
+        public GameObject gamePauseText;
         public GameObject potionText;
 
         private void Start()
@@ -63,12 +64,13 @@ namespace ProjectColombo.Tutorial
             CustomEvents.OnPlayerRoll -= PlayerRolled;
             CustomEvents.OnDamageBlocked -= PlayerBlocked;
             CustomEvents.OnCoinsCollected -= OnCoinsCollected;
+            CustomEvents.OnGamePause -= OnGamePause;
         }
 
         private void EndTutorial()
         {
             GameInputSO gameInput = GameManager.Instance.gameInput;
-            sgameInput.UnlockAllInputsViaTutorial();
+            gameInput.UnlockAllInputsViaTutorial();
             
             GameManager.Instance.GetComponent<PlayerInventory>().numberOfPotions = 1;
             player.GetComponent<HealthManager>().Heal(1000);
@@ -147,7 +149,13 @@ namespace ProjectColombo.Tutorial
         private void OnCharmCollected(GameObject obj)
         {
             CustomEvents.OnCharmCollected -= OnCharmCollected;
+            CustomEvents.OnGamePause += OnGamePause;
             ShowDialog(dialogAfterPickUp);
+        }
+
+        private void OnGamePause()
+        {
+            gamePauseText.SetActive(false);
         }
 
         private void OnPotionUsed()

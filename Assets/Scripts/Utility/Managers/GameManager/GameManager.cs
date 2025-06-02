@@ -324,6 +324,8 @@ namespace ProjectColombo.GameManagement
 
             if (showPause)
             {
+                CustomEvents.GamePaused();
+
                 if (uiManagerV2 != null)
                 {
                     uiManagerV2.ShowPauseMenu();
