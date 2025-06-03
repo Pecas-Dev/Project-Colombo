@@ -27,6 +27,9 @@ namespace ProjectColombo.UI
         [Tooltip("Reference to the Image component displaying the equipped mask material (Bright game object)")]
         [SerializeField] Image materialImage;
 
+        [Tooltip("Reference to the Image component displaying the glyph indicator (shown when echo is completed)")]
+        [SerializeField] Image glyphIndicator;
+
         [Tooltip("Color to apply to the colored mask image")]
         [SerializeField] Color maskImageColor = Color.white;
 
@@ -137,6 +140,8 @@ namespace ProjectColombo.UI
             CustomEvents.OnEnemyDeath += HandleEnemyDeath;
             CustomEvents.OnDamageDelt += HandleDamageDelt;
 
+            CustomEvents.OnMaskAbilityUsed += HandleMaskAbilityUsed;
+
             FindPlayerReferences();
             UpdateUI();
 
@@ -154,6 +159,8 @@ namespace ProjectColombo.UI
             CustomEvents.OnMaxHealthGained -= HandleMaxHealthGained;
             CustomEvents.OnEnemyDeath -= HandleEnemyDeath;
             CustomEvents.OnDamageDelt -= HandleDamageDelt;
+
+            CustomEvents.OnMaskAbilityUsed += HandleMaskAbilityUsed;
 
 
             SceneManager.sceneLoaded -= OnSceneLoaded;
@@ -363,6 +370,11 @@ namespace ProjectColombo.UI
                     materialImage.gameObject.SetActive(false);
                 }
 
+                if (glyphIndicator != null)
+                {
+                    glyphIndicator.gameObject.SetActive(false);
+                }
+
                 Invoke("ResetEchoStateInLevelOne", 0.7f);
 
                 if (fadeCoroutine != null)
@@ -540,6 +552,10 @@ namespace ProjectColombo.UI
                         materialImage.gameObject.SetActive(false);
                     }
 
+                    if (glyphIndicator != null)
+                    {
+                        glyphIndicator.gameObject.SetActive(false);
+                    }
 
                     Debug.Log("No mask equipped, hiding mask display");
 
@@ -658,12 +674,18 @@ namespace ProjectColombo.UI
                 return;
             }
 
-            bool shouldShowMaterialImage = currentMask.echoUnlocked;
+            bool shouldShowEchoElements = currentMask.echoUnlocked;
 
-            if (materialImage.gameObject.activeSelf != shouldShowMaterialImage)
+            if (materialImage != null && materialImage.gameObject.activeSelf != shouldShowEchoElements)
             {
-                materialImage.gameObject.SetActive(shouldShowMaterialImage);
-                Debug.Log($"Material image visibility updated: {shouldShowMaterialImage} for mask: {currentMask.maskName}");
+                materialImage.gameObject.SetActive(shouldShowEchoElements);
+                Debug.Log($"Material image visibility updated: {shouldShowEchoElements} for mask: {currentMask.maskName}");
+            }
+
+            if (glyphIndicator != null && glyphIndicator.gameObject.activeSelf != shouldShowEchoElements)
+            {
+                glyphIndicator.gameObject.SetActive(shouldShowEchoElements);
+                Debug.Log($"Glyph indicator visibility updated: {shouldShowEchoElements} for mask: {currentMask.maskName}");
             }
         }
 
@@ -672,6 +694,24 @@ namespace ProjectColombo.UI
             if (coloredMaskImage != null && coloredMaskImage.enabled)
             {
                 coloredMaskImage.color = maskImageColor;
+            }
+        }
+
+        void HandleMaskAbilityUsed()
+        {
+            if (currentMask != null && currentMask.echoUnlocked)
+            {
+                if (materialImage != null)
+                {
+                    materialImage.gameObject.SetActive(false);
+                    Debug.Log($"Material image hidden after using mask ability: {currentMask.maskName}");
+                }
+
+                if (glyphIndicator != null)
+                {
+                    glyphIndicator.gameObject.SetActive(false);
+                    Debug.Log($"Glyph indicator hidden after using mask ability: {currentMask.maskName}");
+                }
             }
         }
 

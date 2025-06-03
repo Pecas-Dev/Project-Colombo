@@ -42,6 +42,9 @@ namespace ProjectColombo.GameManagement.Events
         public static event Action OnGamePause;
 
 
+        public static event Action OnMaskAbilityUsed;
+
+
         // PLAYSTATION LIGHT BAR COLORS 
         public static event Action<GameGlobals.MusicScale> OnMinorAttackPerformed;
         public static event Action<GameGlobals.MusicScale> OnMajorAttackPerformed;
@@ -234,6 +237,11 @@ namespace ProjectColombo.GameManagement.Events
         public static void GamePaused()
         {
             OnGamePause?.Invoke();
+        }
+
+        public static void MaskAbilityUsed()
+        {
+            OnMaskAbilityUsed?.Invoke();
         }
     }
 }

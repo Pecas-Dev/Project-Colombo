@@ -566,6 +566,8 @@ namespace ProjectColombo.Inventory
             if (maskAbilitySlot.transform.childCount > 0)
             {
                 maskAbilitySlot.GetComponentInChildren<BaseAbility>().Activate();
+
+                CustomEvents.MaskAbilityUsed();
             }
         }
 
