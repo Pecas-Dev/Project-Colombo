@@ -32,6 +32,15 @@ namespace ProjectColombo.StateMachine.Pulcinella
                 MoveToTarget(stateMachine.playerRef.transform.position, deltaTime, stateMachine.myEntityAttributes.moveSpeed);
             }
 
+            if (currentDistance < stateMachine.myPulcinellaAttributes.targetDistance + 1f)
+            {
+                speed = stateMachine.myEntityAttributes.moveSpeed / 2f;
+                Vector3 directionAway = (stateMachine.transform.position - stateMachine.playerRef.transform.position).normalized;
+                Vector3 target = stateMachine.transform.position + directionAway;
+                MoveToTarget(target, deltaTime, speed);
+
+            }
+
             stateMachine.myAnimator.SetFloat("Speed", speed);
 
             RotateTowardsTarget(stateMachine.playerRef.position, deltaTime, 120f);
