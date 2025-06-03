@@ -16,6 +16,9 @@ namespace ProjectColombo.Combat
         [HideInInspector] public int currentMaxStamina;
         [HideInInspector] public float regenTime;
         [HideInInspector] public float currentStamina = 0f;
+        public float regenDelay = 1f;
+        float timer = 0;
+        [ReadOnlyInspector] public bool doRegen = false;
 
 
         [Header("Costs")]
@@ -39,7 +42,6 @@ namespace ProjectColombo.Combat
             exploreMode = true;
             myGlobalStats = GameManager.Instance.gameObject.GetComponent<GlobalStats>();
             GetCurrentStats();
-            //GetComponentInChildren<StaminaHUD>().Reset();
         }
 
         private void RestoreOnGoodParry(GameGlobals.MusicScale scale, bool sameScale)
@@ -85,8 +87,15 @@ namespace ProjectColombo.Combat
 
         void Update()
         {
+            timer += Time.deltaTime;
+
+            if (timer > regenDelay)
+            {
+                doRegen = true;
+            }
+
             // If the current stamina is less than max stamina, regenerate it over time
-            if (currentStamina < currentMaxStamina)
+            if (doRegen && currentStamina < currentMaxStamina)
             {
                 RegenerateStamina(Time.deltaTime);
             }
@@ -128,6 +137,7 @@ namespace ProjectColombo.Combat
 
         public void RestoreStamina(int amount)
         {
+            doRegen = true;
             currentStamina += amount;
 
             if (currentStamina > currentMaxStamina)
@@ -150,12 +160,16 @@ namespace ProjectColombo.Combat
             if (staminaCost < 0)
             {
                 currentStamina = Mathf.Min(currentStamina - staminaCost, currentMaxStamina);
+                doRegen = false;
+                timer = 0;
                 return true;
             }
 
             if (Mathf.FloorToInt(currentStamina) >= staminaCost)
             {
                 currentStamina -= staminaCost;
+                doRegen = false;
+                timer = 0;
                 CustomEvents.StaminaUsed();
                 return true;
             }
@@ -173,12 +187,16 @@ namespace ProjectColombo.Combat
             if (staminaCost < 0)
             {
                 currentStamina = Mathf.Min(currentStamina - staminaCost, currentMaxStamina);
+                doRegen = false;
+                timer = 0;
                 return true;
             }
 
             if (Mathf.FloorToInt(currentStamina) >= staminaCost)
             {
                 currentStamina -= staminaCost;
+                doRegen = false;
+                timer = 0;
                 CustomEvents.StaminaUsed();
                 return true;
             }

@@ -10,7 +10,7 @@ namespace ProjectColombo.StateMachine.Mommotti
     {
         private Vector3 targetDirection;
         private float attackCheckTimer = 0;
-        private float intervalToCheckAttack = 2f;
+        private float intervalToCheckAttack = 1f;
 
         public MommottiStateAttack(MommottiStateMachine stateMachine) : base(stateMachine) { }
 
