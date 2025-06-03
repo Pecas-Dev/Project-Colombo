@@ -1,9 +1,9 @@
-using ProjectColombo.GameInputSystem;
 using ProjectColombo.GameManagement;
 using ProjectColombo.StateMachine.Player;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.Events;
 
 namespace ProjectColombo.UI
@@ -15,6 +15,8 @@ namespace ProjectColombo.UI
         public GameObject HUDCanvas;
         public string[] lines;
         public float textSpeed;
+        public AudioResource[] voiceLines;
+        public AudioSource audioPlayer;
         public UnityEvent onDialogComplete;
 
         bool isEnabled = false;
@@ -46,6 +48,12 @@ namespace ProjectColombo.UI
 
         void StartDialog()
         {
+            if (index < voiceLines.Length)
+            {
+                audioPlayer.resource = voiceLines[index];
+                audioPlayer.Play();
+            }
+
             StartCoroutine(TypeLine());
         }
 
@@ -62,7 +70,15 @@ namespace ProjectColombo.UI
         {
             if (index < lines.Length - 1)
             {
+                audioPlayer.Stop();
                 index++;
+
+                if (index < voiceLines.Length)
+                {
+                    audioPlayer.resource = voiceLines[index];
+                    audioPlayer.Play();
+                }
+
                 textComponent.text = "";
                 StartCoroutine(TypeLine());
             }
@@ -98,9 +114,9 @@ namespace ProjectColombo.UI
         public void DisableDialog()
         {
             isEnabled = false;
+            audioPlayer.Stop();
             GameManager.Instance.gameInput.SwitchToGameplay();
             GameManager.Instance.gameInput.UnlockAllInputsViaTutorial();
-
 
             onDialogComplete.Invoke();
             HUDCanvas.SetActive(true);

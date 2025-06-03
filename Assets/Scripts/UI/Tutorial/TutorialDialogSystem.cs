@@ -42,7 +42,6 @@ namespace ProjectColombo.UI
                 else
                 {
                     StopAllCoroutines();
-                    audioPlayer.Stop();
                     textComponent.text = lines[index];
                 }
             }
@@ -73,6 +72,7 @@ namespace ProjectColombo.UI
         {
             if (index < lines.Length - 1)
             {
+                audioPlayer.Stop();
                 index++;
 
                 if (index < voiceLines.Length)
@@ -86,7 +86,6 @@ namespace ProjectColombo.UI
             }
             else
             {
-                audioPlayer.Stop();
                 DisableDialog();
             }
         }
