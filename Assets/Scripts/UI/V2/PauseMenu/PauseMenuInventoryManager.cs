@@ -27,6 +27,12 @@ namespace ProjectColombo.UI.Pausescreen
         [SerializeField] Image weaponSlotImage;
         [SerializeField] Image maskSlotImage;
         [SerializeField] Image potionSlotImage;
+        [SerializeField] TextMeshProUGUI potionCountText;
+
+        [Header("Empty Slot Sprites")]
+        [SerializeField] Sprite emptyCharmSprite;
+        [SerializeField] Sprite emptyPotionSprite;
+        [SerializeField] Sprite emptyLegendaryCharmSprite;
 
         [Header("Text Elements")]
         [SerializeField] TextMeshProUGUI charmTitleText;
@@ -141,7 +147,7 @@ namespace ProjectColombo.UI.Pausescreen
         {
             SetupButtonEventTrigger(weaponSlotButton, () => ShowEmptyWeaponInfo());
             SetupButtonEventTrigger(maskSlotButton, () => ShowMaskInfo());
-            SetupButtonEventTrigger(potionSlotButton, () => ShowEmptyPotionInfo());
+            SetupButtonEventTrigger(potionSlotButton, () => ShowPotionInfo());
         }
 
         void SetupButtonEventTrigger(Button button, UnityEngine.Events.UnityAction action)
@@ -236,39 +242,75 @@ namespace ProjectColombo.UI.Pausescreen
                 }
             }
 
+            UpdatePotionSlotDisplay();
+            UpdatePotionCountDisplay();
+            UpdateCharmSlotsWithEmptySprites();
+            //UpdateCharmSlots();
+        }
+
+        void UpdatePotionSlotDisplay()
+        {
             if (potionSlotImage != null)
             {
                 bool hasPotion = playerInventory.numberOfPotions > 0;
-                potionSlotImage.enabled = hasPotion;
-            }
 
-            UpdateCharmSlots();
-        }
+                LogDebug($"Potion check - numberOfPotions: {playerInventory.numberOfPotions}");
 
-        void UpdateCharmSlots()
-        {
-            foreach (CharmButton btn in charmButtons)
-            {
-                if (btn != null)
+                if (hasPotion && playerInventory.potionPrefab != null)
                 {
-                    btn.UpdateInfo(null);
+                    BaseCharm potionCharmComponent = playerInventory.potionPrefab.GetComponent<BaseCharm>();
+
+                    if (potionCharmComponent != null && potionCharmComponent.charmPicture != null)
+                    {
+                        potionSlotImage.sprite = potionCharmComponent.charmPicture;
+                        potionSlotImage.enabled = true;
+                        LogDebug($"Updated potion slot image from prefab: {potionCharmComponent.charmName}");
+                    }
+                    else if (emptyPotionSprite != null)
+                    {
+                        potionSlotImage.sprite = emptyPotionSprite;
+                        potionSlotImage.enabled = true;
+                        LogDebug("Potion prefab found but no picture, showing empty potion sprite");
+                    }
+                    else
+                    {
+                        potionSlotImage.enabled = false;
+                        LogDebug("Potion prefab found but no picture and no empty sprite");
+                    }
+                }
+                else
+                {
+                    if (emptyPotionSprite != null)
+                    {
+                        potionSlotImage.sprite = emptyPotionSprite;
+                        potionSlotImage.enabled = true;
+                        LogDebug("No potions available, showing empty potion sprite");
+                    }
+                    else
+                    {
+                        potionSlotImage.enabled = false;
+                        LogDebug("No potions available and no empty sprite assigned");
+                    }
                 }
             }
+        }
 
-            if (legendaryCharmButton != null)
-            {
-                legendaryCharmButton.UpdateInfo(null);
-            }
-
+        void UpdateCharmSlotsWithEmptySprites()
+        {
             if (charmButtons != null)
             {
                 foreach (CharmButton button in charmButtons)
                 {
                     if (button != null)
                     {
-                        button.UpdateInfo(null);
+                        button.UpdateInfoWithEmptySprite(null, emptyCharmSprite);
                     }
                 }
+            }
+
+            if (legendaryCharmButton != null)
+            {
+                legendaryCharmButton.UpdateInfoWithEmptySprite(null, emptyLegendaryCharmSprite);
             }
 
             if (playerInventory == null)
@@ -282,14 +324,14 @@ namespace ProjectColombo.UI.Pausescreen
                 {
                     if (charmButtons[i] != null && playerInventory.charms[i] != null)
                     {
-                        charmButtons[i].UpdateInfo(playerInventory.charms[i]);
+                        charmButtons[i].UpdateInfoWithEmptySprite(playerInventory.charms[i], emptyCharmSprite);
                     }
                 }
             }
 
             if (legendaryCharmButton != null && playerInventory.legendaryCharms != null && playerInventory.legendaryCharms.Count > 0)
             {
-                legendaryCharmButton.UpdateInfo(playerInventory.legendaryCharms[0]);
+                legendaryCharmButton.UpdateInfoWithEmptySprite(playerInventory.legendaryCharms[0], emptyLegendaryCharmSprite);
             }
 
             if (inventoryTabController != null)
@@ -298,6 +340,8 @@ namespace ProjectColombo.UI.Pausescreen
                 LogDebug("Updated all charm button colors after charm slot update");
             }
         }
+
+
 
         public void ShowMaskInfo()
         {
@@ -519,6 +563,110 @@ namespace ProjectColombo.UI.Pausescreen
             }
 
             LogDebug("Showing empty potion info");
+        }
+
+        public void ShowPotionInfo()
+        {
+            if (playerInventory == null)
+            {
+                ShowEmptyPotionInfo();
+                return;
+            }
+
+            bool hasPotion = playerInventory.numberOfPotions > 0;
+
+            LogDebug($"ShowPotionInfo - hasPotion: {hasPotion}");
+
+            if (!hasPotion)
+            {
+                ShowEmptyPotionInfo();
+                return;
+            }
+
+            if (playerInventory.potionPrefab == null)
+            {
+                LogDebug("No potion prefab available");
+                ShowEmptyPotionInfo();
+                return;
+            }
+
+            BaseCharm potionCharmComponent = playerInventory.potionPrefab.GetComponent<BaseCharm>();
+
+            if (potionCharmComponent == null)
+            {
+                LogDebug("Potion prefab doesn't have a BaseCharm component!", true);
+                ShowEmptyPotionInfo();
+                return;
+            }
+
+            if (charmTitleText != null)
+            {
+                string potionCountText = playerInventory.numberOfPotions > 1 ? $" (x{playerInventory.numberOfPotions})" : "";
+                charmTitleText.text = potionCharmComponent.charmName + potionCountText;
+                charmTitleText.color = GetRarityColor(potionCharmComponent.charmRarity);
+            }
+
+            if (charmDescriptionText != null)
+            {
+                charmDescriptionText.text = potionCharmComponent.charmDescription;
+            }
+
+            if (potionSlotImage != null)
+            {
+                if (potionCharmComponent.charmPicture != null)
+                {
+                    potionSlotImage.sprite = potionCharmComponent.charmPicture;
+                    potionSlotImage.enabled = true;
+                    LogDebug($"Updated potion slot image from prefab: {potionCharmComponent.charmName}");
+                }
+                else
+                {
+                    potionSlotImage.enabled = false;
+                    LogDebug($"Potion {potionCharmComponent.charmName} has no picture assigned");
+                }
+            }
+
+            if (inventoryTabController != null)
+            {
+                inventoryTabController.UpdateSelectorColorForCharm(potionCharmComponent);
+            }
+
+            LogDebug($"Updated potion info display for: {potionCharmComponent.charmName} (Count: {playerInventory.numberOfPotions})");
+        }
+
+        void UpdatePotionCountDisplay()
+        {
+            if (potionCountText == null || playerInventory == null)
+            {
+                return;
+            }
+
+            bool hasPotion = playerInventory.numberOfPotions > 0;
+
+            if (hasPotion)
+            {
+                potionCountText.text = playerInventory.numberOfPotions.ToString();
+                potionCountText.gameObject.SetActive(true);
+                LogDebug($"Updated potion count display: {playerInventory.numberOfPotions}");
+            }
+            else
+            {
+                potionCountText.gameObject.SetActive(false);
+                LogDebug("Hidden potion count display (0 potions)");
+            }
+        }
+
+        public void UpdatePotionDisplay()
+        {
+            if (playerInventory == null)
+            {
+                return;
+            }
+
+            UpdatePotionSlotDisplay();
+            UpdatePotionCountDisplay();
+
+            LogDebug($"Updated potion display - Count: {playerInventory.numberOfPotions}");
         }
 
         void LogDebug(string message, bool isWarning = false)

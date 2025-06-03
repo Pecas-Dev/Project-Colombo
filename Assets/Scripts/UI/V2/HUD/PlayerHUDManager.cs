@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 using ProjectColombo.Objects.Masks;
 using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
+using ProjectColombo.Objects.Charms;
 
 
 namespace ProjectColombo.UI
@@ -32,6 +33,16 @@ namespace ProjectColombo.UI
 
         [Tooltip("Color to apply to the colored mask image")]
         [SerializeField] Color maskImageColor = Color.white;
+
+        [Header("Potion Display")]
+        [Tooltip("Reference to the Image component displaying the potion")]
+        [SerializeField] Image potionImage;
+
+        [Tooltip("Sprite to show when no potions are available")]
+        [SerializeField] Sprite emptyPotionSprite;
+
+        [Tooltip("Reference to the TextMeshProUGUI component displaying potion count")]
+        [SerializeField] TextMeshProUGUI potionCountText;
 
         [Header("Debug Settings")]
         [Tooltip("Enable debug logs for echo mission updates")]
@@ -65,6 +76,7 @@ namespace ProjectColombo.UI
         float missionTextTimer;
 
         int currentCurrencyAmount = -1;
+        int currentPotionCount = -1;
 
         bool shouldBeVisible = true;
         bool isFadingIn = false;
@@ -81,6 +93,8 @@ namespace ProjectColombo.UI
         Coroutine fadeCoroutine;
         Sprite currentMaskSprite = null;
         Sprite currentColoredMaskSprite = null;
+        Sprite currentPotionSprite = null;
+
 
         Material currentMaskMaterial = null;
 
@@ -417,7 +431,12 @@ namespace ProjectColombo.UI
         {
             UpdateCurrencyDisplay();
             UpdateMaskDisplay();
+            UpdatePotionDisplay();
             UpdateEchoMissionDisplay();
+        }
+        public void UpdatePotionDisplayFromInventory()
+        {
+            UpdatePotionDisplay();
         }
 
         void UpdateCurrencyDisplay()
@@ -714,6 +733,112 @@ namespace ProjectColombo.UI
                 }
             }
         }
+
+        void UpdatePotionDisplay()
+        {
+            if (potionImage == null)
+            {
+                return;
+            }
+
+            int potionCount = 0;
+            GameObject potionPrefab = null;
+
+            if (playerInventory != null)
+            {
+                potionCount = playerInventory.numberOfPotions;
+                potionPrefab = playerInventory.potionPrefab;
+            }
+            else if (GameManager.Instance != null)
+            {
+                var inventory = GameManager.Instance.GetComponent<PlayerInventory>();
+                if (inventory != null)
+                {
+                    potionCount = inventory.numberOfPotions;
+                    potionPrefab = inventory.potionPrefab;
+                }
+            }
+
+            if (potionCountText != null)
+            {
+                if (potionCount != currentPotionCount)
+                {
+                    currentPotionCount = potionCount;
+
+                    if (potionCount > 0)
+                    {
+                        potionCountText.text = potionCount.ToString();
+                        potionCountText.gameObject.SetActive(true);
+                        Debug.Log($"Updated HUD potion count: {potionCount}");
+                    }
+                    else
+                    {
+                        potionCountText.gameObject.SetActive(false);
+                        Debug.Log("Hidden HUD potion count (0 potions)");
+                    }
+                }
+            }
+
+            if (potionCount > 0 && potionPrefab != null)
+            {
+                BaseCharm potionCharmComponent = potionPrefab.GetComponent<BaseCharm>();
+
+                if (potionCharmComponent != null && potionCharmComponent.charmPicture != null)
+                {
+                    if (potionCharmComponent.charmPicture != currentPotionSprite)
+                    {
+                        currentPotionSprite = potionCharmComponent.charmPicture;
+                        potionImage.sprite = currentPotionSprite;
+                        potionImage.enabled = true;
+
+                        RectTransform potionRectTransform = potionImage.rectTransform;
+                        potionRectTransform.sizeDelta = new Vector2(65, 65);
+
+                        Debug.Log($"Updated HUD potion image: {potionCharmComponent.charmName} (65x65)");
+                    }
+                }
+                else
+                {
+                    ShowEmptyPotionSprite();
+                }
+            }
+            else
+            {
+                ShowEmptyPotionSprite();
+            }
+        }
+
+        void ShowEmptyPotionSprite()
+        {
+            if (potionImage != null)
+            {
+                if (emptyPotionSprite != null)
+                {
+                    if (potionImage.sprite != emptyPotionSprite)
+                    {
+                        potionImage.sprite = emptyPotionSprite;
+                        potionImage.enabled = true;
+
+                        RectTransform potionRectTransform = potionImage.rectTransform;
+                        potionRectTransform.sizeDelta = new Vector2(21, 69);
+
+                        currentPotionSprite = emptyPotionSprite;
+                        Debug.Log("Showing empty potion sprite (21x69)");
+                    }
+                }
+                else
+                {
+                    if (currentPotionSprite != null)
+                    {
+                        currentPotionSprite = null;
+                        potionImage.sprite = null;
+                        potionImage.enabled = false;
+                        Debug.Log("No empty potion sprite assigned, hiding HUD potion image");
+                    }
+                }
+            }
+        }
+
 
         void UpdateEchoMissionDisplay()
         {

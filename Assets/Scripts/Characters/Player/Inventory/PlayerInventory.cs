@@ -8,6 +8,7 @@ using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Stats;
 using ProjectColombo.GameManagement.Events;
 using UnityEngine.SceneManagement;
+using ProjectColombo.UI.Pausescreen;
 
 
 namespace ProjectColombo.Inventory
@@ -30,9 +31,12 @@ namespace ProjectColombo.Inventory
         public int maxCharms;
         int currentCharmAmount;
 
+
+        [SerializeField] public GameObject potionPrefab;
+
         public GameObject maskAbilitySlot;
-        public int numberOfPotions = 0;
         public GameObject potionSlot;
+        public int numberOfPotions = 0;
         public GameObject legendaryCharmAbilitySlot;
 
         //for when charms in shop
@@ -84,16 +88,10 @@ namespace ProjectColombo.Inventory
                     }
                 }
             }
+
+            InitializePotionInPauseInventory();
         }
 
-
-        //void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        //{
-        //    if ((scene.name == "05_WinScene" || SceneManager.GetActiveScene().buildIndex == 5) || (scene.name == "06_LooseScene" || SceneManager.GetActiveScene().buildIndex == 6))
-        //    {
-        //        Destroy(this);
-        //    }
-        //}
         private void ShopClosed()
         {
             inShop = false;
@@ -548,9 +546,105 @@ namespace ProjectColombo.Inventory
             if (numberOfPotions > 0)
             {
                 numberOfPotions--;
-                potionSlot.GetComponentInChildren<BaseAbility>().Activate();
+
+                if (potionSlot.transform.childCount > 0)
+                {
+                    BaseAbility potionAbility = potionSlot.GetComponentInChildren<BaseAbility>();
+                    if (potionAbility != null)
+                    {
+                        potionAbility.Activate();
+                    }
+                }
+
+                if (numberOfPotions <= 0)
+                {
+                    foreach (Transform child in potionSlot.transform)
+                    {
+                        Destroy(child.gameObject);
+                    }
+                }
+
+                NotifyPotionCountChanged();
+
+                Debug.Log($"Used potion. Remaining: {numberOfPotions}");
             }
         }
+
+        public void AddPotion(int amount = 1)
+        {
+            numberOfPotions += amount;
+
+            if (numberOfPotions == amount)
+            {
+                AddPotionToAbilitySlot();
+            }
+
+            NotifyPotionCountChanged();
+
+            Debug.Log($"Added {amount} potion(s). Total: {numberOfPotions}");
+        }
+
+        public void AddPotionToPauseInventory()
+        {
+            if (potionPrefab != null && potionSlot != null && numberOfPotions > 0)
+            {
+                foreach (Transform child in potionSlot.transform)
+                {
+                    Destroy(child.gameObject);
+                }
+
+                GameObject potionDisplayObject = Instantiate(potionPrefab, potionSlot.transform);
+
+                Debug.Log($"Added potion to pause inventory display: {potionDisplayObject.GetComponent<BaseCharm>().charmName}");
+            }
+        }
+
+        public void AddPotionToAbilitySlot()
+        {
+            if (potionPrefab != null && potionSlot != null && numberOfPotions > 0)
+            {
+                foreach (Transform child in potionSlot.transform)
+                {
+                    Destroy(child.gameObject);
+                }
+
+                GameObject potionObject = Instantiate(potionPrefab, potionSlot.transform);
+                BaseCharm potionCharm = potionObject.GetComponent<BaseCharm>();
+
+                if (potionCharm != null && potionCharm.GetAbility() != null)
+                {
+                    potionCharm.abilityObject = Instantiate(potionCharm.GetAbility(), potionSlot.transform);
+                }
+
+                Debug.Log($"Added potion ability to slot: {potionCharm.charmName}");
+            }
+        }
+
+        void NotifyPotionCountChanged()
+        {
+            PauseMenuInventoryManager pauseInventoryManager = FindFirstObjectByType<PauseMenuInventoryManager>();
+            if (pauseInventoryManager != null)
+            {
+                pauseInventoryManager.UpdatePotionDisplay();
+            }
+
+            PlayerHUDManager hudManager = FindFirstObjectByType<PlayerHUDManager>();
+            if (hudManager != null)
+            {
+                hudManager.UpdatePotionDisplayFromInventory();
+            }
+
+            Debug.Log($"Notified UI managers of potion count change: {numberOfPotions}");
+        }
+
+        void InitializePotionInPauseInventory()
+        {
+            if (numberOfPotions > 0 && potionPrefab != null)
+            {
+                AddPotionToPauseInventory();
+            }
+        }
+
 
         public void UseCharmAbility()
         {

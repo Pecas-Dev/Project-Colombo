@@ -91,5 +91,35 @@ namespace ProjectColombo.UI
                 inventoryManager.ShowEmptyCharmInfo();
             }
         }
+
+        public void UpdateInfoWithEmptySprite(GameObject charm, Sprite emptySprite)
+        {
+            charmObject = charm;
+            charmComponent = charm != null ? charm.GetComponent<BaseCharm>() : null;
+
+            if (imageSlot != null)
+            {
+                if (charm != null && charmComponent != null && charmComponent.charmPicture != null)
+                {
+                    imageSlot.sprite = charmComponent.charmPicture;
+                    imageSlot.enabled = true;
+                }
+                else if (emptySprite != null)
+                {
+                    imageSlot.sprite = emptySprite;
+                    imageSlot.enabled = true;
+                }
+                else if (keepOriginalImage && originalSprite != null)
+                {
+                    imageSlot.sprite = originalSprite;
+                    imageSlot.enabled = true;
+                }
+                else
+                {
+                    imageSlot.sprite = null;
+                    imageSlot.enabled = false;
+                }
+            }
+        }
     }
 }
