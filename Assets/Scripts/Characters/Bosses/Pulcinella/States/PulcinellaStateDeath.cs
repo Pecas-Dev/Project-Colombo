@@ -1,4 +1,5 @@
 using ProjectColombo.GameManagement.Events;
+using ProjectColombo.VFX;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -16,6 +17,7 @@ namespace ProjectColombo.StateMachine.Pulcinella
             stateMachine.myAnimator.Play("Death");
             stateMachine.GetComponent<Collider>().enabled = false;
             stateMachine.tag = "Untagged";
+            stateMachine.GetComponent<PulcinellaVFX>().StopSmoke();
             CustomEvents.EnemyDied(GameGlobals.MusicScale.MAJOR,stateMachine.gameObject);
             CustomEvents.EndBossfight();
             //stateMachine.myEntityAttributes.Destroy();

@@ -12,7 +12,6 @@ namespace ProjectColombo.UI
         {
             if (other.CompareTag("Player"))
             {
-                other.GetComponent<PlayerStateMachine>().SwitchState(new PlayerMovementState(other.GetComponent<PlayerStateMachine>()));
                 dialogSystem.EnableDialog();
             }
         }

@@ -54,5 +54,11 @@ namespace ProjectColombo.VFX
                 minorEffectSmoke.Play();
             }
         }
+
+        public void StopSmoke()
+        {
+            minorEffectSmoke.Stop();
+            majorEffectSmoke.Stop();
+        }
     }
 }

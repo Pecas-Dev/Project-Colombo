@@ -48,6 +48,8 @@ namespace ProjectColombo.UI
 
         void StartDialog()
         {
+            textComponent.text = "";
+
             if (index < voiceLines.Length)
             {
                 audioPlayer.resource = voiceLines[index];
@@ -90,6 +92,7 @@ namespace ProjectColombo.UI
 
         public void EnableDialog()
         {
+            if (isEnabled) return;
             isEnabled = true;
 
             StartCoroutine(StopMoving());
