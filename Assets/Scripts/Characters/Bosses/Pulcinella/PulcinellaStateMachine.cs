@@ -4,6 +4,7 @@ using ProjectColombo.Enemies;
 using ProjectColombo.Enemies.Pathfinding;
 using ProjectColombo.Enemies.Pulcinella;
 using ProjectColombo.GameManagement.Events;
+using ProjectColombo.VFX;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -46,7 +47,6 @@ namespace ProjectColombo.StateMachine.Pulcinella
             myPathfindingAlgorythm = GetComponent<Pathfinding>();
             myHealthManager = GetComponent<HealthManager>();
             myPulcinellaAttributes = GetComponent<PulcinellaAttributes>();
-            StartCoroutine(SwitchSkinColor());
         }
 
         void Start()
@@ -56,6 +56,9 @@ namespace ProjectColombo.StateMachine.Pulcinella
             playerRef = GameObject.FindGameObjectWithTag("Player").transform;
             SwitchState(new PulcinellaStateIdle(this));
             myEntityAttributes.SetScale(GameGlobals.MusicScale.MAJOR);
+
+            StartCoroutine(SwitchSkinColor());
+            GetComponent<PulcinellaVFX>().PlaySmokeEffect();
 
             CustomEvents.OnSuccessfullParry += OnSuccessfullParry;
             CustomEvents.OnDamageDelt += OnDamageDelt;
@@ -235,6 +238,7 @@ namespace ProjectColombo.StateMachine.Pulcinella
             }
 
             StartCoroutine(SwitchSkinColor());
+            GetComponent<PulcinellaVFX>().PlaySmokeEffect();
         }
 
         IEnumerator SwitchSkinColor()

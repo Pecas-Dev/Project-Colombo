@@ -9,8 +9,10 @@ namespace ProjectColombo.VFX
     {
         public VisualEffect ragefullImpactSlam;
         public VisualEffect cursedLeapLand;
-        public VisualEffect minorEffect;
-        public VisualEffect majorEffect;
+        public VisualEffect minorEffectSmoke;
+        public VisualEffect majorEffectSmoke;
+        public VisualEffect cursedNoteMajorAnti;
+        public VisualEffect cursedNoteMinorAnti;
 
 
         public void PlayRI_ImpactVFX()
@@ -23,42 +25,34 @@ namespace ProjectColombo.VFX
             cursedLeapLand.Play();
         }
 
-        public void PlayMajorMinorEffect()
+        public void PlayerCN_AntiVFX()
         {
             GameGlobals.MusicScale scale = GetComponent<EntityAttributes>().currentScale;
 
             if (scale == GameGlobals.MusicScale.MAJOR)
             {
-                minorEffect.Stop();
-                majorEffect.Play();
-                StartCoroutine(AnimateSmokeEffekt(majorEffect));
+                cursedNoteMajorAnti.Play();
             }
             else if (scale == GameGlobals.MusicScale.MINOR)
             {
-                majorEffect.Stop();
-                minorEffect.Play();
-                StartCoroutine(AnimateSmokeEffekt(minorEffect));
+                cursedNoteMinorAnti.Play();
             }
         }
 
-        public void OnDestroy()
+        public void PlaySmokeEffect()
         {
-            StopAllCoroutines();
-        }
+            GameGlobals.MusicScale scale = GetComponent<EntityAttributes>().currentScale;
 
-        IEnumerator AnimateSmokeEffekt(VisualEffect effect)
-        {
-            int i = 0;
-
-            while (i < 15)
+            if (scale == GameGlobals.MusicScale.MAJOR)
             {
-                effect.SetFloat("SetSize", i);
-                i += 1;
-                yield return new WaitForEndOfFrame();
+                minorEffectSmoke.Stop();
+                majorEffectSmoke.Play();
             }
-
-            yield return new WaitForSeconds(1f);
-            effect.Stop();
+            else if (scale == GameGlobals.MusicScale.MINOR)
+            {
+                majorEffectSmoke.Stop();
+                minorEffectSmoke.Play();
+            }
         }
     }
 }

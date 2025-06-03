@@ -40,8 +40,6 @@ namespace ProjectColombo.Tutorial
             }
 
             GameInputSO gameInput = GameManager.Instance.gameInput;
-            //gameInput.LockAllInputsViaTutorial();
-            //gameInput.UnlockInputViaTutorial(PlayerInputAction.Movement);
             gameInput.UnlockAllInputsViaTutorial();
 
             TutorialEvents.OnDummyHit += AttackMinorEnemy;
@@ -50,6 +48,7 @@ namespace ProjectColombo.Tutorial
             CustomEvents.OnCoinsCollected += OnCoinsCollected;
             CustomEvents.OnCharmCollected += OnCharmCollected;
             CustomEvents.OnLevelChange += EndTutorial;
+            CustomEvents.OnGamePause += OnGamePause;
         }
 
         private void OnDestroy()
@@ -149,7 +148,6 @@ namespace ProjectColombo.Tutorial
         private void OnCharmCollected(GameObject obj)
         {
             CustomEvents.OnCharmCollected -= OnCharmCollected;
-            CustomEvents.OnGamePause += OnGamePause;
             ShowDialog(dialogAfterPickUp);
         }
 

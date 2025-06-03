@@ -30,7 +30,13 @@ namespace ProjectColombo.UI
 
         private void OnDestroy()
         {
+            text.text = "";
             CustomEvents.OnDisplayDamageNumber -= Display;
+        }
+
+        private void OnDisable()
+        {
+            text.text = "";
         }
 
         private void Update()
