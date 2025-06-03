@@ -26,6 +26,11 @@ namespace ProjectColombo.UI
         {
             isEnabled = false;
             dialogCanvas.SetActive(false);
+
+            if (HUDCanvas == null)
+            {
+                HUDCanvas = GameObject.Find("HUD Canvas");
+            }
         }
 
         private void Update()
