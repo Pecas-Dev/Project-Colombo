@@ -145,7 +145,6 @@ MonoBehaviour:
   entrances: []
   exits:
   - {fileID: 1030241363910050178}
-  spawnPoints: []
   chamberTilePosition: {x: 0, y: 0}
   entrancesConnected: 0
   exitsConnected: 0
@@ -161,10 +160,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fa9d59818b405443938061e0748bf2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentEnemies: []
-  attackersAtTheSameTime: 2
+  allCurrentEnemies: []
+  currentChasingEnemies: []
   currentAttackerEnemies: []
-  intervall: 3
+  attackersAtTheSameTime: 2
+  minIntervall: 2
+  maxIntervall: 5
 --- !u!1 &5578519385774789089
 GameObject:
   m_ObjectHideFlags: 0
@@ -2256,7 +2257,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5156751697360570305, guid: 6befa74f61694464da747c33f5904d71, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.44
+      value: -0.78
       objectReference: {fileID: 0}
     - target: {fileID: 5156751697360570305, guid: 6befa74f61694464da747c33f5904d71, type: 3}
       propertyPath: m_LocalPosition.y
