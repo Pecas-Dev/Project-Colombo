@@ -3,6 +3,7 @@ using ProjectColombo.StateMachine.Player;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.Events;
 
 namespace ProjectColombo.UI
@@ -14,6 +15,8 @@ namespace ProjectColombo.UI
         public GameObject HUDCanvas;
         public string[] lines;
         public float textSpeed;
+        public AudioResource[] voiceLines;
+        public AudioSource audioPlayer;
         public UnityEvent onDialogStart;
         public UnityEvent onDialogComplete;
 
@@ -39,6 +42,7 @@ namespace ProjectColombo.UI
                 else
                 {
                     StopAllCoroutines();
+                    audioPlayer.Stop();
                     textComponent.text = lines[index];
                 }
             }
@@ -46,8 +50,15 @@ namespace ProjectColombo.UI
 
         void StartDialog()
         {
+            if (index < voiceLines.Length)
+            {
+                audioPlayer.resource = voiceLines[index];
+                audioPlayer.Play();
+            }
+
             StartCoroutine(TypeLine());
         }
+
 
         IEnumerator TypeLine()
         {
@@ -63,11 +74,19 @@ namespace ProjectColombo.UI
             if (index < lines.Length - 1)
             {
                 index++;
+
+                if (index < voiceLines.Length)
+                {
+                    audioPlayer.resource = voiceLines[index];
+                    audioPlayer.Play();
+                }
+
                 textComponent.text = "";
                 StartCoroutine(TypeLine());
             }
             else
             {
+                audioPlayer.Stop();
                 DisableDialog();
             }
         }
