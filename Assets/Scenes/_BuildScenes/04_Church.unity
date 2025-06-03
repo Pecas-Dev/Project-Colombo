@@ -5792,13 +5792,20 @@ MonoBehaviour:
   textComponent: {fileID: 404699702}
   HUDCanvas: {fileID: 717879610}
   lines:
-  - '"It was not my time yet"'
-  - '"You''re music ..."'
-  - '"..."'
-  - '"..."'
-  - '"... its too much man"'
+  - '"No... NO! Why... WHY... WHY!"'
+  - '"It was all perfect..."'
+  - '"I saw her... I was there... she shines before me..."'
+  - '"and now, there is only silence all around..."'
+  - "\"the light... it\u2019s fading... I understand now...\""
+  - "\"The masquerade... it\u2019s over, isn\u2019t it?\""
   textSpeed: 0.01
-  voiceLines: []
+  voiceLines:
+  - {fileID: 8300000, guid: a213d54586d17064a99402d69219d305, type: 3}
+  - {fileID: 8300000, guid: 58deb4b9f6bb7354fa363aa3f9289620, type: 3}
+  - {fileID: 8300000, guid: a27927bd380c1a54bbd445fc2448499e, type: 3}
+  - {fileID: 8300000, guid: d0316d225de42544495ac4d47509e8c3, type: 3}
+  - {fileID: 8300000, guid: c5008b160ab354446bd7ed0ba749dd11, type: 3}
+  - {fileID: 8300000, guid: 846ec7dcd79d27b4090bc7dcdee74e17, type: 3}
   audioPlayer: {fileID: 416216886}
   onDialogComplete:
     m_PersistentCalls:
@@ -5841,10 +5848,10 @@ AudioSource:
   m_GameObject: {fileID: 416216882}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 959675aa1ee3cc54da6ff23f533f6e46, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -24848,9 +24855,10 @@ MonoBehaviour:
   textComponent: {fileID: 6417276115049547548}
   HUDCanvas: {fileID: 717879610}
   lines:
-  - '"I have been waiting.. "'
+  - "\"So, you've arrived, Musician\u2026 Let the feast begin!\""
   textSpeed: 0.01
-  voiceLines: []
+  voiceLines:
+  - {fileID: 8300000, guid: 891ae2470afb3ff4e94706f3e4d5b2be, type: 3}
   audioPlayer: {fileID: 6816371263508907654}
   onDialogComplete:
     m_PersistentCalls:
