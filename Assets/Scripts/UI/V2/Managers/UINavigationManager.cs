@@ -190,10 +190,71 @@ namespace ProjectColombo.UI
 
             if (mainMenuCanvas == null)
             {
-                mainMenuCanvas = GameObject.Find("MainMenuCanvas");
+                mainMenuCanvas = GameObject.FindGameObjectWithTag("MainMenu");
+
+                if (mainMenuCanvas == null)
+                {
+                    GameObject gameManagerObject = GameObject.Find("GameManager");
+                    if (gameManagerObject != null)
+                    {
+                        Transform mainMenuCanvasTransform = gameManagerObject.transform.Find("MainMenuCanvas");
+                        if (mainMenuCanvasTransform != null)
+                        {
+                            mainMenuCanvas = mainMenuCanvasTransform.gameObject;
+                        }
+                    }
+                }
             }
 
             if (mainMenuCanvas != null)
+            {
+                if (mainMenu == null)
+                {
+                    MainMenuController mainMenuController = mainMenuCanvas.GetComponentInChildren<MainMenuController>();
+                    if (mainMenuController != null)
+                    {
+                        mainMenu = mainMenuController.gameObject;
+                    }
+                }
+
+                if (optionsMenu == null)
+                {
+                    OptionsMenuController optionsMenuController = mainMenuCanvas.GetComponentInChildren<OptionsMenuController>();
+                    if (optionsMenuController != null)
+                    {
+                        optionsMenu = optionsMenuController.gameObject;
+
+                        if (optionsGraphicsTab == null)
+                        {
+                            Transform tabsTransform = optionsMenu.transform.Find("Tabs");
+                            if (tabsTransform != null)
+                            {
+                                optionsGraphicsTab = FindChildWithName(tabsTransform.gameObject, "GraphicsTab");
+                            }
+                        }
+
+                        if (optionsAudioTab == null)
+                        {
+                            Transform tabsTransform = optionsMenu.transform.Find("Tabs");
+                            if (tabsTransform != null)
+                            {
+                                optionsAudioTab = FindChildWithName(tabsTransform.gameObject, "AudioTab");
+                            }
+                        }
+
+                        if (optionsControlsTab == null)
+                        {
+                            Transform tabsTransform = optionsMenu.transform.Find("Tabs");
+                            if (tabsTransform != null)
+                            {
+                                optionsControlsTab = FindChildWithName(tabsTransform.gameObject, "ControlsTab");
+                            }
+                        }
+                    }
+                }
+            }
+
+            /*if (mainMenuCanvas != null)
             {
                 if (mainMenu == null)
                 {
@@ -227,7 +288,7 @@ namespace ProjectColombo.UI
                         }
                     }
                 }
-            }
+            }*/
 
             if (pauseInventoryCanvas == null)
             {

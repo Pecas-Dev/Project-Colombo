@@ -87,20 +87,6 @@ namespace ProjectColombo.UI
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             LogDebug($"Scene loaded: {scene.name}");
-
-            if (scene.name == "00_MainMenu")
-            {
-                LogDebug("Main menu scene detected - activating main menu");
-                StartCoroutine(ActivateMainMenuForScene());
-            }
-            else
-            {
-                LogDebug($"Non-main menu scene ({scene.name}) - hiding main menu");
-                if (mainMenuCanvas != null)
-                {
-                    mainMenuCanvas.SetActive(false);
-                }
-            }
         }
 
         IEnumerator ActivateMainMenuForScene()
@@ -474,25 +460,26 @@ namespace ProjectColombo.UI
         {
             LogDebug("Initializing UI references - looking for children of GameManager");
 
-            GameObject gameManagerObj = GameObject.Find("GameManager");
-
-            if (gameManagerObj == null)
-            {
-                LogDebug("GameManager object not found!");
-                return;
-            }
-
             if (mainMenuCanvas == null)
             {
-                Transform mainMenuCanvasTransform = gameManagerObj.transform.Find("MainMenuCanvas");
-                if (mainMenuCanvasTransform != null)
+                mainMenuCanvas = GameObject.FindGameObjectWithTag("MainMenu");
+
+                if (mainMenuCanvas != null)
                 {
-                    mainMenuCanvas = mainMenuCanvasTransform.gameObject;
-                    LogDebug("Found MainMenuCanvas as child of GameManager");
+                    LogDebug("Found MainMenuCanvas using 'MainMenu' tag");
                 }
                 else
                 {
-                    LogDebug("MainMenuCanvas not found as child of GameManager!");
+                    GameObject gameManagerObject = GameObject.Find("GameManager");
+                    if (gameManagerObject != null)
+                    {
+                        Transform mainMenuCanvasTransform = gameManagerObject.transform.Find("MainMenuCanvas");
+                        if (mainMenuCanvasTransform != null)
+                        {
+                            mainMenuCanvas = mainMenuCanvasTransform.gameObject;
+                            LogDebug("Found MainMenuCanvas as child of GameManager (fallback)");
+                        }
+                    }
                 }
             }
 
@@ -500,31 +487,39 @@ namespace ProjectColombo.UI
             {
                 if (mainMenu == null)
                 {
-                    Transform mainMenuTransform = mainMenuCanvas.transform.Find("MainMenu");
-                    if (mainMenuTransform != null)
+                    MainMenuController mainMenuController = mainMenuCanvas.GetComponentInChildren<MainMenuController>();
+                    if (mainMenuController != null)
                     {
-                        mainMenu = mainMenuTransform.gameObject;
-                        LogDebug("Found MainMenu as child of MainMenuCanvas");
+                        mainMenu = mainMenuController.gameObject;
+                        LogDebug("Found MainMenu using MainMenuController component");
                     }
                     else
                     {
-                        LogDebug("MainMenu not found as child of MainMenuCanvas!");
+                        LogDebug("MainMenuController component not found in MainMenuCanvas children!");
                     }
                 }
 
                 if (optionsMenu == null)
                 {
-                    Transform optionsMenuTransform = mainMenuCanvas.transform.Find("OptionsMenu");
-                    if (optionsMenuTransform != null)
+                    OptionsMenuController optionsMenuController = mainMenuCanvas.GetComponentInChildren<OptionsMenuController>();
+                    if (optionsMenuController != null)
                     {
-                        optionsMenu = optionsMenuTransform.gameObject;
-                        LogDebug("Found OptionsMenu as child of MainMenuCanvas");
+                        optionsMenu = optionsMenuController.gameObject;
+                        LogDebug("Found OptionsMenu using OptionsMenuController component");
                     }
                     else
                     {
-                        LogDebug("OptionsMenu not found as child of MainMenuCanvas!");
+                        LogDebug("OptionsMenuController component not found in MainMenuCanvas children!");
                     }
                 }
+            }
+
+            GameObject gameManagerObj = GameObject.Find("GameManager");
+
+            if (gameManagerObj == null)
+            {
+                LogDebug("GameManager object not found!");
+                return;
             }
 
             if (pauseInventoryCanvas == null)
