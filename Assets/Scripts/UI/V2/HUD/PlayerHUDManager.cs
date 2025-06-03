@@ -21,6 +21,15 @@ namespace ProjectColombo.UI
         [Tooltip("Reference to the Image component displaying the equipped mask")]
         [SerializeField] Image maskImage;
 
+        [Tooltip("Reference to the Image component displaying the equipped mask with custom color")]
+        [SerializeField] Image coloredMaskImage;
+
+        [Tooltip("Reference to the Image component displaying the equipped mask material (Bright game object)")]
+        [SerializeField] Image materialImage;
+
+        [Tooltip("Color to apply to the colored mask image")]
+        [SerializeField] Color maskImageColor = Color.white;
+
         [Header("Debug Settings")]
         [Tooltip("Enable debug logs for echo mission updates")]
         [SerializeField] bool debugEchoMission = false;
@@ -44,6 +53,7 @@ namespace ProjectColombo.UI
         [SerializeField] GameObject weapon;
         [SerializeField] GameObject potion;
         [SerializeField] GameObject mask;
+        [SerializeField] GameObject extras;
 
 
         string lastMissionProgressText = "";
@@ -58,6 +68,7 @@ namespace ProjectColombo.UI
         bool isFadingOut = false;
         bool echoWasUnlocked = false;
         bool isChangingLevel = false;
+        bool materialImageWasActive = false;
 
 
 
@@ -66,6 +77,9 @@ namespace ProjectColombo.UI
 
         Coroutine fadeCoroutine;
         Sprite currentMaskSprite = null;
+        Sprite currentColoredMaskSprite = null;
+
+        Material currentMaskMaterial = null;
 
 
         void Awake()
@@ -88,6 +102,11 @@ namespace ProjectColombo.UI
             if (echoMissionProgressText == null)
             {
                 Debug.LogError("Echo Mission Progress Text reference is missing in PlayerHUDManager!");
+            }
+
+            if (coloredMaskImage == null)
+            {
+                Debug.LogError("Colored Mask Image reference is missing in PlayerHUDManager!");
             }
 
             if (echoMissionTitleText != null)
@@ -147,12 +166,14 @@ namespace ProjectColombo.UI
                 weapon.SetActive(false);
                 potion.SetActive(false);
                 mask.SetActive(false);
+                extras.SetActive(false);
             }
             else
             {
                 weapon.SetActive(true);
                 potion.SetActive(true);
                 mask.SetActive(true);
+                extras.SetActive(true);
             }
         }
 
@@ -201,7 +222,7 @@ namespace ProjectColombo.UI
                     progressColor.a = 0f;
                     echoMissionProgressText.color = progressColor;
                 }
-                return; 
+                return;
             }
 
             bool isLevelOne = SceneManager.GetActiveScene().name == "03_LevelTwo";
@@ -337,6 +358,11 @@ namespace ProjectColombo.UI
                 shouldBeVisible = true;
                 lastMissionProgressText = "";
 
+                if (materialImage != null)
+                {
+                    materialImage.gameObject.SetActive(false);
+                }
+
                 Invoke("ResetEchoStateInLevelOne", 0.7f);
 
                 if (fadeCoroutine != null)
@@ -369,6 +395,7 @@ namespace ProjectColombo.UI
             {
                 RefreshMissionDisplay();
                 StartCoroutine(TransitionToUnlockedColor());
+                UpdateMaterialImageVisibility();
             }
         }
         #endregion
@@ -455,9 +482,39 @@ namespace ProjectColombo.UI
 
                         currentMaskSprite = equippedMask.maskPicture;
                         maskImage.sprite = currentMaskSprite;
+                        maskImage.type = Image.Type.Filled;
+                        maskImage.fillMethod = Image.FillMethod.Vertical;
                         maskImage.enabled = true;
+
+                        if (coloredMaskImage != null)
+                        {
+                            RectTransform coloredRectTransform = coloredMaskImage.rectTransform;
+                            coloredRectTransform.sizeDelta = new Vector2(80, 80);
+
+                            currentColoredMaskSprite = equippedMask.maskPicture;
+                            coloredMaskImage.sprite = currentColoredMaskSprite;
+                            coloredMaskImage.color = maskImageColor;
+                            coloredMaskImage.enabled = true;
+                        }
+
+                        if (equippedMask.brightHUDMaterial != currentMaskMaterial)
+                        {
+                            currentMaskMaterial = equippedMask.brightHUDMaterial;
+
+                            if (materialImage != null)
+                            {
+                                materialImage.material = currentMaskMaterial;
+                                Debug.Log($"Updated mask material: {equippedMask.maskName}");
+                            }
+                        }
+
+                        UpdateMaterialImageVisibility();
+
+
                         Debug.Log($"Updated mask display: {equippedMask.maskName}");
                     }
+
+                    UpdateMaskProgressFill();
                 }
             }
             else
@@ -468,6 +525,22 @@ namespace ProjectColombo.UI
                     maskImage.sprite = null;
                     maskImage.enabled = false;
                     currentMask = null;
+
+                    if (coloredMaskImage != null)
+                    {
+                        currentColoredMaskSprite = null;
+                        coloredMaskImage.sprite = null;
+                        coloredMaskImage.enabled = false;
+                    }
+
+                    if (materialImage != null)
+                    {
+                        currentMaskMaterial = null;
+                        materialImage.material = null;
+                        materialImage.gameObject.SetActive(false);
+                    }
+
+
                     Debug.Log("No mask equipped, hiding mask display");
 
                     if (echoMissionTitleText != null)
@@ -480,6 +553,125 @@ namespace ProjectColombo.UI
                         echoMissionProgressText.text = "";
                     }
                 }
+            }
+        }
+
+        void UpdateMaskProgressFill()
+        {
+            if (maskImage == null || currentMask == null || currentMask.echoMission == null)
+            {
+                if (maskImage != null)
+                {
+                    maskImage.fillAmount = 1f;
+                }
+                return;
+            }
+
+            float progressPercentage = 0f;
+
+            if (currentMask.echoUnlocked)
+            {
+                progressPercentage = 1f;
+            }
+            else
+            {
+                if (currentMask.echoMission is CollectGold collectGold)
+                {
+                    System.Reflection.FieldInfo fieldInfo = typeof(CollectGold).GetField("currentCollected", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+                    int currentCollected = 0;
+                    if (fieldInfo != null)
+                    {
+                        currentCollected = (int)fieldInfo.GetValue(collectGold);
+                    }
+
+                    progressPercentage = (float)currentCollected / (float)collectGold.goldToUnlockEcho;
+                }
+                else if (currentMask.echoMission is CollectMaxHealth collectHealth)
+                {
+                    System.Reflection.FieldInfo fieldInfo = typeof(CollectMaxHealth).GetField("currentCollected", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+                    int currentCollected = 0;
+                    if (fieldInfo != null)
+                    {
+                        currentCollected = (int)fieldInfo.GetValue(collectHealth);
+                    }
+
+                    progressPercentage = (float)currentCollected / (float)collectHealth.maxHealthToCollect;
+                }
+                else if (currentMask.echoMission is MajorKills majorKills)
+                {
+                    System.Reflection.FieldInfo fieldInfo = typeof(MajorKills).GetField("currentCollected", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+                    int currentKills = 0;
+                    if (fieldInfo != null)
+                    {
+                        currentKills = (int)fieldInfo.GetValue(majorKills);
+                    }
+
+                    System.Reflection.FieldInfo requiredKillsField = typeof(MajorKills).GetField("majorKillsToDo", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
+                    int requiredKills = 0;
+                    if (requiredKillsField != null)
+                    {
+                        requiredKills = (int)requiredKillsField.GetValue(majorKills);
+                    }
+
+                    if (requiredKills > 0)
+                    {
+                        progressPercentage = (float)currentKills / (float)requiredKills;
+                    }
+                }
+                else if (currentMask.echoMission is DamageDelt damageDelt)
+                {
+                    System.Reflection.FieldInfo fieldInfo = typeof(DamageDelt).GetField("currentCollected", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+                    int currentDamage = 0;
+                    if (fieldInfo != null)
+                    {
+                        currentDamage = (int)fieldInfo.GetValue(damageDelt);
+                    }
+
+                    System.Reflection.FieldInfo requiredDamageField = typeof(DamageDelt).GetField("damageToDeal", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
+                    int requiredDamage = 0;
+                    if (requiredDamageField != null)
+                    {
+                        requiredDamage = (int)requiredDamageField.GetValue(damageDelt);
+                    }
+
+                    if (requiredDamage > 0)
+                    {
+                        progressPercentage = (float)currentDamage / (float)requiredDamage;
+                    }
+                }
+            }
+
+            progressPercentage = Mathf.Clamp01(progressPercentage);
+            maskImage.fillAmount = progressPercentage;
+        }
+
+        void UpdateMaterialImageVisibility()
+        {
+            if (materialImage == null || currentMask == null)
+            {
+                return;
+            }
+
+            bool shouldShowMaterialImage = currentMask.echoUnlocked;
+
+            if (materialImage.gameObject.activeSelf != shouldShowMaterialImage)
+            {
+                materialImage.gameObject.SetActive(shouldShowMaterialImage);
+                Debug.Log($"Material image visibility updated: {shouldShowMaterialImage} for mask: {currentMask.maskName}");
+            }
+        }
+
+        public void UpdateColoredMaskImageColor()
+        {
+            if (coloredMaskImage != null && coloredMaskImage.enabled)
+            {
+                coloredMaskImage.color = maskImageColor;
             }
         }
 
@@ -670,7 +862,7 @@ namespace ProjectColombo.UI
 
             lastEventTime = Time.time;
 
-            if (!isFadingIn && ((echoMissionTitleText != null && echoMissionTitleText.color.a < 1f) ||(echoMissionProgressText != null && echoMissionProgressText.color.a < 1f)))
+            if (!isFadingIn && ((echoMissionTitleText != null && echoMissionTitleText.color.a < 1f) || (echoMissionProgressText != null && echoMissionProgressText.color.a < 1f)))
             {
                 if (fadeCoroutine != null)
                 {

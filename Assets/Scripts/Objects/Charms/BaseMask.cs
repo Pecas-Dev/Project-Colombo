@@ -9,6 +9,7 @@ namespace ProjectColombo.Objects.Masks
     {
         public string maskName;
         public Sprite maskPicture;
+        public Material brightHUDMaterial;
         [TextArea] public string maskDescription;
         [TextArea] public string maskDescriptionAfterEcho;
         [TextArea] public string echoDescription;
