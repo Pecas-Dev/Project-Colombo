@@ -35,6 +35,15 @@ public class PulcinellaSFX : MonoBehaviour
     [Range(0f, 1f)]
     public float landVolume = 1f;
 
+    [Header("Slam Sounds")]
+    public AudioClip slamStartClip;
+    [Range(0f, 1f)]
+    public float slamStartVolume = 1f;
+
+    public AudioClip slamImpactClip;
+    [Range(0f, 1f)]
+    public float slamImpactVolume = 1f;
+
     public void PlayCursedNoteExecution()
     {
         PlaySound(cursedNoteExecutionClip, cursedNoteExecutionVolume);
@@ -67,6 +76,16 @@ public class PulcinellaSFX : MonoBehaviour
         if (landClips.Length == 0) return;
         AudioClip selectedClip = landClips[Random.Range(0, landClips.Length)];
         PlaySound(selectedClip, landVolume);
+    }
+
+    public void PlaySlamStart()
+    {
+        PlaySound(slamStartClip, slamStartVolume);
+    }
+
+    public void PlaySlamImpact()
+    {
+        PlaySound(slamImpactClip, slamImpactVolume);
     }
 
     private void PlaySound(AudioClip clip, float volume)
