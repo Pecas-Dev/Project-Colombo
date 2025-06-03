@@ -1332,7 +1332,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 4
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -1365,7 +1365,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 444452466}
         m_TargetAssemblyTypeName: MaskButton, Assembly-CSharp
-        m_MethodName: SelectMask
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1427,6 +1427,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maskPrefab: {fileID: 9007149414703718239, guid: 657723b1673d79d4698c554063f30b2e, type: 3}
   imageSlot: {fileID: 591578612}
+  selectedColor: {r: 1, g: 1, b: 1, a: 1}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  unselectedColor: {r: 0.3764706, g: 0.3764706, b: 0.3764706, a: 0.45490196}
+  scaleMultiplier: 1.1
+  selectedMaterial: {fileID: 2100000, guid: 60aad975281947349bf20308f6cdb700, type: 2}
+  tweenDuration: 0.3
+  enableDebugLogs: 0
 --- !u!1 &445383531
 GameObject:
   m_ObjectHideFlags: 0
@@ -1528,7 +1535,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 452940736}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 143}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1750,6 +1757,8 @@ MonoBehaviour:
   deviceSwitchDelay: 0.15
   enableDebugLogs: 0
   enableVisualIndicator: 0
+  hideCursorWhenUsingController: 1
+  mouseMovementIgnoreThreshold: 0.75
 --- !u!4 &467412491
 Transform:
   m_ObjectHideFlags: 0
@@ -2095,6 +2104,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maskPrefab: {fileID: 1969649022979653137, guid: 35bc52dee04579243b729a8f3c22e27d, type: 3}
   imageSlot: {fileID: 2010756459}
+  selectedColor: {r: 1, g: 1, b: 1, a: 1}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  unselectedColor: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 0.45490196}
+  scaleMultiplier: 1.1
+  selectedMaterial: {fileID: 2100000, guid: f029fcef8ace3c146b24f28fb3d7b1c9, type: 2}
+  tweenDuration: 0.3
+  enableDebugLogs: 0
 --- !u!114 &542824062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2108,7 +2124,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 4
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -2141,7 +2157,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 542824061}
         m_TargetAssemblyTypeName: MaskButton, Assembly-CSharp
-        m_MethodName: SelectMask
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2513,7 +2529,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 669569936}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 143.00002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2583,6 +2599,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maskPrefab: {fileID: 4303818640728422693, guid: 3e9ada3cdbfbe1646aa6f1d3c1451467, type: 3}
   imageSlot: {fileID: 1434191480}
+  selectedColor: {r: 1, g: 1, b: 1, a: 1}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  unselectedColor: {r: 0.3764706, g: 0.3764706, b: 0.3764706, a: 0.45490196}
+  scaleMultiplier: 1.1
+  selectedMaterial: {fileID: 2100000, guid: 5f727cbf76dc9a340833a7de43447efc, type: 2}
+  tweenDuration: 0.3
+  enableDebugLogs: 0
 --- !u!114 &681082632
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2596,7 +2619,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 4
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -2629,7 +2652,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 681082631}
         m_TargetAssemblyTypeName: MaskButton, Assembly-CSharp
-        m_MethodName: SelectMask
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3733,7 +3756,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1007661819}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 143.00002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3776,7 +3799,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1056344958}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -45.515003}
+  m_LocalPosition: {x: 0, y: 0, z: 97.485016}
   m_LocalScale: {x: 1.0114443, y: 1.0114443, z: 1.0114443}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4004,7 +4027,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1102031293}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -45.514996}
+  m_LocalPosition: {x: 0, y: 0, z: 97.485016}
   m_LocalScale: {x: 1.0114443, y: 1.0114443, z: 1.0114443}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4270,7 +4293,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1208656449}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 143.00002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5161,6 +5184,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maskPrefab: {fileID: 3799292114581327272, guid: f3d5f379416e4f9428ffb6cf8e9c71a8, type: 3}
   imageSlot: {fileID: 307291524}
+  selectedColor: {r: 1, g: 1, b: 1, a: 1}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  unselectedColor: {r: 0.3764706, g: 0.3764706, b: 0.3764706, a: 0.45490196}
+  scaleMultiplier: 1.1
+  selectedMaterial: {fileID: 2100000, guid: eae8bad66b903874f82789837e7ccbaf, type: 2}
+  tweenDuration: 0.3
+  enableDebugLogs: 0
 --- !u!114 &1691287744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5174,7 +5204,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 4
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -5207,7 +5237,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1691287743}
         m_TargetAssemblyTypeName: MaskButton, Assembly-CSharp
-        m_MethodName: SelectMask
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5932,6 +5962,8 @@ GameObject:
   - component: {fileID: 1957047215}
   - component: {fileID: 1957047219}
   - component: {fileID: 1957047220}
+  - component: {fileID: 1957047221}
+  - component: {fileID: 1957047222}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -6044,6 +6076,13 @@ MonoBehaviour:
   maskDescriptionText: {fileID: 1922630771}
   echoNameText: {fileID: 2112849462}
   echoAbilityText: {fileID: 1198698319}
+  moreInfoPanel: {fileID: 1947048059}
+  moreInfoMaskNameText: {fileID: 2085645622}
+  moreInfoMaskDescriptionText: {fileID: 1922630771}
+  moreInfoEchoNameText: {fileID: 2112849462}
+  moreInfoEchoAbilityText: {fileID: 1198698319}
+  navigationController: {fileID: 1957047221}
+  enableDebugLogs: 1
 --- !u!114 &1957047220
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6057,6 +6096,88 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultButton: {fileID: 444452463}
+  navigationController: {fileID: 1957047221}
+  gameInputSO: {fileID: 11400000, guid: 4cbc555f8dd252548884cda6a4b53710, type: 2}
+  maskCanvas: {fileID: 1957047219}
+  enableDebugLogs: 1
+--- !u!114 &1957047221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957047214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce91b8e619f3cee46a14254603514e42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameInputSO: {fileID: 11400000, guid: 4cbc555f8dd252548884cda6a4b53710, type: 2}
+  menuContainer: {fileID: 1957047214}
+  selectedMinFontSize: 75
+  selectedMaxFontSize: 105
+  defaultMinFontSize: 70
+  defaultMaxFontSize: 100
+  animationDuration: 0.3
+  clickShrinkScale: 0.8
+  clickShrinkDuration: 0.1
+  clickBounceDuration: 0.2
+  clickBounceCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  navigationDelay: 0.2
+  enableMenuNavigation: 1
+  wrapNavigation: 1
+  maskButtons:
+  - {fileID: 444452463}
+  - {fileID: 1691287744}
+  - {fileID: 681082632}
+  - {fileID: 542824062}
+  firstSelectedButton: {fileID: 444452461}
+  moreInfoPanel: {fileID: 1947048059}
+  enableHorizontalWrapping: 1
+  rawInputThreshold: 0.5
+  rawInputCooldown: 0.3
+  moreInfoActivationDelay: 0.4
+  ignoreMouseHover: 1
+  enableDebugLogs: 1
+--- !u!114 &1957047222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957047214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 918cdacfcc129d5478224a110ecd4f7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firstSelectedObject: {fileID: 1691287741}
+  autoRegisterOnEnable: 1
+  registrationDelay: 0.1
+  enableDebugLogs: 1
 --- !u!1 &1971868047
 GameObject:
   m_ObjectHideFlags: 0

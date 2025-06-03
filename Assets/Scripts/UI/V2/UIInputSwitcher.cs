@@ -23,9 +23,14 @@ namespace ProjectColombo.UI
         [SerializeField] bool enableDebugLogs = false;
         [SerializeField] bool enableVisualIndicator = false;
 
+        [Header("Mouse Cursor Settings")]
+        [SerializeField] bool hideCursorWhenUsingController = true;
+        [SerializeField] float mouseMovementIgnoreThreshold = 0.75f;
+
         bool wasUsingMouse = false;
         bool isUsingController = false;
         bool isTransitioningDevices = false;
+        bool lastCursorVisibleState = true;
 
         float lastMouseInputTime = 0f;
         float lastControllerInputTime = 0f;
@@ -54,6 +59,24 @@ namespace ProjectColombo.UI
             currentEventSystem = EventSystem.current;
 
             StartCoroutine(DelayedStart());
+        }
+
+        void UpdateCursorVisibility()
+        {
+            if (!hideCursorWhenUsingController)
+            {
+                return;
+            }
+
+            bool shouldShowCursor = wasUsingMouse;
+
+            if (shouldShowCursor != lastCursorVisibleState)
+            {
+                Cursor.visible = shouldShowCursor;
+                lastCursorVisibleState = shouldShowCursor;
+
+                LogDebug($"Cursor visibility changed to: {shouldShowCursor}");
+            }
         }
 
         IEnumerator DelayedStart()
@@ -152,11 +175,9 @@ namespace ProjectColombo.UI
             while (true)
             {
                 bool mouseInput = CheckForMouseInput();
-
                 bool gamepadInput = CheckForGamepadInput();
 
                 bool shouldSwitchToMouse = mouseInput && !wasUsingMouse && Time.unscaledTime - lastDeviceSwitchTime > deviceSwitchDelay;
-
                 bool shouldSwitchToGamepad = gamepadInput && wasUsingMouse && Time.unscaledTime - lastDeviceSwitchTime > deviceSwitchDelay;
 
                 if (shouldSwitchToMouse && !isTransitioningDevices)
@@ -189,14 +210,7 @@ namespace ProjectColombo.UI
                     }
                 }
 
-                if (enableVisualIndicator && indicatorObject != null)
-                {
-                    Image image = indicatorObject.GetComponent<Image>();
-                    if (image != null)
-                    {
-                        image.color = wasUsingMouse ? Color.white : Color.green;
-                    }
-                }
+                UpdateCursorVisibility();
 
                 yield return new WaitForSecondsRealtime(checkInterval);
             }
@@ -210,7 +224,8 @@ namespace ProjectColombo.UI
             }
 
             bool mousePressed = Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame || Mouse.current.middleButton.wasPressedThisFrame;
-            bool mouseMoved = Mouse.current.delta.ReadValue().sqrMagnitude > mouseMovementThreshold;
+
+            bool mouseMoved = Mouse.current.delta.ReadValue().sqrMagnitude > mouseMovementIgnoreThreshold;
 
             if (mousePressed || mouseMoved)
             {
@@ -251,6 +266,7 @@ namespace ProjectColombo.UI
                 lastValidSelection = currentEventSystem.currentSelectedGameObject;
             }
 
+            UpdateCursorVisibility();
             LogDebug("Switched to MOUSE input mode");
         }
 
@@ -276,6 +292,7 @@ namespace ProjectColombo.UI
                 }
             }
 
+            UpdateCursorVisibility();
             LogDebug("Switched to CONTROLLER input mode");
         }
 

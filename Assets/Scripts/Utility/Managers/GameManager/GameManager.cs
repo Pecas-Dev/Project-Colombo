@@ -441,10 +441,16 @@ namespace ProjectColombo.GameManagement
         {
             if (gameInput != null && gameInput.inputActions != null)
             {
+                string currentSceneName = SceneManager.GetActiveScene().name;
 
                 if (SceneManager.GetActiveScene().name == MAIN_MENU)
                 {
                     gameInput.SwitchToUI();
+                }
+                else if (currentSceneName == "02_MaskSelection" || SceneManager.GetActiveScene().buildIndex == 2) 
+                {
+                    gameInput.SwitchToUI();
+                    LogDebug("Kept UI input for mask selection scene");
                 }
                 else
                 {
