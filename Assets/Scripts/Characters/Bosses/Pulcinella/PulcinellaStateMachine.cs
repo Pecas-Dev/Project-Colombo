@@ -4,6 +4,7 @@ using ProjectColombo.Enemies;
 using ProjectColombo.Enemies.Pathfinding;
 using ProjectColombo.Enemies.Pulcinella;
 using ProjectColombo.GameManagement.Events;
+using ProjectColombo.UI;
 using ProjectColombo.VFX;
 using System.Collections;
 using UnityEngine;
@@ -38,6 +39,7 @@ namespace ProjectColombo.StateMachine.Pulcinella
 
         public GameObject impactSphere;
         public GameObject cursedNoteSphere;
+        public DialogSystem endDialogSystem;
 
         private void Awake()
         {
@@ -281,6 +283,17 @@ namespace ProjectColombo.StateMachine.Pulcinella
         private void ScreenShake()
         {
             FindFirstObjectByType<ScreenShakeManager>().Shake(0.4f);
+        }
+
+        public void StartEndDialog()
+        {
+            endDialogSystem.gameObject.SetActive(true);
+            endDialogSystem.EnableDialog();
+        }
+
+        public void DieDie()
+        {
+            myAnimator.SetTrigger("KneeFall");
         }
 
         private void OnDestroy()
