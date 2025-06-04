@@ -547,26 +547,18 @@ namespace ProjectColombo.Inventory
             {
                 numberOfPotions--;
 
-                if (potionSlot.transform.childCount > 0)
-                {
-                    BaseAbility potionAbility = potionSlot.GetComponentInChildren<BaseAbility>();
-                    if (potionAbility != null)
-                    {
-                        potionAbility.Activate();
-                    }
-                }
+                BaseAbility potionAbility = potionSlot.GetComponentInChildren<BaseAbility>();
 
-                if (numberOfPotions <= 0)
+                if (potionAbility != null)
                 {
-                    foreach (Transform child in potionSlot.transform)
-                    {
-                        Destroy(child.gameObject);
-                    }
+                    potionAbility.Activate();
+                }
+                else
+                {
+                    Debug.LogError("No BaseAbility found in potionSlot children!");
                 }
 
                 NotifyPotionCountChanged();
-
-                Debug.Log($"Used potion. Remaining: {numberOfPotions}");
             }
         }
 
