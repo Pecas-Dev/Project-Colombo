@@ -7258,9 +7258,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8300000, guid: 6e665dbf6ff937549a06c911f810768a, type: 3}
     - target: {fileID: 2636444706612549488, guid: dae258d87e20f754a930b2a123d89b57, type: 3}
+      propertyPath: onDialogStart.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2636444706612549488, guid: dae258d87e20f754a930b2a123d89b57, type: 3}
       propertyPath: onDialogComplete.m_PersistentCalls.m_Calls.Array.size
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 2636444706612549488, guid: dae258d87e20f754a930b2a123d89b57, type: 3}
+      propertyPath: onDialogStart.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2636444706612549488, guid: dae258d87e20f754a930b2a123d89b57, type: 3}
+      propertyPath: onDialogStart.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1087444219}
     - target: {fileID: 2636444706612549488, guid: dae258d87e20f754a930b2a123d89b57, type: 3}
       propertyPath: onDialogComplete.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
@@ -7286,6 +7298,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1087444219}
     - target: {fileID: 2636444706612549488, guid: dae258d87e20f754a930b2a123d89b57, type: 3}
+      propertyPath: onDialogStart.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2636444706612549488, guid: dae258d87e20f754a930b2a123d89b57, type: 3}
+      propertyPath: onDialogStart.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetActive
+      objectReference: {fileID: 0}
+    - target: {fileID: 2636444706612549488, guid: dae258d87e20f754a930b2a123d89b57, type: 3}
       propertyPath: onDialogComplete.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
@@ -7310,6 +7330,10 @@ PrefabInstance:
       value: EnableInput
       objectReference: {fileID: 0}
     - target: {fileID: 2636444706612549488, guid: dae258d87e20f754a930b2a123d89b57, type: 3}
+      propertyPath: onDialogStart.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: ProjectColombo.Tutorial.TutorialDialogFunctions, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2636444706612549488, guid: dae258d87e20f754a930b2a123d89b57, type: 3}
       propertyPath: onDialogComplete.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: ProjectColombo.Tutorial.TutorialDialogFunctions, Assembly-CSharp
       objectReference: {fileID: 0}
@@ -7320,6 +7344,10 @@ PrefabInstance:
     - target: {fileID: 2636444706612549488, guid: dae258d87e20f754a930b2a123d89b57, type: 3}
       propertyPath: onDialogComplete.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
       value: ProjectColombo.Tutorial.TutorialDialogFunctions, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2636444706612549488, guid: dae258d87e20f754a930b2a123d89b57, type: 3}
+      propertyPath: onDialogStart.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 2636444706612549488, guid: dae258d87e20f754a930b2a123d89b57, type: 3}
       propertyPath: onDialogComplete.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -7436,11 +7464,15 @@ PrefabInstance:
     - target: {fileID: 5653774101777937556, guid: dae258d87e20f754a930b2a123d89b57, type: 3}
       propertyPath: 'setActiveSlot.Array.data[0]'
       value: 
-      objectReference: {fileID: 230327154}
+      objectReference: {fileID: 0}
     - target: {fileID: 5653774101777937556, guid: dae258d87e20f754a930b2a123d89b57, type: 3}
       propertyPath: 'setInactiveSlot.Array.data[0]'
       value: 
       objectReference: {fileID: 230327154}
+    - target: {fileID: 5653774101777937556, guid: dae258d87e20f754a930b2a123d89b57, type: 3}
+      propertyPath: 'setInactiveSlot.Array.data[1]'
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6816371263493001040, guid: dae258d87e20f754a930b2a123d89b57, type: 3}
       propertyPath: m_Name
       value: AfterCollectGold
@@ -7785,15 +7817,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5743602960228247331, guid: b096cfeaf2bd55048ae6ad7513da756e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 36.51
+      value: 35.64
       objectReference: {fileID: 0}
     - target: {fileID: 5743602960228247331, guid: b096cfeaf2bd55048ae6ad7513da756e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.9236066
+      value: 3.95
       objectReference: {fileID: 0}
     - target: {fileID: 5743602960228247331, guid: b096cfeaf2bd55048ae6ad7513da756e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -8.89
+      value: -8.52
       objectReference: {fileID: 0}
     - target: {fileID: 5743602960228247331, guid: b096cfeaf2bd55048ae6ad7513da756e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -9503,15 +9535,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3877656606838113895, guid: 8c350150259b57949b4f8dfe6755fd04, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 36.44
+      value: 36.26
       objectReference: {fileID: 0}
     - target: {fileID: 3877656606838113895, guid: 8c350150259b57949b4f8dfe6755fd04, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.9236066
+      value: 3.95
       objectReference: {fileID: 0}
     - target: {fileID: 3877656606838113895, guid: 8c350150259b57949b4f8dfe6755fd04, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -11.5
+      value: -11.29
       objectReference: {fileID: 0}
     - target: {fileID: 3877656606838113895, guid: 8c350150259b57949b4f8dfe6755fd04, type: 3}
       propertyPath: m_LocalRotation.w
@@ -10789,8 +10821,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.6967749, y: 1, z: 2.44134}
-  m_Center: {x: -0.15161234, y: 0, z: 0.72067004}
+  m_Size: {x: 0.6617859, y: 1, z: 2.44134}
+  m_Center: {x: -0.16910648, y: 0, z: 0.72067004}
 --- !u!4 &1586497291 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4161629519800178371, guid: dae258d87e20f754a930b2a123d89b57, type: 3}
@@ -13037,15 +13069,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7017942460541169792, guid: fe6e92f4c69777044bf7c499b80680be, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 34.88
+      value: 33.41
       objectReference: {fileID: 0}
     - target: {fileID: 7017942460541169792, guid: fe6e92f4c69777044bf7c499b80680be, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.9236066
+      value: 3.95
       objectReference: {fileID: 0}
     - target: {fileID: 7017942460541169792, guid: fe6e92f4c69777044bf7c499b80680be, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -7.68
+      value: -7.33
       objectReference: {fileID: 0}
     - target: {fileID: 7017942460541169792, guid: fe6e92f4c69777044bf7c499b80680be, type: 3}
       propertyPath: m_LocalRotation.w

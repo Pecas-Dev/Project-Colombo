@@ -131,6 +131,11 @@ namespace ProjectColombo.Inventory
                 Destroy(child.gameObject);
             }
 
+            foreach (Transform child in maskAbilitySlot.transform)
+            {
+                Destroy(child.gameObject);
+            }
+
             charms = new();
             currentCharmAmount = 0;
 
