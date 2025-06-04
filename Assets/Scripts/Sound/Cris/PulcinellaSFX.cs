@@ -5,6 +5,11 @@ public class PulcinellaSFX : MonoBehaviour
     [Header("Audio Source")]
     public AudioSource audioSource;
 
+    [Header("Steps")]
+    public AudioClip[] stepClips;
+    [Range(0f, 1f)]
+    public float stepsVolume = 1f;
+
     [Header("Cursed Note Execution")]
     public AudioClip cursedNoteExecutionClip;
     [Range(0f, 1f)]
@@ -43,6 +48,13 @@ public class PulcinellaSFX : MonoBehaviour
     public AudioClip slamImpactClip;
     [Range(0f, 1f)]
     public float slamImpactVolume = 1f;
+
+    public void PlayStep()
+    {
+        if (stepClips.Length == 0) return;
+        AudioClip selectedClip = stepClips[Random.Range(0, stepClips.Length)];
+        PlaySound(selectedClip, stepsVolume);
+    }
 
     public void PlayCursedNoteExecution()
     {
