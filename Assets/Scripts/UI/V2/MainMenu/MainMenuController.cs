@@ -1,10 +1,11 @@
-using TMPro;
-using UnityEngine;
-using UnityEngine.UI;
+using ProjectColombo.GameManagement.Events;
 using ProjectColombo.UI;
 using System.Collections;
+using TMPro;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenuController : MenuController
 {
@@ -397,6 +398,7 @@ public class MainMenuController : MenuController
             gameInputSO.SwitchToGameplay();
         }
 
+        CustomEvents.GameReset();
         StartCoroutine(ToFirstLevel());
     }
 
