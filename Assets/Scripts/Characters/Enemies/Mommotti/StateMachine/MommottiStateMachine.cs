@@ -90,6 +90,7 @@ namespace ProjectColombo.StateMachine.Mommotti
 
             hitByScale = scale;
             myRigidbody.AddForce(direction * knockbackStrength, ForceMode.Impulse);
+            SwitchState(new MommottiStateAttack(this)); //when attacked switch to attacking
         }
 
         public void SetStaggered()

@@ -42,17 +42,23 @@ namespace ProjectColombo.StateMachine.Pulcinella
 
         protected void RotateTowardsTarget(Vector3 targetPosition, float deltaTime, float rotationSpeed)
         {
-            Vector3 direction = (targetPosition - stateMachine.transform.position);
-            direction.y = 0;
-            direction = direction.normalized;
+            Vector3 direction = (targetPosition - stateMachine.transform.position).normalized;
 
-
-            if (direction.sqrMagnitude > 0.001f) // Prevent jittering when already aligned
+            if (direction.sqrMagnitude > 0.001f)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(direction);
-                stateMachine.transform.rotation = Quaternion.Lerp(stateMachine.transform.rotation, targetRotation, rotationSpeed * deltaTime);
+
+                // Preserve current Y rotation
+                Vector3 currentEuler = stateMachine.transform.rotation.eulerAngles;
+                Vector3 targetEuler = targetRotation.eulerAngles;
+
+                targetEuler.y = currentEuler.y;
+
+                Quaternion adjustedRotation = Quaternion.Euler(targetEuler);
+                stateMachine.transform.rotation = Quaternion.Lerp(stateMachine.transform.rotation, adjustedRotation, rotationSpeed * deltaTime);
             }
         }
+
 
 
         protected bool FollowPath(float deltaTime, float speed, float nodeReachThreshold = 0.2f)

@@ -44,6 +44,10 @@ namespace ProjectColombo.StateMachine.Mommotti
             // Always rotate to face player
             RotateTowardsTarget(playerPosition, deltaTime, stateMachine.myEntityAttributes.rotationSpeedPlayer);
 
+            // Speed adaptation based on distance
+            //float speedFactor = Mathf.Min(1 + targetDirection.magnitude / stateMachine.myMommottiAttributes.circleDistance, 1.5f);
+            float currentSpeed = stateMachine.myEntityAttributes.moveSpeed;
+
             if (timer >= checkInterval)
             {
                 timer = 0f;
@@ -60,6 +64,7 @@ namespace ProjectColombo.StateMachine.Mommotti
                 float tolerance = stateMachine.myMommottiAttributes.circleTolerance;
                 float distanceToPlayer = Vector3.Distance(stateMachine.transform.position, playerPosition);
 
+
                 // First check if too close to another enemy
                 if (GetSpreadOutTarget(tolerance * 2f, out Vector3 spreadTarget))
                 {
@@ -73,11 +78,16 @@ namespace ProjectColombo.StateMachine.Mommotti
                     {
                         // Move toward player
                         desiredPosition = stateMachine.transform.position + targetDirection.normalized * tolerance;
+
+                        //faster if further away
+                        float speedFactor = Mathf.Min(1 + targetDirection.magnitude / stateMachine.myMommottiAttributes.circleDistance, 1.5f);
+                        currentSpeed *= speedFactor;
                     }
                     else if (distanceToPlayer < circleDistance - tolerance)
                     {
                         // Move away from player
                         desiredPosition = stateMachine.transform.position - targetDirection.normalized * tolerance;
+                        currentSpeed /= 2f; //slowly move away from player
                     }
                     else
                     {
@@ -88,10 +98,6 @@ namespace ProjectColombo.StateMachine.Mommotti
                     SetTarget(desiredPosition);
                 }
             }
-
-            // Speed adaptation based on distance
-            float speedFactor = Mathf.Min(1 + targetDirection.magnitude / stateMachine.myMommottiAttributes.circleDistance, 1.5f);
-            float currentSpeed = stateMachine.myEntityAttributes.moveSpeed * speedFactor;
 
             FollowPath(deltaTime, currentSpeed);
         }

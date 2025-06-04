@@ -257,12 +257,23 @@ namespace ProjectColombo.StateMachine.Player
         }
 
 
-
         void TurnToTarget()
         {
-            Quaternion targetRotation = Quaternion.LookRotation(targetPosition - stateMachine.transform.position);
-            stateMachine.myRigidbody.transform.rotation = targetRotation;
+            Vector3 direction = targetPosition - stateMachine.transform.position;
+
+            if (direction.sqrMagnitude < 0.001f) return;
+
+            Quaternion targetRotation = Quaternion.LookRotation(direction.normalized);
+
+            // Preserve current Y rotation
+            Vector3 currentEuler = stateMachine.myRigidbody.rotation.eulerAngles;
+            Vector3 targetEuler = targetRotation.eulerAngles;
+            targetEuler.y = currentEuler.y; // Keep Y unchanged
+
+            Quaternion adjustedRotation = Quaternion.Euler(targetEuler);
+            stateMachine.myRigidbody.MoveRotation(adjustedRotation);
         }
+
 
         public void OnAttackImpulse(float impulseForce)
         {
