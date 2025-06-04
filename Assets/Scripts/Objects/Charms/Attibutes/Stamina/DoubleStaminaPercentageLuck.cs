@@ -20,7 +20,10 @@ namespace ProjectColombo.Objects.Charms
 
         public override void Enable()
         {
-            myPlayerStateMachine = GameObject.Find("Player").GetComponent<PlayerStateMachine>();
+            GameObject p = GameObject.Find("Player");
+
+            if (p == null) return;
+            myPlayerStateMachine = p.GetComponent<PlayerStateMachine>();
             CustomEvents.OnStaminaUsed += OnStaminaUsed;
         }
 

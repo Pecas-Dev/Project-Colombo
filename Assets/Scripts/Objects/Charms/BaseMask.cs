@@ -23,6 +23,7 @@ namespace ProjectColombo.Objects.Masks
         BaseAttributes[] attribAfterEchoList;
         AttributesStatSheet myStats;
 
+        public bool equipped = false;
         public BaseEchoMissions echoMission;
         public GameObject abilityObject;
 
@@ -36,7 +37,9 @@ namespace ProjectColombo.Objects.Masks
 
         public AttributesStatSheet GetStats()
         {
+
             myStats.ResetStats();
+            if (!equipped) return myStats;
 
             if (!echoUnlocked)
             {
@@ -58,7 +61,8 @@ namespace ProjectColombo.Objects.Masks
 
         public void Equip()
         {
-
+            if (equipped) return;
+            equipped = true;
 
             if (!echoUnlocked)
             {
@@ -107,6 +111,9 @@ namespace ProjectColombo.Objects.Masks
 
         public void Remove()
         {
+            if (!equipped) return;
+            equipped = false;
+
             if (!echoUnlocked)
             {
                 foreach (BaseAttributes attrib in attribBeforeEchoList)

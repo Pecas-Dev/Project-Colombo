@@ -14,7 +14,10 @@ namespace ProjectColombo.Objects.Charms
 
         public override void UpdateStatSheed(AttributesStatSheet stats)
         {
-            myHealthManager = GameObject.Find("Player").GetComponent<HealthManager>();
+            GameObject p = GameObject.Find("Player");
+
+            if (p == null) return;
+            myHealthManager = p.GetComponent<HealthManager>();
 
 
             int multiplyer = Mathf.FloorToInt((float)(myHealthManager.MaxHealth / forHowManyMaxHealth));
@@ -26,8 +29,13 @@ namespace ProjectColombo.Objects.Charms
 
         public override void Enable()
         {
+
+            GameObject p = GameObject.Find("Player");
+
+            if (p == null) return;
+
             CustomEvents.OnDamageDelt += OnDamageDelt;
-            myHealthManager = GameObject.Find("Player").GetComponent<HealthManager>();
+            myHealthManager = p.GetComponent<HealthManager>();
         }
 
         private void OnDamageDelt(int amount, GameGlobals.MusicScale scale, bool sameScale, Combat.HealthManager healthmanager, int comboLength)

@@ -16,6 +16,7 @@ namespace ProjectColombo.Objects.Charms
         public GameObject abilityObject;
         bool firstTimeEquiped = false;
 
+        public bool equipped = false;
         AttributesStatSheet myStats;
         BaseAttributes[] myAttributes;
 
@@ -34,6 +35,7 @@ namespace ProjectColombo.Objects.Charms
         public AttributesStatSheet GetStats()
         {
             myStats.ResetStats();
+            if (!equipped) return myStats;
 
             foreach (var attrib in myAttributes)
             {
@@ -45,6 +47,9 @@ namespace ProjectColombo.Objects.Charms
 
         public void Equip()
         {
+            if (equipped) return;
+            equipped = true;
+
             if (!firstTimeEquiped)
             {
                 firstTimeEquiped = true;
@@ -66,6 +71,9 @@ namespace ProjectColombo.Objects.Charms
 
         public void Remove()
         {
+            if (!equipped) return;
+            equipped = false;
+
             foreach (BaseAttributes attrib in myAttributes)
             {
                 attrib.Disable();

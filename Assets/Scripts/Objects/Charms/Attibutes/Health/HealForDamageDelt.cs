@@ -17,8 +17,11 @@ namespace ProjectColombo.Objects.Charms
 
         public override void Enable()
         {
+            GameObject p = GameObject.Find("Player");
+
+            if (p == null) return;
             CustomEvents.OnDamageDelt += OnDamageDelt;
-            myHealthmanager = GameObject.Find("Player").GetComponent<HealthManager>();
+            myHealthmanager = p.GetComponent<HealthManager>();
         }
 
         private void OnDamageDelt(int amount, GameGlobals.MusicScale scale, bool sameScale, Combat.HealthManager healthmanager, int comboLength)

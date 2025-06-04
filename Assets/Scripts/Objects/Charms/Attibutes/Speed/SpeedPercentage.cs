@@ -16,7 +16,10 @@ namespace ProjectColombo.Objects.Charms
 
         public override void Enable()
         {
-            myEntityAttributes = GameObject.Find("Player").GetComponent<EntityAttributes>();
+            GameObject p = GameObject.Find("Player");
+
+            if (p == null) return;
+            myEntityAttributes = p.GetComponent<EntityAttributes>();
             speedIncreaseValue = myEntityAttributes.moveSpeed * speedIncreasePercentage / 100f;
             myEntityAttributes.moveSpeed += speedIncreaseValue;
             Debug.Log("changed player speed by " + speedIncreaseValue + " to " + myEntityAttributes.moveSpeed);

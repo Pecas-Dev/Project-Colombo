@@ -16,14 +16,20 @@ namespace ProjectColombo.Objects.Charms
 
         public override void Enable()
         {
-            myHealthManager = GameObject.Find("Player").GetComponent<HealthManager>();
+            GameObject p = GameObject.Find("Player");
+
+            if (p == null) return;
+            myHealthManager = p.GetComponent<HealthManager>();
             Debug.Log("added extra health of: " + extraHealthPoints);
             myHealthManager.AddHealthPoints(extraHealthPoints);
         }
 
         public override void Disable()
         {
-            myHealthManager = GameObject.Find("Player").GetComponent<HealthManager>();
+            GameObject p = GameObject.Find("Player");
+
+            if (p == null) return;
+            myHealthManager = p.GetComponent<HealthManager>();
             Debug.Log("removed extra health of: " + extraHealthPoints);
             myHealthManager.AddHealthPoints(-extraHealthPoints);
         }

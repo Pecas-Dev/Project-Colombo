@@ -14,7 +14,10 @@ namespace ProjectColombo.Objects.Charms
 
         public override void UpdateStatSheed(AttributesStatSheet stats)
         {
-            myHealthManager = GameObject.Find("Player").GetComponent<HealthManager>();
+            GameObject p = GameObject.Find("Player");
+
+            if (p == null) return;
+            myHealthManager = p.GetComponent<HealthManager>();
 
             int multiplyer = Mathf.FloorToInt(myHealthManager.MaxHealth / perHowManyMaxHealth);
             int value = (int)(multiplyer * damgePercentage / 100f);

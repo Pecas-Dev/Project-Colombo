@@ -18,7 +18,10 @@ namespace ProjectColombo.Objects.Charms
 
         public override void Enable()
         {
-            myHealthManager = GameObject.Find("Player").GetComponent<HealthManager>();
+            GameObject p = GameObject.Find("Player");
+
+            if (p == null) return;
+            myHealthManager = p.GetComponent<HealthManager>();
             CustomEvents.OnEnemyDeath += OnEnemyDeath;
         }
 

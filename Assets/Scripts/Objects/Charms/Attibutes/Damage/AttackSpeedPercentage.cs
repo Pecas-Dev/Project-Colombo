@@ -16,7 +16,11 @@ namespace ProjectColombo.Objects.Charms
 
         public override void Enable()
         {
-            myEntityAttributes = GameObject.Find("Player").GetComponent<EntityAttributes>();
+            GameObject p = GameObject.Find("Player");
+
+            if (p == null) return;
+            
+            myEntityAttributes = p.GetComponent<EntityAttributes>();
             attackSpeedValue = myEntityAttributes.attackSpeed * attackSpeedPercentage / 100f;
             myEntityAttributes.attackSpeed += attackSpeedValue;
             Debug.Log("increased attack speed by: " + attackSpeedValue + " to: " + myEntityAttributes.attackSpeed);
@@ -24,6 +28,11 @@ namespace ProjectColombo.Objects.Charms
 
         public override void Disable()
         {
+
+            GameObject p = GameObject.Find("Player");
+
+            if (p == null) return;
+
             myEntityAttributes.attackSpeed -= attackSpeedValue;
             Debug.Log("decreased attack speed by: " + attackSpeedValue + " to: " + myEntityAttributes.attackSpeed);
         }
