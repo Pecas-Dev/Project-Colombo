@@ -42,7 +42,7 @@ namespace ProjectColombo.UI
 
         void OnEnable()
         {
-            StartCoroutine(DelayedRegisterFirstSelectable());
+            StartCoroutine(DelayedRegisterAndSetState());
         }
 
         public bool IsLegendaryReplacementMode()
@@ -66,9 +66,10 @@ namespace ProjectColombo.UI
             }
         }
 
-        IEnumerator DelayedRegisterFirstSelectable()
+        IEnumerator DelayedRegisterAndSetState()
         {
             yield return new WaitForEndOfFrame();
+            yield return new WaitForSecondsRealtime(0.1f);
 
             if (navigationManager != null)
             {
@@ -76,11 +77,38 @@ namespace ProjectColombo.UI
                 if (firstAvailableButton != null)
                 {
                     navigationManager.RegisterFirstSelectable(UINavigationState.CharmSwapScreen, firstAvailableButton.gameObject);
-                    LogDebug($"Registered first selectable: {firstAvailableButton.name}");
+                    navigationManager.SetNavigationState(UINavigationState.CharmSwapScreen);
+                    LogDebug($"Registered first selectable and set state: {firstAvailableButton.name}");
 
                     EventSystem.current.SetSelectedGameObject(firstAvailableButton.gameObject);
                     LogDebug($"Set initial selection to: {firstAvailableButton.name}");
                 }
+
+                yield return new WaitForSecondsRealtime(0.1f);
+
+                if (navigationManager.GetCurrentState() != UINavigationState.CharmSwapScreen)
+                {
+                    LogDebug("CharmSwapScreen state was lost - re-setting");
+                    navigationManager.SetNavigationState(UINavigationState.CharmSwapScreen);
+                }
+            }
+            else
+            {
+                LogError("NavigationManager is null in DelayedRegisterAndSetState!");
+            }
+        }
+
+        public void EnsureNavigationState()
+        {
+            if (navigationManager != null)
+            {
+                Button firstAvailableButton = GetFirstAvailableButton();
+                if (firstAvailableButton != null)
+                {
+                    navigationManager.RegisterFirstSelectable(UINavigationState.CharmSwapScreen, firstAvailableButton.gameObject);
+                }
+                navigationManager.SetNavigationState(UINavigationState.CharmSwapScreen);
+                LogDebug("Ensured CharmSwapScreen navigation state is set");
             }
         }
 

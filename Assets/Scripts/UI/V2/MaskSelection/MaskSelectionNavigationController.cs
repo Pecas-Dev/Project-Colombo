@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 using ProjectColombo.GameInputSystem;
+
 
 namespace ProjectColombo.UI.MaskSelection
 {
@@ -681,11 +683,26 @@ namespace ProjectColombo.UI.MaskSelection
             base.Show();
             ActivateNavigation();
 
+            StartCoroutine(EnsureNavigationState());
+        }
+
+        IEnumerator EnsureNavigationState()
+        {
+            yield return new WaitForEndOfFrame();
+
             if (navigationManager != null && firstSelectedButton != null)
             {
                 navigationManager.RegisterFirstSelectable(UINavigationState.MaskSelection, firstSelectedButton);
                 navigationManager.SetNavigationState(UINavigationState.MaskSelection);
-                LogDebug("Registered with UINavigationManager for MaskSelection state");
+                LogDebug("Ensured MaskSelection navigation state is set");
+            }
+
+            yield return new WaitForSecondsRealtime(0.1f);
+
+            if (navigationManager != null && navigationManager.GetCurrentState() != UINavigationState.MaskSelection)
+            {
+                navigationManager.SetNavigationState(UINavigationState.MaskSelection);
+                LogDebug("Force-set MaskSelection state after delay check");
             }
         }
 

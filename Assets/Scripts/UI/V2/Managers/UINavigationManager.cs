@@ -25,6 +25,14 @@ namespace ProjectColombo.UI
         Shop
     }
 
+    public enum UISoundType
+    {
+        Accept,
+        Back,
+        Tab,
+        Select
+    }
+
     public class UINavigationManager : MonoBehaviour
     {
         [Header("Debug Settings")]
@@ -52,6 +60,13 @@ namespace ProjectColombo.UI
         [SerializeField] GameObject charmSwapCanvas;
         [SerializeField] GameObject charmSwapScreen;
 
+        [Header("UI Sound Settings")]
+        [SerializeField] AudioSource uiAudioSource;
+        [SerializeField] AudioClip acceptSound;
+        [SerializeField] AudioClip backSound;
+        [SerializeField] AudioClip tabSound;
+        [SerializeField] AudioClip[] selectSounds;
+
         [Header("Excluded Buttons (Tabs)")]
         [SerializeField] List<Button> excludedButtons = new List<Button>();
 
@@ -62,6 +77,8 @@ namespace ProjectColombo.UI
         Dictionary<UINavigationState, GameObject> firstSelectables = new Dictionary<UINavigationState, GameObject>();
 
         Dictionary<UINavigationState, GameObject> lastSelectables = new Dictionary<UINavigationState, GameObject>();
+
+        Dictionary<UINavigationState, HashSet<UISoundType>> allowedSounds;
 
         UINavigationState currentState = UINavigationState.None;
         UINavigationState previousState = UINavigationState.None;
@@ -78,6 +95,8 @@ namespace ProjectColombo.UI
 
         void Awake()
         {
+            InitializeUISounds();
+
             if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
@@ -111,6 +130,7 @@ namespace ProjectColombo.UI
 
         void Start()
         {
+            InitializeUISounds();
             InitializeReferences();
             MapFirstSelectables();
         }
@@ -136,6 +156,10 @@ namespace ProjectColombo.UI
                     return;
                 }
             }
+
+            CheckAndEnforcePlayerInputMode();
+
+            HandleUISoundInput();
 
             if (eventSystem.currentSelectedGameObject != null && currentState != UINavigationState.None && eventSystem.currentSelectedGameObject.activeInHierarchy)
             {
@@ -174,7 +198,45 @@ namespace ProjectColombo.UI
             InitializeReferences();
             MapFirstSelectables();
 
-            SetNavigationState(UINavigationState.None);
+            string currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+
+            if (currentSceneName == "02_MaskSelection")
+            {
+                LogDebug("In MaskSelection scene - preserving navigation state");
+
+                yield return new WaitForSecondsRealtime(0.15f);
+
+                if (currentState == UINavigationState.None)
+                {
+                    SetNavigationState(UINavigationState.MaskSelection);
+                    LogDebug("Set navigation state to MaskSelection as fallback");
+                }
+            }
+            else if (currentSceneName == "00_MainMenu")
+            {
+                LogDebug("In MainMenu scene - preserving navigation state");
+
+                yield return new WaitForSecondsRealtime(0.15f);
+
+                if (currentState == UINavigationState.None)
+                {
+                    SetNavigationState(UINavigationState.MainMenu);
+                    LogDebug("Set navigation state to MainMenu as fallback");
+                }
+            }
+            else
+            {
+                yield return new WaitForSecondsRealtime(0.2f);
+
+                if (currentState == UINavigationState.None)
+                {
+                    LogDebug("No UI state claimed - setting to None");
+                }
+                else
+                {
+                    LogDebug($"UI state already claimed: {currentState} - preserving it");
+                }
+            }
         }
 
         public void InitializeReferences()
@@ -254,42 +316,6 @@ namespace ProjectColombo.UI
                 }
             }
 
-            /*if (mainMenuCanvas != null)
-            {
-                if (mainMenu == null)
-                {
-                    mainMenu = FindChildWithName(mainMenuCanvas, "MainMenu");
-                }
-
-                if (optionsMenu == null)
-                {
-                    optionsMenu = FindChildWithName(mainMenuCanvas, "OptionsMenu");
-                }
-
-                if (optionsMenu != null)
-                {
-                    Transform tabsTransform = optionsMenu.transform.Find("Tabs");
-
-                    if (tabsTransform != null)
-                    {
-                        if (optionsGraphicsTab == null)
-                        {
-                            optionsGraphicsTab = FindChildWithName(tabsTransform.gameObject, "GraphicsTab");
-                        }
-
-                        if (optionsAudioTab == null)
-                        {
-                            optionsAudioTab = FindChildWithName(tabsTransform.gameObject, "AudioTab");
-                        }
-
-                        if (optionsControlsTab == null)
-                        {
-                            optionsControlsTab = FindChildWithName(tabsTransform.gameObject, "ControlsTab");
-                        }
-                    }
-                }
-            }*/
-
             if (pauseInventoryCanvas == null)
             {
                 pauseInventoryCanvas = GameObject.Find("PauseInventoryCanvas");
@@ -341,17 +367,106 @@ namespace ProjectColombo.UI
                 }
             }
 
-            //if (maskSelectionCanvas == null)
-            //{
-            //    maskSelectionCanvas = GameObject.Find("Canvas");
-
-            //    if (maskSelectionCanvas != null && maskSelectionCanvas.GetComponent<MaskCanvas>() == null)
-            //    {
-            //        maskSelectionCanvas = null;
-            //    }
-            //}
-
             LogDebug("References initialized");
+        }
+
+        void InitializeUISounds()
+        {
+            if (uiAudioSource == null)
+            {
+                uiAudioSource = gameObject.GetComponent<AudioSource>();
+                if (uiAudioSource == null)
+                {
+                    uiAudioSource = gameObject.AddComponent<AudioSource>();
+                }
+            }
+
+            uiAudioSource.playOnAwake = false;
+            uiAudioSource.loop = false;
+
+            allowedSounds = new Dictionary<UINavigationState, HashSet<UISoundType>>();
+
+            allowedSounds[UINavigationState.None] = new HashSet<UISoundType>();
+
+            allowedSounds[UINavigationState.MainMenu] = new HashSet<UISoundType>
+            {
+                UISoundType.Accept,
+                UISoundType.Select
+            };
+
+            allowedSounds[UINavigationState.OptionsMenu] = new HashSet<UISoundType>
+            {
+                UISoundType.Back
+            };
+
+            allowedSounds[UINavigationState.OptionsMenuGraphicsTab] = new HashSet<UISoundType>
+            {
+                UISoundType.Back
+            };
+
+            allowedSounds[UINavigationState.OptionsMenuAudioTab] = new HashSet<UISoundType>
+            {
+                UISoundType.Back
+            };
+
+
+            allowedSounds[UINavigationState.OptionsMenuControlsTab] = new HashSet<UISoundType>
+            {
+                UISoundType.Back
+            };
+
+            allowedSounds[UINavigationState.PauseInventoryTab] = new HashSet<UISoundType>
+            {
+                UISoundType.Accept,
+                UISoundType.Back,
+                UISoundType.Tab,
+                UISoundType.Select
+            };
+
+            allowedSounds[UINavigationState.PauseStatsTab] = new HashSet<UISoundType>
+            {
+                UISoundType.Back,
+                UISoundType.Tab
+            };
+
+            allowedSounds[UINavigationState.PauseSettingsTab] = new HashSet<UISoundType>
+            {
+                UISoundType.Accept,
+                UISoundType.Back,
+                UISoundType.Tab,
+                UISoundType.Select
+            };
+
+            allowedSounds[UINavigationState.MaskSelection] = new HashSet<UISoundType>
+            {
+                UISoundType.Select,
+                UISoundType.Accept,
+                UISoundType.Back
+            };
+
+            allowedSounds[UINavigationState.HUD] = new HashSet<UISoundType>();
+
+            allowedSounds[UINavigationState.CharmSwapScreen] = new HashSet<UISoundType>
+            {
+                UISoundType.Select,
+                UISoundType.Accept,
+                UISoundType.Back
+            };
+
+            allowedSounds[UINavigationState.PickUpScreen] = new HashSet<UISoundType>
+            {
+                UISoundType.Accept,
+                UISoundType.Back
+            };
+
+            allowedSounds[UINavigationState.Shop] = new HashSet<UISoundType>
+            {
+                UISoundType.Accept,
+                UISoundType.Select,
+                UISoundType.Back
+            };
+
+            LogDebug("UI Sounds initialized");
         }
 
         void MapFirstSelectables()
@@ -453,6 +568,14 @@ namespace ProjectColombo.UI
 
         #region Public Methods
 
+        public void PreserveCurrentSelection()
+        {
+            if (eventSystem != null && eventSystem.currentSelectedGameObject != null && currentState != UINavigationState.None)
+            {
+                lastSelectables[currentState] = eventSystem.currentSelectedGameObject;
+                LogDebug($"Preserved current selection for state {currentState}: {eventSystem.currentSelectedGameObject.name}");
+            }
+        }
         public void ExcludeButtonFromNavigation(Button button)
         {
             if (button != null && !excludedButtons.Contains(button))
@@ -482,9 +605,17 @@ namespace ProjectColombo.UI
         public void SetNavigationState(UINavigationState newState)
         {
             if (newState == currentState)
+            {
                 return;
+            }
 
             LogDebug($"Changing navigation state: {currentState} -> {newState}");
+
+            if (currentState == UINavigationState.MainMenu && eventSystem != null && eventSystem.currentSelectedGameObject != null)
+            {
+                lastSelectables[currentState] = eventSystem.currentSelectedGameObject;
+                LogDebug($"Preserved MainMenu selection: {eventSystem.currentSelectedGameObject.name}");
+            }
 
             previousState = currentState;
 
@@ -503,7 +634,14 @@ namespace ProjectColombo.UI
                 }
             }
 
-            RestoreSelectionForCurrentState();
+            if (newState == UINavigationState.MainMenu && eventSystem != null && eventSystem.currentSelectedGameObject != null && eventSystem.currentSelectedGameObject.activeInHierarchy)
+            {
+                LogDebug("MainMenu state set, but valid selection already exists - not restoring");
+            }
+            else
+            {
+                RestoreSelectionForCurrentState();
+            }
         }
 
         public void RegisterFirstSelectable(UINavigationState state, GameObject selectable)
@@ -573,6 +711,121 @@ namespace ProjectColombo.UI
 
         #region Helper Methods
 
+        void HandleUISoundInput()
+        {
+            if (gameInput == null || gameInput.inputActions == null)
+            {
+                return;
+            }
+
+            HandleCancelInput();
+
+            if (gameInput.inputActions.UI.Submit.WasPressedThisFrame())
+            {
+                PlayUISound(UISoundType.Accept);
+            }
+
+            if (gameInput.inputActions.UI.Cancel.WasPressedThisFrame())
+            {
+                PlayUISound(UISoundType.Back);
+            }
+
+            if (gameInput.inputActions.UI.MoveLeftShoulder.WasPressedThisFrame() || gameInput.inputActions.UI.MoveRightShoulder.WasPressedThisFrame())
+            {
+                PlayUISound(UISoundType.Tab);
+            }
+
+            if (gameInput.inputActions.UI.Navigate.WasPressedThisFrame())
+            {
+                PlayUISound(UISoundType.Select);
+            }
+        }
+
+        public void PlayUISound(UISoundType soundType)
+        {
+            if (uiAudioSource == null)
+                return;
+
+            if (!IsSoundAllowedInCurrentState(soundType))
+            {
+                LogDebug($"Sound {soundType} not allowed in state {currentState}");
+                return;
+            }
+
+            AudioClip clipToPlay = null;
+
+            switch (soundType)
+            {
+                case UISoundType.Accept:
+                    clipToPlay = acceptSound;
+                    break;
+                case UISoundType.Back:
+                    clipToPlay = backSound;
+                    break;
+                case UISoundType.Tab:
+                    clipToPlay = tabSound;
+                    break;
+                case UISoundType.Select:
+                    if (selectSounds != null && selectSounds.Length > 0)
+                    {
+                        clipToPlay = selectSounds[Random.Range(0, selectSounds.Length)];
+                    }
+                    break;
+            }
+
+            if (clipToPlay != null)
+            {
+                uiAudioSource.PlayOneShot(clipToPlay);
+                LogDebug($"Played UI sound: {soundType}");
+            }
+            else
+            {
+                LogWarning($"No audio clip assigned for sound type: {soundType}");
+            }
+        }
+
+        void HandleCancelInput()
+        {
+            if (gameInput == null || gameInput.inputActions == null)
+            {
+                return;
+            }
+
+
+            if (gameInput.inputActions.UI.Cancel.WasPressedThisFrame())
+            {
+                HashSet<UINavigationState> cancelResetsToNoneStates = new HashSet<UINavigationState>
+                {
+                    UINavigationState.CharmSwapScreen,
+                    UINavigationState.PauseInventoryTab,
+                    UINavigationState.PauseStatsTab,
+                    UINavigationState.PauseSettingsTab,
+                    UINavigationState.PickUpScreen
+                };
+
+                if (cancelResetsToNoneStates.Contains(currentState))
+                {
+                    LogDebug($"Cancel pressed in state {currentState} - resetting to None");
+                    SetNavigationState(UINavigationState.None);
+                }
+                else
+                {
+                    LogDebug($"Cancel pressed in state {currentState} - no state reset needed");
+                }
+            }
+        }
+
+
+        bool IsSoundAllowedInCurrentState(UISoundType soundType)
+        {
+            if (allowedSounds == null || !allowedSounds.ContainsKey(currentState))
+            {
+                return false;
+            }
+
+            return allowedSounds[currentState].Contains(soundType);
+        }
+
         void RestoreSelectionForCurrentState()
         {
             if (currentState == UINavigationState.None || currentState == UINavigationState.HUD)
@@ -581,6 +834,15 @@ namespace ProjectColombo.UI
             }
 
             GameObject objectToSelect = null;
+
+            if (currentState == UINavigationState.MainMenu)
+            {
+                if (eventSystem != null && eventSystem.currentSelectedGameObject != null && eventSystem.currentSelectedGameObject.activeInHierarchy)
+                {
+                    LogDebug($"MainMenu already has valid selection: {eventSystem.currentSelectedGameObject.name} - not changing");
+                    return;
+                }
+            }
 
             if (lastSelectables.ContainsKey(currentState) && lastSelectables[currentState] != null && lastSelectables[currentState].activeInHierarchy)
             {
@@ -677,6 +939,28 @@ namespace ProjectColombo.UI
             return null;
         }
 
+        void CheckAndEnforcePlayerInputMode()
+        {
+            if (gameInput == null || gameInput.inputActions == null)
+            {
+                return;
+            }
+
+            if (gameInput.inputActions.Player.enabled && !gameInput.inputActions.UI.enabled)
+            {
+                if (currentState != UINavigationState.None && currentState != UINavigationState.HUD)
+                {
+                    StartCoroutine(WaitBeforeChangingToNone());
+                }
+            }
+        }
+
+        IEnumerator WaitBeforeChangingToNone()
+        {
+            yield return new WaitForSecondsRealtime(0.65f);
+            LogDebug($"Detected Player input mode while in {currentState} - forcing state to None");
+            SetNavigationState(UINavigationState.None);
+        }
 
         void LogDebug(string message)
         {

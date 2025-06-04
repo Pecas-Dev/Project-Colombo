@@ -107,16 +107,26 @@ public class MainMenuController : MenuController
 
         DeactivateAllImages();
 
-        if (buttons.Length > 0 && buttons[0] != null)
+        int initialSelection = 0;
+        if (lastSelectedButtonIndex >= 0 && lastSelectedButtonIndex < buttons.Length)
         {
-            SelectButton(0);
+            initialSelection = lastSelectedButtonIndex;
+            LogDebug($"Using preserved selection: button {initialSelection}");
+        }
+
+        if (buttons.Length > 0 && buttons[initialSelection] != null)
+        {
+            currentSelectedIndex = -1;
+            SelectButton(initialSelection);
 
             uiInputSwitcher = FindFirstObjectByType<UIInputSwitcher>();
 
             if (uiInputSwitcher != null)
             {
-                uiInputSwitcher.SetFirstSelectedButton(buttons[0].gameObject);
+                uiInputSwitcher.SetFirstSelectedButton(buttons[initialSelection].gameObject);
             }
+
+            LogDebug($"Initialized with button {initialSelection} selected and clef visible");
         }
 
         if (enableMenuNavigation)
@@ -132,7 +142,7 @@ public class MainMenuController : MenuController
 
             if (buttons != null && buttons.Length > 0)
             {
-                navigationExtension.GetType().GetField("firstSelectedObject", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(navigationExtension, buttons[0].gameObject);
+                navigationExtension.GetType().GetField("firstSelectedObject", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(navigationExtension, buttons[initialSelection].gameObject);
             }
         }
     }
@@ -190,8 +200,10 @@ public class MainMenuController : MenuController
     {
         LogDebug("Show() called - FORCING main menu display");
 
+        bool wasAlreadyInitialized = hasBeenInitialized;
+        int previousSelection = currentSelectedIndex;
+
         hasBeenInitialized = false;
-        currentSelectedIndex = -1;
 
         base.Show();
 
@@ -214,33 +226,110 @@ public class MainMenuController : MenuController
 
         if (buttons != null && buttons.Length > 0)
         {
-            lastSelectedButtonIndex = 0;
-            SelectButton(0);
+            int buttonToSelect = 0;
+
+            if (wasAlreadyInitialized && previousSelection >= 0 && previousSelection < buttons.Length)
+            {
+                buttonToSelect = previousSelection;
+                LogDebug($"Preserving previous selection: button {buttonToSelect}");
+            }
+            else if (lastSelectedButtonIndex >= 0 && lastSelectedButtonIndex < buttons.Length)
+            {
+                buttonToSelect = lastSelectedButtonIndex;
+                LogDebug($"Using last selected button: {buttonToSelect}");
+            }
+
+            lastSelectedButtonIndex = buttonToSelect;
+
+            currentSelectedIndex = -1;
+            SelectButton(buttonToSelect);
 
             if (EventSystem.current != null)
             {
-                EventSystem.current.SetSelectedGameObject(buttons[0].gameObject);
-                LogDebug("Set EventSystem selection to first button");
+                EventSystem.current.SetSelectedGameObject(buttons[buttonToSelect].gameObject);
+                LogDebug($"Set EventSystem selection to button {buttonToSelect}");
             }
 
             UIInputSwitcher inputSwitcher = FindFirstObjectByType<UIInputSwitcher>();
 
             if (inputSwitcher != null)
             {
-                inputSwitcher.SetFirstSelectedButton(buttons[0].gameObject);
-                inputSwitcher.ForceSelectButton(buttons[0].gameObject);
+                inputSwitcher.SetFirstSelectedButton(buttons[buttonToSelect].gameObject);
+                inputSwitcher.ForceSelectButton(buttons[buttonToSelect].gameObject);
                 LogDebug("Setup input switcher");
             }
         }
+        StartCoroutine(EnsureMainMenuNavigationStateWithoutSelectionReset());
 
         LogDebug("Main menu Show() COMPLETED - should be fully active now");
     }
-    IEnumerator DelayedShow()
+
+    IEnumerator EnsureMainMenuNavigationStateWithoutSelectionReset()
     {
         yield return new WaitForEndOfFrame();
 
+        UINavigationManager navigationManager = FindFirstObjectByType<UINavigationManager>();
+
+        if (navigationManager != null && buttons != null && buttons.Length > 0)
+        {
+            int currentSelection = currentSelectedIndex >= 0 ? currentSelectedIndex : 0;
+            navigationManager.RegisterFirstSelectable(UINavigationState.MainMenu, buttons[currentSelection].gameObject);
+            navigationManager.SetNavigationState(UINavigationState.MainMenu);
+            LogDebug($"Ensured MainMenu navigation state with current selection: button {currentSelection}");
+        }
+
+        yield return new WaitForSecondsRealtime(0.1f);
+
+        if (navigationManager != null && navigationManager.GetCurrentState() != UINavigationState.MainMenu)
+        {
+            navigationManager.SetNavigationState(UINavigationState.MainMenu);
+            LogDebug("Force-set MainMenu state after delay check (without selection reset)");
+        }
+    }
+
+    IEnumerator EnsureMainMenuNavigationState()
+    {
+        yield return new WaitForEndOfFrame();
+
+        UINavigationManager navigationManager = FindFirstObjectByType<UINavigationManager>();
+
+        if (navigationManager != null && buttons != null && buttons.Length > 0)
+        {
+            navigationManager.RegisterFirstSelectable(UINavigationState.MainMenu, buttons[0].gameObject);
+            navigationManager.SetNavigationState(UINavigationState.MainMenu);
+            LogDebug("Ensured MainMenu navigation state is set");
+        }
+
+        yield return new WaitForSecondsRealtime(0.1f);
+
+        if (navigationManager != null && navigationManager.GetCurrentState() != UINavigationState.MainMenu)
+        {
+            navigationManager.SetNavigationState(UINavigationState.MainMenu);
+            LogDebug("Force-set MainMenu state after delay check");
+        }
+    }
+
+    IEnumerator DelayedShow()
+    {
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForSecondsRealtime(0.15f);
+
         LogDebug("Delayed show triggering");
         Show();
+
+        yield return new WaitForSecondsRealtime(0.1f);
+
+        UINavigationManager navigationManager = FindFirstObjectByType<UINavigationManager>();
+
+        if (navigationManager != null && navigationManager.GetCurrentState() != UINavigationState.MainMenu)
+        {
+            LogDebug("MainMenu state was lost after Show() - re-setting");
+            if (buttons != null && buttons.Length > 0)
+            {
+                navigationManager.RegisterFirstSelectable(UINavigationState.MainMenu, buttons[0].gameObject);
+            }
+            navigationManager.SetNavigationState(UINavigationState.MainMenu);
+        }
     }
 
 

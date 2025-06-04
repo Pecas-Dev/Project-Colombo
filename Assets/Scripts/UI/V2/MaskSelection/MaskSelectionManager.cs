@@ -117,6 +117,13 @@ namespace ProjectColombo.UI
             yield return new WaitForEndOfFrame();
             yield return new WaitForSecondsRealtime(0.1f);
 
+            if (uiNavigationManager != null && defaultButton != null)
+            {
+                uiNavigationManager.RegisterFirstSelectable(UINavigationState.MaskSelection, defaultButton.gameObject);
+                uiNavigationManager.SetNavigationState(UINavigationState.MaskSelection);
+                LogDebug("Re-registered with UI navigation manager after delay");
+            }
+
             SelectDefaultButton();
         }
 

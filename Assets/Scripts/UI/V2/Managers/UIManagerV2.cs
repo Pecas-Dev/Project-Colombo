@@ -205,6 +205,11 @@ namespace ProjectColombo.UI
                 return;
             }
 
+            if (navigationManager != null)
+            {
+                navigationManager.PreserveCurrentSelection();
+            }
+
             mainMenuCanvas.SetActive(true);
             optionsMenu.SetActive(true);
 
@@ -241,7 +246,57 @@ namespace ProjectColombo.UI
                 optionsMenu.SetActive(false);
             }
 
-            ShowMainMenu();
+            ShowMainMenuWithPreservedSelection();
+        }
+
+        void ShowMainMenuWithPreservedSelection()
+        {
+            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            if (currentScene != "00_MainMenu")
+            {
+                LogDebug($"ShowMainMenuWithPreservedSelection called but current scene is {currentScene} - ignoring request");
+                return;
+            }
+
+            LogDebug("ShowMainMenuWithPreservedSelection called - restoring main menu with preserved selection");
+
+            if (mainMenuCanvas == null || mainMenu == null)
+            {
+                LogDebug("Error: Main Menu Canvas or Main Menu reference missing - attempting to find references");
+
+                InitializeReferences();
+
+                if (mainMenuCanvas == null || mainMenu == null)
+                {
+                    LogDebug("Still missing references after initialization attempt");
+                    return;
+                }
+            }
+
+            mainMenuCanvas.SetActive(true);
+            mainMenu.SetActive(true);
+
+            if (optionsMenu != null)
+            {
+                optionsMenu.SetActive(false);
+            }
+
+            if (navigationManager != null)
+            {
+                navigationManager.SetNavigationState(UINavigationState.MainMenu);
+            }
+
+            MainMenuController mainMenuController = mainMenu.GetComponent<MainMenuController>();
+
+            if (mainMenuController != null)
+            {
+                mainMenuController.Show();
+                LogDebug("Successfully called Show() on MainMenuController with preserved selection");
+            }
+            else
+            {
+                LogDebug("MainMenuController component not found on main menu GameObject!");
+            }
         }
 
         public bool CheckPauseInput()

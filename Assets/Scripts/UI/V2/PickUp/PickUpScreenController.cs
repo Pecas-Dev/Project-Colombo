@@ -121,14 +121,12 @@ namespace ProjectColombo.UI
         {
             bool shouldCancel = false;
 
-            // Check UI Cancel input action
             if (gameInput != null && gameInput.inputActions.UI.Cancel.WasPressedThisFrame())
             {
                 shouldCancel = true;
                 LogDebug("Cancel input detected via UI.Cancel");
             }
 
-            // Check gamepad East button
             if (Gamepad.current != null && Gamepad.current.buttonEast.wasPressedThisFrame)
             {
                 shouldCancel = true;
@@ -386,7 +384,7 @@ namespace ProjectColombo.UI
             //}
             //else
             //{
-                ShowPickUpCanvas();
+            ShowPickUpCanvas();
             //}
 
             LogDebug("Pick up screen activated");
@@ -467,7 +465,7 @@ namespace ProjectColombo.UI
             //}
             //else
             //{
-                OnOpeningAnimationComplete();
+            OnOpeningAnimationComplete();
             //}
         }
 
@@ -506,7 +504,7 @@ namespace ProjectColombo.UI
             //}
             //else
             //{
-                OnClosingAnimationComplete(onComplete);
+            OnClosingAnimationComplete(onComplete);
             //}
         }
 

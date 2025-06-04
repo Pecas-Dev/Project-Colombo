@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 
 namespace ProjectColombo.UI
@@ -33,18 +34,28 @@ namespace ProjectColombo.UI
         {
             FindFirstSelectableIfNeeded();
 
-            if (navigationManager != null && firstSelectedObject != null)
-            {
-                navigationManager.RegisterFirstSelectable(UINavigationState.MainMenu, firstSelectedObject);
-            }
         }
 
         void OnEnable()
         {
+            StartCoroutine(DelayedNavigationSetup());
+        }
+
+        IEnumerator DelayedNavigationSetup()
+        {
+            yield return new WaitForSecondsRealtime(0.3f);
+
             if (navigationManager != null)
             {
-                navigationManager.SetNavigationState(UINavigationState.MainMenu);
-                LogDebug("Set navigation state to MainMenu");
+                if (navigationManager.GetCurrentState() != UINavigationState.MainMenu)
+                {
+                    navigationManager.SetNavigationState(UINavigationState.MainMenu);
+                    LogDebug("Set navigation state to MainMenu after delay (without changing selection)");
+                }
+                else
+                {
+                    LogDebug("MainMenu state already set - no action needed");
+                }
             }
         }
 

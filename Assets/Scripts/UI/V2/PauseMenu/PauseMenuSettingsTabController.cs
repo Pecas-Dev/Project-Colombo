@@ -76,6 +76,7 @@ namespace ProjectColombo.UI.Pausescreen
             }
         }
 
+
         public void Initialize()
         {
             LogDebug("Initializing settings tab controller");
@@ -151,6 +152,14 @@ namespace ProjectColombo.UI.Pausescreen
                 resumeButton.onClick.AddListener(() =>
                 {
                     LogDebug("Resume button clicked");
+
+                    UINavigationManager navigationManager = FindFirstObjectByType<UINavigationManager>();
+                    if (navigationManager != null)
+                    {
+                        navigationManager.SetNavigationState(UINavigationState.None);
+                        LogDebug("Reset navigation state to None on resume");
+                    }
+
                     GameManager.Instance.ResumeGame();
                 });
             }

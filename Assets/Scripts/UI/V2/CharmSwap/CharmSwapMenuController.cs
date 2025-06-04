@@ -330,6 +330,12 @@ namespace ProjectColombo.UI
 
             if (shouldCancel)
             {
+                if (navigationManager != null)
+                {
+                    StartCoroutine(SetToNoneState());
+                    LogDebug("Reset navigation state to None on cancel");
+                }
+
                 DeactivateScreen();
             }
         }
@@ -680,6 +686,8 @@ namespace ProjectColombo.UI
                 navExtension.RefreshNavigationForMode();
                 LogDebug("Navigation refreshed for normal mode");
             }
+
+            StartCoroutine(EnsureCharmSwapNavigationState());
 
             //if (useAnimations && transitionAnimator != null)
             //{
@@ -1150,6 +1158,12 @@ namespace ProjectColombo.UI
 
             inventory.ReplaceCharm(charmToRemove, currentNewCharm);
 
+            if (navigationManager != null)
+            {
+                StartCoroutine(SetToNoneState());
+                LogDebug("Reset navigation state to None after successful charm swap");
+            }
+
             cameFromPickUpScreen = false;
             currentNewCharm = null;
 
@@ -1164,12 +1178,25 @@ namespace ProjectColombo.UI
 
             if (tempCharmToReplace != null)
             {
+                if (navigationManager != null)
+                {
+                    StartCoroutine(SetToNoneState());
+                    LogDebug("Reset navigation state to None before completing animated charm swap");
+                }
+
                 AddCharm(tempCharmToReplace);
                 tempCharmToReplace = null;
             }
             else
             {
                 LogError("tempCharmToReplace is null! Cannot complete swap.");
+
+                if (navigationManager != null)
+                {
+                    StartCoroutine(SetToNoneState());
+                    LogDebug("Reset navigation state to None after failed charm swap");
+                }
+
                 PerformActualDeactivation();
             }
         }
@@ -1218,6 +1245,8 @@ namespace ProjectColombo.UI
                 navigationManager.SetNavigationState(UINavigationState.CharmSwapScreen);
                 LogDebug("Navigation state set to CharmSwapScreen (Legendary Mode)");
             }
+
+            StartCoroutine(EnsureCharmSwapNavigationState());
 
             SetupLegendaryModeUI();
 
@@ -1284,6 +1313,64 @@ namespace ProjectColombo.UI
             }
 
             StartCoroutine(DelayedLegendarySelection());
+        }
+
+        IEnumerator EnsureCharmSwapNavigationState()
+        {
+            yield return new WaitForEndOfFrame();
+
+            if (navigationManager != null)
+            {
+                Button firstSelectable = null;
+
+                if (isLegendaryReplacementMode)
+                {
+                    if (legendaryCharmButton != null && legendaryCharmButton.interactable)
+                    {
+                        firstSelectable = legendaryCharmButton;
+                    }
+                }
+                else
+                {
+                    if (legendaryCharmButton != null && legendaryCharmButton.interactable)
+                    {
+                        firstSelectable = legendaryCharmButton;
+                    }
+                    else
+                    {
+                        for (int i = 0; i < charmButtons.Length; i++)
+                        {
+                            if (charmButtons[i] != null && charmButtons[i].interactable)
+                            {
+                                firstSelectable = charmButtons[i];
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (firstSelectable != null)
+                {
+                    navigationManager.RegisterFirstSelectable(UINavigationState.CharmSwapScreen, firstSelectable.gameObject);
+                }
+
+                navigationManager.SetNavigationState(UINavigationState.CharmSwapScreen);
+                LogDebug($"Ensured CharmSwapScreen navigation state - Mode: {(isLegendaryReplacementMode ? "Legendary" : "Normal")}");
+            }
+
+            yield return new WaitForSecondsRealtime(0.1f);
+
+            if (navigationManager != null && navigationManager.GetCurrentState() != UINavigationState.CharmSwapScreen)
+            {
+                navigationManager.SetNavigationState(UINavigationState.CharmSwapScreen);
+                LogDebug("Force-set CharmSwapScreen state after delay check");
+            }
+
+            CharmSwapNavigationExtension navExtension = GetComponent<CharmSwapNavigationExtension>();
+            if (navExtension != null)
+            {
+                navExtension.EnsureNavigationState();
+            }
         }
 
         IEnumerator DelayedLegendarySelection()
@@ -1434,6 +1521,12 @@ namespace ProjectColombo.UI
         {
             LogDebug("Setting initial selection after animation");
 
+            if (navigationManager != null && navigationManager.GetCurrentState() != UINavigationState.CharmSwapScreen)
+            {
+                navigationManager.SetNavigationState(UINavigationState.CharmSwapScreen);
+                LogDebug("Re-set navigation state to CharmSwapScreen before selection");
+            }
+
             if (isLegendaryReplacementMode)
             {
                 StartCoroutine(DelayedLegendarySelection());
@@ -1491,7 +1584,7 @@ namespace ProjectColombo.UI
 
             if (navigationManager != null)
             {
-                navigationManager.SetNavigationState(UINavigationState.None);
+                StartCoroutine(SetToNoneState());
                 LogDebug("Navigation state set to None");
             }
 
@@ -1523,6 +1616,13 @@ namespace ProjectColombo.UI
             }
 
             isActive = true;
+
+            if (navigationManager != null)
+            {
+                navigationManager.SetNavigationState(UINavigationState.CharmSwapScreen);
+                LogDebug("Set navigation state to CharmSwapScreen in Show()");
+            }
+
             LogDebug("CharmSwapScreen shown");
         }
 
@@ -1534,6 +1634,13 @@ namespace ProjectColombo.UI
             }
 
             isActive = false;
+
+            if (navigationManager != null)
+            {
+                StartCoroutine(SetToNoneState());
+                LogDebug("Reset navigation state to None in Hide()");
+            }
+
             LogDebug("CharmSwapScreen hidden");
         }
 
@@ -1542,6 +1649,13 @@ namespace ProjectColombo.UI
             wasActiveBeforePause = false;
             Show();
             LogDebug("CharmSwapScreen restored after pause");
+        }
+
+        IEnumerator SetToNoneState()
+        {
+            yield return new WaitForSecondsRealtime(0.5f);
+
+            navigationManager.SetNavigationState(UINavigationState.None);
         }
 
         void LogDebug(string message)

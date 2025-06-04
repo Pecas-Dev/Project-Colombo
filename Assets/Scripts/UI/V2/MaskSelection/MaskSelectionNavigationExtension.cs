@@ -54,11 +54,19 @@ namespace ProjectColombo.UI.MaskSelection
 
         IEnumerator DelayedRegistration()
         {
-            yield return new WaitForSecondsRealtime(registrationDelay);
+            yield return new WaitForSecondsRealtime(0.25f); 
 
             if (gameObject.activeInHierarchy)
             {
                 RegisterWithNavigationManager();
+
+                yield return new WaitForSecondsRealtime(0.1f);
+
+                if (navigationManager != null && navigationManager.GetCurrentState() != UINavigationState.MaskSelection)
+                {
+                    LogWarning("MaskSelection state was lost - re-registering");
+                    RegisterWithNavigationManager();
+                }
             }
         }
 
