@@ -63,6 +63,14 @@ namespace ProjectColombo.Combat
 
         private void OnTriggerEnter(Collider other)
         {
+            // if other is behind me, don't do anything
+            Vector3 directionToOther = other.transform.position - transform.position;
+            if (Vector3.Dot(transform.forward, directionToOther.normalized) < 0)
+            {
+                return;
+            }
+
+
             if (other.CompareTag("Player"))
             {
                 PlayerStateMachine sm = other.GetComponent<PlayerStateMachine>();
