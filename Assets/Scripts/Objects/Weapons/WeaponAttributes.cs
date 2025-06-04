@@ -54,7 +54,9 @@ namespace ProjectColombo.Combat
         LevelStats myLevelStats;
         PlayerInventory myPlayerInventory;
 
-        public VisualEffect majorVFX;
+        public VisualEffect majorVFXOne;
+        public VisualEffect majorVFXTwo;
+        public VisualEffect majorVFXThree;
         public VisualEffect minorVFX;
         public VisualEffect majorParryVFX;
         public VisualEffect minorParryVFX;
@@ -184,7 +186,33 @@ namespace ProjectColombo.Combat
         {
             if (currentScale == GameGlobals.MusicScale.MAJOR)
             {
-                majorVFX.Play();
+                var sm = GetComponentInParent<PlayerStateMachine>();
+
+                if (sm == null)
+                {
+                    majorVFXOne.Play();
+                    return;
+                }
+
+                int comboLenght = sm.currentComboString.Length;
+
+                if (comboLenght == 1)
+                {
+                    majorVFXOne.Play();
+                    return;
+
+                }
+                else if (comboLenght == 2)
+                {
+                    majorVFXTwo.Play();
+                    return;
+                }
+                else
+                {
+                    majorVFXThree.Play();
+                    return;
+                }
+
             }
             else if (currentScale == GameGlobals.MusicScale.MINOR)
             {
