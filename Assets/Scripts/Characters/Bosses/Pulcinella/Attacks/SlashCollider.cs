@@ -5,6 +5,7 @@ namespace ProjectColombo.Combat
     public class HandBasedSlashCollider : MonoBehaviour
     {
         public Transform rootBone;
+        public Transform handBone;
         private CapsuleCollider capsule;
 
         void Awake()
@@ -14,21 +15,23 @@ namespace ProjectColombo.Combat
 
         void Update()
         {
-            // Get direction and distance to root in local space of the hand
-            Vector3 localRootPosition = transform.InverseTransformPoint(rootBone.position);
-            Vector3 direction = localRootPosition;
+            // Get root position in hand's local space
+            Vector3 rootInHandLocal = handBone.InverseTransformPoint(rootBone.position);
+
+            // Calculate direction and distance from hand to root
+            Vector3 direction = rootInHandLocal;
             float distance = direction.magnitude;
 
-            // Set the center of the capsule at the midpoint between hand (0) and root
-            capsule.center = direction * 0.5f;
+            // Compute rotation from hand "up" to root direction
+            Quaternion capsuleRotation = Quaternion.FromToRotation(Vector3.up, direction.normalized);
 
-            // Align the capsule to point toward the root
-            Quaternion rotation = Quaternion.FromToRotation(Vector3.up, direction.normalized);
-            capsule.transform.localRotation = rotation;
 
-            // Set capsule properties
+            capsule.center = capsuleRotation * (Vector3.up * (distance * 0.5f));
             capsule.height = distance;
             capsule.direction = 1; // Y-axis
+
+            Debug.DrawLine(handBone.position, rootBone.position, Color.red);
+
         }
     }
 }
