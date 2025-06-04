@@ -14,7 +14,7 @@ namespace ProjectColombo.UI.Pausescreen
     {
         [Header("Button References")]
         [SerializeField] Button resumeButton;
-        [SerializeField] Button optionsButton;
+        //[SerializeField] Button optionsButton;
         [SerializeField] Button returnToHubButton;
         [SerializeField] Button exitButton;
 
@@ -80,7 +80,7 @@ namespace ProjectColombo.UI.Pausescreen
         {
             LogDebug("Initializing settings tab controller");
 
-            allButtons = new Button[] { resumeButton, optionsButton, returnToHubButton, exitButton };
+            allButtons = new Button[] { resumeButton, returnToHubButton, exitButton };
 
             textAnimationCoroutines = new System.Collections.IEnumerator[allButtons.Length];
 
@@ -156,15 +156,15 @@ namespace ProjectColombo.UI.Pausescreen
             }
 
             // Options button
-            if (optionsButton != null)
-            {
-                optionsButton.onClick.RemoveAllListeners();
-                optionsButton.onClick.AddListener(() =>
-                {
-                    LogDebug("Options button clicked");
-                    // TODO: Implement options menu functionality
-                });
-            }
+            //if (optionsButton != null)
+            //{
+            //    optionsButton.onClick.RemoveAllListeners();
+            //    optionsButton.onClick.AddListener(() =>
+            //    {
+            //        LogDebug("Options button clicked");
+            //        // TODO: Implement options menu functionality
+            //    });
+            //}
 
             // Return to Hub button - FIXED VERSION
             if (returnToHubButton != null)
