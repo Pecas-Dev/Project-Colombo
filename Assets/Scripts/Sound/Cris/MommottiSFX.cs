@@ -9,11 +9,13 @@ public class MommottiSFX : MonoBehaviour
     public AudioClip[] walkSounds;
     public AudioClip[] attackSounds;
     public AudioClip[] damagedSounds;
+    public AudioClip[] deathSounds;
 
     [Header("Volume Controls")]
     [Range(0f, 1f)] public float walkVolume = 1f;
     [Range(0f, 1f)] public float attackVolume = 1f;
     [Range(0f, 1f)] public float damagedVolume = 1f;
+    [Range(0f, 1f)] public float deathVolume = 1f;
 
     [Header("Audio Mixer")]
     public AudioMixerGroup sfxMixerGroup; // Assign this in the Inspector
@@ -21,6 +23,7 @@ public class MommottiSFX : MonoBehaviour
     private AudioSource walkAudioSource;
     private AudioSource attackAudioSource;
     private AudioSource damagedAudioSource;
+    private AudioSource deathAudioSource;
 
     private HealthManager healthManager;
     private int lastHealth;
@@ -31,16 +34,16 @@ public class MommottiSFX : MonoBehaviour
         walkAudioSource = GetComponent<AudioSource>();
         if (walkAudioSource == null)
             walkAudioSource = gameObject.AddComponent<AudioSource>();
-
         SetupAudioSource(walkAudioSource, 1f, sfxMixerGroup);
 
-        // Setup attack audio source (2D)
         attackAudioSource = gameObject.AddComponent<AudioSource>();
         SetupAudioSource(attackAudioSource, 0f, sfxMixerGroup);
 
-        // Setup damaged audio source (2D)
         damagedAudioSource = gameObject.AddComponent<AudioSource>();
         SetupAudioSource(damagedAudioSource, 0f, sfxMixerGroup);
+
+        deathAudioSource = gameObject.AddComponent<AudioSource>();
+        SetupAudioSource(deathAudioSource, 0f, sfxMixerGroup);
 
         // HealthManager setup
         healthManager = GetComponent<HealthManager>();
@@ -88,6 +91,10 @@ public class MommottiSFX : MonoBehaviour
     public void PlayDamagedSFX()
     {
         PlayRandomClip(damagedSounds, damagedVolume, damagedAudioSource);
+    }
+    public void PlayDeathSFX()
+    {
+        PlayRandomClip(deathSounds, deathVolume, deathAudioSource);
     }
 
     private void PlayRandomClip(AudioClip[] clips, float maxVolume, AudioSource source)
