@@ -21,7 +21,9 @@ namespace ProjectColombo.StateMachine.Pulcinella
         public override void Tick(float deltaTime)
         {
             timer += deltaTime;
-            currentDistance = Vector3.Distance(stateMachine.playerRef.transform.position, stateMachine.transform.position);
+            Vector3 targetPos = stateMachine.playerRef.transform.position - stateMachine.transform.position;
+            targetPos.y = 0;
+            currentDistance = targetPos.magnitude;
 
             // Estimate speed from distance to target (or use your own velocity logic if available)
             float speed = 0f;
@@ -37,6 +39,7 @@ namespace ProjectColombo.StateMachine.Pulcinella
                 speed = stateMachine.myEntityAttributes.moveSpeed / 2f;
                 Vector3 directionAway = (stateMachine.transform.position - stateMachine.playerRef.transform.position).normalized;
                 Vector3 target = stateMachine.transform.position + directionAway;
+                target.y = 0;
                 MoveToTarget(target, deltaTime, speed);
 
             }

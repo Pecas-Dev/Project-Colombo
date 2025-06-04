@@ -25,6 +25,7 @@ namespace ProjectColombo.StateMachine.Pulcinella
         protected void MoveToTarget(Vector3 targetPosition, float deltaTime, float speed)
         {
             Vector3 direction = targetPosition - stateMachine.transform.position;
+            direction.y = 0;
 
             if (direction.magnitude > 0.1f) // Ensure we don’t overshoot or start lerping if already close
             {
@@ -46,18 +47,22 @@ namespace ProjectColombo.StateMachine.Pulcinella
 
             if (direction.sqrMagnitude > 0.001f)
             {
+                // Ignore vertical component to avoid tilting up/down
+                direction.y = 0;
+                direction.Normalize();
+
+                // Create the target rotation looking in the horizontal direction
                 Quaternion targetRotation = Quaternion.LookRotation(direction);
 
-                // Preserve current Y rotation
-                Vector3 currentEuler = stateMachine.transform.rotation.eulerAngles;
-                Vector3 targetEuler = targetRotation.eulerAngles;
-
-                targetEuler.y = currentEuler.y;
-
-                Quaternion adjustedRotation = Quaternion.Euler(targetEuler);
-                stateMachine.transform.rotation = Quaternion.Lerp(stateMachine.transform.rotation, adjustedRotation, rotationSpeed * deltaTime);
+                // Smoothly rotate towards the target
+                stateMachine.transform.rotation = Quaternion.Slerp(
+                    stateMachine.transform.rotation,
+                    targetRotation,
+                    rotationSpeed * deltaTime
+                );
             }
         }
+
 
 
 
