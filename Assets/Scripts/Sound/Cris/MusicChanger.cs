@@ -16,6 +16,8 @@ public class AudioManager : MonoBehaviour
     [Range(0f, 1f)] public float[] bossBattleLayerVolumes = new float[4] { 1f, 1f, 1f, 1f };
     [Range(0f, 1f)] public float endingSongVolume = 0.5f;
     [Range(0f, 1f)] public float[] battleLayerVolumes = new float[4] { 1f, 1f, 1f, 1f };
+    [Range(0f, 1f)] public float loseSceneVolume = 0.5f;
+    [Range(0f, 1f)] public float creditsSceneVolume = 0.5f;
 
     [Header("General Music Settings")]
     public float fadeSpeed = 1f;
@@ -28,8 +30,10 @@ public class AudioManager : MonoBehaviour
     public AudioClip bossExplorationClip;
     public AudioClip[] bossBattleClips;
     public AudioClip endingSongClip;
+    public AudioClip loseSceneClip;
+    public AudioClip creditsSceneClip;
 
-    private enum MusicCategory { None, MainMenu, Exploration, Battle, ChurchEntrance, BossBattle, Ending }
+    private enum MusicCategory { None, MainMenu, Exploration, Battle, ChurchEntrance, BossBattle, Ending, Lose, Credits }
     private MusicCategory currentMusicCategory = MusicCategory.None;
 
     private AudioSource explorationMusic;
@@ -88,6 +92,8 @@ public class AudioManager : MonoBehaviour
 
         clipsToPreload.AddRange(levelBattleClips);
         clipsToPreload.AddRange(bossBattleClips);
+        clipsToPreload.Add(loseSceneClip);
+        clipsToPreload.Add(creditsSceneClip);
 
         foreach (var clip in clipsToPreload)
         {
@@ -150,9 +156,14 @@ public class AudioManager : MonoBehaviour
                 PlayGameplayMusic(bossExplorationClip, bossBattleClips);
                 StartCoroutine(EnableBattleMusicAfterDelay(3f));
                 break;
-            case "05_WinScene":
             case "06_LooseScene":
-                StopAllMusic();
+                PlayMusic(loseSceneClip, MusicCategory.Lose);
+                explorationMusic.loop = false;
+                isInGameplay = false;
+                break;
+            case "07_Credits":
+                PlayMusic(creditsSceneClip, MusicCategory.Credits);
+                explorationMusic.loop = false;
                 isInGameplay = false;
                 break;
             default:
@@ -168,6 +179,7 @@ public class AudioManager : MonoBehaviour
         if (clip == null) return;
         currentMusicCategory = category;
         explorationMusic.clip = clip;
+        explorationMusic.loop = true;
         explorationMusic.volume = GetInitialExplorationVolume();
         explorationMusic.Play();
     }
@@ -213,6 +225,8 @@ public class AudioManager : MonoBehaviour
             case MusicCategory.Exploration: volume *= explorationVolume; break;
             case MusicCategory.ChurchEntrance: volume *= churchEntranceVolume; break;
             case MusicCategory.Ending: volume *= endingSongVolume; break;
+            case MusicCategory.Lose: volume *= loseSceneVolume; break;
+            case MusicCategory.Credits: volume *= creditsSceneVolume; break;
         }
         return (1f - battleBlend) * volume;
     }
