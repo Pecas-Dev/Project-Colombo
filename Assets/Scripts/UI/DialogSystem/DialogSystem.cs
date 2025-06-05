@@ -37,6 +37,8 @@ namespace ProjectColombo.UI
         {
             if (!isEnabled) return;
 
+            GameManager.Instance.gameInput.SwitchToUI();
+
             if (GameManager.Instance.gameInput.inputActions.UI.Submit.WasPressedThisFrame())
             {
                 if (textComponent.text == lines[index])
@@ -101,8 +103,8 @@ namespace ProjectColombo.UI
             isEnabled = true;
 
             StartCoroutine(StopMoving());
-            GameManager.Instance.gameInput.SwitchToUI();
             GameManager.Instance.gameInput.LockAllInputsViaTutorial();
+            GameManager.Instance.gameInput.SwitchToUI();
 
             dialogCanvas.SetActive(true);
             HUDCanvas.SetActive(false);

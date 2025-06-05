@@ -33,6 +33,8 @@ namespace ProjectColombo.UI
         {
             if (!isEnabled) return;
 
+            GameManager.Instance.gameInput.SwitchToUI();
+
             if (GameManager.Instance.gameInput.inputActions.UI.Submit.WasPressedThisFrame())
             {
                 if (textComponent.text == lines[index])
