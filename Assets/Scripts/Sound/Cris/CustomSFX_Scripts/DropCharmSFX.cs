@@ -1,10 +1,15 @@
 using UnityEngine;
 using UnityEngine.Audio;
 using System.Collections.Generic;
+using ProjectColombo.GameManagement.Events;
 
 [RequireComponent(typeof(AudioSource))]
 public class PickUpAudio : MonoBehaviour
 {
+    [Header("Pickup Sound Settings")]
+    public AudioClip pickup2DSound;
+    public AudioSource audioSource2D;
+
     [Header("Audio Settings")]
     public float maxDistance = 1f; // Distance at which audio is 0
     public float minDistance = 20f;  // Distance at which audio is full volume
@@ -20,11 +25,13 @@ public class PickUpAudio : MonoBehaviour
     void OnEnable()
     {
         activePickUps.Add(this);
+        CustomEvents.OnCharmCollected += HandleCharmCollected;
     }
 
     void OnDisable()
     {
         activePickUps.Remove(this);
+        CustomEvents.OnCharmCollected -= HandleCharmCollected;
     }
 
     void Start()
@@ -38,6 +45,11 @@ public class PickUpAudio : MonoBehaviour
         if (sfxMixerGroup != null)
         {
             audioSource.outputAudioMixerGroup = sfxMixerGroup;
+        }
+
+        if (audioSource2D != null)
+        {
+            audioSource2D.spatialBlend = 0f;
         }
 
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
@@ -77,6 +89,14 @@ public class PickUpAudio : MonoBehaviour
         else
         {
             audioSource.volume = 0f;
+        }
+    }
+
+    private void HandleCharmCollected(GameObject charm)
+    {
+        if (charm == gameObject && pickup2DSound != null && audioSource2D != null)
+        {
+            audioSource2D.PlayOneShot(pickup2DSound);
         }
     }
 }
