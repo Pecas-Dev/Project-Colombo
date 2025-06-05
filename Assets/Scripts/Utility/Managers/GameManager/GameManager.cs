@@ -84,6 +84,8 @@ namespace ProjectColombo.GameManagement
         public PickUpScreenController PickUpScreenCtrl => pickUpScreenController;
         public PlayStationControllerLightbarManager LightbarManager => lightbarManager;
 
+        AudioManager audioManager;
+
 
 
         void Awake()
@@ -143,6 +145,8 @@ namespace ProjectColombo.GameManagement
             }
 
             lightbarManager.enabled = true;
+
+            audioManager = FindFirstObjectByType<AudioManager>();
         }
 
         void EnsureCorrectCharmSwapSystemActive()
@@ -414,6 +418,11 @@ namespace ProjectColombo.GameManagement
             Time.timeScale = 0;
             gameIsPaused = true;
 
+            if (audioManager != null)
+            {
+                audioManager.MuffleMeCris();
+            }
+
             if (showPause)
             {
                 CustomEvents.GamePaused();
@@ -486,6 +495,11 @@ namespace ProjectColombo.GameManagement
 
             Time.timeScale = 1;
             gameIsPaused = false;
+
+            if (audioManager != null)
+            {
+                audioManager.Unmuffle();
+            }
 
             if (uiManagerV2 != null)
             {

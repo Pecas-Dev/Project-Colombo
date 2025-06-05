@@ -464,4 +464,14 @@ public class AudioManager : MonoBehaviour
         explorationMusic.Stop();
         explorationMusic.volume = 0f;
     }
+
+    public void MuffleMeCris() //please
+    {
+        Debug.Log("muffle");
+    }
+
+    public void Unmuffle()
+    {
+        Debug.Log("unmuffle");
+    }
 }
