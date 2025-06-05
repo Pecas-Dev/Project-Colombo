@@ -145,6 +145,7 @@ namespace ProjectColombo.Combat
 
         public void DisableWeaponHitbox()
         {
+            hitObjects.Clear();
             myCollider.enabled = false;
         }
 
