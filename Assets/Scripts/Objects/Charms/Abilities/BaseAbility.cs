@@ -1,6 +1,4 @@
-using ProjectColombo.GameManagement.Events;
 using ProjectColombo.StateMachine.Player;
-using System.Net.NetworkInformation;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -48,10 +46,10 @@ namespace ProjectColombo.Objects.Masks
 
         public bool Activate()
         {
-            timer = 0;
-
             if (available)
             {
+                timer = 0;
+                
                 GameObject player = GameObject.Find("Player");
 
                 if (player != null)
@@ -65,9 +63,9 @@ namespace ProjectColombo.Objects.Masks
                 }
 
                 Debug.Log("ability used");
-                UseAbility();
                 available = false;
                 active = true;
+                UseAbility();
                 return true;
             }
 
@@ -79,6 +77,7 @@ namespace ProjectColombo.Objects.Masks
         {
             if (timer < cooldownInSeconds)
             {
+                available = false;
                 timer += Time.deltaTime;
             }
 
