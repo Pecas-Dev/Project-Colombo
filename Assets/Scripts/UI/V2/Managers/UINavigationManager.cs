@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using ProjectColombo.GameInputSystem;
+using UnityEngine.SceneManagement;
 
 namespace ProjectColombo.UI
 {
@@ -979,7 +980,7 @@ namespace ProjectColombo.UI
 
             if (gameInput.inputActions.Player.enabled && !gameInput.inputActions.UI.enabled)
             {
-                if (currentState != UINavigationState.None && currentState != UINavigationState.HUD)
+                if (currentState != UINavigationState.None && currentState != UINavigationState.HUD) //&& SceneManager.GetActiveScene().buildIndex == 1)
                 {
                     StartCoroutine(WaitBeforeChangingToNone());
                 }
@@ -988,7 +989,7 @@ namespace ProjectColombo.UI
 
         IEnumerator WaitBeforeChangingToNone()
         {
-            yield return new WaitForSecondsRealtime(0.65f);
+            yield return new WaitForSecondsRealtime(1.5f);
             LogDebug($"Detected Player input mode while in {currentState} - forcing state to None");
             SetNavigationState(UINavigationState.None);
         }

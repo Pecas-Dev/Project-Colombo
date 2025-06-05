@@ -199,7 +199,7 @@ namespace ProjectColombo.UI
             }
 
             Vector3 dropPosition = new Vector3(playerTransform.position.x, 0f, playerTransform.position.z);
-            dropPosition += playerTransform.forward * 2f;
+            //dropPosition += playerTransform.forward * 2f;
 
             DropManager dropManager = GameManager.Instance.GetComponent<DropManager>();
 

@@ -46,6 +46,13 @@ namespace ProjectColombo.GameManagement
         [Header("Transition")]
         [SerializeField] Animator transition;
 
+        [Header("Input Auto-Switch Settings")]
+        [SerializeField] bool enableAutoInputSwitch = true;
+        [SerializeField] float inputSwitchCheckInterval = 0.1f;
+
+        UINavigationManager uiNavigationManager;
+        float lastInputSwitchCheckTime;
+
 
         public bool gameIsPaused = false;
 
@@ -83,6 +90,8 @@ namespace ProjectColombo.GameManagement
         {
             GlobalStats globalStats = GetComponent<GlobalStats>();
             globalStats.enabled = true;
+
+            lastInputSwitchCheckTime = 0f;
 
             gameInput.Initialize();
 
@@ -229,6 +238,11 @@ namespace ProjectColombo.GameManagement
                 Debug.Log("UIIIIIIIIIIIIIIIII!");
             }
 
+            if (enableAutoInputSwitch && Time.unscaledTime - lastInputSwitchCheckTime > inputSwitchCheckInterval)
+            {
+                CheckUIStateAndSwitchToPlayerInput();
+                lastInputSwitchCheckTime = Time.unscaledTime;
+            }
         }
 
         void OnDestroy()
@@ -236,6 +250,50 @@ namespace ProjectColombo.GameManagement
             Time.timeScale = 1;
             CustomEvents.OnCharmCollected += HandleCharmCollected;
             SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+
+        void CheckUIStateAndSwitchToPlayerInput()
+        {
+            if (gameIsPaused || isResettingInputs)
+            {
+                return;
+            }
+
+            string currentSceneName = SceneManager.GetActiveScene().name;
+            int currentBuildIndex = SceneManager.GetActiveScene().buildIndex;
+
+            if (currentSceneName == "01_Tutorial" || currentBuildIndex == 1)
+            {
+                LogDebug("In tutorial scene - skipping auto input switch");
+                return;
+            }
+
+            if (currentSceneName == "00_MainMenu" || currentSceneName == "02_MaskSelection")
+            {
+                return;
+            }
+
+            if (uiNavigationManager == null)
+            {
+                uiNavigationManager = FindFirstObjectByType<UINavigationManager>();
+                if (uiNavigationManager == null)
+                {
+                    return; 
+                }
+            }
+
+            UINavigationState currentUIState = uiNavigationManager.GetCurrentState();
+
+            if (currentUIState == UINavigationState.None && !gameInput.IsPlayerMapEnabled)
+            {
+                LogDebug($"UI state is None in scene {currentSceneName} - switching to Player input");
+                gameInput.SwitchToGameplay();
+            }
+            else if (currentUIState == UINavigationState.HUD && !gameInput.IsPlayerMapEnabled)
+            {
+                LogDebug($"UI state is HUD in scene {currentSceneName} - switching to Player input");
+                gameInput.SwitchToGameplay();
+            }
         }
 
         void HandleCharmCollected(GameObject charmObject)
@@ -276,6 +334,8 @@ namespace ProjectColombo.GameManagement
 
             ResumeGame();
 
+            uiNavigationManager = null;
+
             if (scene.name == "00_MainMenu")
             {
                 LogDebug("Main menu scene loaded - forcing UI manager initialization");
@@ -313,7 +373,6 @@ namespace ProjectColombo.GameManagement
             gameInput.Uninitialize();
             gameInput.Initialize();
             gameInput.EnableAllInputs();
-
 
             if (useNewPauseMenu)
             {

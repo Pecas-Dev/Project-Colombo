@@ -155,6 +155,7 @@ namespace ProjectColombo.UI
             CustomEvents.OnDamageDelt += HandleDamageDelt;
 
             CustomEvents.OnMaskAbilityUsed += HandleMaskAbilityUsed;
+            CustomEvents.OnMaskAbilityReady += HandleMaskAbilityReady;
 
             FindPlayerReferences();
             UpdateUI();
@@ -175,6 +176,7 @@ namespace ProjectColombo.UI
             CustomEvents.OnDamageDelt -= HandleDamageDelt;
 
             CustomEvents.OnMaskAbilityUsed += HandleMaskAbilityUsed;
+            CustomEvents.OnMaskAbilityReady -= HandleMaskAbilityReady;
 
 
             SceneManager.sceneLoaded -= OnSceneLoaded;
@@ -1211,6 +1213,24 @@ namespace ProjectColombo.UI
         bool IsTutorialScene()
         {
             return SceneManager.GetActiveScene().name == "01_Tutorial" || SceneManager.GetActiveScene().buildIndex == 1;
+        }
+
+        void HandleMaskAbilityReady()
+        {
+            if (currentMask != null && currentMask.echoUnlocked)
+            {
+                if (materialImage != null)
+                {
+                    materialImage.gameObject.SetActive(true);
+                    Debug.Log($"Material image shown - mask ability ready: {currentMask.maskName}");
+                }
+
+                if (glyphIndicator != null)
+                {
+                    glyphIndicator.gameObject.SetActive(true);
+                    Debug.Log($"Glyph indicator shown - mask ability ready: {currentMask.maskName}");
+                }
+            }
         }
 
         void DebugLog(string message)

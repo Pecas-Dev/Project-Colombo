@@ -1,3 +1,4 @@
+using ProjectColombo.GameManagement.Events;
 using ProjectColombo.StateMachine.Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -17,6 +18,8 @@ namespace ProjectColombo.Objects.Masks
         public float abilityDuration;
         [ReadOnlyInspector] public float abilityTimer = 0;
         [ReadOnlyInspector] public bool active;
+
+        [ReadOnlyInspector] public bool wasNotAvailable = false;
 
         public string abilitySoundName;
 
@@ -78,14 +81,25 @@ namespace ProjectColombo.Objects.Masks
             if (timer < cooldownInSeconds)
             {
                 available = false;
+                wasNotAvailable = true;
                 timer += Time.deltaTime;
             }
 
             if (timer >= cooldownInSeconds)
             {
-                available = true;
-            }
+                if (!available && wasNotAvailable)
+                {
+                    available = true;
+                    wasNotAvailable = false;
 
+                    CustomEvents.MaskAbilityReady();
+                    Debug.Log($"Mask ability '{abilityName}' is ready again - cooldown complete");
+                }
+                else if (!available)
+                {
+                    available = true;
+                }
+            }
 
             if (active)
             {

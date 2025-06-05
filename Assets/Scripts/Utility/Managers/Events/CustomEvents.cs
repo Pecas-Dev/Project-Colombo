@@ -43,6 +43,7 @@ namespace ProjectColombo.GameManagement.Events
 
 
         public static event Action OnMaskAbilityUsed;
+        public static event Action OnMaskAbilityReady;
 
 
         // PLAYSTATION LIGHT BAR COLORS 
@@ -242,6 +243,11 @@ namespace ProjectColombo.GameManagement.Events
         public static void MaskAbilityUsed()
         {
             OnMaskAbilityUsed?.Invoke();
+        }
+
+        public static void MaskAbilityReady()
+        {
+            OnMaskAbilityReady?.Invoke();
         }
     }
 }
