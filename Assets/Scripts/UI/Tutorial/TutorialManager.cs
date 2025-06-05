@@ -44,7 +44,6 @@ namespace ProjectColombo.Tutorial
 
             TutorialEvents.OnDummyHit += AttackMinorEnemy;
             CustomEvents.OnSuccessfullParry += OnSuccessfullParry;
-            CustomEvents.OnPotionUsed += OnPotionUsed;
             CustomEvents.OnCoinsCollected += OnCoinsCollected;
             CustomEvents.OnCharmCollected += OnCharmCollected;
             CustomEvents.OnLevelChange += EndTutorial;
@@ -168,6 +167,7 @@ namespace ProjectColombo.Tutorial
             if (!sameScale)
             {
                 CustomEvents.OnSuccessfullParry -= OnSuccessfullParry;
+                CustomEvents.OnPotionUsed += OnPotionUsed;
                 ShowDialog(dialogAfterParry);
             }
         }
