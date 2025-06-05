@@ -380,7 +380,7 @@ namespace ProjectColombo.UI.Pausescreen
             {
                 if (maskComponent.echoUnlocked && !string.IsNullOrEmpty(maskComponent.echoDescription))
                 {
-                    charmDescriptionText.text = maskComponent.echoDescription;
+                    charmDescriptionText.text = maskComponent.maskDescription;
                 }
                 else
                 {
