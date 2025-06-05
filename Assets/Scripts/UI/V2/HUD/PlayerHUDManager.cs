@@ -63,6 +63,13 @@ namespace ProjectColombo.UI
         [Tooltip("The color to transition to when echo is unlocked")]
         [SerializeField] Color echoUnlockedColor = Color.red;
 
+        [Header("Echo Mission Text Control")]
+        [Tooltip("Parent GameObject containing echo mission text elements")]
+        [SerializeField] GameObject echoMissionTextContainer;
+
+        [Tooltip("Auto-find the echo mission text container if not assigned")]
+        [SerializeField] bool autoFindEchoTextContainer = false;
+
         [Header("Things")]
         [SerializeField] GameObject weapon;
         [SerializeField] GameObject potion;
@@ -84,6 +91,7 @@ namespace ProjectColombo.UI
         bool echoWasUnlocked = false;
         bool isChangingLevel = false;
         bool materialImageWasActive = false;
+        bool echoMissionTextPermanentlyDisabled = false;
 
 
 
@@ -198,6 +206,12 @@ namespace ProjectColombo.UI
                 mask.SetActive(true);
                 extras.SetActive(true);
             }
+
+            if (scene.name == "03_LevelTwo")
+            {
+                EnableEchoMissionText();
+                DebugLog("Enabled echo mission text for 03_LevelTwo scene load");
+            }
         }
 
 
@@ -273,13 +287,13 @@ namespace ProjectColombo.UI
             {
                 UpdateUI();
 
-                if (currentMask != null && currentMask.echoMission != null && (!currentMask.echoUnlocked || isLevelOne) && !isChangingLevel)
+                if (!echoMissionTextPermanentlyDisabled && currentMask != null && currentMask.echoMission != null && (!currentMask.echoUnlocked || isLevelOne) && !isChangingLevel)
                 {
                     RefreshMissionDisplay();
                 }
             }
 
-            if (!isChangingLevel && shouldBeVisible && Time.time - lastEventTime > missionTextDisplayTime && !isFadingOut && !isFadingIn && echoMissionTitleText != null && echoMissionTitleText.color.a > 0 && (!echoWasUnlocked || isLevelOne))
+            if (!echoMissionTextPermanentlyDisabled && !isChangingLevel && shouldBeVisible && Time.time - lastEventTime > missionTextDisplayTime && !isFadingOut && !isFadingIn && echoMissionTitleText != null && echoMissionTitleText.color.a > 0 && (!echoWasUnlocked || isLevelOne))
             {
                 StartFadeOut();
             }
@@ -412,6 +426,7 @@ namespace ProjectColombo.UI
         void HandleEchoUnlocked()
         {
             echoWasUnlocked = true;
+            echoMissionTextPermanentlyDisabled = true; 
 
             if (isChangingLevel)
             {
@@ -424,6 +439,8 @@ namespace ProjectColombo.UI
                 RefreshMissionDisplay();
                 StartCoroutine(TransitionToUnlockedColor());
                 UpdateMaterialImageVisibility();
+
+                //DisableEchoMissionText();
             }
         }
         #endregion
@@ -861,6 +878,11 @@ namespace ProjectColombo.UI
 
         void RefreshMissionDisplay()
         {
+            if (echoMissionTextPermanentlyDisabled)
+            {
+                return;
+            }
+
             if (IsTutorialScene() || isChangingLevel)
             {
                 return;
@@ -1181,8 +1203,60 @@ namespace ProjectColombo.UI
 
             yield return FadeTextOut();
 
+            yield return new WaitForSeconds(1f);
+
+            DisableEchoMissionText();
+
             shouldBeVisible = false;
         }
+        #endregion
+
+        #region Echo Mission Text Control
+
+        void DisableEchoMissionText()
+        {
+            if (echoMissionTextContainer != null)
+            {
+                echoMissionTextContainer.SetActive(false);
+                DebugLog("Echo mission text container disabled permanently after echo completion");
+            }
+            else
+            {
+                if (echoMissionTitleText != null)
+                {
+                    echoMissionTitleText.gameObject.SetActive(false);
+                }
+                if (echoMissionProgressText != null)
+                {
+                    echoMissionProgressText.gameObject.SetActive(false);
+                }
+                DebugLog("Echo mission text components disabled individually after echo completion");
+            }
+        }
+
+        void EnableEchoMissionText()
+        {
+            echoMissionTextPermanentlyDisabled = false;
+
+            if (echoMissionTextContainer != null)
+            {
+                echoMissionTextContainer.SetActive(true);
+                DebugLog("Echo mission text container enabled for new level");
+            }
+            else
+            {
+                if (echoMissionTitleText != null)
+                {
+                    echoMissionTitleText.gameObject.SetActive(true);
+                }
+                if (echoMissionProgressText != null)
+                {
+                    echoMissionProgressText.gameObject.SetActive(true);
+                }
+                DebugLog("Echo mission text components enabled individually for new level");
+            }
+        }
+
         #endregion
 
         public void ForceUpdateHUD()

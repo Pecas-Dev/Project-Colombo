@@ -38,6 +38,11 @@ public class ShopPotion : MonoBehaviour
 
         selectionAnimator = GetComponent<ShopItemSelectionAnimator>();
 
+        if (selectionAnimator != null && potionImage != null)
+        {
+            selectionAnimator.SetTargetImage(potionImage);
+        }
+
         CheckAvailability();
     }
 
@@ -110,7 +115,7 @@ public class ShopPotion : MonoBehaviour
         Button buttonComponent = GetComponent<Button>();
         if (buttonComponent != null)
         {
-            buttonComponent.interactable = true; 
+            buttonComponent.interactable = true;
         }
 
         if (potionImage != null)
@@ -118,17 +123,26 @@ public class ShopPotion : MonoBehaviour
             if (!canAfford)
             {
                 potionImage.color = unavailableColor;
+
+                if (selectionAnimator != null)
+                {
+                    selectionAnimator.SetItemUnavailable(true);
+                }
             }
             else if (!wasAffordable && canAfford)
             {
                 if (selectionAnimator != null)
                 {
-                    selectionAnimator.RefreshColorState();
+                    selectionAnimator.SetItemUnavailable(false);
                 }
                 else
                 {
                     potionImage.color = Color.white;
                 }
+            }
+            else if (canAfford && selectionAnimator != null)
+            {
+                selectionAnimator.SetItemUnavailable(false);
             }
         }
     }

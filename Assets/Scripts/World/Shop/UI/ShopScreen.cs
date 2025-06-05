@@ -71,11 +71,7 @@ namespace ProjectColombo.Shop
 
                 if (enableSelectionAnimation)
                 {
-                    ShopItemSelectionAnimator animator = prefab.GetComponent<ShopItemSelectionAnimator>();
-                    if (animator == null)
-                    {
-                        animator = prefab.AddComponent<ShopItemSelectionAnimator>();
-                    }
+                    ShopItemSelectionAnimator animator = prefab.GetComponentInChildren<ShopItemSelectionAnimator>();
 
                     if (shopItem.referenceImage != null)
                     {
@@ -90,19 +86,41 @@ namespace ProjectColombo.Shop
             {
                 b.CheckActive();
             }
+            
+            StartCoroutine(DelayedInitialColorSetup());
+        }
+        
+        IEnumerator DelayedInitialColorSetup()
+        {
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForSecondsRealtime(0.3f);
+            
+            foreach (ShopItems b in itemButtons)
+            {
+                if (b != null)
+                {
+                    b.CheckActive();
+                }
+            }
         }
 
         public IEnumerator SetFirstSelected()
         {
-            // Wait until the end of the frame to ensure UI is fully active
             yield return new WaitForEndOfFrame();
+            yield return new WaitForSecondsRealtime(0.1f);
 
-            //EventSystem.current.SetSelectedGameObject(exitShopButton);
+            foreach (ShopItems b in itemButtons)
+            {
+                if (b != null)
+                {
+                    b.CheckActive();
+                }
+            }
         }
 
         private void Update()
         {
-            currentPlayerCurrency.text = playerInventory.currencyAmount.ToString(); //update text
+            currentPlayerCurrency.text = playerInventory.currencyAmount.ToString(); 
 
             foreach (ShopItems b in itemButtons)
             {

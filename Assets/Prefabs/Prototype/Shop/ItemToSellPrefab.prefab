@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3025625367789390237}
   - component: {fileID: 6833332085921892509}
   - component: {fileID: 2119816442318985283}
-  - component: {fileID: 6157416775169667141}
+  - component: {fileID: 1268119419966524896}
   m_Layer: 0
   m_Name: BuyItem
   m_TagString: Untagged
@@ -134,7 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17e980c714b3dad459b424ec878d0804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &6157416775169667141
+--- !u!114 &1268119419966524896
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -151,7 +151,7 @@ MonoBehaviour:
   animationEase: 27
   enableDebugLogs: 0
   enableColorChange: 1
-  unselectedColor: {r: 0, g: 0, b: 0, a: 0.5058824}
+  unselectedColor: {r: 0.18431373, g: 0.18431373, b: 0.18431373, a: 0.7490196}
   targetImage: {fileID: 4135784221701074273}
 --- !u!1 &839334492496972497
 GameObject:
@@ -1069,8 +1069,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2790099444053532606}
-  - component: {fileID: 4981228445394821202}
   - component: {fileID: 186486746331262969}
+  - component: {fileID: 4703023229472105600}
   m_Layer: 0
   m_Name: ItemToSellPrefab
   m_TagString: Untagged
@@ -1104,29 +1104,6 @@ RectTransform:
   m_AnchoredPosition: {x: -274, y: 135}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &4981228445394821202
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8280913460533754270}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 154f8dc828139b143967879788be75b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item:
-    name: 
-    item: {fileID: 0}
-    price: 0
-  referenceImage: {fileID: 4135784221701074273}
-  itemPrice: {fileID: 4352229509684972061}
-  nameText: {fileID: 6397302682181090876}
-  shopButton: {fileID: 6833332085921892509}
-  soldOutText: {fileID: 170401475557298788}
-  autoFindSoldOutText: 1
-  unavailableColor: {r: 0.18490559, g: 0.18490559, b: 0.18490559, a: 0.7490196}
 --- !u!95 &186486746331262969
 Animator:
   serializedVersion: 7
@@ -1149,3 +1126,26 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &4703023229472105600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8280913460533754270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 154f8dc828139b143967879788be75b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item:
+    name: 
+    item: {fileID: 0}
+    price: 0
+  referenceImage: {fileID: 4135784221701074273}
+  itemPrice: {fileID: 4352229509684972061}
+  nameText: {fileID: 6397302682181090876}
+  shopButton: {fileID: 6833332085921892509}
+  soldOutText: {fileID: 170401475557298788}
+  autoFindSoldOutText: 1
+  unavailableColor: {r: 0.06415099, g: 0.06415099, b: 0.06415099, a: 0.58431375}

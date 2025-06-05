@@ -46,11 +46,11 @@ namespace ProjectColombo.Shop
 
             referenceImage.sprite = charmDetails.charmPicture;
             itemPrice.text = item.price.ToString();
-            nameText.text = item.name; //adjust to basecharm, baseitem
 
-            // Set up the button click listener
-            shopButton.onClick.RemoveAllListeners();  // Remove any existing listeners
-            shopButton.onClick.AddListener(() => BuyItem(item)); // Add a new listener that passes the item to BuyItem
+            nameText.text = charmDetails.charmName;
+
+            shopButton.onClick.RemoveAllListeners();
+            shopButton.onClick.AddListener(() => BuyItem(item));
 
             selectionAnimator = GetComponent<ShopItemSelectionAnimator>();
 
@@ -58,6 +58,8 @@ namespace ProjectColombo.Shop
             {
                 selectionAnimator.SetTargetImage(referenceImage);
             }
+
+            CheckActive();
         }
 
         private void BuyItem(ItemToSell item)
@@ -129,25 +131,25 @@ namespace ProjectColombo.Shop
             if (currentScreen == null) return;
 
             bool wasActive = isActive;
+            bool canAfford = item.price <= currentScreen.GetCurrency();
+            isActive = canAfford;
 
-            isActive = item.price <= currentScreen.GetCurrency() && !isBought; 
+            isActive = item.price <= currentScreen.GetCurrency() && !isBought;
 
-            // Show/hide sold out text
             if (soldOutText != null)
             {
-                soldOutText.gameObject.SetActive(!isActive);
+                soldOutText.gameObject.SetActive(!canAfford);
             }
 
-            // Update button interactability
             if (shopButton != null)
             {
                 shopButton.interactable = isActive;
             }
 
-            // Update color states
             if (!isActive)
             {
                 referenceImage.color = unavailableColor;
+                Debug.Log($"Item {item.name} set to unavailable color");
                 Debug.Log($"Item {item.name} set to unavailable color (bought: {isBought}, active: {isActive})");
             }
             else if (wasActive != isActive)
@@ -164,6 +166,6 @@ namespace ProjectColombo.Shop
                 }
             }
         }
-
     }
+
 }

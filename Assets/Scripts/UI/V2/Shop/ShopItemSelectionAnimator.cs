@@ -25,20 +25,18 @@ namespace ProjectColombo.Shop
         [SerializeField] Image targetImage;
 
         Vector3 originalScale;
-
         Color originalColor = Color.white;
 
         Tween currentScaleTween;
         Tween currentColorTween;
 
-
         bool isInitialized = false;
         bool isSelected = false;
-
+        bool isItemUnavailable = false;
+        bool hasSetInitialState = false;
 
         ShopItems shopItems;
         ShopPotion shopPotion;
-
 
         #region Unity Lifecycle
 
@@ -54,7 +52,7 @@ namespace ProjectColombo.Shop
                 InitializeComponent();
             }
 
-            Invoke(nameof(SetInitialColorStateDelayed), 0.1f);
+            StartCoroutine(DelayedInitialSetup());
         }
 
         void OnDestroy()
@@ -104,7 +102,7 @@ namespace ProjectColombo.Shop
 
             foreach (Image image in images)
             {
-                if (image.name.ToLower().Contains("reference") ||image.name.ToLower().Contains("icon") || image.name.ToLower().Contains("item") ||image.name.ToLower().Contains("potion"))
+                if (image.name.ToLower().Contains("reference") || image.name.ToLower().Contains("icon") || image.name.ToLower().Contains("item") || image.name.ToLower().Contains("potion"))
                 {
                     targetImage = image;
                     LogDebug($"Found target image by name: {image.name}");
@@ -124,20 +122,44 @@ namespace ProjectColombo.Shop
             }
         }
 
-        void SetInitialColorStateDelayed()
+        IEnumerator DelayedInitialSetup()
         {
-            if (!enableColorChange || !isInitialized) 
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForSecondsRealtime(0.2f);
+
+            SetInitialColorState();
+        }
+
+        void SetInitialColorState()
+        {
+            if (!enableColorChange || !isInitialized || hasSetInitialState)
             {
-return;
+                return;
             }
 
             bool isAvailable = IsItemAvailable();
+            bool isCurrentlySelected = IsCurrentlySelected();
 
             if (isAvailable)
             {
-                targetImage.color = unselectedColor;
-                LogDebug("Set initial state to unselected color for available item");
+                if (isCurrentlySelected)
+                {
+                    SetColorImmediate(originalColor);
+                    LogDebug("Set initial state to original color for selected available item");
+                }
+                else
+                {
+                    SetColorImmediate(unselectedColor);
+                    LogDebug("Set initial state to unselected color for available item");
+                }
             }
+            else
+            {
+                isItemUnavailable = true;
+                LogDebug("Set initial state for unavailable item - blocking color changes");
+            }
+
+            hasSetInitialState = true;
         }
 
         #endregion
@@ -163,6 +185,22 @@ return;
             }
         }
 
+        public void SetItemUnavailable(bool unavailable)
+        {
+            bool wasUnavailable = isItemUnavailable;
+            isItemUnavailable = unavailable;
+            LogDebug($"Item availability changed: {(unavailable ? "UNAVAILABLE" : "AVAILABLE")}");
+
+            if (unavailable)
+            {
+                currentColorTween?.Kill();
+            }
+            else if (wasUnavailable && !unavailable)
+            {
+                RefreshColorState();
+            }
+        }
+
         public void ForceSelect()
         {
             if (targetImage != null && isInitialized)
@@ -181,16 +219,15 @@ return;
 
         public void RefreshColorState()
         {
-            if (!isInitialized || !enableColorChange) 
+            if (!isInitialized || !enableColorChange)
             {
-return;
+                LogDebug("Cannot refresh color state - not initialized or color change disabled");
+                return;
             }
 
-            bool isAvailable = IsItemAvailable();
-
-            if (!isAvailable)
+            if (isItemUnavailable || !IsItemAvailable())
             {
-                LogDebug("Item unavailable - not refreshing color state");
+                LogDebug("Cannot refresh color state - item unavailable");
                 return;
             }
 
@@ -221,13 +258,19 @@ return;
             {
                 isSelected = true;
 
-                if (shopItems != null)
+                bool currentlyAvailable = IsItemAvailable();
+
+                if (!currentlyAvailable)
                 {
-                    shopItems.CheckActive(); 
+                    isItemUnavailable = true;
+                    LogDebug("Item detected as unavailable during selection - blocking color animation");
+                    // For unavailable items, only animate scale, never color
+                    AnimateScaleOnly(true);
+                    return;
                 }
 
-                StartCoroutine(DelayedAnimateToSelected());
-                LogDebug("Button selected - scheduling delayed animation");
+                LogDebug($"Button selected - Item available: {!isItemUnavailable}");
+                AnimateToSelected();
             }
         }
 
@@ -236,14 +279,16 @@ return;
             if (targetImage != null && isInitialized)
             {
                 isSelected = false;
+                LogDebug($"Button deselected - Item available: {!isItemUnavailable}");
 
-                if (shopItems != null)
+                bool currentlyAvailable = IsItemAvailable();
+                if (!currentlyAvailable)
                 {
-                    shopItems.CheckActive(); 
+                    AnimateScaleOnly(false);
+                    return;
                 }
 
-                StartCoroutine(DelayedAnimateToDeselected());
-                LogDebug("Button deselected - scheduling delayed animation");
+                AnimateToDeselected();
             }
         }
 
@@ -251,71 +296,88 @@ return;
 
         #region Animation Methods
 
-        IEnumerator DelayedAnimateToSelected()
-        {
-            yield return null; 
-            AnimateToSelected();
-        }
-
-        IEnumerator DelayedAnimateToDeselected()
-        {
-            yield return null; 
-            AnimateToDeselected();
-        }
-
         void AnimateToSelected()
         {
-            if (!IsItemAvailable())
-            {
-                LogDebug("Item unavailable after forced check - only animating scale");
-                currentScaleTween?.Kill();
-                Vector3 _targetScale = originalScale * selectedScale;
-                currentScaleTween = targetImage.transform.DOScale(_targetScale, animationDuration).SetEase(animationEase) .SetUpdate(true);
-                return;
-            }
-
             currentScaleTween?.Kill();
-            currentColorTween?.Kill();
-
             Vector3 targetScale = originalScale * selectedScale;
-            currentScaleTween = targetImage.transform   .DOScale(targetScale, animationDuration)  .SetEase(animationEase)  .SetUpdate(true);
+            currentScaleTween = targetImage.transform
+                .DOScale(targetScale, animationDuration)
+                .SetEase(animationEase)
+                .SetUpdate(true);
 
-            if (enableColorChange)
+            if (enableColorChange && !isItemUnavailable && IsItemAvailable())
             {
-                currentColorTween = targetImage  .DOColor(originalColor, animationDuration)   .SetEase(animationEase) .SetUpdate(true);
+                currentColorTween?.Kill();
+                currentColorTween = targetImage
+                    .DOColor(originalColor, animationDuration)
+                    .SetEase(animationEase)
+                    .SetUpdate(true);
                 LogDebug("Animating to selected state (available item)");
+            }
+            else
+            {
+                currentColorTween?.Kill();
+                LogDebug("Item unavailable - only animating scale, blocking all color changes");
             }
         }
 
         void AnimateToDeselected()
         {
-            if (!IsItemAvailable())
-            {
-                LogDebug("Item unavailable after forced check - only animating scale");
-                currentScaleTween?.Kill();
-                currentScaleTween = targetImage.transform.DOScale(originalScale, animationDuration) .SetEase(animationEase)  .SetUpdate(true);
-                return;
-            }
-
             currentScaleTween?.Kill();
-            currentColorTween?.Kill();
+            currentScaleTween = targetImage.transform
+                .DOScale(originalScale, animationDuration)
+                .SetEase(animationEase)
+                .SetUpdate(true);
 
-            currentScaleTween = targetImage.transform .DOScale(originalScale, animationDuration).SetEase(animationEase) .SetUpdate(true);
-
-            if (enableColorChange)
+            if (enableColorChange && !isItemUnavailable && IsItemAvailable())
             {
-                currentColorTween = targetImage.DOColor(unselectedColor, animationDuration).SetEase(animationEase).SetUpdate(true);
+                currentColorTween?.Kill();
+                currentColorTween = targetImage
+                    .DOColor(unselectedColor, animationDuration)
+                    .SetEase(animationEase)
+                    .SetUpdate(true);
                 LogDebug("Animating to deselected state (available item)");
+            }
+            else
+            {
+                currentColorTween?.Kill();
+                LogDebug("Item unavailable - only animating scale, blocking all color changes");
             }
         }
 
         void SetColorImmediate(Color color)
         {
+            if (isItemUnavailable || !IsItemAvailable())
+            {
+                LogDebug($"Blocked immediate color change to {color} - item is unavailable");
+                return;
+            }
+
             currentColorTween?.Kill();
             if (targetImage != null)
             {
                 targetImage.color = color;
+                LogDebug($"Set immediate color to {color}");
             }
+        }
+
+        void AnimateScaleOnly(bool toSelected)
+        {
+            currentScaleTween?.Kill();
+            Vector3 targetScale = toSelected ? (originalScale * selectedScale) : originalScale;
+            currentScaleTween = targetImage.transform
+                .DOScale(targetScale, animationDuration)
+                .SetEase(animationEase)
+                .SetUpdate(true);
+            
+            currentColorTween?.Kill();
+            LogDebug($"Animating scale only for unavailable item - scale: {targetScale}");
+        }
+
+        bool IsCurrentlySelected()
+        {
+            UnityEngine.EventSystems.EventSystem eventSystem = UnityEngine.EventSystems.EventSystem.current;
+            return eventSystem != null && eventSystem.currentSelectedGameObject == gameObject;
         }
 
         #endregion

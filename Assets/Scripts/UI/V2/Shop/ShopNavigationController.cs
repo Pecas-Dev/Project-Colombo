@@ -291,12 +291,30 @@ namespace ProjectColombo.Shop
                     }
 
                     LogDebug("Set initial selection to hook button");
+                    
+                    yield return new WaitForSecondsRealtime(0.1f);
+                    RefreshAllItemAnimationStates();
                 }
             }
             else
             {
                 LogWarning("Hook button is not available for initial selection");
             }
+        }
+
+        void RefreshAllItemAnimationStates()
+        {
+            ShopItemSelectionAnimator[] animators = FindObjectsByType<ShopItemSelectionAnimator>(FindObjectsSortMode.None);
+            
+            foreach (ShopItemSelectionAnimator animator in animators)
+            {
+                if (animator != null)
+                {
+                    animator.RefreshColorState();
+                }
+            }
+            
+            LogDebug($"Refreshed {animators.Length} item animation states");
         }
 
         #endregion
