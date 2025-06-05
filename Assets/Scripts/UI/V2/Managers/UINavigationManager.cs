@@ -30,7 +30,10 @@ namespace ProjectColombo.UI
         Accept,
         Back,
         Tab,
-        Select
+        Select,
+        SelectInventory,
+        PurchseShop,
+        CharmSwapAccept,
     }
 
     public class UINavigationManager : MonoBehaviour
@@ -63,6 +66,9 @@ namespace ProjectColombo.UI
         [Header("UI Sound Settings")]
         [SerializeField] AudioSource uiAudioSource;
         [SerializeField] AudioClip acceptSound;
+        [SerializeField] AudioClip charmSwapAcceptSound;
+        [SerializeField] AudioClip[] inventorySelectSound;
+        [SerializeField] AudioClip purchaseSound;
         [SerializeField] AudioClip backSound;
         [SerializeField] AudioClip tabSound;
         [SerializeField] AudioClip[] selectSounds;
@@ -417,10 +423,9 @@ namespace ProjectColombo.UI
 
             allowedSounds[UINavigationState.PauseInventoryTab] = new HashSet<UISoundType>
             {
-                UISoundType.Accept,
                 UISoundType.Back,
                 UISoundType.Tab,
-                UISoundType.Select
+                UISoundType.SelectInventory
             };
 
             allowedSounds[UINavigationState.PauseStatsTab] = new HashSet<UISoundType>
@@ -449,7 +454,7 @@ namespace ProjectColombo.UI
             allowedSounds[UINavigationState.CharmSwapScreen] = new HashSet<UISoundType>
             {
                 UISoundType.Select,
-                UISoundType.Accept,
+                UISoundType.CharmSwapAccept,
                 UISoundType.Back
             };
 
@@ -461,9 +466,9 @@ namespace ProjectColombo.UI
 
             allowedSounds[UINavigationState.Shop] = new HashSet<UISoundType>
             {
-                UISoundType.Accept,
                 UISoundType.Select,
-                UISoundType.Back
+                UISoundType.Back,
+                UISoundType.PurchseShop
             };
 
             LogDebug("UI Sounds initialized");
@@ -722,7 +727,14 @@ namespace ProjectColombo.UI
 
             if (gameInput.inputActions.UI.Submit.WasPressedThisFrame())
             {
-                PlayUISound(UISoundType.Accept);
+                if (currentState == UINavigationState.CharmSwapScreen)
+                {
+                    PlayUISound(UISoundType.CharmSwapAccept);
+                }
+                else
+                {
+                    PlayUISound(UISoundType.Accept);
+                }
             }
 
             if (gameInput.inputActions.UI.Cancel.WasPressedThisFrame())
@@ -737,7 +749,14 @@ namespace ProjectColombo.UI
 
             if (gameInput.inputActions.UI.Navigate.WasPressedThisFrame())
             {
-                PlayUISound(UISoundType.Select);
+                if (currentState == UINavigationState.PauseInventoryTab)
+                {
+                    PlayUISound(UISoundType.SelectInventory);
+                }
+                else
+                {
+                    PlayUISound(UISoundType.Select);
+                }
             }
         }
 
@@ -770,6 +789,18 @@ namespace ProjectColombo.UI
                     {
                         clipToPlay = selectSounds[Random.Range(0, selectSounds.Length)];
                     }
+                    break;
+                case UISoundType.SelectInventory:
+                    if (selectSounds != null && selectSounds.Length > 0)
+                    {
+                        clipToPlay = inventorySelectSound[Random.Range(0, selectSounds.Length)];
+                    }
+                    break;
+                case UISoundType.CharmSwapAccept:
+                    clipToPlay = charmSwapAcceptSound;
+                    break;
+                case UISoundType.PurchseShop:
+                    clipToPlay = purchaseSound; 
                     break;
             }
 

@@ -2,6 +2,7 @@ using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Inventory;
 using ProjectColombo.Shop;
+using ProjectColombo.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -153,5 +154,11 @@ public class ShopPotion : MonoBehaviour
         playerInventory.numberOfPotions++;
         playerInventory.currencyAmount -= price;
         CustomEvents.ItemPurchased(price);
+
+        UINavigationManager navigationManager = FindFirstObjectByType<UINavigationManager>();
+        if (navigationManager != null)
+        {
+            navigationManager.PlayUISound(UISoundType.PurchseShop);
+        }
     }
 }

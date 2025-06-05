@@ -53,6 +53,7 @@ namespace ProjectColombo.UI.Pausescreen
         [Header("Mask Colors")]
         [SerializeField] Color normalMaskColor = new Color(0.6f, 0.8f, 1.0f);
         [SerializeField] Color echoMaskColor = new Color(1.0f, 0.6f, 0.8f);
+        [SerializeField] Color weaponTextColor;
 
         [Header("Debug Settings")]
         [SerializeField] bool enableDebugLogs = true;
@@ -470,13 +471,13 @@ namespace ProjectColombo.UI.Pausescreen
         {
             if (charmTitleText != null)
             {
-                charmTitleText.text = emptyWeaponMessage;
-                charmTitleText.color = defaultTextColor;
+                charmTitleText.text = "Musician's Stoccoviola";
+                charmTitleText.color = weaponTextColor;
             }
 
             if (charmDescriptionText != null)
             {
-                charmDescriptionText.text = "";
+                charmDescriptionText.text = "Musicians are well-versed in the finest arts esteemed by nobility. This weapon is one of the Musician's trusted companions along their journey, able to pierce the toughest armor while composing exquisite melodies in equal measure.";
             }
 
             if (inventoryTabController != null)
@@ -484,7 +485,7 @@ namespace ProjectColombo.UI.Pausescreen
                 inventoryTabController.ResetSelectorColor();
             }
 
-            LogDebug("Showing empty weapon info");
+            LogDebug("Showing Musician's Stoccoviola weapon info");
         }
 
         public void ShowEmptyMaskInfo()

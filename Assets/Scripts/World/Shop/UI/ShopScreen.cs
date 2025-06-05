@@ -7,6 +7,7 @@ using ProjectColombo.GameManagement;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
+using ProjectColombo.UI;
 
 
 namespace ProjectColombo.Shop
@@ -123,6 +124,12 @@ namespace ProjectColombo.Shop
         {
             playerInventory.currencyAmount -= item.price;
             CustomEvents.ItemPurchased(item.price);
+
+            UINavigationManager navigationManager = FindFirstObjectByType<UINavigationManager>();
+            if (navigationManager != null)
+            {
+                navigationManager.PlayUISound(UISoundType.PurchseShop);
+            }
 
             currentPlayerCurrency.text = playerInventory.currencyAmount.ToString(); //update text
 
