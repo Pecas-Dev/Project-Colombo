@@ -39,7 +39,9 @@ namespace ProjectColombo.GameManagement
         [Header("Pick Up Screen System")]
         [SerializeField] GameObject pickUpCanvas;
 
-
+        [Header("Charm Collection Sound")]
+        [SerializeField] AudioSource charmCollectionAudioSource;
+        [SerializeField] AudioClip charmCollectionSound;
 
         [Header("Transition")]
         [SerializeField] Animator transition;
@@ -109,6 +111,7 @@ namespace ProjectColombo.GameManagement
                 LogDebug("Added PlayStationControllerLightbarManager component");
             }
 
+            CustomEvents.OnCharmCollected += HandleCharmCollected;
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
@@ -231,7 +234,37 @@ namespace ProjectColombo.GameManagement
         void OnDestroy()
         {
             Time.timeScale = 1;
+            CustomEvents.OnCharmCollected += HandleCharmCollected;
             SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+
+        void HandleCharmCollected(GameObject charmObject)
+        {
+            PlayCharmCollectionSound();
+
+            LogDebug($"Charm collected sound played for: {(charmObject != null ? charmObject.name : "Unknown Charm")}");
+        }
+
+        void PlayCharmCollectionSound()
+        {
+            AudioSource sourceToUse = null;
+            AudioClip clipToPlay = null;
+
+
+            sourceToUse = charmCollectionAudioSource;
+            clipToPlay = charmCollectionSound;
+            LogDebug("Using dedicated charm collection audio source and clip");
+
+
+            if (sourceToUse != null && clipToPlay != null)
+            {
+                sourceToUse.PlayOneShot(clipToPlay);
+                LogDebug("Charm collection sound played successfully");
+            }
+            else
+            {
+                LogDebug($"Cannot play charm collection sound - AudioSource: {sourceToUse != null}, AudioClip: {clipToPlay != null}");
+            }
         }
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -447,7 +480,7 @@ namespace ProjectColombo.GameManagement
                 {
                     gameInput.SwitchToUI();
                 }
-                else if (currentSceneName == "02_MaskSelection" || SceneManager.GetActiveScene().buildIndex == 2) 
+                else if (currentSceneName == "02_MaskSelection" || SceneManager.GetActiveScene().buildIndex == 2)
                 {
                     gameInput.SwitchToUI();
                     LogDebug("Kept UI input for mask selection scene");
