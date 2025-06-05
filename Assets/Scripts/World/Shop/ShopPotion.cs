@@ -20,6 +20,7 @@ public class ShopPotion : MonoBehaviour
 
     ShopItemSelectionAnimator selectionAnimator;
 
+    bool isBought = false;
     public bool isActive;
     public int price;
 
@@ -99,7 +100,7 @@ public class ShopPotion : MonoBehaviour
         if (playerInventory == null) return;
 
         bool wasAffordable = (potionImage != null && potionImage.color == Color.white);
-        bool canAfford = playerInventory.currencyAmount >= price;
+        bool canAfford = playerInventory.currencyAmount >= price && !isBought;
 
         if (soldOutText != null)
         {
@@ -150,6 +151,10 @@ public class ShopPotion : MonoBehaviour
             Debug.Log("Not enough money for potion");
             return;
         }
+
+        if (isBought) return;
+
+        isBought = true;
 
         playerInventory.numberOfPotions++;
         playerInventory.currencyAmount -= price;

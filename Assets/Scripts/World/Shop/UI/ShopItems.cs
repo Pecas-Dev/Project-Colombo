@@ -14,6 +14,7 @@ namespace ProjectColombo.Shop
         public TMP_Text nameText;
         public Button shopButton;
         bool isActive;
+        bool isBought = false;
         Animator myAnimator;
 
         [Header("Sold Out Display")]
@@ -63,6 +64,9 @@ namespace ProjectColombo.Shop
         {
             myAnimator.ResetTrigger("Success");
             myAnimator.ResetTrigger("Fail");
+
+            if (isBought) return;
+            isBought = true;
 
             if (isActive)
             {
@@ -125,22 +129,26 @@ namespace ProjectColombo.Shop
             if (currentScreen == null) return;
 
             bool wasActive = isActive;
-            isActive = item.price <= GetComponentInParent<ShopScreen>().GetCurrency();
 
+            isActive = item.price <= currentScreen.GetCurrency() && !isBought; 
+
+            // Show/hide sold out text
             if (soldOutText != null)
             {
                 soldOutText.gameObject.SetActive(!isActive);
             }
 
+            // Update button interactability
             if (shopButton != null)
             {
-                shopButton.interactable = true;
+                shopButton.interactable = isActive;
             }
 
+            // Update color states
             if (!isActive)
             {
                 referenceImage.color = unavailableColor;
-                Debug.Log($"Item {item.name} set to unavailable color");
+                Debug.Log($"Item {item.name} set to unavailable color (bought: {isBought}, active: {isActive})");
             }
             else if (wasActive != isActive)
             {
@@ -156,5 +164,6 @@ namespace ProjectColombo.Shop
                 }
             }
         }
+
     }
 }
