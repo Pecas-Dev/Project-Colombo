@@ -467,6 +467,7 @@ namespace ProjectColombo.Combat
                             otherStateMachine.SetStaggered();
                         }
 
+                        otherStateMachine.SetStaggered();
                         CustomEvents.DamageReceived(damage, currentScale, otherHealth);
                     }
 
