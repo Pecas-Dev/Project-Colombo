@@ -10,7 +10,6 @@ namespace ProjectColombo.UI
 {
     public class LooseScreen : MonoBehaviour
     {
-        public GameObject canvas;
         public TMP_Text text;
         public GameObject button;
         bool isActive = false;
@@ -41,6 +40,11 @@ namespace ProjectColombo.UI
         public void SetActive()
         {
             StartCoroutine(FadeIn());
+        }
+
+        public void Null()
+        {
+
         }
 
         IEnumerator FadeIn()
