@@ -2,6 +2,7 @@ using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.Inventory;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace ProjectColombo.LevelManagement
@@ -14,6 +15,11 @@ namespace ProjectColombo.LevelManagement
         {
             CustomEvents.OnEnemyDeath += EndBossFight;
             StartCoroutine(StartDelay());
+        }
+
+        private void OnDestroy()
+        {
+            CustomEvents.OnEnemyDeath -= EndBossFight;
         }
 
         IEnumerator StartDelay()
