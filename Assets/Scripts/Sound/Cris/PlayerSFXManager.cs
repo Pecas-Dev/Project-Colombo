@@ -35,6 +35,10 @@ public class PlayerSFXManager : MonoBehaviour
     public AudioClip[] churchBlockExecutionSounds;
     public AudioClip[] blockFeedbackSounds;
 
+    //      [GETTING DAMAGED]
+    [Header("Getting Damaged")]
+    public AudioClip[] gettingDamagedSounds;
+
     //      [PARRY]
     [Header("Parry")]
     public AudioClip[] parryExecutionSounds;
@@ -118,6 +122,7 @@ public class PlayerSFXManager : MonoBehaviour
     [Range(0f, 1f)] public float parryVolume = 1f;
     [Range(0f, 1f)] public float rollVolume = 1f;
     [Range(0f, 1f)] public float comboVolume = 1f;
+    [Range(0f, 1f)] public float gettingDamagedVolume = 1f;
     [Range(0f, 1f)] public float potionVolume = 1f;
     [Range(0f, 1f)] public float echoVolume = 1f;
 
@@ -240,6 +245,12 @@ public class PlayerSFXManager : MonoBehaviour
             churchRollSounds[UnityEngine.Random.Range(0, churchRollSounds.Length)] :
             rollSounds[UnityEngine.Random.Range(0, rollSounds.Length)];
 
+        audioSource.PlayOneShot(selectedClip, rollVolume);
+    }
+
+    public void PlayGettingDamaged()
+    {
+        AudioClip selectedClip = gettingDamagedSounds[UnityEngine.Random.Range(0, gettingDamagedSounds.Length)];
         audioSource.PlayOneShot(selectedClip, rollVolume);
     }
 
