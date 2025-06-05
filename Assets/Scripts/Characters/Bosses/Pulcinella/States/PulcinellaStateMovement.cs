@@ -52,9 +52,18 @@ namespace ProjectColombo.StateMachine.Pulcinella
             {
                 if (currentDistance <= stateMachine.myPulcinellaAttributes.distanceToSlash)
                 {
+                    // If attack 0 was used 3 times in a row, force attack 1
+                    if (stateMachine.lastAttack == 0 && stateMachine.consecutiveAttackCount >= 3)
+                    {
+                        PerformAttack(1);
+                        return;
+                    }
+
                     PerformAttack(0); // Exception attack
                     return;
                 }
+
+
 
                 int nextAttack = -1;
 
@@ -77,6 +86,7 @@ namespace ProjectColombo.StateMachine.Pulcinella
 
                 PerformAttack(nextAttack);
             }
+
         }
 
         public override void Exit()
