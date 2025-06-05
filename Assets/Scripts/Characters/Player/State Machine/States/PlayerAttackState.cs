@@ -1,8 +1,6 @@
 using ProjectColombo.GameInputSystem;
 using ProjectColombo.Combat;
 using UnityEngine;
-using Unity.VisualScripting;
-using System.Collections.Generic;
 using System.Collections;
 using ProjectColombo.GameManagement.Events;
 
@@ -181,6 +179,8 @@ namespace ProjectColombo.StateMachine.Player
 
             StopImpulseIfCloseEnough();
             HandleStateSwitchFromInput(); //extracted inputs to base state to remove repetition, 
+
+            Debug.DrawLine(targetPosition, stateMachine.transform.position, Color.red);
         }
 
         public override void Exit()
@@ -264,12 +264,8 @@ namespace ProjectColombo.StateMachine.Player
 
             if (direction.sqrMagnitude < 0.001f) return;
 
-            Quaternion targetRotation = Quaternion.LookRotation(direction.normalized);
-            stateMachine.myRigidbody.MoveRotation(Quaternion.RotateTowards(
-                stateMachine.myRigidbody.rotation,
-                targetRotation,
-                stateMachine.myEntityAttributes.rotationSpeedPlayer * Time.deltaTime
-            ));
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            stateMachine.myRigidbody.MoveRotation(targetRotation);
         }
 
 
