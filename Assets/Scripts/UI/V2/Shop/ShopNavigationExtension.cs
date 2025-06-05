@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using ProjectColombo.UI;
+using System.Collections;
 
 
 namespace ProjectColombo.Shop
@@ -54,17 +55,28 @@ namespace ProjectColombo.Shop
 
         public void RegisterWithNavigationManager()
         {
+            StartCoroutine(DelayedRegistration());
+        }
+
+        IEnumerator DelayedRegistration()
+        {
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForSecondsRealtime(0.1f);
+
             FindFirstSelectableIfNeeded();
 
             if (firstSelectedObject == null)
             {
                 LogWarning("No selectable object found to register for shop!");
-                return;
+                yield break;
             }
 
             if (navigationManager != null)
             {
                 navigationManager.RegisterFirstSelectable(UINavigationState.Shop, firstSelectedObject);
+
+                yield return null;
+
                 navigationManager.SetNavigationState(UINavigationState.Shop);
 
                 LogDebug($"Registered shop navigation with Shop state and first selectable: {firstSelectedObject.name}");

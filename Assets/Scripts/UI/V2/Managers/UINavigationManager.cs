@@ -801,7 +801,7 @@ namespace ProjectColombo.UI
                     clipToPlay = charmSwapAcceptSound;
                     break;
                 case UISoundType.PurchseShop:
-                    clipToPlay = purchaseSound; 
+                    clipToPlay = purchaseSound;
                     break;
             }
 
@@ -980,7 +980,17 @@ namespace ProjectColombo.UI
 
             if (gameInput.inputActions.Player.enabled && !gameInput.inputActions.UI.enabled)
             {
-                if (currentState != UINavigationState.None && currentState != UINavigationState.HUD) //&& SceneManager.GetActiveScene().buildIndex == 1)
+                HashSet<UINavigationState> protectedUIStates = new HashSet<UINavigationState>
+                {
+                    UINavigationState.Shop,
+                    UINavigationState.CharmSwapScreen,
+                    UINavigationState.PickUpScreen,
+                    UINavigationState.PauseInventoryTab,
+                    UINavigationState.PauseStatsTab,
+                    UINavigationState.PauseSettingsTab
+                };
+
+                if (currentState != UINavigationState.None && currentState != UINavigationState.HUD && !protectedUIStates.Contains(currentState))
                 {
                     StartCoroutine(WaitBeforeChangingToNone());
                 }
