@@ -114,6 +114,11 @@ namespace ProjectColombo.StateMachine.Player
 
         public void SetStaggered()
         {
+            if (myHealthManager.CurrentHealth <= 0)
+            {
+                SwitchState(new PlayerDeathState(this)); //when dead die
+            }
+
             if (currentStateEnum == PlayerState.Block) return;
 
             myWeaponAttributes.DisableWeaponHitbox();
@@ -136,11 +141,6 @@ namespace ProjectColombo.StateMachine.Player
                 activateCharmsAndMask = true;
             }
 
-            if (myHealthManager.CurrentHealth <= 0 && currentStateEnum != PlayerState.Dead)
-            {
-                SwitchState(new PlayerDeathState(this));
-            }
-
             if (gameInputSO.GetInputPressed(PlayerInputAction.UsePotion))
             {
                 myPlayerInventory.UsePotion();
@@ -154,6 +154,14 @@ namespace ProjectColombo.StateMachine.Player
             if (gameInputSO.GetInputPressed(PlayerInputAction.UseSpecialAbility))
             {
                 myPlayerInventory.UseMaskAbility();
+            }
+        }
+
+        private void LateUpdate()
+        {
+            if (myHealthManager.CurrentHealth <= 0 && currentStateEnum != PlayerState.Dead)
+            {
+                SwitchState(new PlayerDeathState(this));
             }
         }
 
