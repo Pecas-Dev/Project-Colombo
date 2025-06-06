@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Video;
@@ -5,21 +6,19 @@ using UnityEngine.Video;
 public class ChangeSceneOnVideoEnd : MonoBehaviour
 {
     public VideoPlayer cutScene;
+    GameObject transitionCanvas;
 
     private void Start()
     {
-        if (cutScene != null)
-        {
-            cutScene.loopPointReached += OnVideoEnd;
-        }
-        else
-        {
-            Debug.LogError("VideoPlayer not assigned!");
-        }
+        cutScene.loopPointReached += OnVideoEnd;
+
+        transitionCanvas = GameObject.Find("TransitionCanvas");
+
     }
 
     private void OnDestroy()
     {
+        StopAllCoroutines();
         if (cutScene != null)
         {
             cutScene.loopPointReached -= OnVideoEnd;
@@ -28,7 +27,15 @@ public class ChangeSceneOnVideoEnd : MonoBehaviour
 
     private void OnVideoEnd(VideoPlayer vp)
     {
-        // Load the scene when the video ends
+        StartCoroutine(End());
+    }
+
+    IEnumerator End()
+    {
+        transitionCanvas.GetComponentInChildren<Animator>().Play("Close");
+
+        yield return new WaitForSeconds(2);
         SceneManager.LoadScene(7);
+
     }
 }
