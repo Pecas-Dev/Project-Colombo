@@ -71,7 +71,7 @@ namespace ProjectColombo.Tutorial
             GameInputSO gameInput = GameManager.Instance.gameInput;
             gameInput.UnlockAllInputsViaTutorial();
             
-            GameManager.Instance.GetComponent<PlayerInventory>().numberOfPotions = 1;
+            //GameManager.Instance.GetComponent<PlayerInventory>().numberOfPotions = 1;
             player.GetComponent<HealthManager>().Heal(1000);
             GameManager.Instance.GetComponentInChildren<ComboMeter>().Reset();
         }
