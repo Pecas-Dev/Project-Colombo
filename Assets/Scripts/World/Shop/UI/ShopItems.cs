@@ -67,7 +67,13 @@ namespace ProjectColombo.Shop
             myAnimator.ResetTrigger("Success");
             myAnimator.ResetTrigger("Fail");
 
-            if (isBought) return;
+            if (!isActive || isBought)
+            {
+                myAnimator.SetTrigger("Fail");
+                Debug.Log("Cannot purchase - item unavailable or already bought");
+                return;
+            }
+
             isBought = true;
 
             if (isActive)
@@ -132,30 +138,34 @@ namespace ProjectColombo.Shop
 
             bool wasActive = isActive;
             bool canAfford = item.price <= currentScreen.GetCurrency();
-            isActive = canAfford;
-
-            isActive = item.price <= currentScreen.GetCurrency() && !isBought;
+            isActive = canAfford && !isBought;
 
             if (soldOutText != null)
             {
-                soldOutText.gameObject.SetActive(!canAfford);
+                soldOutText.gameObject.SetActive(!canAfford || isBought);
             }
 
             if (shopButton != null)
             {
-                shopButton.interactable = isActive;
+                shopButton.interactable = true; 
             }
 
             if (!isActive)
             {
                 referenceImage.color = unavailableColor;
-                Debug.Log($"Item {item.name} set to unavailable color");
+
+                if (selectionAnimator != null)
+                {
+                    selectionAnimator.SetItemUnavailable(true);
+                }
+
                 Debug.Log($"Item {item.name} set to unavailable color (bought: {isBought}, active: {isActive})");
             }
             else if (wasActive != isActive)
             {
                 if (selectionAnimator != null)
                 {
+                    selectionAnimator.SetItemUnavailable(false);
                     selectionAnimator.RefreshColorState();
                     Debug.Log($"Item {item.name} became available - refreshing selection state");
                 }

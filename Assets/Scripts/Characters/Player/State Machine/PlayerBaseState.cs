@@ -1,6 +1,7 @@
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 
 namespace ProjectColombo.StateMachine.Player
@@ -51,11 +52,54 @@ namespace ProjectColombo.StateMachine.Player
                 return;
             }
 
-            if (stateMachine.gameInputSO.GetInputHeld(GameInputSystem.PlayerInputAction.Block) && stateMachine.currentStateEnum != PlayerStateMachine.PlayerState.Block)
+            if (/*(stateMachine.gameInputSO.GetInputHeld(GameInputSystem.PlayerInputAction.Block) ||*/
+                IsSafeRawBlockInputHeld() && stateMachine.currentStateEnum != PlayerStateMachine.PlayerState.Block)
             {
                 stateMachine.SwitchState(new PlayerBlockState(stateMachine));
                 return;
             }
+
+            bool IsSafeRawBlockInputHeld()
+            {
+                if (!IsRawInputAllowed())
+                {
+                    return false;
+                }
+
+                return IsRawBlockInputHeld();
+            }
+
+            bool IsRawInputAllowed()
+            {
+                if (!stateMachine.gameInputSO.IsPlayerMapEnabled)
+                {
+                    return false;
+                }
+
+                bool blockActionEnabled = stateMachine.gameInputSO.GetInputHeld(GameInputSystem.PlayerInputAction.Block) ||stateMachine.gameInputSO.GetInputPressed(GameInputSystem.PlayerInputAction.Block) || stateMachine.gameInputSO.GetInputReleased(GameInputSystem.PlayerInputAction.Block);
+
+                return true; 
+            }
+
+            bool IsRawBlockInputHeld()
+            {
+                bool gamepadL2Held = false;
+                bool keyboardShiftHeld = false;
+
+                if (Gamepad.current != null)
+                {
+                    gamepadL2Held = Gamepad.current.leftTrigger.isPressed;
+                }
+
+                if (Keyboard.current != null)
+                {
+                    keyboardShiftHeld = Keyboard.current.leftShiftKey.isPressed ||
+                                       Keyboard.current.rightShiftKey.isPressed;
+                }
+
+                return gamepadL2Held || keyboardShiftHeld;
+            }
+
 
             //set parry states
             if (stateMachine.gameInputSO.GetInputPressed(GameInputSystem.PlayerInputAction.MajorParry))

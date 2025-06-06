@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 using ProjectColombo.GameInputSystem;
 using ProjectColombo.GameManagement;
 using ProjectColombo.UI;
+using ProjectColombo.Inventory;
 
 
 namespace ProjectColombo.Shop
@@ -22,7 +23,7 @@ namespace ProjectColombo.Shop
         [SerializeField] GameInputSO gameInput;
 
         ShopKeeper shopKeeper;
-       
+
         UINavigationManager navigationManager;
         UIInputSwitcher inputSwitcher;
 
@@ -198,9 +199,126 @@ namespace ProjectColombo.Shop
             }
         }
 
+        public void RefreshNavigationAfterPurchase()
+        {
+            StartCoroutine(RefreshNavigationCoroutine());
+        }
+
+        IEnumerator RefreshNavigationCoroutine()
+        {
+            yield return new WaitForEndOfFrame();
+
+            EventSystem eventSystem = EventSystem.current;
+            if (eventSystem == null || eventSystem.currentSelectedGameObject == null)
+            {
+                ForceHookSelection();
+                yield break;
+            }
+
+            GameObject currentSelected = eventSystem.currentSelectedGameObject;
+            Button currentButton = currentSelected.GetComponent<Button>();
+
+            if (currentButton != null)
+            {
+                ShopItems currentShopItem = currentButton.GetComponent<ShopItems>();
+                ShopPotion currentShopPotion = currentButton.GetComponent<ShopPotion>();
+
+                bool currentStillValid = false;
+
+                if (currentShopItem != null)
+                {
+                    ShopScreen shopScreen = currentShopItem.GetComponentInParent<ShopScreen>();
+                    currentStillValid = shopScreen != null &&
+                                       currentShopItem.item.price <= shopScreen.GetCurrency();
+                }
+                else if (currentShopPotion != null)
+                {
+                    PlayerInventory playerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
+                    currentStillValid = playerInventory != null &&playerInventory.currencyAmount >= currentShopPotion.price;
+                }
+                else
+                {
+                    currentStillValid = true; 
+                }
+
+                if (!currentStillValid)
+                {
+                    Button nextValidButton = FindNextInteractableButton(currentButton, true);
+
+                    if (nextValidButton != currentButton)
+                    {
+                        eventSystem.SetSelectedGameObject(nextValidButton.gameObject);
+                        LogDebug($"Moved selection from invalid item to: {nextValidButton.name}");
+                    }
+                    else
+                    {
+                        ForceHookSelection();
+                    }
+                }
+            }
+
+            RefreshAllItemAnimationStates();
+        }
+
         #endregion
 
         #region Private Methods
+
+        Button FindNextInteractableButton(Button currentButton, bool forward)
+        {
+            if (shopButtons == null || shopButtons.Length == 0)
+            {
+                return currentButton;
+            }
+
+            int currentIndex = System.Array.IndexOf(shopButtons, currentButton);
+            if (currentIndex == -1)
+            {
+                return currentButton;
+            }
+
+            int searchDirection = forward ? 1 : -1;
+            int searchIndex = currentIndex;
+            int attempts = 0;
+
+            while (attempts < shopButtons.Length)
+            {
+                searchIndex = (searchIndex + searchDirection + shopButtons.Length) % shopButtons.Length;
+                attempts++;
+
+                if (shopButtons[searchIndex] != null &&
+                    shopButtons[searchIndex].gameObject.activeInHierarchy &&
+                    shopButtons[searchIndex].interactable)
+                {
+                    ShopItems shopItem = shopButtons[searchIndex].GetComponent<ShopItems>();
+                    ShopPotion shopPotion = shopButtons[searchIndex].GetComponent<ShopPotion>();
+
+                    if (shopItem != null)
+                    {
+                        ShopScreen shopScreen = shopItem.GetComponentInParent<ShopScreen>();
+                        if (shopScreen != null && shopItem.item.price <= shopScreen.GetCurrency())
+                        {
+                            return shopButtons[searchIndex];
+                        }
+                    }
+                    else if (shopPotion != null)
+                    {
+                        PlayerInventory playerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
+                        if (playerInventory != null && playerInventory.currencyAmount >= shopPotion.price)
+                        {
+                            return shopButtons[searchIndex];
+                        }
+                    }
+                    else
+                    {
+                        return shopButtons[searchIndex];
+                    }
+                }
+            }
+
+            return currentButton;
+        }
+
 
         void EnsureHookButtonActive()
         {
@@ -250,7 +368,7 @@ namespace ProjectColombo.Shop
             {
                 ForceHookSelection();
             }
-            else if (eventSystem != null &&eventSystem.currentSelectedGameObject != null && eventSystem.currentSelectedGameObject.activeInHierarchy)
+            else if (eventSystem != null && eventSystem.currentSelectedGameObject != null && eventSystem.currentSelectedGameObject.activeInHierarchy)
             {
                 lastValidSelection = eventSystem.currentSelectedGameObject;
             }
@@ -291,7 +409,7 @@ namespace ProjectColombo.Shop
                     }
 
                     LogDebug("Set initial selection to hook button");
-                    
+
                     yield return new WaitForSecondsRealtime(0.1f);
                     RefreshAllItemAnimationStates();
                 }
@@ -305,7 +423,7 @@ namespace ProjectColombo.Shop
         void RefreshAllItemAnimationStates()
         {
             ShopItemSelectionAnimator[] animators = FindObjectsByType<ShopItemSelectionAnimator>(FindObjectsSortMode.None);
-            
+
             foreach (ShopItemSelectionAnimator animator in animators)
             {
                 if (animator != null)
@@ -313,7 +431,7 @@ namespace ProjectColombo.Shop
                     animator.RefreshColorState();
                 }
             }
-            
+
             LogDebug($"Refreshed {animators.Length} item animation states");
         }
 

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using ProjectColombo.UI;
 using System.Collections;
 using ProjectColombo.Inventory;
@@ -188,6 +189,8 @@ namespace ProjectColombo.GameManagement
 
         void Update()
         {
+            UnityEngine.InputSystem.InputSystem.settings.maxEventBytesPerUpdate = 10 * 1024 * 1024;
+
             if (uiManagerV2 != null && uiManagerV2.CheckPauseInput())
             {
                 if (gameIsPaused)

@@ -1,6 +1,7 @@
 using ProjectColombo.GameInputSystem;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 
 namespace ProjectColombo.StateMachine.Player
@@ -66,11 +67,51 @@ namespace ProjectColombo.StateMachine.Player
 
             HandleStateSwitchFromInput();
 
-            if (!stateMachine.gameInputSO.GetInputHeld(PlayerInputAction.Block) || stateMachine.gameInputSO.GetInputReleased(PlayerInputAction.Block))
+            if (/*!stateMachine.gameInputSO.GetInputHeld(PlayerInputAction.Block) || stateMachine.gameInputSO.GetInputReleased(PlayerInputAction.Block) ||*/ 
+                (!IsSafeRawBlockInputHeld()))
             {
                 stateMachine.SwitchState(new PlayerMovementState(stateMachine));
                 return;
             }
+        }
+
+        bool IsSafeRawBlockInputHeld()
+        {
+            if (!IsRawInputAllowed())
+            {
+                return false;
+            }
+
+            return IsRawBlockInputHeld();
+        }
+
+        bool IsRawInputAllowed()
+        {
+            if (!stateMachine.gameInputSO.IsPlayerMapEnabled)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        bool IsRawBlockInputHeld()
+        {
+            bool gamepadL2Held = false;
+            bool keyboardShiftHeld = false;
+
+            if (Gamepad.current != null)
+            {
+                gamepadL2Held = Gamepad.current.leftTrigger.isPressed;
+            }
+
+            if (Keyboard.current != null)
+            {
+                keyboardShiftHeld = Keyboard.current.leftShiftKey.isPressed ||
+                                   Keyboard.current.rightShiftKey.isPressed;
+            }
+
+            return gamepadL2Held || keyboardShiftHeld;
         }
 
         public override void Exit()

@@ -15,6 +15,9 @@ namespace ProjectColombo.UI.MaskSelection
         [SerializeField] GameObject firstSelectedButton;
         [SerializeField] GameObject moreInfoPanel;
 
+        [Header("Objects to Hide/Show")]
+        [SerializeField] GameObject[] objectsToHideOnMoreInfo;
+
         [Header("Navigation Settings")]
         [SerializeField] bool enableHorizontalWrapping = true;
         [SerializeField] float rawInputThreshold = 0.5f;
@@ -119,10 +122,13 @@ namespace ProjectColombo.UI.MaskSelection
             moreInfoPanel.SetActive(true);
             isMoreInfoActive = true;
 
+            HideGameObjects();
+
             UpdateMoreInfoDisplay();
 
             LogDebug("MoreInfo panel activated");
         }
+
 
         void HideMoreInfo()
         {
@@ -134,7 +140,44 @@ namespace ProjectColombo.UI.MaskSelection
             moreInfoPanel.SetActive(false);
             isMoreInfoActive = false;
 
+            ShowGameObjects();
+
             LogDebug("MoreInfo panel deactivated");
+        }
+
+
+        void HideGameObjects()
+        {
+            if (objectsToHideOnMoreInfo == null)
+            {
+                return;
+            }
+
+            foreach (GameObject gameObjectToHide in objectsToHideOnMoreInfo)
+            {
+                if (gameObjectToHide != null)
+                {
+                    gameObjectToHide.SetActive(false);
+                    LogDebug($"Hidden object: {gameObjectToHide.name}");
+                }
+            }
+        }
+
+        void ShowGameObjects()
+        {
+            if (objectsToHideOnMoreInfo == null)
+            {
+                return;
+            }
+
+            foreach (GameObject gameObjectToShow in objectsToHideOnMoreInfo)
+            {
+                if (gameObjectToShow != null)
+                {
+                    gameObjectToShow.SetActive(true);
+                    LogDebug($"Shown object: {gameObjectToShow.name}");
+                }
+            }
         }
 
         void UpdateMoreInfoDisplay()

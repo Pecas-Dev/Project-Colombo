@@ -149,11 +149,17 @@ namespace ProjectColombo.Shop
                 navigationManager.PlayUISound(UISoundType.PurchseShop);
             }
 
-            currentPlayerCurrency.text = playerInventory.currencyAmount.ToString(); //update text
+            currentPlayerCurrency.text = playerInventory.currencyAmount.ToString();
 
             foreach (ShopItems b in itemButtons)
             {
                 b.CheckActive();
+            }
+
+            ShopNavigationController navController = FindFirstObjectByType<ShopNavigationController>();
+            if (navController != null)
+            {
+                navController.RefreshNavigationAfterPurchase();
             }
 
             CustomEvents.CharmCollected(item.item);
