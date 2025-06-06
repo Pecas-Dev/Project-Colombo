@@ -102,7 +102,8 @@ namespace ProjectColombo.Combat
             damageAppliedThisFrame = true;
 
             currentHealth -= damageAmount;
-            currentHealth = Mathf.Max(currentHealth, 0); 
+            currentHealth = Mathf.Max(currentHealth, 0);
+            currentHealth = Mathf.Min(currentHealth, maxHealth);
 
             HealthChanged?.Invoke(currentHealth, maxHealth);
 
@@ -130,7 +131,8 @@ namespace ProjectColombo.Combat
             }
 
             currentHealth += healAmount;
-            currentHealth = Mathf.Min(currentHealth, maxHealth); 
+            currentHealth = Mathf.Max(currentHealth, 0);
+            currentHealth = Mathf.Min(currentHealth, maxHealth);
 
             HealthChanged?.Invoke(currentHealth, maxHealth);
         }
