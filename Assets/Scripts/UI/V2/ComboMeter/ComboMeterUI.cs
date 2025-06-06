@@ -39,7 +39,7 @@ namespace ProjectColombo.UI.Combat
         bool isVisible;
         int currentLevel;
         int currentPoints;
-        int maxPoints = 100;
+        int maxPoints = 200;
 
         void Start()
         {
