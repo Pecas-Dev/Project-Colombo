@@ -34,7 +34,18 @@ namespace ProjectColombo.UI.Pausescreen
         [SerializeField] Image moreInfoItemImage;
         [SerializeField] TextMeshProUGUI moreInfoTitleText;
         [SerializeField] TextMeshProUGUI moreInfoDescriptionText;
-        [SerializeField] TextMeshProUGUI moreInfoAbilityText;
+
+        [Header("Mask More Info Panel References")]
+        [SerializeField] TextMeshProUGUI moreInfoMaskDescriptionText;
+        [SerializeField] TextMeshProUGUI moreInfoEchoMissionTitleText;
+        [SerializeField] TextMeshProUGUI moreInfoEchoMissionDescriptionText;
+        [SerializeField] TextMeshProUGUI moreInfoAbilityTitleText;
+        [SerializeField] TextMeshProUGUI moreInfoAbilityDescriptionText;
+
+        [Header("Mask More Info Colors")]
+        [SerializeField] Color moreInfoMaskTitleColor = Color.black;
+        [SerializeField] Color moreInfoEchoMissionTitleColor = new Color(0.4f, 0.2f, 0.8f);
+        [SerializeField] Color moreInfoAbilityTitleColor = new Color(0.0f, 0.6f, 0.9f);
 
         [Header("More Info Weapon Settings")]
         [SerializeField] Sprite weaponSpriteForMoreInfo;
@@ -186,6 +197,36 @@ namespace ProjectColombo.UI.Pausescreen
                 isValid = false;
             }
 
+            if (moreInfoMaskDescriptionText == null)
+            {
+                LogDebug("WARNING: More Info Mask Description Text is not assigned!", true);
+                isValid = false;
+            }
+
+            if (moreInfoEchoMissionTitleText == null)
+            {
+                LogDebug("WARNING: More Info Echo Mission Title Text is not assigned!", true);
+                isValid = false;
+            }
+
+            if (moreInfoEchoMissionDescriptionText == null)
+            {
+                LogDebug("WARNING: More Info Echo Mission Description Text is not assigned!", true);
+                isValid = false;
+            }
+
+            if (moreInfoAbilityTitleText == null)
+            {
+                LogDebug("WARNING: More Info Ability Title Text is not assigned!", true);
+                isValid = false;
+            }
+
+            if (moreInfoAbilityDescriptionText == null)
+            {
+                LogDebug("WARNING: More Info Ability Description Text is not assigned!", true);
+                isValid = false;
+            }
+
             return isValid;
         }
 
@@ -199,26 +240,15 @@ namespace ProjectColombo.UI.Pausescreen
                 moreInfoTitleText.color = moreInfoWeaponColor;
                 LogDebug("Set weapon title text");
             }
-            else
-            {
-                LogDebug("moreInfoTitleText is null!", true);
-            }
 
             if (moreInfoDescriptionText != null)
             {
                 moreInfoDescriptionText.text = "Musicians are well-versed in the finest arts esteemed by nobility. This weapon is one of the Musician's trusted companions along their journey, able to pierce the toughest armor while composing exquisite melodies in equal measure.";
+                moreInfoDescriptionText.gameObject.SetActive(true); // Make sure it's visible for weapons
                 LogDebug("Set weapon description text");
             }
-            else
-            {
-                LogDebug("moreInfoDescriptionText is null!", true);
-            }
 
-            if (moreInfoAbilityText != null)
-            {
-                moreInfoAbilityText.gameObject.SetActive(false);
-                LogDebug("Hidden ability text for weapon");
-            }
+            HideMaskSpecificFields();
 
             if (moreInfoItemImage != null)
             {
@@ -233,10 +263,6 @@ namespace ProjectColombo.UI.Pausescreen
                     moreInfoItemImage.gameObject.SetActive(false);
                     LogDebug("No weapon sprite assigned for more info");
                 }
-            }
-            else
-            {
-                LogDebug("moreInfoItemImage is null!", true);
             }
 
             LogDebug("ShowMoreInfoForWeapon completed");
@@ -268,36 +294,48 @@ namespace ProjectColombo.UI.Pausescreen
                 return;
             }
 
+            ShowMaskSpecificFields();
+
             if (moreInfoTitleText != null)
             {
                 moreInfoTitleText.text = maskComponent.maskName;
-                moreInfoTitleText.color = GetMaskColor(maskComponent.echoUnlocked);
+                moreInfoTitleText.color = moreInfoMaskTitleColor;
+            }
+
+            if (moreInfoMaskDescriptionText != null)
+            {
+                moreInfoMaskDescriptionText.text = maskComponent.maskDescription;
+            }
+
+            if (moreInfoEchoMissionTitleText != null)
+            {
+                moreInfoEchoMissionTitleText.text = "• Echo Mission";
+                moreInfoEchoMissionTitleText.color = moreInfoEchoMissionTitleColor;
+            }
+
+            if (moreInfoEchoMissionDescriptionText != null)
+            {
+                string echoMissionText = GetEchoMissionDescription(maskComponent);
+                moreInfoEchoMissionDescriptionText.text = echoMissionText;
+            }
+
+            BaseAbility ability = maskComponent.abilityObject.GetComponent<BaseAbility>();
+
+            if (moreInfoAbilityTitleText != null)
+            {
+                moreInfoAbilityTitleText.text = "• Ability (" + ability.abilityName + ")";
+                moreInfoAbilityTitleText.color = moreInfoAbilityTitleColor;
+            }
+
+            if (moreInfoAbilityDescriptionText != null)
+            {
+                string abilityDescription = GetAbilityDescription(maskComponent);
+                moreInfoAbilityDescriptionText.text = abilityDescription;
             }
 
             if (moreInfoDescriptionText != null)
             {
-                moreInfoDescriptionText.text = maskComponent.maskDescription;
-            }
-
-            if (moreInfoAbilityText != null)
-            {
-                moreInfoAbilityText.gameObject.SetActive(true);
-                if (maskComponent.abilityObject != null)
-                {
-                    BaseAbility ability = maskComponent.abilityObject.GetComponent<BaseAbility>();
-                    if (ability != null)
-                    {
-                        moreInfoAbilityText.text = $"Echo Ability: {ability.abilityDescription}";
-                    }
-                    else
-                    {
-                        moreInfoAbilityText.text = "Echo Ability: No ability description available";
-                    }
-                }
-                else
-                {
-                    moreInfoAbilityText.text = maskComponent.echoDescription;
-                }
+                moreInfoDescriptionText.gameObject.SetActive(false);
             }
 
             if (moreInfoItemImage != null)
@@ -314,6 +352,98 @@ namespace ProjectColombo.UI.Pausescreen
             }
 
             LogDebug($"Showing more info for mask: {maskComponent.maskName}");
+        }
+
+        string GetEchoMissionDescription(BaseMask maskComponent)
+        {
+            if (maskComponent.echoMission == null)
+            {
+                return "No echo mission available.";
+            }
+
+            if (maskComponent.echoMission is CollectGold collectGold)
+            {
+                System.Reflection.FieldInfo fieldInfo = typeof(CollectGold).GetField("currentCollected", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+                int currentCollected = 0;
+                if (fieldInfo != null)
+                {
+                    currentCollected = (int)fieldInfo.GetValue(collectGold);
+                }
+
+                return $"Collect gold to unlock the echo ability. Progress: {currentCollected} / {collectGold.goldToUnlockEcho}";
+            }
+            else if (maskComponent.echoMission is CollectMaxHealth collectHealth)
+            {
+                System.Reflection.FieldInfo fieldInfo = typeof(CollectMaxHealth).GetField("currentCollected", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+                int currentCollected = 0;
+                if (fieldInfo != null)
+                {
+                    currentCollected = (int)fieldInfo.GetValue(collectHealth);
+                }
+
+                return $"Collect health upgrades to unlock the echo ability. Progress: {currentCollected} / {collectHealth.maxHealthToCollect}";
+            }
+            else if (maskComponent.echoMission is MajorKills majorKills)
+            {
+                System.Reflection.FieldInfo fieldInfo = typeof(MajorKills).GetField("currentCollected", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                System.Reflection.FieldInfo requiredKillsField = typeof(MajorKills).GetField("majorKillsToDo", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
+                int currentKills = 0;
+                int requiredKills = 0;
+
+                if (fieldInfo != null)
+                {
+                    currentKills = (int)fieldInfo.GetValue(majorKills);
+                }
+                if (requiredKillsField != null)
+                {
+                    requiredKills = (int)requiredKillsField.GetValue(majorKills);
+                }
+
+                return $"Defeat enemies using major scale attacks to unlock the echo ability. Progress: {currentKills} / {requiredKills}";
+            }
+            else if (maskComponent.echoMission is DamageDelt damageDelt)
+            {
+                System.Reflection.FieldInfo fieldInfo = typeof(DamageDelt).GetField("currentCollected", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                System.Reflection.FieldInfo requiredDamageField = typeof(DamageDelt).GetField("damageToDeal", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
+                int currentDamage = 0;
+                int requiredDamage = 0;
+
+                if (fieldInfo != null)
+                {
+                    currentDamage = (int)fieldInfo.GetValue(damageDelt);
+                }
+                if (requiredDamageField != null)
+                {
+                    requiredDamage = (int)requiredDamageField.GetValue(damageDelt);
+                }
+
+                return $"Deal damage to enemies to unlock the echo ability. Progress: {currentDamage} / {requiredDamage}";
+            }
+
+            return "Unknown echo mission type.";
+        }
+
+        string GetAbilityDescription(BaseMask maskComponent)
+        {
+            if (maskComponent.abilityObject != null)
+            {
+                BaseAbility ability = maskComponent.abilityObject.GetComponent<BaseAbility>();
+                if (ability != null)
+                {
+                    return ability.abilityDescriptionAlt;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(maskComponent.echoDescription))
+            {
+                return maskComponent.echoDescription;
+            }
+
+            return "No ability description available.";
         }
 
         public void ShowMoreInfoForCharm(GameObject charmObject)
@@ -342,12 +472,10 @@ namespace ProjectColombo.UI.Pausescreen
             if (moreInfoDescriptionText != null)
             {
                 moreInfoDescriptionText.text = charmComponent.charmDescription;
+                moreInfoDescriptionText.gameObject.SetActive(true);
             }
 
-            if (moreInfoAbilityText != null)
-            {
-                moreInfoAbilityText.gameObject.SetActive(false);
-            }
+            HideMaskSpecificFields();
 
             if (moreInfoItemImage != null)
             {
@@ -397,12 +525,10 @@ namespace ProjectColombo.UI.Pausescreen
             if (moreInfoDescriptionText != null)
             {
                 moreInfoDescriptionText.text = potionComponent.charmDescription;
+                moreInfoDescriptionText.gameObject.SetActive(true);
             }
 
-            if (moreInfoAbilityText != null)
-            {
-                moreInfoAbilityText.gameObject.SetActive(false);
-            }
+            HideMaskSpecificFields();
 
             if (moreInfoItemImage != null)
             {
@@ -420,22 +546,100 @@ namespace ProjectColombo.UI.Pausescreen
             LogDebug($"Showing more info for potion: {potionComponent.charmName}");
         }
 
+        void HideMaskSpecificFields()
+        {
+            if (moreInfoMaskDescriptionText != null)
+            {
+                moreInfoMaskDescriptionText.gameObject.SetActive(false);
+            }
+
+            if (moreInfoEchoMissionTitleText != null)
+            {
+                moreInfoEchoMissionTitleText.gameObject.SetActive(false);
+            }
+
+            if (moreInfoEchoMissionDescriptionText != null)
+            {
+                moreInfoEchoMissionDescriptionText.gameObject.SetActive(false);
+            }
+
+            if (moreInfoAbilityTitleText != null)
+            {
+                moreInfoAbilityTitleText.gameObject.SetActive(false);
+            }
+
+            if (moreInfoAbilityDescriptionText != null)
+            {
+                moreInfoAbilityDescriptionText.gameObject.SetActive(false);
+            }
+        }
+
+        void ShowMaskSpecificFields()
+        {
+            if (moreInfoMaskDescriptionText != null)
+            {
+                moreInfoMaskDescriptionText.gameObject.SetActive(true);
+            }
+
+            if (moreInfoEchoMissionTitleText != null)
+            {
+                moreInfoEchoMissionTitleText.gameObject.SetActive(true);
+            }
+
+            if (moreInfoEchoMissionDescriptionText != null)
+            {
+                moreInfoEchoMissionDescriptionText.gameObject.SetActive(true);
+            }
+
+            if (moreInfoAbilityTitleText != null)
+            {
+                moreInfoAbilityTitleText.gameObject.SetActive(true);
+            }
+
+            if (moreInfoAbilityDescriptionText != null)
+            {
+                moreInfoAbilityDescriptionText.gameObject.SetActive(true);
+            }
+        }
+
         public void ShowMoreInfoForEmptyMask()
         {
             if (moreInfoTitleText != null)
             {
                 moreInfoTitleText.text = "No Mask Equipped";
-                moreInfoTitleText.color = moreInfoDefaultColor;
+                moreInfoTitleText.color = moreInfoMaskTitleColor; // Use black color
+            }
+
+            if (moreInfoMaskDescriptionText != null)
+            {
+                moreInfoMaskDescriptionText.text = "Equip a mask to see its details and abilities.";
+            }
+
+            if (moreInfoEchoMissionTitleText != null)
+            {
+                moreInfoEchoMissionTitleText.text = "Echo Mission:";
+                moreInfoEchoMissionTitleText.color = moreInfoEchoMissionTitleColor;
+            }
+
+            if (moreInfoEchoMissionDescriptionText != null)
+            {
+                moreInfoEchoMissionDescriptionText.text = "No echo mission available.";
+            }
+
+            if (moreInfoAbilityTitleText != null)
+            {
+                moreInfoAbilityTitleText.text = "Ability:";
+                moreInfoAbilityTitleText.color = moreInfoAbilityTitleColor;
+            }
+
+            if (moreInfoAbilityDescriptionText != null)
+            {
+                moreInfoAbilityDescriptionText.text = "No ability available.";
             }
 
             if (moreInfoDescriptionText != null)
             {
-                moreInfoDescriptionText.text = "Equip a mask to see its details and echo ability.";
-            }
-
-            if (moreInfoAbilityText != null)
-            {
-                moreInfoAbilityText.gameObject.SetActive(false);
+                moreInfoDescriptionText.gameObject.SetActive(false);
             }
 
             if (moreInfoItemImage != null)
@@ -459,11 +663,6 @@ namespace ProjectColombo.UI.Pausescreen
                 moreInfoDescriptionText.text = "Equip a charm to see its details and effects.";
             }
 
-            if (moreInfoAbilityText != null)
-            {
-                moreInfoAbilityText.gameObject.SetActive(false);
-            }
-
             if (moreInfoItemImage != null)
             {
                 moreInfoItemImage.gameObject.SetActive(false);
@@ -483,11 +682,6 @@ namespace ProjectColombo.UI.Pausescreen
             if (moreInfoDescriptionText != null)
             {
                 moreInfoDescriptionText.text = "Collect potions to restore health during your journey.";
-            }
-
-            if (moreInfoAbilityText != null)
-            {
-                moreInfoAbilityText.gameObject.SetActive(false);
             }
 
             if (moreInfoItemImage != null)
