@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using ProjectColombo.GameInputSystem;
 using UnityEngine.SceneManagement;
+using ProjectColombo.UI.Pausescreen;
 
 namespace ProjectColombo.UI
 {
@@ -17,6 +18,7 @@ namespace ProjectColombo.UI
         OptionsMenuAudioTab,
         OptionsMenuControlsTab,
         PauseInventoryTab,
+        PauseInventoryMoreInfo,
         PauseStatsTab,
         PauseSettingsTab,
         MaskSelection,
@@ -164,8 +166,12 @@ namespace ProjectColombo.UI
                 }
             }
 
-            CheckAndEnforcePlayerInputMode();
+            if (IsMoreInfoPanelBlockingGlobalInputs())
+            {
+                return;
+            }
 
+            CheckAndEnforcePlayerInputMode();
             HandleUISoundInput();
 
             if (eventSystem.currentSelectedGameObject != null && currentState != UINavigationState.None && eventSystem.currentSelectedGameObject.activeInHierarchy)
@@ -377,6 +383,33 @@ namespace ProjectColombo.UI
             LogDebug("References initialized");
         }
 
+        bool IsMoreInfoPanelBlockingGlobalInputs()
+        {
+            if (currentState == UINavigationState.PauseInventoryMoreInfo)
+            {
+                return true;
+            }
+
+            if (currentState == UINavigationState.PauseInventoryTab)
+            {
+                GameObject inventoryTab = FindChildWithName(pauseInventoryCanvas, "InventoryTab");
+                if (inventoryTab == null)
+                {
+                    inventoryTab = FindChildWithName(pauseInventoryCanvas, "PauseInventory");
+                }
+
+                if (inventoryTab != null)
+                {
+                    var inventoryController = inventoryTab.GetComponent<PauseMenuInventoryTabController>();
+                    if (inventoryController != null && inventoryController.isMoreInfoActive)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
         void InitializeUISounds()
         {
             if (uiAudioSource == null)
@@ -427,6 +460,11 @@ namespace ProjectColombo.UI
                 UISoundType.Back,
                 UISoundType.Tab,
                 UISoundType.SelectInventory
+            };
+
+            allowedSounds[UINavigationState.PauseInventoryMoreInfo] = new HashSet<UISoundType>
+            {
+                UISoundType.Back,
             };
 
             allowedSounds[UINavigationState.PauseStatsTab] = new HashSet<UISoundType>
@@ -719,6 +757,23 @@ namespace ProjectColombo.UI
 
         void HandleUISoundInput()
         {
+            if (IsMoreInfoPanelBlockingGlobalInputs())
+            {
+                if (gameInput != null && gameInput.inputActions != null && gameInput.inputActions.UI.Cancel.WasPressedThisFrame())
+                {
+                    LogDebug("Global Cancel input blocked - More Info panel is handling its own input");
+                    return;
+                }
+
+                if (gameInput != null && gameInput.inputActions != null && (gameInput.inputActions.UI.MoveLeftShoulder.WasPressedThisFrame() || gameInput.inputActions.UI.MoveRightShoulder.WasPressedThisFrame()))
+                {
+                    LogDebug("Global shoulder inputs blocked - More Info panel is active");
+                    return;
+                }
+
+                return;
+            }
+
             if (gameInput == null || gameInput.inputActions == null)
             {
                 return;
@@ -823,9 +878,20 @@ namespace ProjectColombo.UI
                 return;
             }
 
+            if (IsMoreInfoPanelBlockingGlobalInputs())
+            {
+                LogDebug("Cancel input blocked by More Info panel");
+                return;
+            }
 
             if (gameInput.inputActions.UI.Cancel.WasPressedThisFrame())
             {
+                if (currentState == UINavigationState.PauseInventoryMoreInfo)
+                {
+                    LogDebug("Cancel pressed in PauseInventoryMoreInfo - staying in pause menu");
+                    return;
+                }
+
                 HashSet<UINavigationState> cancelResetsToNoneStates = new HashSet<UINavigationState>
                 {
                     UINavigationState.CharmSwapScreen,

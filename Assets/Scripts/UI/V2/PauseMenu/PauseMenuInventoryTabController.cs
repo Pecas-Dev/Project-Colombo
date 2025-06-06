@@ -28,6 +28,14 @@ namespace ProjectColombo.UI.Pausescreen
         [SerializeField] GameObject maskClef;
         [SerializeField] GameObject potionCharmClef;
 
+        [Header("More Info Panel")]
+        [SerializeField] GameObject moreInfoPanel;
+        [SerializeField] public bool isMoreInfoActive = false;
+        [SerializeField] float moreInfoActivationDelay = 0.4f;
+
+        [Header("Objects to Hide/Show")]
+        [SerializeField] GameObject[] objectsToHideOnMoreInfo;
+
         [Header("Selector Animation")]
         [SerializeField] float selectorPulseSpeed = 2f;
         [SerializeField] float selectorMinAlpha = 0.5f;
@@ -57,6 +65,9 @@ namespace ProjectColombo.UI.Pausescreen
 
         int currentSelectedIndex = -1;
 
+        float lastMoreInfoActivationTime;
+        float lastSubmitTime;
+
         bool isInitialized = false;
         bool isActive = false;
         bool isTabSelected = false;
@@ -73,10 +84,27 @@ namespace ProjectColombo.UI.Pausescreen
             }
         }
 
+        void Start()
+        {
+            if (moreInfoPanel != null)
+            {
+                moreInfoPanel.SetActive(false);
+                isMoreInfoActive = false;
+                LogDebug("More info panel disabled on Start");
+            }
+        }
+
         void OnEnable()
         {
             LogDebug("OnEnable called");
             isActive = true;
+
+            if (moreInfoPanel != null)
+            {
+                moreInfoPanel.SetActive(false);
+                isMoreInfoActive = false;
+                LogDebug("More info panel disabled on tab enable");
+            }
 
             ResetSelectionState();
 
@@ -96,6 +124,12 @@ namespace ProjectColombo.UI.Pausescreen
             LogDebug("OnDisable called");
             isActive = false;
             isTabSelected = false;
+
+            if (moreInfoPanel != null && isMoreInfoActive)
+            {
+                HideMoreInfo();
+                LogDebug("More info panel hidden on tab disable");
+            }
 
             ResetSelectionState();
         }
@@ -121,6 +155,8 @@ namespace ProjectColombo.UI.Pausescreen
             {
                 return;
             }
+
+            HandleMoreInfoInput();
 
             if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject != null)
             {
@@ -149,6 +185,219 @@ namespace ProjectColombo.UI.Pausescreen
                 {
                     ResetSelectionState();
                 }
+            }
+        }
+
+        void HandleMoreInfoRawInput()
+        {
+            if (!isMoreInfoActive)
+            {
+                return;
+            }
+
+            if (UnityEngine.InputSystem.Keyboard.current != null)
+            {
+                if (UnityEngine.InputSystem.Keyboard.current.escapeKey.wasPressedThisFrame ||
+                    UnityEngine.InputSystem.Keyboard.current.backspaceKey.wasPressedThisFrame)
+                {
+                    HideMoreInfo();
+                    LogDebug("More info closed via keyboard input (Escape/Backspace)");
+                    return;
+                }
+            }
+
+            if (UnityEngine.InputSystem.Gamepad.current != null)
+            {
+                if (UnityEngine.InputSystem.Gamepad.current.buttonEast.wasPressedThisFrame)
+                {
+                    HideMoreInfo();
+                    LogDebug("More info closed via gamepad East button");
+                    return;
+                }
+            }
+        }
+
+        void HandleMoreInfoInput()
+        {
+            if (gameInput == null || gameInput.inputActions == null)
+            {
+                return;
+            }
+
+            HandleMoreInfoRawInput();
+
+            if (isMoreInfoActive)
+            {
+                return;
+            }
+
+            if (gameInput.inputActions.UI.Submit.WasPressedThisFrame())
+            {
+                if (Time.unscaledTime - lastSubmitTime < 0.3f)
+                {
+                    return;
+                }
+
+                lastSubmitTime = Time.unscaledTime;
+                ShowMoreInfo();
+                lastMoreInfoActivationTime = Time.unscaledTime;
+            }
+        }
+
+        void DisableUIInputsForMoreInfo()
+        {
+            if (gameInput != null && gameInput.inputActions != null)
+            {
+                gameInput.inputActions.UI.Cancel.Disable();
+                gameInput.inputActions.UI.MoveLeftShoulder.Disable();
+                gameInput.inputActions.UI.MoveRightShoulder.Disable();
+                gameInput.inputActions.UI.Navigate.Disable();
+                gameInput.inputActions.UI.Submit.Disable();
+                LogDebug("Disabled UI inputs for More Info panel");
+            }
+        }
+
+        void EnableUIInputsAfterMoreInfo()
+        {
+            if (gameInput != null && gameInput.inputActions != null)
+            {
+                gameInput.inputActions.UI.Cancel.Enable();
+                gameInput.inputActions.UI.MoveLeftShoulder.Enable();
+                gameInput.inputActions.UI.MoveRightShoulder.Enable();
+                gameInput.inputActions.UI.Navigate.Enable();
+                gameInput.inputActions.UI.Submit.Enable();
+                LogDebug("Re-enabled UI inputs after More Info panel");
+            }
+        }
+
+        public void ShowMoreInfo()
+        {
+            if (moreInfoPanel == null)
+            {
+                LogDebug("MoreInfo panel is not assigned in inspector!", true);
+                return;
+            }
+
+            if (currentSelectedIndex < 0 || currentSelectedIndex >= inventorySlotButtons.Length)
+            {
+                LogDebug("Invalid selection for More Info", true);
+                return;
+            }
+
+            if (inventoryManager != null)
+            {
+                if (!inventoryManager.ValidateMoreInfoReferences())
+                {
+                    LogDebug("More Info references not properly assigned in InventoryManager!", true);
+                    return;
+                }
+            }
+
+            UINavigationManager navigationManager = FindFirstObjectByType<UINavigationManager>();
+            if (navigationManager != null)
+            {
+                navigationManager.SetNavigationState(UINavigationState.PauseInventoryMoreInfo);
+                LogDebug("Set navigation state to PauseInventoryMoreInfo");
+            }
+
+            DisableUIInputsForMoreInfo();
+
+            moreInfoPanel.SetActive(true);
+            isMoreInfoActive = true;
+
+            HideGameObjects();
+
+            UpdateMoreInfoDisplay();
+
+            LogDebug($"MoreInfo panel activated for slot {currentSelectedIndex}");
+        }
+
+        public void HideMoreInfo()
+        {
+            if (moreInfoPanel == null)
+            {
+                return;
+            }
+
+            UINavigationManager navigationManager = FindFirstObjectByType<UINavigationManager>();
+            if (navigationManager != null)
+            {
+                navigationManager.SetNavigationState(UINavigationState.PauseInventoryTab);
+            }
+
+            EnableUIInputsAfterMoreInfo();
+
+            moreInfoPanel.SetActive(false);
+            isMoreInfoActive = false;
+
+            ShowGameObjects();
+
+            LogDebug("MoreInfo panel deactivated");
+        }
+
+        void HideGameObjects()
+        {
+            if (objectsToHideOnMoreInfo == null)
+            {
+                return;
+            }
+
+            foreach (GameObject gameObjectToHide in objectsToHideOnMoreInfo)
+            {
+                if (gameObjectToHide != null)
+                {
+                    gameObjectToHide.SetActive(false);
+                    LogDebug($"Hidden object: {gameObjectToHide.name}");
+                }
+            }
+        }
+
+        void ShowGameObjects()
+        {
+            if (objectsToHideOnMoreInfo == null)
+            {
+                return;
+            }
+
+            foreach (GameObject gameObjectToShow in objectsToHideOnMoreInfo)
+            {
+                if (gameObjectToShow != null)
+                {
+                    gameObjectToShow.SetActive(true);
+                    LogDebug($"Shown object: {gameObjectToShow.name}");
+                }
+            }
+        }
+
+        void UpdateMoreInfoDisplay()
+        {
+            if (!isMoreInfoActive || inventoryManager == null)
+            {
+                return;
+            }
+
+            switch (currentSelectedIndex)
+            {
+                case 0: // Weapon Slot
+                    inventoryManager.ShowMoreInfoForWeapon();
+                    break;
+                case 1: // Mask Slot
+                    inventoryManager.ShowMoreInfoForMask();
+                    break;
+                case 7: // Potion Slot
+                    inventoryManager.ShowMoreInfoForPotion();
+                    break;
+                default: // Charm Slots (2-6)
+                    CharmButton charmButton = inventorySlotButtons[currentSelectedIndex].GetComponent<CharmButton>();
+                    if (charmButton != null)
+                    {
+                        inventoryManager.ShowMoreInfoForCharm(charmButton.charmObject);
+                    }
+                    else
+                    {
+                        inventoryManager.ShowMoreInfoForEmptyCharm();
+                    }
+                    break;
             }
         }
 

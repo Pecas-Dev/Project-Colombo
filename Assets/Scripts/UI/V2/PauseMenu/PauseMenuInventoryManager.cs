@@ -29,6 +29,20 @@ namespace ProjectColombo.UI.Pausescreen
         [SerializeField] Image potionSlotImage;
         [SerializeField] TextMeshProUGUI potionCountText;
 
+        [Header("More Info Panel References")]
+        [SerializeField] GameObject moreInfoPanel;
+        [SerializeField] Image moreInfoItemImage;
+        [SerializeField] TextMeshProUGUI moreInfoTitleText;
+        [SerializeField] TextMeshProUGUI moreInfoDescriptionText;
+        [SerializeField] TextMeshProUGUI moreInfoAbilityText;
+
+        [Header("More Info Weapon Settings")]
+        [SerializeField] Sprite weaponSpriteForMoreInfo;
+
+        [Header("More Info Colors")]
+        [SerializeField] Color moreInfoDefaultColor = Color.white;
+        [SerializeField] Color moreInfoWeaponColor = Color.cyan;
+
         [Header("Empty Slot Sprites")]
         [SerializeField] Sprite emptyCharmSprite;
         [SerializeField] Sprite emptyPotionSprite;
@@ -142,6 +156,346 @@ namespace ProjectColombo.UI.Pausescreen
             }
 
             isInitialized = true;
+        }
+
+        public bool ValidateMoreInfoReferences()
+        {
+            bool isValid = true;
+
+            if (moreInfoPanel == null)
+            {
+                LogDebug("WARNING: More Info Panel is not assigned!", true);
+                isValid = false;
+            }
+
+            if (moreInfoTitleText == null)
+            {
+                LogDebug("WARNING: More Info Title Text is not assigned!", true);
+                isValid = false;
+            }
+
+            if (moreInfoDescriptionText == null)
+            {
+                LogDebug("WARNING: More Info Description Text is not assigned!", true);
+                isValid = false;
+            }
+
+            if (moreInfoItemImage == null)
+            {
+                LogDebug("WARNING: More Info Item Image is not assigned!", true);
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        public void ShowMoreInfoForWeapon()
+        {
+            LogDebug("ShowMoreInfoForWeapon called");
+
+            if (moreInfoTitleText != null)
+            {
+                moreInfoTitleText.text = "Musician's Stoccoviola";
+                moreInfoTitleText.color = moreInfoWeaponColor;
+                LogDebug("Set weapon title text");
+            }
+            else
+            {
+                LogDebug("moreInfoTitleText is null!", true);
+            }
+
+            if (moreInfoDescriptionText != null)
+            {
+                moreInfoDescriptionText.text = "Musicians are well-versed in the finest arts esteemed by nobility. This weapon is one of the Musician's trusted companions along their journey, able to pierce the toughest armor while composing exquisite melodies in equal measure.";
+                LogDebug("Set weapon description text");
+            }
+            else
+            {
+                LogDebug("moreInfoDescriptionText is null!", true);
+            }
+
+            if (moreInfoAbilityText != null)
+            {
+                moreInfoAbilityText.gameObject.SetActive(false);
+                LogDebug("Hidden ability text for weapon");
+            }
+
+            if (moreInfoItemImage != null)
+            {
+                if (weaponSpriteForMoreInfo != null)
+                {
+                    moreInfoItemImage.sprite = weaponSpriteForMoreInfo;
+                    moreInfoItemImage.gameObject.SetActive(true);
+                    LogDebug("Set weapon image from manually assigned sprite");
+                }
+                else
+                {
+                    moreInfoItemImage.gameObject.SetActive(false);
+                    LogDebug("No weapon sprite assigned for more info");
+                }
+            }
+            else
+            {
+                LogDebug("moreInfoItemImage is null!", true);
+            }
+
+            LogDebug("ShowMoreInfoForWeapon completed");
+        }
+
+
+        public void ShowMoreInfoForMask()
+        {
+            if (playerInventory == null || playerInventory.maskSlot == null)
+            {
+                ShowMoreInfoForEmptyMask();
+                return;
+            }
+
+            bool hasMask = playerInventory.maskSlot.transform.childCount > 0;
+
+            if (!hasMask)
+            {
+                ShowMoreInfoForEmptyMask();
+                return;
+            }
+
+            GameObject maskObject = playerInventory.maskSlot.transform.GetChild(0).gameObject;
+            BaseMask maskComponent = maskObject.GetComponent<BaseMask>();
+
+            if (maskComponent == null)
+            {
+                ShowMoreInfoForEmptyMask();
+                return;
+            }
+
+            if (moreInfoTitleText != null)
+            {
+                moreInfoTitleText.text = maskComponent.maskName;
+                moreInfoTitleText.color = GetMaskColor(maskComponent.echoUnlocked);
+            }
+
+            if (moreInfoDescriptionText != null)
+            {
+                moreInfoDescriptionText.text = maskComponent.maskDescription;
+            }
+
+            if (moreInfoAbilityText != null)
+            {
+                moreInfoAbilityText.gameObject.SetActive(true);
+                if (maskComponent.abilityObject != null)
+                {
+                    BaseAbility ability = maskComponent.abilityObject.GetComponent<BaseAbility>();
+                    if (ability != null)
+                    {
+                        moreInfoAbilityText.text = $"Echo Ability: {ability.abilityDescription}";
+                    }
+                    else
+                    {
+                        moreInfoAbilityText.text = "Echo Ability: No ability description available";
+                    }
+                }
+                else
+                {
+                    moreInfoAbilityText.text = maskComponent.echoDescription;
+                }
+            }
+
+            if (moreInfoItemImage != null)
+            {
+                if (maskComponent.maskPicture != null)
+                {
+                    moreInfoItemImage.sprite = maskComponent.maskPicture;
+                    moreInfoItemImage.gameObject.SetActive(true);
+                }
+                else
+                {
+                    moreInfoItemImage.gameObject.SetActive(false);
+                }
+            }
+
+            LogDebug($"Showing more info for mask: {maskComponent.maskName}");
+        }
+
+        public void ShowMoreInfoForCharm(GameObject charmObject)
+        {
+            if (charmObject == null)
+            {
+                ShowMoreInfoForEmptyCharm();
+                return;
+            }
+
+            BaseCharm charmComponent = charmObject.GetComponent<BaseCharm>();
+
+            if (charmComponent == null)
+            {
+                ShowMoreInfoForEmptyCharm();
+                return;
+            }
+
+            if (moreInfoTitleText != null)
+            {
+                string rarityText = GetRarityDisplayName(charmComponent.charmRarity);
+                moreInfoTitleText.text = $"{charmComponent.charmName} ({rarityText})";
+                moreInfoTitleText.color = GetRarityColor(charmComponent.charmRarity);
+            }
+
+            if (moreInfoDescriptionText != null)
+            {
+                moreInfoDescriptionText.text = charmComponent.charmDescription;
+            }
+
+            if (moreInfoAbilityText != null)
+            {
+                moreInfoAbilityText.gameObject.SetActive(false);
+            }
+
+            if (moreInfoItemImage != null)
+            {
+                if (charmComponent.charmPicture != null)
+                {
+                    moreInfoItemImage.sprite = charmComponent.charmPicture;
+                    moreInfoItemImage.gameObject.SetActive(true);
+                }
+                else
+                {
+                    moreInfoItemImage.gameObject.SetActive(false);
+                }
+            }
+
+            LogDebug($"Showing more info for charm: {charmComponent.charmName}");
+        }
+
+        public void ShowMoreInfoForPotion()
+        {
+            if (playerInventory == null || playerInventory.numberOfPotions <= 0)
+            {
+                ShowMoreInfoForEmptyPotion();
+                return;
+            }
+
+            if (playerInventory.potionPrefab == null)
+            {
+                ShowMoreInfoForEmptyPotion();
+                return;
+            }
+
+            BaseCharm potionComponent = playerInventory.potionPrefab.GetComponent<BaseCharm>();
+
+            if (potionComponent == null)
+            {
+                ShowMoreInfoForEmptyPotion();
+                return;
+            }
+
+            if (moreInfoTitleText != null)
+            {
+                string countText = playerInventory.numberOfPotions > 1 ? $" (x{playerInventory.numberOfPotions})" : "";
+                moreInfoTitleText.text = potionComponent.charmName + countText;
+                moreInfoTitleText.color = GetRarityColor(potionComponent.charmRarity);
+            }
+
+            if (moreInfoDescriptionText != null)
+            {
+                moreInfoDescriptionText.text = potionComponent.charmDescription;
+            }
+
+            if (moreInfoAbilityText != null)
+            {
+                moreInfoAbilityText.gameObject.SetActive(false);
+            }
+
+            if (moreInfoItemImage != null)
+            {
+                if (potionComponent.charmPicture != null)
+                {
+                    moreInfoItemImage.sprite = potionComponent.charmPicture;
+                    moreInfoItemImage.gameObject.SetActive(true);
+                }
+                else
+                {
+                    moreInfoItemImage.gameObject.SetActive(false);
+                }
+            }
+
+            LogDebug($"Showing more info for potion: {potionComponent.charmName}");
+        }
+
+        public void ShowMoreInfoForEmptyMask()
+        {
+            if (moreInfoTitleText != null)
+            {
+                moreInfoTitleText.text = "No Mask Equipped";
+                moreInfoTitleText.color = moreInfoDefaultColor;
+            }
+
+            if (moreInfoDescriptionText != null)
+            {
+                moreInfoDescriptionText.text = "Equip a mask to see its details and echo ability.";
+            }
+
+            if (moreInfoAbilityText != null)
+            {
+                moreInfoAbilityText.gameObject.SetActive(false);
+            }
+
+            if (moreInfoItemImage != null)
+            {
+                moreInfoItemImage.gameObject.SetActive(false);
+            }
+
+            LogDebug("Showing more info for empty mask slot");
+        }
+
+        public void ShowMoreInfoForEmptyCharm()
+        {
+            if (moreInfoTitleText != null)
+            {
+                moreInfoTitleText.text = "No Charm Equipped";
+                moreInfoTitleText.color = moreInfoDefaultColor;
+            }
+
+            if (moreInfoDescriptionText != null)
+            {
+                moreInfoDescriptionText.text = "Equip a charm to see its details and effects.";
+            }
+
+            if (moreInfoAbilityText != null)
+            {
+                moreInfoAbilityText.gameObject.SetActive(false);
+            }
+
+            if (moreInfoItemImage != null)
+            {
+                moreInfoItemImage.gameObject.SetActive(false);
+            }
+
+            LogDebug("Showing more info for empty charm slot");
+        }
+
+        public void ShowMoreInfoForEmptyPotion()
+        {
+            if (moreInfoTitleText != null)
+            {
+                moreInfoTitleText.text = "No Potions Available";
+                moreInfoTitleText.color = moreInfoDefaultColor;
+            }
+
+            if (moreInfoDescriptionText != null)
+            {
+                moreInfoDescriptionText.text = "Collect potions to restore health during your journey.";
+            }
+
+            if (moreInfoAbilityText != null)
+            {
+                moreInfoAbilityText.gameObject.SetActive(false);
+            }
+
+            if (moreInfoItemImage != null)
+            {
+                moreInfoItemImage.gameObject.SetActive(false);
+            }
+
+            LogDebug("Showing more info for empty potion slot");
         }
 
         void SetupEventTriggers()

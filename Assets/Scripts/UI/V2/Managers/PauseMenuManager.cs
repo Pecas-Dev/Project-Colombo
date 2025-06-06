@@ -406,6 +406,24 @@ namespace ProjectColombo.UI.Pausescreen
 
         void HandleTabSwitchInput()
         {
+            if (currentTabIndex == 0 && inventoryTab != null)
+            {
+                PauseMenuInventoryTabController inventoryController = inventoryTab.GetComponent<PauseMenuInventoryTabController>();
+
+                if (inventoryController != null && inventoryController.isMoreInfoActive)
+                {
+                    LogDebug("Tab switching completely disabled - More Info panel is active");
+                    return;
+                }
+            }
+
+            UINavigationManager navigationManager = FindFirstObjectByType<UINavigationManager>();
+            if (navigationManager != null && navigationManager.GetCurrentState() == UINavigationState.PauseInventoryMoreInfo)
+            {
+                LogDebug("Tab switching disabled - In More Info navigation state");
+                return;
+            }
+
             if (gameInput != null && gameInput.inputActions != null)
             {
                 if (gameInput.inputActions.UI.MoveLeftShoulder.WasPressedThisFrame())
