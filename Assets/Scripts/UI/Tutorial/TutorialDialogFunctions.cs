@@ -7,6 +7,7 @@ using ProjectColombo.Combat;
 using ProjectColombo.GameManagement;
 using ProjectColombo.Inventory;
 using ProjectColombo.GameInputSystem;
+using ProjectColombo.GameManagement.Events;
 
 namespace ProjectColombo.Tutorial
 {
@@ -86,6 +87,17 @@ namespace ProjectColombo.Tutorial
         public void AddPotion()
         {
             GameManager.Instance.GetComponent<PlayerInventory>().numberOfPotions = 1;
+        }
+
+        public void AddGold()
+        {
+            var inventory = GameManager.Instance.GetComponent<PlayerInventory>();
+
+            if (inventory.currencyAmount < 200)
+            {
+                inventory.currencyAmount = 200;
+                CustomEvents.CoinsCollected(1);
+            }
         }
     }
 }
