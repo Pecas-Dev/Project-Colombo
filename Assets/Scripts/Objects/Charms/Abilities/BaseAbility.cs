@@ -9,6 +9,7 @@ namespace ProjectColombo.Objects.Masks
     {
         public Sprite abilitySprite;
         public string abilityName;
+        [TextArea] public string abilityDescriptionAlt;
         [TextArea] public string abilityDescription;
 
         public float cooldownInSeconds;

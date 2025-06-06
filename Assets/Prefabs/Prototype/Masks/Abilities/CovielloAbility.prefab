@@ -47,6 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilitySprite: {fileID: 21300000, guid: b405d449a27db5044951a93a43dee53a, type: 3}
   abilityName: Skill Showdown
+  abilityDescriptionAlt: For next 6 seconds every 2 stamina points used, you get
+    +5% damage for 8 seconds (stacks up to 30%)
   abilityDescription: "Skill Showdown [100 seconds Cooldown]\r\nFor next 6 seconds
     every 2 stamina points used, you get +5% damage for 8 seconds (stacks up to 30%)\r\neach
     attack consumes 25 Health Points \r\n+12% attack speed \r\n+10% movement speed.\r\n"
@@ -56,6 +58,7 @@ MonoBehaviour:
   abilityDuration: 6
   abilityTimer: 0
   active: 0
+  wasNotAvailable: 0
   abilitySoundName: Coviello_Mask_Ability
   myPlayerStateMachine: {fileID: 0}
   extraDamageForStaminaPercent: 5

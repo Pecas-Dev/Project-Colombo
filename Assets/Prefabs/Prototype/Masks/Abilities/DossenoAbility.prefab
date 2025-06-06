@@ -46,6 +46,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilitySprite: {fileID: 21300000, guid: b405d449a27db5044951a93a43dee53a, type: 3}
   abilityName: Greed of Knowledge
+  abilityDescriptionAlt: On activation, the next two store items you will buy are
+    discounted by 20% (buy 4 items to reset cooldown).
   abilityDescription: 'Greed of Knowledge
 
     On activation, the next two store
@@ -58,6 +60,7 @@ MonoBehaviour:
   abilityDuration: 100000000
   abilityTimer: 0
   active: 0
+  wasNotAvailable: 0
   abilitySoundName: Dosseno_Mask_Ability
   myPlayerStateMachine: {fileID: 0}
   numberOfReducedItems: 2
