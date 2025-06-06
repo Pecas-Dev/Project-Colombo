@@ -47,7 +47,7 @@ namespace ProjectColombo.Objects.Charms
         void AddHealth()
         {
             Debug.Log("extra health for pick up: " + healthForPickup);
-            myHealthManager.Heal(healthForPickup);
+            myHealthManager.AddHealthPoints(healthForPickup);
         }
 
         public override void Disable()
