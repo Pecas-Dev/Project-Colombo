@@ -174,7 +174,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 874468821b607e641a2be80e5486a96a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthForPickup: 40
+  healthForPickup: 60
 --- !u!1 &4303818640728422693
 GameObject:
   m_ObjectHideFlags: 0
@@ -261,13 +261,14 @@ MonoBehaviour:
     15% discount in shop (take 20% damage of the
     item price bought)
 
-    +300 health points for item pick up'
+    +40 max health for Charm pick up.'
   maskDescriptionAfterEcho: 
   echoDescription: Obtain 350 Max Health Points
   maskLore: lore missing
   echoUnlocked: 0
   attribBeforeEcho: {fileID: 3010321451754386822}
   attribAfterEcho: {fileID: 5082400444315058323}
+  equipped: 0
   echoMission: {fileID: 3294291214843192529}
   abilityObject: {fileID: 1188399355730039433, guid: a7fc1f4b9c994c747be39fc6676139fe, type: 3}
 --- !u!114 &3294291214843192529
@@ -482,7 +483,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 874468821b607e641a2be80e5486a96a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthForPickup: 50
+  healthForPickup: 100
 --- !u!114 &5997195312644731801
 MonoBehaviour:
   m_ObjectHideFlags: 0
