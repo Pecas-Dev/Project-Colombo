@@ -38,6 +38,7 @@ namespace ProjectColombo.Shop
             myAnimator = GetComponent<Animator>();
             GetComponent<RectTransform>().position = position;
             item = itemStruct;
+            item.basePrice = item.price;
 
             float calculatedDiscount = (100f - discount) / 100f;
             item.price = (int)(item.price * calculatedDiscount);
@@ -92,9 +93,12 @@ namespace ProjectColombo.Shop
         public void AdjustPriceToDiscount(float discount)
         {
             float calculatedDiscount = (100f - discount) / 100f;
-            item.price = (int)(item.price * calculatedDiscount);
+            Debug.Log("set discount in shopitem " + calculatedDiscount);
+
+            item.price = (int)(item.basePrice * calculatedDiscount);
             itemPrice.text = item.price.ToString();
         }
+
 
         void FindSoldOutText()
         {

@@ -36,7 +36,7 @@ namespace ProjectColombo.Objects.Masks
             if (boughtItemsCounter <= numberOfReducedItems)
             {
                 shop.GetComponentInChildren<ShopScreen>().SetDiscount(discountOnAbility);
-                Debug.Log("set discount");
+                Debug.Log("set discount in dosseno ability");
             }
         }
         private void OnItemPurchase(int obj)

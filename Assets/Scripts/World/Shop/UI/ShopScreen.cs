@@ -5,7 +5,6 @@ using ProjectColombo.Inventory;
 using ProjectColombo.GameManagement.Events;
 using ProjectColombo.GameManagement;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using System.Collections;
 using ProjectColombo.UI;
 
@@ -18,7 +17,11 @@ namespace ProjectColombo.Shop
         public string name;
         public GameObject item;
         public int price;
+
+        [HideInInspector]
+        public int basePrice; // New field
     }
+
 
     public class ShopScreen : MonoBehaviour
     {
@@ -29,7 +32,7 @@ namespace ProjectColombo.Shop
         public List<ItemToSell> itemsToSell;
         public GameObject buttonPrefab;
         public GameObject pickUpPrefab;
-        List<ShopItems> itemButtons;
+        List<ShopItems> itemButtons = new();
         List<int> noDuplicates = new();
         float discount = 0;
         public Button potionButton;
@@ -130,6 +133,7 @@ namespace ProjectColombo.Shop
 
         public void SetDiscount(float discount)
         {
+            Debug.Log("set discount in shopscreen");
             this.discount = discount;
 
             foreach(ShopItems b in itemButtons)
@@ -140,6 +144,8 @@ namespace ProjectColombo.Shop
 
         public void BuyItem(ItemToSell item)
         {
+            
+
             playerInventory.currencyAmount -= item.price;
             CustomEvents.ItemPurchased(item.price);
 
