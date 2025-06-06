@@ -177,7 +177,7 @@ namespace ProjectColombo.UI
 
             if (echoNameText != null)
             {
-                echoNameText.text = mask.echoDescription;
+                echoNameText.text = "Mission: " + mask.echoDescription;
             }
 
             if (echoAbilityText != null && mask.abilityObject != null)
@@ -218,7 +218,7 @@ namespace ProjectColombo.UI
 
             if (moreInfoEchoNameText != null)
             {
-                moreInfoEchoNameText.text = mask.echoDescription;
+                moreInfoEchoNameText.text = "Mission: " + mask.echoDescription;
             }
 
             if (moreInfoEchoAbilityText != null && mask.abilityObject != null)
