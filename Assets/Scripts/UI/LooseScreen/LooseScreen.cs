@@ -9,12 +9,16 @@ namespace ProjectColombo.UI
 {
     public class LooseScreen : MonoBehaviour
     {
+        GameObject transitionCanvas;
         public TMP_Text text;
         public GameObject button;
         bool isActive = false;
 
         private void Start()
         {
+            transitionCanvas = GameObject.Find("TransitionCanvas");
+
+
             Color newColor = text.color;
             newColor.a = 0;
             text.color = newColor;
@@ -26,7 +30,7 @@ namespace ProjectColombo.UI
             {
                 if (GameManager.Instance.gameInput.GetInputPressed(GameInputSystem.PlayerInputAction.Interact))
                 {
-                    SceneManager.LoadScene(7);
+                    StartCoroutine(End());
                 }
             }
         }
@@ -66,6 +70,15 @@ namespace ProjectColombo.UI
             isActive = true;
             button.SetActive(true);
             EventSystem.current.SetSelectedGameObject(button);
+        }
+
+        IEnumerator End()
+        {
+            transitionCanvas.GetComponentInChildren<Animator>().Play("Close");
+
+            yield return new WaitForSeconds(2);
+            SceneManager.LoadScene(7);
+
         }
     }
 }
