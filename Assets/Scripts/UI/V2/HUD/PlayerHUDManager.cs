@@ -259,7 +259,8 @@ namespace ProjectColombo.UI
                     progressColor.a = 0f;
                     echoMissionProgressText.color = progressColor;
                 }
-                return;
+
+                //return;
             }
 
             bool isLevelOne = SceneManager.GetActiveScene().name == "03_LevelTwo";
@@ -460,29 +461,36 @@ namespace ProjectColombo.UI
 
         void UpdateCurrencyDisplay()
         {
-            if (currencyText == null) return;
-
-            int currentAmount = 0;
-
-            if (playerInventory != null)
+            if (playerInventory == null)
             {
-                currentAmount = playerInventory.currencyAmount;
-            }
-            else if (GameManager.Instance != null)
-            {
-                var inventory = GameManager.Instance.GetComponent<PlayerInventory>();
-                if (inventory != null)
-                {
-                    currentAmount = inventory.currencyAmount;
-                }
+                playerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
             }
 
-            if (currentAmount != currentCurrencyAmount)
-            {
-                currentCurrencyAmount = currentAmount;
-                currencyText.text = currentAmount.ToString();
-                Debug.Log($"Updated currency display: {currentAmount}");
-            }
+            currencyText.text = playerInventory.currencyAmount.ToString();
+
+            //if (currencyText == null) return;
+
+            //int currentAmount = 0;
+
+            //if (playerInventory != null)
+            //{
+            //    currentAmount = playerInventory.currencyAmount;
+            //}
+            //else if (GameManager.Instance != null)
+            //{
+            //    var inventory = GameManager.Instance.GetComponent<PlayerInventory>();
+            //    if (inventory != null)
+            //    {
+            //        currentAmount = inventory.currencyAmount;
+            //    }
+            //}
+
+            //if (currentAmount != currentCurrencyAmount)
+            //{
+            //    currentCurrencyAmount = currentAmount;
+            //    currencyText.text = currentAmount.ToString();
+            //    Debug.Log($"Updated currency display: {currentAmount}");
+            //}
         }
 
         void UpdateMaskDisplay()
