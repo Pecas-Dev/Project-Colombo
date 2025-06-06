@@ -1,41 +1,46 @@
+using ProjectColombo.GameManagement;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Video;
 
-public class ChangeSceneOnVideoEnd : MonoBehaviour
+
+namespace ProjectColombo.UI
 {
-    public VideoPlayer cutScene;
-    GameObject transitionCanvas;
-
-    private void Start()
+    public class ChangeSceneOnVideoEnd : MonoBehaviour
     {
-        cutScene.loopPointReached += OnVideoEnd;
+        public VideoPlayer cutScene;
+        GameObject transitionCanvas;
 
-        transitionCanvas = GameObject.Find("TransitionCanvas");
-
-    }
-
-    private void OnDestroy()
-    {
-        StopAllCoroutines();
-        if (cutScene != null)
+        private void Start()
         {
-            cutScene.loopPointReached -= OnVideoEnd;
+            cutScene.loopPointReached += OnVideoEnd;
+
+            transitionCanvas = GameObject.Find("TransitionCanvas");
+
         }
-    }
 
-    private void OnVideoEnd(VideoPlayer vp)
-    {
-        StartCoroutine(End());
-    }
+        private void OnDestroy()
+        {
+            StopAllCoroutines();
+            if (cutScene != null)
+            {
+                cutScene.loopPointReached -= OnVideoEnd;
+            }
+        }
 
-    IEnumerator End()
-    {
-        transitionCanvas.GetComponentInChildren<Animator>().Play("Close");
+        private void OnVideoEnd(VideoPlayer vp)
+        {
+            StartCoroutine(End());
+        }
 
-        yield return new WaitForSeconds(2);
-        SceneManager.LoadScene(7);
+        IEnumerator End()
+        {
+            transitionCanvas.GetComponentInChildren<Animator>().Play("Close");
 
+            yield return new WaitForSeconds(2);
+            SceneManager.LoadScene(7);
+
+        }
     }
 }
