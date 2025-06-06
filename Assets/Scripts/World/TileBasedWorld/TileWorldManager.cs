@@ -274,10 +274,10 @@ namespace ProjectColombo.LevelManagement
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                ReRollWorld();
-            }
+            //if (Input.GetKeyDown(KeyCode.O))
+            //{
+            //    ReRollWorld();
+            //}
         }
 
         void ConnectLayersIncrease(List<GameObject> firstLayer, List<GameObject> secondLayer)
