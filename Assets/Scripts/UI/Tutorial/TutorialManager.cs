@@ -1,4 +1,5 @@
 using ProjectColombo.Combat;
+using ProjectColombo.Combat.ComboMeter;
 using ProjectColombo.GameInputSystem;
 using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
@@ -72,6 +73,7 @@ namespace ProjectColombo.Tutorial
             
             GameManager.Instance.GetComponent<PlayerInventory>().numberOfPotions = 1;
             player.GetComponent<HealthManager>().Heal(1000);
+            GameManager.Instance.GetComponentInChildren<ComboMeter>().Reset();
         }
 
         private void AttackMinorEnemy()

@@ -58,7 +58,7 @@ namespace ProjectColombo.Combat.ComboMeter
             FindAndConnectUI();
         }
 
-        private void Reset()
+        public void Reset()
         {
             currentLevel = 0;
             currentPoints = 0;
