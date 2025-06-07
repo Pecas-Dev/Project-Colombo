@@ -7,7 +7,6 @@ using ProjectColombo.Objects.Charms;
 using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Stats;
 using ProjectColombo.GameManagement.Events;
-using UnityEngine.SceneManagement;
 using ProjectColombo.UI.Pausescreen;
 
 
@@ -47,12 +46,6 @@ namespace ProjectColombo.Inventory
 
         DropManager dropManager;
         PickUpScreenController pickUpScreenController;
-
-
-        void Awake()
-        {
-            //SceneManager.sceneLoaded += OnSceneLoaded;
-        }
 
         private void Start()
         {
@@ -161,10 +154,7 @@ namespace ProjectColombo.Inventory
             CustomEvents.OnShopOpen -= ShopOpened;
             CustomEvents.OnShopClose -= ShopClosed;
             CustomEvents.OnEchoUnlocked -= EnableMaskAbility;
-            CustomEvents.OnGameReset -= Reset;
-
-            //SceneManager.sceneLoaded -= OnSceneLoaded;
-        }
+            CustomEvents.OnGameReset -= Reset;        }
 
         void GetCurrentStats()
         {
@@ -342,7 +332,8 @@ namespace ProjectColombo.Inventory
                 {
                     GameObject oldCharm = legendaryCharmSlot.transform.GetChild(0).gameObject;
                     Debug.Log($"Removing non-legendary charm from legendary slot: {oldCharm.GetComponent<BaseCharm>().charmName}");
-                    RemoveCharm(oldCharm);
+                    RemoveCharm(oldCharm, false);
+                    AddCharmDirectly(oldCharm);
                 }
 
                 if (charmComponent.GetAbility() != null)
@@ -478,8 +469,10 @@ namespace ProjectColombo.Inventory
             }
         }
 
-        public void RemoveCharm(GameObject charm)
+        public void RemoveCharm(GameObject charm, bool drop = true)
         {
+            Debug.Log("DROP CHARM CALLED: " + charm.name + "\n" + System.Environment.StackTrace);
+
             charm.GetComponent<BaseCharm>().Remove();
             charm.transform.parent = null;
 
@@ -500,9 +493,12 @@ namespace ProjectColombo.Inventory
                 Destroy(charm.GetComponent<BaseCharm>().GetAbility());
             }
 
-            Transform player = GameObject.Find("Player").transform;
-            Vector3 position = new Vector3(player.position.x, 0f, player.position.z);
-            dropManager.DropCharm(charm, position);
+            if (drop)
+            {
+                Transform player = GameObject.Find("Player").transform;
+                Vector3 position = new Vector3(player.position.x, 0f, player.position.z);
+                dropManager.DropCharm(charm, position);
+            }
 
             //Destroy(charm);
         }
