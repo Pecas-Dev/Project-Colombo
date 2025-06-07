@@ -1,8 +1,6 @@
-using ProjectColombo.GameManagement.Events;
 using ProjectColombo.GameManagement;
-using ProjectColombo.Inventory;
-using ProjectColombo.Shop;
-using Unity.VisualScripting;
+using ProjectColombo.GameManagement.Events;
+using ProjectColombo.GameManagement.Stats;
 using UnityEngine;
 
 namespace ProjectColombo.Objects.Masks
@@ -17,9 +15,9 @@ namespace ProjectColombo.Objects.Masks
 
         public override void UseAbility()
         {
-            CustomEvents.OnShopOpen += OnShopOpen;
             CustomEvents.OnItemPurchase += OnItemPurchase;
             CustomEvents.AbilityUsed(abilitySoundName);
+            GameManager.Instance.GetComponent<GlobalStats>().currentShopDiscountPercent = discountOnAbility;
         }
 
         public override void EndAbility()
@@ -27,22 +25,16 @@ namespace ProjectColombo.Objects.Masks
             Debug.Log("end ability");
             available = true;
             active = false;
-            CustomEvents.OnShopOpen -= OnShopOpen;
             CustomEvents.OnItemPurchase -= OnItemPurchase;
         }
 
-        private void OnShopOpen(ShopKeeper shop)
-        {
-            if (boughtItemsCounter <= numberOfReducedItems)
-            {
-                shop.GetComponentInChildren<ShopScreen>().SetDiscount(discountOnAbility);
-                Debug.Log("set discount in dosseno ability");
-            }
-        }
+
         private void OnItemPurchase(int obj)
         {
-            boughtItemsCounter++;
-            Debug.Log("item purchased: " + boughtItemsCounter);
+            if (boughtItemsCounter >= numberOfReducedItems)
+            {
+                GameManager.Instance.GetComponent<GlobalStats>().currentShopDiscountPercent = 0;
+            }
 
             if (boughtItemsCounter >= boughtItemsToReset)
             {

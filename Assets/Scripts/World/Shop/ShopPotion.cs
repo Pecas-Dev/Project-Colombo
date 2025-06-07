@@ -1,5 +1,6 @@
 using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
+using ProjectColombo.GameManagement.Stats;
 using ProjectColombo.Inventory;
 using ProjectColombo.Shop;
 using ProjectColombo.UI;
@@ -16,13 +17,15 @@ public class ShopPotion : MonoBehaviour
 
     [Header("Visual References")]
     [SerializeField] Image potionImage;
+    public TMP_Text priceText;
     [SerializeField] bool autoFindPotionImage = true;
 
     ShopItemSelectionAnimator selectionAnimator;
 
     bool isBought = false;
     public bool isActive;
-    public int price;
+    public int basePrice;
+    [ReadOnlyInspector] public int price;
 
     void Start()
     {
@@ -104,6 +107,11 @@ public class ShopPotion : MonoBehaviour
         PlayerInventory playerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
         if (playerInventory == null) return;
 
+        float discount = GameManager.Instance.GetComponent<GlobalStats>().currentShopDiscountPercent;
+        float calculatedDiscount = (100f - discount) / 100f;
+        price = (int)(basePrice * calculatedDiscount);
+        priceText.text = price.ToString();
+
         bool wasAffordable = (potionImage != null && potionImage.color == Color.white);
         bool canAfford = playerInventory.currencyAmount >= price && !isBought;
 
@@ -113,6 +121,7 @@ public class ShopPotion : MonoBehaviour
         }
 
         Button buttonComponent = GetComponent<Button>();
+
         if (buttonComponent != null)
         {
             buttonComponent.interactable = true;

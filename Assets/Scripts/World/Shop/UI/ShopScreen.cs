@@ -7,6 +7,7 @@ using ProjectColombo.GameManagement;
 using UnityEngine.UI;
 using System.Collections;
 using ProjectColombo.UI;
+using ProjectColombo.GameManagement.Stats;
 
 
 namespace ProjectColombo.Shop
@@ -32,7 +33,7 @@ namespace ProjectColombo.Shop
         public List<ItemToSell> itemsToSell;
         public GameObject buttonPrefab;
         public GameObject pickUpPrefab;
-        List<ShopItems> itemButtons = new();
+        public List<ShopItems> itemButtons = new();
         List<int> noDuplicates = new();
         float discount = 0;
         public Button potionButton;
@@ -48,7 +49,10 @@ namespace ProjectColombo.Shop
             currentPlayerCurrency.text = playerInventory.currencyAmount.ToString();
             itemButtons = new();
 
-            int positionX = 0;// - (int)(spacing * (numbersOfItemsToSell-1) / 2f);
+            discount = GameManager.Instance.GetComponent<GlobalStats>().currentShopDiscountPercent;
+            Debug.Log("discount on shop start " + discount);
+
+            int positionX = 0;
 
             for (int i = 0; i < numbersOfItemsToSell; i++)
             {
@@ -131,16 +135,17 @@ namespace ProjectColombo.Shop
             }
         }
 
-        public void SetDiscount(float discount)
-        {
-            Debug.Log("set discount in shopscreen");
-            this.discount = discount;
+        //public void SetDiscount(float discount)
+        //{
+        //    Debug.Log("set discount in shopscreen " + discount);
+        //    this.discount = discount;
 
-            foreach(ShopItems b in itemButtons)
-            {
-                b.AdjustPriceToDiscount(discount);
-            }
-        }
+        //    foreach(ShopItems b in itemButtons)
+        //    {
+        //        Debug.Log("item discounted");
+        //        b.AdjustPriceToDiscount(discount);
+        //    }
+        //}
 
         public void BuyItem(ItemToSell item)
         {

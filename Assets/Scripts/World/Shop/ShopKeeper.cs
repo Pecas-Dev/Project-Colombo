@@ -149,7 +149,6 @@ namespace ProjectColombo.Shop
             ShopScreen shopScreenComponent = shopScreen.GetComponentInChildren<ShopScreen>();
             if (shopScreenComponent != null)
             {
-                shopScreenComponent.SetDiscount(0f);
                 StartCoroutine(shopScreenComponent.SetFirstSelected());
             }
 
@@ -196,12 +195,6 @@ namespace ProjectColombo.Shop
 
             shopScreen.SetActive(false);
             shopIndicator.SetActive(true);
-
-            ShopScreen shopScreenComponent = shopScreen.GetComponentInChildren<ShopScreen>();
-            if (shopScreenComponent != null)
-            {
-                shopScreenComponent.SetDiscount(0f);
-            }
 
             CustomEvents.ShopClose();
 

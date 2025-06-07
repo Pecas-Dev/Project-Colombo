@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 using ProjectColombo.UI;
 using System.Collections;
 using ProjectColombo.Inventory;

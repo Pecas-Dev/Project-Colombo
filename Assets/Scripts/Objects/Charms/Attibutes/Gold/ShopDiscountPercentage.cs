@@ -1,4 +1,6 @@
+using ProjectColombo.GameManagement;
 using ProjectColombo.GameManagement.Events;
+using ProjectColombo.GameManagement.Stats;
 using ProjectColombo.Shop;
 
 
@@ -15,21 +17,12 @@ namespace ProjectColombo.Objects.Charms
 
         public override void Enable()
         {
-            CustomEvents.OnShopOpen += OnShopOpen;
-        }
-
-        private void OnShopOpen(Shop.ShopKeeper shop)
-        {
-            if (eventHandled) return;
-            eventHandled = true;
-            StartCoroutine(ResetEventHandled());
-
-            shop.GetComponentInChildren<ShopScreen>().SetDiscount(discountPercentage);
+            GameManager.Instance.GetComponent<GlobalStats>().currentShopDiscountPercent = discountPercentage;
         }
 
         public override void Disable()
         {
-            CustomEvents.OnShopOpen -= OnShopOpen;
+            GameManager.Instance.GetComponent<GlobalStats>().currentShopDiscountPercent = 0;
         }
     }
 }

@@ -58,6 +58,10 @@ namespace ProjectColombo.GameManagement.Stats
         [ReadOnlyInspector] public float currentMissedParryPaneltyPercent;
 
 
+        public float defaultShopDiscountPercent = 0;
+        [ReadOnlyInspector] public float currentShopDiscountPercent;
+
+
 
         private void Awake()
         {
@@ -86,6 +90,8 @@ namespace ProjectColombo.GameManagement.Stats
             currentCorrectAttackScalePercent = defaultCorrectAttackScalePercent;
             currentBlockReductionPercent = defaultBlockReductionPercent;
             currentMissedParryPaneltyPercent = defaultMissedParryPaneltyPercent;
+
+            currentShopDiscountPercent = defaultShopDiscountPercent;
 
             PlayerInventory myInventory = GetComponent<PlayerInventory>();
             myInventory.Reset();

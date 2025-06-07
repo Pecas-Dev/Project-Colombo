@@ -1,4 +1,6 @@
 using DG.Tweening;
+using ProjectColombo.GameManagement;
+using ProjectColombo.GameManagement.Stats;
 using ProjectColombo.Objects.Charms;
 using TMPro;
 using UnityEngine;
@@ -33,6 +35,11 @@ namespace ProjectColombo.Shop
             }
         }
 
+        private void Update()
+        {
+            CheckActive();
+        }
+
         public void SetUp(ItemToSell itemStruct, Vector3 position, float discount)
         {
             myAnimator = GetComponent<Animator>();
@@ -41,7 +48,7 @@ namespace ProjectColombo.Shop
             item.basePrice = item.price;
 
             float calculatedDiscount = (100f - discount) / 100f;
-            item.price = (int)(item.price * calculatedDiscount);
+            item.price = (int)(item.basePrice * calculatedDiscount);
 
             BaseCharm charmDetails = item.item.GetComponent<BaseCharm>();
 
@@ -90,14 +97,14 @@ namespace ProjectColombo.Shop
             }
         }
 
-        public void AdjustPriceToDiscount(float discount)
-        {
-            float calculatedDiscount = (100f - discount) / 100f;
-            Debug.Log("set discount in shopitem " + calculatedDiscount);
+        //public void AdjustPriceToDiscount(float discount)
+        //{
+        //    float calculatedDiscount = (100f - discount) / 100f;
+        //    Debug.Log("set discount in shopitem " + calculatedDiscount);
 
-            item.price = (int)(item.basePrice * calculatedDiscount);
-            itemPrice.text = item.price.ToString();
-        }
+        //    item.price = (int)(item.basePrice * calculatedDiscount);
+        //    itemPrice.text = item.price.ToString();
+        //}
 
 
         void FindSoldOutText()
@@ -139,6 +146,13 @@ namespace ProjectColombo.Shop
         {
             ShopScreen currentScreen = GetComponentInParent<ShopScreen>();
             if (currentScreen == null) return;
+
+
+            float discount = GameManager.Instance.GetComponent<GlobalStats>().currentShopDiscountPercent;
+            float calculatedDiscount = (100f - discount) / 100f;
+            item.price = (int)(item.basePrice * calculatedDiscount);
+            itemPrice.text = item.price.ToString();
+
 
             bool wasActive = isActive;
             bool canAfford = item.price <= currentScreen.GetCurrency();
