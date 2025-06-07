@@ -878,9 +878,11 @@ namespace ProjectColombo.UI.Pausescreen
                 }
             }
 
-            if (legendaryCharmButton != null && playerInventory.legendaryCharms != null && playerInventory.legendaryCharms.Count > 0)
+            GameObject legendarySlotCharm = playerInventory.legendaryCharmSlot.transform.GetComponentInChildren<BaseCharm>().gameObject;
+
+            if (legendaryCharmButton != null && legendarySlotCharm != null)
             {
-                legendaryCharmButton.UpdateInfoWithEmptySprite(playerInventory.legendaryCharms[0], emptyLegendaryCharmSprite);
+                legendaryCharmButton.UpdateInfoWithEmptySprite(legendarySlotCharm, emptyLegendaryCharmSprite);
             }
 
             if (inventoryTabController != null)
