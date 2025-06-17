@@ -7,6 +7,7 @@ using ProjectColombo.GameInputSystem;
 using ProjectColombo.GameManagement;
 using ProjectColombo.UI;
 using ProjectColombo.Inventory;
+using TMPro;
 
 
 namespace ProjectColombo.Shop

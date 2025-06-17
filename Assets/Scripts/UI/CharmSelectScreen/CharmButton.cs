@@ -16,7 +16,7 @@ namespace ProjectColombo.UI
 
         Pausescreen.PauseMenuInventoryManager inventoryManager;
         Sprite originalSprite;
-        BaseCharm charmComponent;
+        [HideInInspector] public BaseCharm charmComponent;
 
         void Awake()
         {

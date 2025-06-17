@@ -20,32 +20,35 @@ namespace ProjectColombo.StateMachine.Pulcinella
             switch (attackMode)
             {
                 case 0:
-                    stateMachine.myAnimator.Play("CursedSlash");
+                    stateMachine.myAnimator.CrossFadeInFixedTime("CursedSlash", 0.1f);
                     break;
                 case 1:
-                    stateMachine.myAnimator.Play("RagefullImpact");
+                    stateMachine.myAnimator.CrossFadeInFixedTime("RagefullImpact", 0.1f);
                     break;
                 case 2:
-                    stateMachine.myAnimator.Play("CursedLeap");
+                    stateMachine.myAnimator.CrossFadeInFixedTime("CursedLeap", 0.1f);
                     break;
                 case 3:
-                    stateMachine.myAnimator.Play("CursedNote");
+                    stateMachine.myAnimator.CrossFadeInFixedTime("CursedNote", 0.1f);
                     break;
             }
         }
 
         public override void Tick(float deltaTime)
         {
-            if (attackMode == 2 && stateMachine.inAir)
+            if (stateMachine.canMove)
             {
                 currentDistance = Vector3.Distance(stateMachine.playerRef.transform.position, stateMachine.transform.position);
 
                 if (currentDistance > stateMachine.myPulcinellaAttributes.targetDistance)
                 {
-                    MoveToTarget(stateMachine.playerRef.transform.position, deltaTime, stateMachine.myEntityAttributes.moveSpeed * 5);
+                    MoveToTarget(stateMachine.playerRef.transform.position, deltaTime, stateMachine.myEntityAttributes.moveSpeed * 10);
                 }
+            }
 
-                RotateTowardsTarget(stateMachine.playerRef.position, deltaTime, 120f);
+            if (stateMachine.canRotate)
+            {
+                RotateTowardsTarget(stateMachine.playerRef.position, deltaTime, 10f);
             }
         }
 

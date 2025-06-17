@@ -35,7 +35,8 @@ namespace ProjectColombo.StateMachine.Pulcinella
         [ReadOnlyInspector] public int lastAttack = -1;
         [ReadOnlyInspector] public int consecutiveAttackCount = 0;
 
-        [ReadOnlyInspector] public bool inAir = false;
+        [ReadOnlyInspector] public bool canMove = false;
+        [ReadOnlyInspector] public bool canRotate = false;
 
         public GameObject impactSphere;
         public GameObject cursedNoteSphere;
@@ -193,7 +194,7 @@ namespace ProjectColombo.StateMachine.Pulcinella
 
         public void DoSlash()
         {
-            inAir = false;
+            canMove = false;
             SwitchState(new PulcinellaStateAttack(this, 0));
         }
 
@@ -204,14 +205,24 @@ namespace ProjectColombo.StateMachine.Pulcinella
             Instantiate(impactSphere, pos, transform.rotation);
         }
 
-        public void StartMovingOnLeap()
+        public void StartMovingAttack()
         {
-            inAir = true;
+            canMove = true;
         }
 
-        public void StopMovingOnLeap()
+        public void StopMovingAttack()
         {
-            inAir = false;
+            canMove = false;
+        }
+
+        public void StartRotatingAttack()
+        {
+            canRotate = true;
+        }
+
+        public void StopRotatingAttack()
+        {
+            canRotate = false;
         }
 
         public void SpawnCursedNoteSphere()

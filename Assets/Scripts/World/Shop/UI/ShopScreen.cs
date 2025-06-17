@@ -8,6 +8,8 @@ using UnityEngine.UI;
 using System.Collections;
 using ProjectColombo.UI;
 using ProjectColombo.GameManagement.Stats;
+using UnityEngine.EventSystems;
+using ProjectColombo.Objects.Charms;
 
 
 namespace ProjectColombo.Shop
@@ -37,6 +39,7 @@ namespace ProjectColombo.Shop
         List<int> noDuplicates = new();
         float discount = 0;
         public Button potionButton;
+        public TMP_Text charmDescription;
         //public GameObject exitShopButton;
 
         [Header("Selection Animation")]
@@ -48,15 +51,16 @@ namespace ProjectColombo.Shop
             playerInventory = GameManager.Instance.GetComponent<PlayerInventory>();
             currentPlayerCurrency.text = playerInventory.currencyAmount.ToString();
             itemButtons = new();
+            charmDescription.text = "";
 
             discount = GameManager.Instance.GetComponent<GlobalStats>().currentShopDiscountPercent;
             Debug.Log("discount on shop start " + discount);
 
-            int positionX = 0;
+            int positionY = 0;
 
             for (int i = 0; i < numbersOfItemsToSell; i++)
             {
-                Vector3 position = new(positionX, 50, 0);
+                Vector3 position = new(-500, positionY, 0);
 
                 // Instantiate the button prefab
                 GameObject prefab = Instantiate(buttonPrefab, transform);
@@ -86,7 +90,7 @@ namespace ProjectColombo.Shop
                     }
                 }
 
-                positionX += spacing;
+                positionY -= spacing;
             }
 
             foreach (ShopItems b in itemButtons)
@@ -133,6 +137,23 @@ namespace ProjectColombo.Shop
             {
                 b.CheckActive();
             }
+
+            GameObject currentSelected = EventSystem.current.currentSelectedGameObject;
+            ShopItems currentButton = null;
+
+            if (currentSelected != null)
+            {
+                currentButton = currentSelected.gameObject.GetComponentInParent<ShopItems>();
+
+                if (currentButton != null)
+                {
+                    charmDescription.text = currentButton.item.item.GetComponent<BaseCharm>().charmDescription;
+                }
+                else
+                {
+                    charmDescription.text = "- heal 100 health points\r\n- heal 15% of missing health";
+                }
+            }
         }
 
         //public void SetDiscount(float discount)
@@ -149,8 +170,6 @@ namespace ProjectColombo.Shop
 
         public void BuyItem(ItemToSell item)
         {
-            
-
             playerInventory.currencyAmount -= item.price;
             CustomEvents.ItemPurchased(item.price);
 

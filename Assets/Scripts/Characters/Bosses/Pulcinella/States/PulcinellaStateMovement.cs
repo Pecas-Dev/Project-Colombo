@@ -46,14 +46,15 @@ namespace ProjectColombo.StateMachine.Pulcinella
 
             stateMachine.myAnimator.SetFloat("Speed", speed);
 
-            RotateTowardsTarget(stateMachine.playerRef.position, deltaTime, 120f);
+            RotateTowardsTarget(stateMachine.playerRef.position, deltaTime, 10f);
 
             if (timer >= currentAttackTimer)
             {
                 if (currentDistance <= stateMachine.myPulcinellaAttributes.distanceToSlash)
                 {
-                    // If attack 0 was used 3 times in a row, force attack 1
-                    if (stateMachine.lastAttack == 0 && stateMachine.consecutiveAttackCount >= 3)
+                    int rand = Random.Range(1, 3);
+                    // If slashed too often in a row switch. but random after 1 to 3 slashes
+                    if (stateMachine.lastAttack == 0 && stateMachine.consecutiveAttackCount > rand)
                     {
                         PerformAttack(1);
                         return;

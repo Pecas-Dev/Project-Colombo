@@ -72,14 +72,15 @@ MonoBehaviour:
   charmName: Old Friscalettu
   charmRarity: 1
   charmPicture: {fileID: 21300000, guid: b779777bfbdb97347bb0b2c54e596261, type: 3}
-  charmDescription: '+28% Dur scale damage
+  charmDescription: '+28% <color=#F3C348>Dur</color> scale damage
 
-    +6% Moll scale damage
+    +6% <color=#7931DF>Moll</color>
+    scale damage
 
-    -18% damage
-    from all sources'
+    -18% damage from all sources'
   charmLore: 
   abilityObject: {fileID: 0}
+  equipped: 0
 --- !u!114 &8515784484982871898
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,7 +123,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   majorDamagePercentage: 0
   minorDamagePercentage: 0
-  damageResistPercentage: 0
+  incomingMajorDamagePercentage: 0
+  incomingMinorDamagePercentage: 0
   blockPercentage: 0
   extraDamageMissedParryDifferentScalePercentage: 0
   extraDamageMissedParrySameScalePercentage: 0

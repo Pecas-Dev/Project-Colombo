@@ -19,7 +19,7 @@ namespace ProjectColombo.StateMachine.Pulcinella
         public override void Tick(float deltaTime)
         {
             timer += deltaTime;
-            RotateTowardsTarget(stateMachine.playerRef.position, deltaTime, 120f);
+            RotateTowardsTarget(stateMachine.playerRef.position, deltaTime, 10f);
 
             float speed = 0;
             stateMachine.myAnimator.SetFloat("Speed", speed);

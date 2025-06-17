@@ -252,7 +252,8 @@ MonoBehaviour:
   extraDamage: 0
   lastAttack: -1
   consecutiveAttackCount: 0
-  inAir: 0
+  canMove: 0
+  canRotate: 0
   impactSphere: {fileID: 1194077765331791584, guid: 67b1ce4184878bf428444dbd2187247d, type: 3}
   cursedNoteSphere: {fileID: 1194077765331791584, guid: e918561caaff701409293f9da3c6a0a7, type: 3}
   endDialogSystem: {fileID: 0}
@@ -268,15 +269,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0059b52ec89244b4a8c014ee5e902133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetDistance: 3
-  idleTimeAfterAttack: 0.3
+  targetDistance: 2
+  idleTimeAfterAttack: 0.2
   extraDamageDuration: 2
   damageMultiplier: 1.5
   minTimeBetweenAttacks: 1
   maxTimeBetweenAttacks: 3
   distanceToSlash: 4
   distanceToRageImpact: 8
-  chanceToLeap: 0
+  chanceToLeap: 60
 --- !u!114 &3020111551455153591
 MonoBehaviour:
   m_ObjectHideFlags: 0

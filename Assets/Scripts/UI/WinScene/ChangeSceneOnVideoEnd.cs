@@ -23,6 +23,7 @@ namespace ProjectColombo.UI
         private void OnDestroy()
         {
             StopAllCoroutines();
+
             if (cutScene != null)
             {
                 cutScene.loopPointReached -= OnVideoEnd;

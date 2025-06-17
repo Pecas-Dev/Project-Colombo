@@ -1,8 +1,9 @@
-using ProjectColombo.GameInputSystem;
 using ProjectColombo.Combat;
-using UnityEngine;
-using System.Collections;
+using ProjectColombo.GameInputSystem;
 using ProjectColombo.GameManagement.Events;
+using System.Collections;
+using System.Linq;
+using UnityEngine;
 
 
 namespace ProjectColombo.StateMachine.Player
@@ -223,10 +224,12 @@ namespace ProjectColombo.StateMachine.Player
                 return angle <= maxViewAngle;
             }
 
-            // 1. Check for enemies first
             GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            GameObject[] bosses = GameObject.FindGameObjectsWithTag("Boss");
 
-            foreach (GameObject enemy in enemies)
+            GameObject[] allEnemies = enemies.Concat(bosses).ToArray();
+
+            foreach (GameObject enemy in allEnemies)
             {
                 float distance = Vector3.Distance(enemy.transform.position, myPosition);
                 if (distance < closestDistance && IsInView(enemy.transform.position))

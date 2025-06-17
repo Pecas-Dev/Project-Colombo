@@ -90042,6 +90042,13 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
+  - time: 0.13333334
+    functionName: StartRotatingAttack
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
   - time: 1.3666667
     functionName: PlayJump
     data: 
@@ -90050,14 +90057,21 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: 1.4333333
-    functionName: StartMovingOnLeap
+    functionName: StartMovingAttack
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
   - time: 1.9333333
-    functionName: StopMovingOnLeap
+    functionName: StopMovingAttack
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 1.9333333
+    functionName: StopRotatingAttack
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
@@ -90071,20 +90085,20 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: 2.0333333
-    functionName: ImpactFeedback
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 2.0333333
     functionName: PlayCL_LandVFX
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 2.7666667
+  - time: 2.0333333
+    functionName: ImpactFeedback
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 2.3
     functionName: DoSlash
     data: 
     objectReferenceParameter: {fileID: 0}
