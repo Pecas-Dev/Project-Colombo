@@ -93,9 +93,9 @@ namespace ProjectColombo.Tutorial
         {
             var inventory = GameManager.Instance.GetComponent<PlayerInventory>();
 
-            if (inventory.currencyAmount < 200)
+            if (inventory.currencyAmount < 400)
             {
-                inventory.currencyAmount = 200;
+                inventory.currencyAmount = 400;
                 CustomEvents.CoinsCollected(1);
             }
         }
